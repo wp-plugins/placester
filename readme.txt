@@ -70,7 +70,7 @@ After installing the plugin simply follow the instructions in the plugin to obta
 
 Simple, by default Placester only displays the block address so the client can explore the neighborhood, but they still need you for the showing or to finalize the deal.
 
-= What is "SEO"? How do I get on to Google?"
+= What is "SEO"? How do I get on to Google? =
 
 Search engine optimization or SEO is the process of making sure that your listings are easily found by search engines like Google. Placester takes care of making your site friendly to Google for you, there are no additional steps to take.
 
