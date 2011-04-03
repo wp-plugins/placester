@@ -27,27 +27,24 @@ Highlights:
 * Social media service integrations ^,
 * Always up-to-date, Placester automatically update itself with the the latest features 
 
-Note ^: Feature requires a Placester compatible theme.
+Note ^: Feature requires a Placester-enabled theme.
 
 == Installation ==
 
-1. Either use the search function on the "add new" plugins page in WordPress admin or download the plugin to your local computer and upload it using the upload tab on the "add new" option. If for some reason there are still challenges, the plugin can be unzipped and uploaded directly to the wp-content/plugins/ directory.
-1. Activate the plugin.
-1. Obtain an API key.
+**Install via Search:**
 
-**Install via Search**
 1. In WordPress admin, visit Plugins > Add New
 1. Search for "placester"
-1. Click Install link in Actions column
-1. Once a box appears, click the big red button Install Now
-1. Once installed, click Activate Plugin link
-1. Configure the plugin through Settings > RealAnswers in WordPress admin
+1. Click the "Install Now" link and click "Ok" (if necessary) in the pop-up dialog.
+1. Once installed, click the "Activate Plugin" link
+1. Add your API key and configure the plugin via the "Placester" left-hand menu
 
-**Install via Upload**
-1. In WordPress admin, visit Plugins > Add New > Upload 
+**Install via Upload:**
+
+1. In WordPress admin, visit "Plugins" > "Add New" > "Upload"
 1. Upload placester.zip file
-1. Once uploaded, click Activate Plugin link
-1. Configure the plugin through Settings > RealAnswers in WordPress admin
+1. Once uploaded, click the "Activate Plugin" link
+1. Add your API key and configure the plugin via the "Placester" left-hand menu
 
 == Frequently Asked Questions ==
 
