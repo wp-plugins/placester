@@ -17,16 +17,16 @@ Highlights:
 * Populate your web site with the listing inventory from your property database company,
 * Tune the listings on the site for the target market,
 * Manage and track lead performance,
-* Customize layout using robust widgets and shortcodes (*),
+* Customize layout using robust widgets and shortcodes ^,
 * Intuitive help tools,
 * Powerful search based on the Placester API and Google Maps,
 * Easily promote featured properties across your site,
 * Filter listings by any modality for promotion, focus on the clientele of interest,
-* Search engine optimized from top to bottom (*),
-* Social media service integrations (*),
+* Search engine optimized from top to bottom ^,
+* Social media service integrations ^,
 * Always up-to-date, Placester automatically update itself with the the latest features 
 
-Note (*): Feature requires a Placester compatible theme.
+Note ^: Feature requires a Placester compatible theme.
 
 == Installation ==
 
