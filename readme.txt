@@ -11,20 +11,19 @@ Easily create and manage real estate sites powered by WordPress.
 
 Simple tools make it easy to customize listings and pages. Robust search functionality as well as the power of WordPress make Placester Promoter a competitve advantage in today's saturated market.
 
-
 Highlights:
 * Easy setup - create a new account in one step,
 * Create and manage listing landing pages,
 * Populate your web site with the listing inventory from your property database company,
 * Tune the listings on the site for the target market,
 * Manage and track lead performance,
-* Customize layout using robust widgets and shortcodes *,
+* Customize layout using robust widgets and shortcodes (*),
 * Intuitive help tools,
 * Powerful search based on the Placester API and Google Maps,
 * Easily promote featured properties across your site,
 * Filter listings by any modality for promotion, focus on the clientele of interest,
-* Search engine optimized from top to bottom *,
-* Social media service integrations *,
+* Search engine optimized from top to bottom (*),
+* Social media service integrations (*),
 * Always up-to-date, Placester automatically update itself with the the latest features 
 
 Note (*): Feature requires a Placester compatible theme.

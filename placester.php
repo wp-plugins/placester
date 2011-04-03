@@ -1,11 +1,11 @@
 <?php
 /**
-Plugin Name: Placester Promoter
+Plugin Name: Placester
 Description: Easily create a rich real estate web site for yourself or your agency.
 Plugin URI: http://placester.com/wordpress/plugin/
 Author: Frederick Townes
 Version: 0.1.0
-Author URI: http://placester.com/about/
+Author URI: http://www.linkedin.com/in/w3edge
 */
 
 /*  Copyright (c) 2011 Frederick Townes <frederick@placester.com>
