@@ -11,7 +11,7 @@ include(ABSPATH . 'wp-admin/includes/theme-install.php');
 <div class="wrap">
   <?php 
 
-  admin_header('placester_themes');
+  placester_admin_header('placester_themes');
 
   if (!isset($_POST['search']) && !isset($_GET['paged']))
       include('themes_intro.php'); 

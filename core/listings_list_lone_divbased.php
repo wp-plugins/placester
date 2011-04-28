@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Body of "listings_list()" function
+ * Body of "placester_listings_list()" function
  * For div-based mode
  */
 
-include('listings_list_divbased_parts.php');
+include( 'listings_list_divbased_parts.php' );
 
 
 
@@ -13,11 +13,10 @@ include('listings_list_divbased_parts.php');
 
 
 
-$fields = implode(',', $webservice_fields);
+$fields = implode( ',', $webservice_fields );
 $datasource_url = $base_url . '/properties_divbased.php?fields=' . $fields;
 
-list
-(
+list(
     $default_row_renderer,
     $row_renderer,
     $default_pager_renderer,
@@ -26,16 +25,17 @@ list
     $pager_rows_per_page,
     $default_pager_render_in_dom_element,
     $pager_render_in_dom_element
-) = placester_list_divbased_parse($parameters);
+) = placester_list_divbased_parse( $parameters );
 
 
 // Loading
 $loading_data = array();
-if (isset($parameters['loading']))
+if ( isset( $parameters['loading'] ) )
     $loading_data = $parameters['loading'];
 
-$default_loading_render_in_dom_element = !isset($loading_data['render_in_dom_element']);
-if ($default_loading_render_in_dom_element)
+$default_loading_render_in_dom_element = 
+    ! isset( $loading_data['render_in_dom_element'] );
+if ( $default_loading_render_in_dom_element )
     $loading_render_in_dom_element = 'placester_listings_loading';
 else
     $loading_render_in_dom_element = $loading_data['render_in_dom_element'];
@@ -44,9 +44,8 @@ else
 
 // Default sort
 $sort_query = '';
-if (isset($parameters['sort_by']))
-{
-    $sort_type = (isset($parameters['sort_type']) ? $parameters['sort_type'] : 'asc');
+if ( isset( $parameters['sort_by'] ) ) {
+    $sort_type = ( isset( $parameters['sort_type'] ) ? $parameters['sort_type'] : 'asc' );
     $sort_query = '&sort_by=' . $parameters['sort_by'] . '&sort_type=' . $sort_type;
 }
 
@@ -62,12 +61,11 @@ var placesterListLone_page_number = 1;
 var placesterListLone_pager_rows_per_page = <?php echo $pager_rows_per_page ?>;
 
 
-
 <?php
-if ($default_row_renderer)
+if ( $default_row_renderer )
     placester_print_default_row_renderer();
-if ($default_pager_renderer)
-    placester_print_default_pager_renderer($pager_data);
+if ( $default_pager_renderer )
+    placester_print_default_pager_renderer( $pager_data );
 ?>
 
 
@@ -155,6 +153,15 @@ function placesterListLone_setLoadingVisible(visible)
 function placesterListLone_create()
 {
     placesterListLone_setLoadingVisible(true);
+
+    /**
+     *      If the user has set filters, respect them.
+     */
+    if (typeof placesterListLone_filter != 'undefined') {
+        placesterListLone_datasource_url += placesterListLone_filter;
+    };
+    
+
     $.ajax(
     {
         type: 'GET',
@@ -172,7 +179,12 @@ function placesterListLone_create()
                 output += '<div id="listing_' + n + '">' + row_html + '</div>';
             }
 
-            $('#placester_listings_list').html(output);
+            if (output) {
+                $('#placester_listings_list').html(output);
+            } else {
+                placesterListLone_empty($('#placester_listings_list'));                
+            };
+
 
             pager_output = '';
             pages = Math.floor(
@@ -181,11 +193,21 @@ function placesterListLone_create()
             var html = <?php echo $pager_renderer ?>(pages, placesterListLone_page_number,
                 'placesterListLone_setPage');
 
-            $('#<?php echo $pager_render_in_dom_element ?>').html(html);
+                $('#<?php echo $pager_render_in_dom_element ?>').html(html);                    
+
         }
     });
 }
 
+function placesterListLone_empty (dom_object)
+{
+    if (typeof custom_empty_listings_loader == 'function') {
+        custom_empty_listings_loader(dom_object);
+    } else {
+        dom_object.html('<p>Sorry, no listings match that search. Maybe try something a bit broader? Or just give us a call and we\'ll personally help you find the right place.</p>');
+    };
+
+}
 
 
 /**
@@ -201,10 +223,10 @@ $(document).ready(function()
 
 <?php
 
-if ($default_loading_render_in_dom_element)
+if ( $default_loading_render_in_dom_element )
     placester_print_default_loading_element();
-if ($default_pager_render_in_dom_element)
+if ( $default_pager_render_in_dom_element )
     echo '<div id="placester_listings_pager"></div>';
 
-echo placester_listings_list_divbased_html('placester_listings_list', 
-    $webservice_fields);
+echo placester_listings_list_divbased_html( 'placester_listings_list', 
+    $webservice_fields );

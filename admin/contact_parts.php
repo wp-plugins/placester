@@ -30,7 +30,8 @@ function p($o, $property)
  * @param object $validation_data
  * @param string $property
  */
-function row_address($option_name_prefix, $data, $validation_data, $property)
+function row_address($option_name_prefix, $data, $validation_data, $property, 
+    $description = '')
 {
     $location_data = p($data, $property);
     $location_validation = p($validation_data, $property);
@@ -38,7 +39,7 @@ function row_address($option_name_prefix, $data, $validation_data, $property)
         $location_validation = $location_validation[0];
 
     row_textbox('Address', $option_name_prefix . 'address', 
-        $location_data, $location_validation, 'address');
+        $location_data, $location_validation, 'address', $description);
     row_textbox('Unit', $option_name_prefix . 'unit', 
         $location_data, $location_validation, 'unit');
     row_textbox('City', $option_name_prefix . 'city', 
@@ -62,7 +63,7 @@ function row_address($option_name_prefix, $data, $validation_data, $property)
  * @param string $property
  */
 function row_image($label, $option_name, $value_object, 
-    $validation_objet, $property)
+    $validation_objet, $property, $description = '')
 {
     $id = p($value_object, $property);
     $img = '';
@@ -76,9 +77,16 @@ function row_image($label, $option_name, $value_object,
     <tr valign="top">
       <th scope="row"><label><?php echo $label ?></label></th>
       <td>
-        <input type="file" name="file" id="<?php echo $option_name ?>_file" />
+        <input type="file" name="file" id="<?php echo $option_name ?>_file" 
+          style="float: left" />
+        <input type="button" id="<?php echo $option_name ?>_button" 
+          class="button file_upload" value="Upload" style="float: left" />
         <input type="hidden" name="<?php echo $option_name ?>" 
           id="<?php echo $option_name ?>" value="<?php echo $id ?>" />
+        <?php
+        if (strlen($description) > 0)
+            echo '<br class="clear" /><span class="description">' . $description . '</span>';
+        ?>
       </td>
     </tr>
     <tr valign="top">
@@ -101,14 +109,15 @@ function row_image($label, $option_name, $value_object,
  * @param string $property
  */
 function row_textbox($label, $option_name, $value_object, 
-    $validation_object, $property)
+    $validation_object, $property, $description = '')
 {
     ?>
     <tr valign="top">
       <th scope="row"><label for="<?php echo $option_name ?>"><?php echo $label ?></label></th>
       <td>
         <input type="text" name="<?php echo $option_name ?>"
-          value="<?php echo p($value_object, $property) ?>" 
+          id="<?php echo $option_name ?>"
+          value="<?php echo htmlspecialchars(p($value_object, $property)) ?>" 
           class="heading form-input-tip" 
           style="width:100%" />
         <?php 
@@ -122,6 +131,9 @@ function row_textbox($label, $option_name, $value_object,
             echo $validation_message;
             echo '</div>';
         }
+
+        if (strlen($description) > 0)
+            echo '<br /><span class="description">' . $description . '</span>';
         ?>
       </td>
     </tr>
@@ -149,7 +161,10 @@ function row_textarea($label, $option_name, $value_object,
       <td>
         <textarea name="<?php echo $option_name ?>" rows="5" 
           class="heading form-input-tip" 
-          style="width:100%"><?php echo p($value_object, $property) ?></textarea>
+          style="width:100%"><?php 
+          echo htmlspecialchars(p($value_object, $property)) 
+          ?>
+        </textarea>
         <?php 
         $validation_message = p($validation_object, $property);
         if (isset($validation_message))
@@ -220,94 +235,76 @@ function details($company, $user, $error_validation_data)
         $v_user = $error_validation_data->user;
  
     ?>
-    <h3 class="title">Basic Details</h3>
-        <div style="width:910px">
-            <div style="width:600px;float:left;clear:left;">
-                <table class="form-table">
-                    <?php row_textbox('Email', 'user_email', $user, $v_user, 'email'); ?>
-                    <?php row_textbox('First Name', 'user_first_name', $user, $v_user, 'first_name'); ?>
-                    <?php row_textbox('Last Name', 'user_last_name', $user, $v_user, 'last_name'); ?>
-                </table>    
-            </div>
-            <div style="width:300px;float:left;font-size:11px;margin-left:10px">
-                The email address you wish to be contacted at by leads.  Depending on your theme, this email address and name will be used to be displayed outwardly to the public.  Check your theme for specific details
-            </div>
-        </div>
-        <div style="clear:both"></div>
-        <p class="submit">
-          <input type="submit" name="<?php echo CONTACT_SIGNUP_FORM ? 'signup_finish' : 'edit_finish' ?>" class="button-primary" 
-            value="Save Changes" />
-        </p>        
-        <hr />
 
-    <h3 class="title">Company</h3>
-        <div style="width:910px">
-            <div style="width:600px;float:left;clear:left;">
-                <table class="form-table">
-                <?php row_image('Logo', 'company_logo', $company, $v_company, 'logo'); ?>
-                <?php row_textbox('Company Name', 'company_name', $company, $v_company, 'name'); ?>                
-                <?php row_textbox('Phone', 'company_phone', $company, $v_company, 'phone'); ?>
-                </table>
-            </div>
-            <div style="width:300px;float:left;font-size:11px;margin-left:10px">
-                The logo and name of your company.  These will be used by your theme to display to the public.<br />Additionally, the phone number of your company.  Depending on your theme, this will be displayed publicly and thus will receive calls from time to time.
-            </div>
-            <div style="clear:both"></div>
-            <div style="width:600px;float:left;clear:left;">
-                <table class="form-table">
-                      <?php row_address('company_location_', $company, $v_company, 'location'); ?>        
-                </table>
-            </div>
-            <div style="width: 300px; float: left; font-size: 11px; margin-left: 10px">
-                The address of your office.  This could be the location of your office, just a mailing address or both.  To see how it's used.
-            </div>
-            <div style="clear: both"></div>
-            <div style="width: 600px; float: left; clear: left;">
-                <table class="form-table">
-                  <?php row_textarea('Description', 'company_description', $company, $v_company, 'description'); ?>
-                </table>
-            </div>
-            <div style="width: 300px; float: left; font-size: 11px; margin-left: 10px">
-                A description of your company.  Typically this will be used in the about us section and used to give potential clients a bit more information about your company.
-            </div>
-        </div>
-        <div style="clear: both"></div>
-    <p class="submit">
-          <input type="submit" name="<?php echo CONTACT_SIGNUP_FORM ? 'signup_finish' : 'edit_finish' ?>" class="button-primary" 
-        value="Save Changes" />
+    <?php placester_postbox_header('Basic Details'); ?>
+    <table class="form-table">
+        <?php 
+        row_textbox('Email', 'user_email', $user, $v_user, 'email',
+            'The email address you wish to be contacted at by leads.' .
+            'Depending on your theme, this email address and name will ' .
+            'be used to be displayed outwardly to the public. '.
+            'Check your theme for specific details'); 
+        row_textbox('First Name', 'user_first_name', $user, $v_user, 'first_name');
+        row_textbox('Last Name', 'user_last_name', $user, $v_user, 'last_name'); 
+        ?>
+    </table>    
+    <p class="submit clear">
+      <input type="submit" name="<?php echo CONTACT_SIGNUP_FORM ? 'signup_finish' : 'edit_finish' ?>" class="button-primary" 
+        value="Save All Changes" />
     </p>        
-    <hr />
+    <?php placester_postbox_footer(); ?>
+
+    <?php placester_postbox_header('Company'); ?>
+    <table class="form-table">
+      <?php 
+      row_image('Logo', 'company_logo', $company, $v_company, 'logo',
+          'The logo of your company'); 
+      row_textbox('Company Name', 'company_name', $company, $v_company, 'name',
+          'The name of your company. These will be used by ' .
+          'your theme to display to the public.'); 
+      row_textbox('Phone', 'company_phone', $company, $v_company, 'phone',
+          'The phone number of your company. ' .
+          'Depending on your theme, this will be displayed publicly and ' .
+          'thus will receive calls from time to time.'); 
+      row_address('company_location_', $company, $v_company, 'location',
+          'The address of your office. This could be the location of your ' .
+          'office, just a mailing address or both.  To see how it\'s used.'); 
+      row_textarea('Description', 'company_description', $company, $v_company, 
+          'description',
+          'A description of your company. Typically this will be used in ' .
+          'the about us section and used to give potential clients a bit ' .
+          'more information about your company.'); 
+      ?>
+    </table>
+    <p class="submit">
+        <input type="submit" name="<?php echo CONTACT_SIGNUP_FORM ? 'signup_finish' : 'edit_finish' ?>" 
+            class="button-primary" value="Save All Changes" />
+    </p>
+    <?php placester_postbox_footer(); ?>
     
-    <h3 class="title">Personal Details</h3>
-    <div style="width: 910px">
-        <div style="width: 600px; float: left; clear: left;">
-            <table class="form-table">
-                <?php row_image('Headshot', 'user_logo', $user, $v_user, 'logo'); ?>
-                <?php row_textbox('Phone', 'user_phone', $user, $v_user, 'phone'); ?>
-                <?php row_textbox('Website', 'user_website', $user, $v_user, 'website'); ?>
-                </table>
-            </div>
-            <div style="width: 300px; float: left; font-size: 11px; margin-left: 10px">
-                If your theme supports a headshot, upload one here.  Depending on your theme and it's settings, you may want to list your personal phone number for clients to call.
-            </div>
-            <div style="clear: both"></div>
-            <div style="width: 600px; float: left; clear: left;">
-                <table class="form-table">
-                    <?php row_address('user_location_', $user, $v_user, 'location'); ?>
-                </table>
-            </div>
-            <div style="width: 300px; float: left; font-size: 11px; margin-left: 10px">
-                Depending on your needs, your theme and it's settings you may wish to display a personal or secondary address as well.  Enter that information here. 
-            </div>
-            <div style="clear: both"></div>
-            <div style="width: 600px; float: left; clear: left;">
-                <table class="form-table">
-                    <?php row_textarea('Bio', 'user_description', $user, $v_user, 'description'); ?>
-                </table>
-            </div>
-            <div style="width: 300px; float: left; font-size: 11px; margin-left: 10px">
-                A short description of you.  Depending on your theme and it's settings this might be used throughout the site - typically on an about us or contact us page.
-            </div>
-            <div style="clear: both"></div>
+    <?php placester_postbox_header('Personal Details'); ?>
+    <table class="form-table">
+        <?php 
+        row_image('Headshot', 'user_logo', $user, $v_user, 'logo',
+            'If your theme supports a headshot, upload one here.'); 
+        row_textbox('Phone', 'user_phone', $user, $v_user, 'phone',
+            'Depending on your theme and it\'s settings, you may want ' .
+            'to list your personal phone number for clients to call.'); 
+        row_textbox('Website', 'user_website', $user, $v_user, 'website');
+        row_address('user_location_', $user, $v_user, 'location',
+            'Depending on your needs, your theme and it\'s settings you may ' .
+            'wish to display a personal or secondary address as well. ' .
+            'Enter that information here.'); 
+        row_textarea('Bio', 'user_description', $user, $v_user, 'description',
+            'A short description of you.  Depending on your theme and it\'s ' .
+            'settings this might be used throughout the site - typically on an ' .
+            'about us or contact us page.'); 
+        ?>
+    </table>
+    <p class="submit">
+       <input type="submit" name="<?php echo CONTACT_SIGNUP_FORM ? 'signup_finish' : 'edit_finish' ?>" 
+           class="button-primary" value="Save All Changes" />
+    </p>
+    <?php placester_postbox_footer(); ?>
     <?php
 }

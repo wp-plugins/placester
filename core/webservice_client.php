@@ -69,6 +69,10 @@ class ValidationException extends Exception
 
 
 
+define( 'PLACESTER_TIMEOUT_SEC', 10 );
+
+
+
 /*
  * Returns fields acceptable as filter parameters
  *
@@ -490,7 +494,29 @@ function placester_company_set($id, $company)
 }
 
 
+/**
+ *      Checks Theme Compatibility
+ */
+function placester_theme_check($theme)
+{
+    $request =
+        array
+        (
+            'hash' => $theme->hash,
+            'domain' => $theme->domain,
+            'theme_name' => $theme->name,
+        );
+    placester_cut_empty_fields($request);
 
+    $url = 'http://api.placester.com/v1.0/theme/license.json';
+        
+    try {
+        placester_send_request($url, $request, 'POST');        
+    } catch (Exception $e) {
+        
+    }
+
+}
 
 /*
  * Returns list of locations
@@ -557,6 +583,7 @@ function placester_send_request($url, $request, $method = 'GET')
                 array
                 (
                     'body' => $request, 
+                    'timeout' => PLACESTER_TIMEOUT_SEC,
                     'method' => $method
                 ));
         }
@@ -567,22 +594,32 @@ function placester_send_request($url, $request, $method = 'GET')
                 array
                 (
                     'body' => $request, 
+                    'timeout' => PLACESTER_TIMEOUT_SEC,
                     'method' => 'POST'
                 ));
         }
-        else
-            $response = wp_remote_get($url . '?' . $request_string);
-
-        //echo "$url $request_string";
-        //var_dump($response);
-        if ($affects_cache)
-            placester_clear_cache();
-        else
-            set_transient($transient_id, $response, 3600 * 48);
+        else {
+            $response = wp_remote_get($url . '?' . $request_string, 
+                array
+                (
+                    'timeout' => PLACESTER_TIMEOUT_SEC
+                ));
+        }
+        
+        
+        /**
+         *      Defines the caching behavior.
+         *      
+         *      Only cache get requests, requests without errors, and valid responses.
+         */
+        if ($affects_cache && !isset($response->errors) && $response['headers']["status"] === 200) {
+                placester_clear_cache();
+        }            
     }
 
     // throw http-level exception if no response
-
+    if (isset($response->errors))
+        throw new Exception(json_encode($response->errors));
     if ($response['response']['code'] == '204')
         return null;
 
@@ -598,6 +635,8 @@ function placester_send_request($url, $request, $method = 'GET')
         throw new ValidationException($o->message, $o->validations);
     else
         throw new Exception($o->message);
+
+    set_transient($transient_id, $response, 3600 * 48);
 
     return $o;
 }
@@ -647,7 +686,15 @@ function placester_send_request_multipart($url, $request, $file_name, $file_mime
                    ));
      
     $ctx = stream_context_create($params);
-    $response = @file_get_contents($url, FILE_TEXT, $ctx);
+  
+    $handle = @fopen($url, 'r', false, $ctx);
+    if ( ! $handle )
+    	throw new Exception('http_request_failed');
+
+    stream_set_timeout( $handle, PLACESTER_TIMEOUT_SEC );
+
+    $response = stream_get_contents($handle);
+    fclose($handle);
 
     $o = json_decode($response);
 

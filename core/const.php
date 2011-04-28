@@ -6,8 +6,7 @@
 
 global $placester_const_property_types;
 $placester_const_property_types = 
-    array
-    (
+    array(
         'apartment' => 'Apartment',
         'penthouse' => 'Penthouse',
         'townhouse' => 'Townhouse',
@@ -27,8 +26,7 @@ $placester_const_property_types =
 
 global $placester_const_listing_types;
 $placester_const_listing_types = 
-    array
-    (
+    array(
         'housing' => 'Housing',
         'parking' => 'Parking',
         'sublet' => 'Sublet',
@@ -39,16 +37,14 @@ $placester_const_listing_types =
 
 global $placester_const_zoning_types;
 $placester_const_zoning_types = 
-    array
-    (
+    array(
         'residential' => 'Residential',
         'commercial' => 'Commercial'
     );
 
 global $placester_const_purchase_types;
 $placester_const_purchase_types = 
-    array
-    (
+    array(
         'rental' => 'Rental',
         'sale' => 'Sale'
     );

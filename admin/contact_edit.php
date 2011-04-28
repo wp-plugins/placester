@@ -83,9 +83,3 @@ if (strlen($error_message) > 0)
     placester_error_message($error_message);
 
 details($company, $user, $error_validation_data);
-?>
-
-<p class="submit">
-  <input type="submit" name="edit_finish" class="button-primary" 
-    value="Save Changes" />
-</p>

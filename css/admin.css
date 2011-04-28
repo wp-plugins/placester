@@ -2,6 +2,14 @@
  * Admin interface styles
  */
 
+.placester_icon {
+  background: url('../images/logo_30.png') no-repeat;
+}
+
+#placester_form .postbox .inside {
+padding: 0 10px;
+}
+
 #placester_form fieldset {
 	margin: 1em 0;
 	background: #fdfdfd;
@@ -27,54 +35,102 @@
 
 
 
+.placester_contact_box_content,
+.placester_settings_box_content {
+  width:910px
+}
+.placester_contact_box_column1 {
+  width:600px;
+  float:left;
+  clear:left;
+}
+.placester_contact_box_column2 {
+  width:300px;
+  float:left;
+  font-size:11px;
+  margin-top: 10px;
+  margin-left:10px;
+  line-height: 1.7em;
+}
+
 /**
  * Styles used by Properties page
  */
-
-#placester_listings_list { 
-  border-collapse:collapse; 
-}
-
-#placester_listings_list thead tr th,
-#placester_listings_list tbody tr td { 
-  text-align: left; border: 1px solid #cccccc; padding-left: 5px; 
-}
-
-
+/*
 
 /**
- * Styles used by Datatables objecy in Admin interface
+ * Styles used by Datatables object in Admin interface
  */
 
-.sorting_asc {
+.widefat thead tr th.sorting_asc {
   background: url('../images/sort_asc.png') no-repeat center right;
 }
-.sorting_desc {
+.widefat thead tr th.sorting_desc {
   background: url('../images/sort_desc.png') no-repeat center right;
 }
-.sorting {
+.widefat thead tr th.sorting {
   background: url('../images/sort_both.png') no-repeat center right;
 }
-.sorting_asc_disabled {
+.widefat thead tr th.sorting_asc_disabled {
   background: url('../images/sort_asc_disabled.png') no-repeat center right;
 }
-.sorting_desc_disabled {
+.widefat thead tr th.sorting_desc_disabled {
   background: url('../images/sort_desc_disabled.png') no-repeat center right;
 }
-td.details {
-  background-color: #d1cfd0;
-  border: 2px solid #A19B9E;
-}
+
 .paging_full_numbers { 
-  margin-top: 10px; 
+  margin-top: 12px; 
+  text-align: right;
+  float: right;
+  padding-bottom: 10px;
 }
+
+.dataTables_info {
+  padding-top: 12px;
+  float: right;
+  margin-right: 10px;
+  font-size: 12px;
+  font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+  font-style: italic;
+}
+
+.paging_full_numbers .first,
+.paging_full_numbers .last {
+  display: none;
+}
+
 .paging_full_numbers span.paginate_button,
 .paging_full_numbers span.paginate_active {
+  text-decoration: none;
+  padding: 3px 6px;
+  -moz-border-radius: 5px;
+  -khtml-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid;
+  margin-right: 3px;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+.paging_full_numbers span.paginate_button {
+  border-color: #E3E3E3;
+  background: #EEE;
+  color: #21759B;
+  cursor: pointer;
+}
+
+.paging_full_numbers span.paginate_active { 
+  color: #555;
+  background: #DFDFDF;
+  border-color: lightGrey;
+  cursor: auto;
+}
+/*
   border: 1px solid #aaa;
   padding: 2px 5px;
   margin: 0 3px;
-  cursor: pointer;
-}
+
 .paging_full_numbers span.paginate_button { 
   background-color: #ddd; 
 }
@@ -84,7 +140,7 @@ td.details {
 .paging_full_numbers span.paginate_active { 
   background-color: #99B3FF; 
 }
-
+*/
 
 
 /**

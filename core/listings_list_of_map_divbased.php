@@ -1,19 +1,18 @@
 <?php
 
 /**
- * Body of "listings_list_of_map()" function
+ * Body of "placester_listings_list_of_map()" function
  * For div-based mode
  */
 
-include('listings_list_divbased_parts.php');
+include( 'listings_list_divbased_parts.php' );
 
 
 
 // js fields
-$fields = implode(',', $webservice_fields);
+$fields = implode( ',', $webservice_fields );
 
-list
-(
+list(
     $default_row_renderer,
     $row_renderer,
     $default_pager_renderer,
@@ -22,7 +21,7 @@ list
     $pager_rows_per_page,
     $default_pager_render_in_dom_element,
     $pager_render_in_dom_element
-) = placester_list_divbased_parse($parameters);
+) = placester_list_divbased_parse( $parameters );
 
 ?>
 <script src="<?php echo $base_url ?>/js/jquery.dataTables.js"></script>
@@ -37,10 +36,10 @@ var placesterListOfMap_items = [];
 
 
 <?php
-if ($default_row_renderer)
+if ( $default_row_renderer )
     placester_print_default_row_renderer();
-if ($default_pager_renderer)
-    placester_print_default_pager_renderer($pager_data);
+if ( $default_pager_renderer )
+    placester_print_default_pager_renderer( $pager_data );
 ?>
 
 
@@ -195,8 +194,8 @@ function placesterListOfMap_printCurrentPage()
 
 <?php 
 
-if ($default_pager_render_in_dom_element)
+if ( $default_pager_render_in_dom_element )
     echo '<div id="placester_listings_pager"></div>';
 
-echo placester_listings_list_divbased_html('placester_listings_list_of_map', 
-    $webservice_fields);
+echo placester_listings_list_divbased_html( 'placester_listings_list_of_map', 
+    $webservice_fields );

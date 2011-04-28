@@ -63,8 +63,13 @@ function p($o, $property)
 function control_dropdown($property_name, $possible_values, $value, 
     $width = '')
 {
-    echo '<select class="heading form-input-tip" name="' . $property_name;
-    echo '" style="width: ' . $width . '" class="heading form-input-tip">';
+    ?>
+    <select class="heading form-input-tip" 
+      name="<?php echo $property_name ?>" 
+      id="<?php echo $property_name ?>" 
+      style="width: <?php echo $width ?>" 
+      class="heading form-input-tip">
+    <?php
 
     foreach ($possible_values as $key => $name)
     {
@@ -168,13 +173,14 @@ function column_textbox($label, $property_name, $value, $validation_object,
 {
     $value = placester_get_property_value($value, $property_name);
     $validation_message = p($validation_object, $property_name);
+    $id = str_replace('/', '_', $property_name);
 
     ?>
-    <th scope="row"><label for="<?php echo $property_name ?>"><?php echo $label ?></label></th>
+    <th scope="row"><label for="<?php echo $id ?>"><?php echo $label ?></label></th>
     <td colspan="<?php echo $colspan ?>">
       <input type="text" name="<?php echo $property_name ?>"
-        id="<?php echo str_replace('/', '_', $property_name) ?>"
-        value="<?php echo $value ?>" 
+        id="<?php echo $id ?>"
+        value="<?php echo htmlspecialchars($value) ?>" 
         class="heading form-input-tip" 
         style="width:100%" />
       <?php 
@@ -223,29 +229,25 @@ function row_textbox($label, $property_name, $value, $validation_object)
  * @param string $value
  * @param object $validation_object
  */
-function row_textarea($label, $property_name, $value, $validation_object)
+function control_textarea($label, $property_name, $value, $validation_object)
 {
     $value = placester_get_property_value($value, $property_name);
     $validation_message = p($validation_object, $property_name);
 
     ?>
-    <tr valign="top">
-      <th scope="row"><label for="<?php echo $property_name ?>"><?php echo $label ?></label></th>
-      <td colspan="3">
-        <textarea name="<?php echo $property_name ?>" rows="5" 
-          class="heading form-input-tip" 
-          style="width:100%"><?php echo $value ?></textarea>
-        <?php 
-        if (isset($validation_message))
-        {
-            echo '<br/><div style="color:red">';
-            echo $validation_message;
-            echo '</div>';
-        }
-        ?>
-      </td>
-    </tr>
-    <?php
+    <textarea 
+      name="<?php echo $property_name ?>" 
+      id="<?php echo $property_name ?>" 
+      rows="5" 
+      class="heading form-input-tip" 
+      style="width:100%"><?php echo htmlspecialchars($value) ?></textarea>
+    <?php 
+    if (isset($validation_message))
+    {
+        echo '<br/><div style="color:red">';
+        echo $validation_message;
+        echo '</div>';
+    }
 }
 
 
@@ -256,24 +258,21 @@ function row_textarea($label, $property_name, $value, $validation_object)
  *
  * @param string $validation_message
  */
-function row_images($validation_message = '')
+function box_images($validation_message = '')
 {
+    placester_postbox_header('Images');
+
     ?>
-    <tr valign="top">
-      <th scope="row"><label>Images</label></th>
-      <td>
-        <input type="file" name="images[]" class="multi" />
-        <?php 
-        if (isset($validation_message))
-        {
-            echo '<br/><div style="color:red">';
-            echo $validation_message;
-            echo '</div>';
-        }
-        ?>
-      </td>
-    </tr>
-    <?php
+    <input type="file" name="images[]" class="multi" />
+    <?php 
+
+    if (isset($validation_message))
+    {
+        echo '<br/><div style="color:red">';
+        echo $validation_message;
+        echo '</div>';
+    }
+    placester_postbox_footer();
 }
 
 
@@ -346,12 +345,17 @@ function property_form($p, $v)
         $array_1_9[$n] = $n . '&nbsp;&nbsp;';
 
     ?>
+
+    <?php placester_postbox_header('Type'); ?>
     <table class="form-table">
       <?php
       row_dropdown('Listing Type', $multi_types, 'combined_type', $p, $v);
       ?>
+    </table>
+    <?php placester_postbox_footer(); ?>
 
-      <tr><td colspan="4"><h3>Basics</h3></td></tr>
+    <?php placester_postbox_header('Basics'); ?>
+    <table class="form-table">
       <tr>
         <?php
         column_dropdown('Beds', $array_1_9, 'bedrooms', $p, $v);
@@ -371,8 +375,11 @@ function property_form($p, $v)
         column_textbox('Price', 'price', $p, $v);
         ?>
       </tr>
+    </table>
+    <?php placester_postbox_footer(); ?>
 
-      <tr><td colspan="4"><h3>Address</h3></td></tr>
+    <?php placester_postbox_header('Address'); ?>
+    <table class="form-table">
       <tr>
         <?php
         column_textbox('Address', 'location/address', $p, $v);
@@ -416,10 +423,13 @@ function property_form($p, $v)
           <br />
         </td>
       </tr>
-
-      <?php
-      row_textarea('Description', 'description', $p, $v);
-      ?>
     </table>
+    <?php placester_postbox_footer(); ?>
+
+    <?php placester_postbox_header('Description'); ?>
+      <div style="padding: 5px">
+        <?php control_textarea('Description', 'description', $p, $v); ?>
+      </div>
+    <?php placester_postbox_footer(); ?>
     <?php
 }

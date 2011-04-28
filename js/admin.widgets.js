@@ -9,11 +9,13 @@
  * @param object container
  * @param string webkey
  * @param string organization_id
+ * @param string on_empty_callback
  */
-function line_widget (container, webkey, organization_id)
+function line_widget (container, webkey, organization_id, on_empty_callback)
 {
 
-    var line_chart = new Placester.Charts("line", {
+    var line_chart = new Placester.Charts("line_leads", {
+		 on_error: on_empty_callback,
          container: container,
          width: 600,
          height: 250,
@@ -61,11 +63,13 @@ function line_widget (container, webkey, organization_id)
  * @param object container
  * @param string webkey
  * @param string organization_id
+ * @param string on_empty_callback
  */
-function pie_widget (container, webkey, organization_id) 
+function pie_widget (container, webkey, organization_id, on_empty_callback) 
 {
-    var pie_chart = new Placester.Charts("pie", {
-      container: container,
+    var pie_chart = new Placester.Charts("pie_publishers", {
+	  on_error: on_empty_callback,
+	  container: container,
       width: 200,
       height: 200,
       pie : {
@@ -94,10 +98,12 @@ function pie_widget (container, webkey, organization_id)
  * @param object container
  * @param string webkey
  * @param string organization_id
+ * @param string on_empty_callback
  */
-function leads_widget (container, webkey, organization_id) 
+function leads_widget (container, webkey, organization_id, on_empty_callback) 
 {
-    var list = new Placester.Leads("list", {
+    var list = new Placester.Leads("leads", {
+  	  on_error: on_empty_callback,
       container: container,
       table: {
         paginate: true
@@ -127,3 +133,14 @@ function show_widget_error(container_id, null_image_url, message, additional_sty
     // jQuery('#' + container_id).html('test');
     jQuery('#' + container_id).html(' <img src="'+null_image_url+'"><div style="'+additional_styles+'" class="null-message"><p>'+message+'</div>');
 }
+
+
+
+/*
+ * Recent news widget
+ */
+jQuery(document).ready(function()
+{
+    jQuery('#recent_news').children('.inside').html('Loading...').load(
+        'admin.php?page=placester_dashboard&ajax_action=recent_news');
+});

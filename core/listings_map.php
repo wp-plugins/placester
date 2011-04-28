@@ -1,82 +1,73 @@
 <?php
 
 /**
- * Body of "listings_map()" function
+ * Body of "placester_listings_map()" function
  * This file is processed only when function is really called
  */
 
 // Check if api key specified
-if (placester_warn_on_api_key ())
+if ( placester_warn_on_api_key() )
     return;
 
 //
 // Load images
 // 
-$marker_id = get_option('placester_map_marker_image');
-$marker = wp_get_attachment_image_src($marker_id, 'full');
-if ($marker === FALSE)
-{
+$marker_id = get_option( 'placester_map_marker_image' );
+$marker = wp_get_attachment_image_src( $marker_id, 'full' );
+if ( $marker === FALSE ) {
     // Default image
     $marker_url = 'http://www.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png';
     $marker_width = '32';
     $marker_height =  '32';
-}
-else
-{
+} else {
     $marker_url = $marker[0];
     $marker_width = $marker[1];
     $marker_height =  $marker[2];
 }
 
-$marker_hover_id = get_option('placester_map_marker_hover_image');
-$marker_hover = wp_get_attachment_image_src($marker_hover_id, 'full');
+$marker_hover_id = get_option( 'placester_map_marker_hover_image' );
+$marker_hover = wp_get_attachment_image_src( $marker_hover_id, 'full' );
 
-if ($marker_hover === FALSE)
-{
+if ( $marker_hover === FALSE ) {
     // Default image
-    if ($marker === FALSE)
-    {
+    if ( $marker === FALSE ) {
         $marker_hover_url = 'http://www.google.com/intl/en_us/mapfiles/ms/micons/yellow-dot.png';
         $marker_hover_width = '32';
         $marker_hover_height =  '32';
-    }
-    else
-    {
+    } else {
         $marker_hover_url =  $marker_url;
         $marker_hover_width = $marker_width;
         $marker_hover_height = $marker_height;
     }
-}
-else
-{
+} else {
     $marker_hover_url = $marker_hover[0];
     $marker_hover_width = $marker_hover[1];
     $marker_hover_height =  $marker_hover[2];
 }
 
-$loading_id = get_option('placester_map_tile_loading_image');
-$loading = wp_get_attachment_image_src($loading_id, 'full');
+$loading_id = get_option( 'placester_map_tile_loading_image' );
+$loading = wp_get_attachment_image_src( $loading_id, 'full' );
 
 $loading_image_url = $loading[0];
 
-$base_url = WP_PLUGIN_URL . "/placester";
+$base_url = WP_PLUGIN_URL . '/placester';
 
 // JS handler: marker click
-$default_marker_click = !isset($parameters['js_on_marker_click']);
-if ($default_marker_click)
+$default_marker_click = ! isset( $parameters['js_on_marker_click'] );
+if ( $default_marker_click )
     $js_on_marker_click = 'placesterMap_showInfoWindow';
 else
     $js_on_marker_click = $parameters['js_on_marker_click'];
 
 // JS handler: marker class
-$default_get_marker_class = !isset($parameters['js_get_marker_class']);
-if ($default_get_marker_class)
+$default_get_marker_class = ! isset( $parameters['js_get_marker_class'] );
+if ( $default_get_marker_class )
     $js_get_marker_class = 'placesterMap_getMarkerClass';
 else
     $js_get_marker_class = $parameters['js_get_marker_class'];
 
 ?>
-<script src="http://maps.google.com/maps/api/js?sensor=false&amp;v=3.3"></script>
+<script src="http://maps.google.com/maps/api/js?sensor=false&amp;v=3.1"></script>
 <script src="<?php echo $base_url ?>/js/FastMarkerOverlay.js"></script>  
 <script src="<?php echo $base_url ?>/js/DynamicMarker.js"></script>
 <style>
@@ -204,7 +195,7 @@ function placesterMap_markerClickById(propertyId, no_notify_list)
 //
 // different default implementations of JS handlers
 // 
-if ($default_marker_click):
+if ( $default_marker_click ):
     ?>
     var placesterMap_infoWindow = null;
 
@@ -229,7 +220,7 @@ if ($default_marker_click):
     <?php
 endif;
 
-if ($default_get_marker_class):
+if ( $default_get_marker_class ):
     ?>
     /**
      * Returns class of marker
@@ -261,10 +252,10 @@ function placesterMap_reloadMarkers(markersData)
 /**
  * Initiazliation of map
  */
-$('#listings_map_map').ready(function() 
+$('#placester_listings_map_map').ready(function() 
 {
     var latLng = new google.maps.LatLng(42.3684, -71.0354);
-    placesterMap_map = new google.maps.Map(document.getElementById('listings_map_map'),
+    placesterMap_map = new google.maps.Map(document.getElementById('placester_listings_map_map'),
         {
             zoom: 13,
             center: latLng,
@@ -289,4 +280,4 @@ $('#listings_map_map').ready(function()
 });
 
 </script>
-<div id="listings_map_map"></div>
+<div id="placester_listings_map_map"></div>

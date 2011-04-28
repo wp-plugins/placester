@@ -100,7 +100,7 @@ function row_checkboxes($label, $values, $option_name)
  * @param string $tip
  * @param string $tip2
  */
-function row_image($label, $option_name, $tip = '', $tip2 = '')
+function row_image($label, $option_name, $description = '')
 {
     $img = '';
     $id = get_option($option_name);
@@ -114,16 +114,17 @@ function row_image($label, $option_name, $tip = '', $tip2 = '')
     <tr valign="top">
       <th scope="row"><label><?php echo $label ?></label></th>
       <td>
-        <input type="file" name="file" id="<?php echo $option_name ?>_file" />
+        <input type="file" name="file" id="<?php echo $option_name ?>_file" 
+          style="float: left" />
+        <input type="button" id="<?php echo $option_name ?>_button" 
+          class="button file_upload" value="Upload" style="float: left" />
         <input type="hidden" name="<?php echo $option_name ?>" 
           id="<?php echo $option_name ?>" value="<?php echo $id ?>" />
-          <div style="clear: both"></div>
-          <div style="">
-            <?php echo $tip2; ?>            
-          </div>
-      </td>
-      <td>
-        <?php echo $tip; ?>
+
+        <?php
+        if (strlen($description) > 0)
+            echo '<br class="clear" /><span class="description">' . $description . '</span>';
+        ?>
       </td>
     </tr>
     <tr valign="top">
@@ -141,21 +142,23 @@ function row_image($label, $option_name, $tip = '', $tip2 = '')
  * @param string $label
  * @param string $option_name
  */
-function row_textarea($label, $option_name)
+function row_textarea($label, $option_name, $description = '')
 {
     ?>
-
-      <th scope="row" style="width: 100px"><label for="<?php echo $option_name ?>"><?php echo $label ?></label></th>
-      <td style="width: 400px">
-            <p align="right">
-                <a id="<?php echo $option_name . "_toggleVisual"; ?>" class="button toggleVisual">Visual</a>
-                <a id="<?php echo $option_name . "_toggleHTML"; ?>" class="button toggleHTML">HTML</a>
-            </p>
-        <textarea name="<?php echo $option_name ?>" rows="5" 
-          class="heading form-input-tip" 
-          style="width:100%"><?php echo get_option($option_name) ?></textarea>
-      </td>
-
+    <th scope="row" style="width: 100px; padding-top: 50px"><label for="<?php echo $option_name ?>"><?php echo $label ?></label></th>
+    <td>
+      <p align="right">
+        <a id="<?php echo $option_name . "_toggleVisual"; ?>" class="button toggleVisual">Visual</a>
+        <a id="<?php echo $option_name . "_toggleHTML"; ?>" class="button toggleHTML">HTML</a>
+      </p>
+      <textarea name="<?php echo $option_name ?>" rows="5" 
+        class="heading form-input-tip" 
+        style="width:100%"><?php echo htmlspecialchars(get_option($option_name)) ?></textarea>
+      <?php
+      if (strlen($description) > 0)
+          echo '<br /><span class="description">' . $description . '</span>';
+      ?>
+    </td>
     <?php
 }
 
@@ -167,17 +170,21 @@ function row_textarea($label, $option_name)
  * @param string $label
  * @param string $option_name
  */
-function row_textbox($label, $option_name)
+function row_textbox($label, $option_name, $description = '')
 {
     ?>
 
       <th scope="row"><label for="<?php echo $option_name ?>"><?php echo $label ?></label></th>
       <td>
         <input type="text" name="<?php echo $option_name ?>"
-          value="<?php echo get_option($option_name) ?>" 
+          value="<?php echo htmlspecialchars(get_option($option_name)) ?>" 
           id="<?php echo $option_name ?>"
           class="heading form-input-tip" 
           style="width:100%" />
+        <?php
+        if (strlen($description) > 0)
+            echo '<br /><span class="description">' . $description . '</span>';
+        ?>
       </td>
 
     <?php

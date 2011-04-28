@@ -38,7 +38,7 @@ else
 
 ?>
 <div class="wrap">
-  <?php admin_header('placester_update') ?>
+  <?php placester_admin_header('placester_update') ?>
 
   <form method="post" action="admin.php?page=placester_update">
     <table class="form-table">

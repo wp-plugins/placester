@@ -10,10 +10,11 @@ $api_key = get_option('placester_api_key');
 
 ?>
 <div class="wrap">
-  <?php admin_header('placester_contact') ?>
+  <?php placester_admin_header('placester_contact') ?>
 
-  <form method="post" action="admin.php?page=placester_contact">
+  <form method="post" action="admin.php?page=placester_contact" id="placester_form">
     <?php
+    placester_postbox_container_header();
 
     if (strlen($api_key) <= 0) {
         // Used as a flag for save buttons
@@ -24,7 +25,7 @@ $api_key = get_option('placester_api_key');
         include('contact_edit.php');        
     }
 
-
+    placester_postbox_container_footer();
     ?>
   </form>
 </div>

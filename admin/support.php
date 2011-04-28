@@ -92,7 +92,7 @@ if (isset($_REQUEST['apply']))
 
 ?>
 <div class="wrap">
-  <?php admin_header('placester_support') ?>
+  <?php placester_admin_header('placester_support') ?>
 
   <h3>Support</h3>
   <?php
@@ -103,9 +103,12 @@ if (isset($_REQUEST['apply']))
     Request professional services, suggest a feature or submit a bug using the form below:
   </p>
 
-  <form id="placester_form" action="admin.php?page=placester_support" enctype="multipart/form-data" method="post">
+  <form id="placester_form" action="admin.php?page=placester_support" 
+    enctype="multipart/form-data" method="post" id="placester_form">
+    <?php placester_postbox_container_header(); ?>
     <div id="support_container">
       <?php require("support/intro.php"); ?>
     </div>
+    <?php placester_postbox_container_footer(); ?>
   </form>
 </div>

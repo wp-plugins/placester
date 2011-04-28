@@ -4,11 +4,11 @@
  */
 jQuery(document).ready(function()
 {
-    jQuery('input[type=file]').change(function()
+    jQuery('.file_upload').click(function()
     {
         var id = jQuery(this).attr('id');
-        id = id.substr(0, id.length - 5);
-        jQuery(this).upload(
+        id = id.substr(0, id.length - 7);
+        jQuery('#' + id + '_file').upload(
             'admin.php?page=placester_contact&ajax_action=upload', 
             function(res)
             {

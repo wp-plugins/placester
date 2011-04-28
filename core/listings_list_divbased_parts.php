@@ -10,16 +10,15 @@
  * @param array $data - {dom_id, html}
  * @return array filtered data
  */
-add_filter('placester_listings_divbased_html', 
-    'placester_listings_divbased_html_default');
-
-function placester_listings_divbased_html_default($data)
-{
+function placester_listings_divbased_html_default( $data ) {
     $html = '<div id="' . $data['dom_id'] . '"></div>';
 
     $data['html'] = $html;
     return $data;
 }
+
+add_filter( 'placester_listings_divbased_html', 
+    'placester_listings_divbased_html_default' ); 
 
 
 
@@ -30,14 +29,12 @@ function placester_listings_divbased_html_default($data)
  * @param array $fields_array
  * @return string
  */
-function placester_listings_list_divbased_html($dom_id, $fields_array)
-{
-    $a = apply_filters('placester_listings_divbased_html', 
-        array
-        (
+function placester_listings_list_divbased_html( $dom_id, $fields_array ) {
+    $a = apply_filters( 'placester_listings_divbased_html', 
+        array(
             'dom_id' => $dom_id,
             'fields' => $fields_array
-        ));
+        ) );
 
     echo $a['html'];
 }
@@ -51,49 +48,46 @@ function placester_listings_list_divbased_html($dom_id, $fields_array)
  * @param array $parameters
  * @return array
  */
-function placester_list_divbased_parse($parameters)
-{
+function placester_list_divbased_parse( $parameters ) {
     // Row renderer
-    $default_row_renderer = !isset($parameters['js_row_renderer']);
-    if ($default_row_renderer)
+    $default_row_renderer = ! isset( $parameters['js_row_renderer'] );
+    if ( $default_row_renderer )
         $row_renderer = 'placesterListLone_createRowHtml';
     else
         $row_renderer = $parameters['js_row_renderer'];
 
     // Pager
     $pager_data = array();
-    if (isset($parameters['pager']))
+    if ( isset( $parameters['pager'] ) )
         $pager_data = $parameters['pager'];
 
-    $default_pager_renderer = !isset($pager_data['js_renderer']);
-    if ($default_pager_renderer)
+    $default_pager_renderer = ! isset( $pager_data['js_renderer'] );
+    if ( $default_pager_renderer )
         $pager_renderer = 'placesterListLone_pagerHtml';
     else
         $pager_renderer = $pager_data['js_renderer'];
 
     $pager_rows_per_page = 20;
-    if (isset($pager_data['rows_per_page']))
+    if ( isset( $pager_data['rows_per_page'] ) )
         $pager_rows_per_page = $pager_data['rows_per_page'];
 
-    $default_pager_render_in_dom_element = !isset($pager_data['render_in_dom_element']);
-    if ($default_pager_render_in_dom_element)
+    $default_pager_render_in_dom_element = 
+        ! isset( $pager_data['render_in_dom_element'] );
+    if ( $default_pager_render_in_dom_element )
         $pager_render_in_dom_element = 'placester_listings_pager';
     else
         $pager_render_in_dom_element = $pager_data['render_in_dom_element'];
 
 
-    return 
-        array
-        (
-            $default_row_renderer,
-            $row_renderer,
-            $default_pager_renderer,
-            $pager_data,
-            $pager_renderer,
-            $pager_rows_per_page,
-            $default_pager_render_in_dom_element,
-            $pager_render_in_dom_element
-        );
+    return array(
+        $default_row_renderer,
+        $row_renderer,
+        $default_pager_renderer,
+        $pager_data,
+        $pager_renderer,
+        $pager_rows_per_page,
+        $default_pager_render_in_dom_element,
+        $pager_render_in_dom_element);
 }
 
 
@@ -102,8 +96,7 @@ function placester_list_divbased_parse($parameters)
  * Prints JS function - default row renderer
  * It actually only complains that JS renderer must be overriden by real call
  */
-function placester_print_default_row_renderer()
-{
+function placester_print_default_row_renderer() {
     ?>
     /**
      * Default row renderer
@@ -125,10 +118,9 @@ function placester_print_default_row_renderer()
  * @param string $default_value
  * @return string
  */
-function placester_print_default_pager_renderer_default($data, $item_name, 
-    $default_value)
-{
-    if (isset($data[$item_name]))
+function placester_print_default_pager_renderer_default( $data, $item_name, 
+        $default_value ) {
+    if ( isset( $data[$item_name] ) )
         return $data[$item_name];
 
     return $default_value;
@@ -145,19 +137,16 @@ function placester_print_default_pager_renderer_default($data, $item_name,
  * @param string $default_array
  * @return array
  */
-function placester_print_default_pager_renderer_button($data, $item_name, 
-    $defaults_array)
-{
-    $is_page = isset($data[$item_name]);
+function placester_print_default_pager_renderer_button( $data, $item_name, 
+        $defaults_array ) {
+    $is_page = isset( $data[$item_name] );
     $ret_array = array();
-    if ($is_page)
-    { 
+    if ( $is_page ) { 
         $o = $data[$item_name];
-        if (isset($o['visible']) && !$o['visible'])
+        if ( isset( $o['visible'] ) && !$o['visible'] )
             $is_page = false;
-        foreach ($defaults_array as $k => $v)
-        {
-            if (isset($o[$k]))
+        foreach ( $defaults_array as $k => $v ) {
+            if ( isset( $o[$k] ) )
                 $ret_array[$k] = $o[$k];
             else
                 $ret_array[$k] = $v;
@@ -175,29 +164,27 @@ function placester_print_default_pager_renderer_button($data, $item_name,
  *
  * @param array $data
  */
-function placester_print_default_pager_renderer($data)
-{
-    $css_current_button = placester_print_default_pager_renderer_default($data, 
-        'css_current_button', 'current');
-    $css_not_current_button = placester_print_default_pager_renderer_default($data, 
-        'css_not_current_button', '');
+function placester_print_default_pager_renderer( $data ) {
+    $css_current_button = placester_print_default_pager_renderer_default( $data, 
+        'css_current_button', 'current' );
+    $css_not_current_button = placester_print_default_pager_renderer_default( 
+        $data, 'css_not_current_button', '' );
 
-    $first_page = placester_print_default_pager_renderer_button($data, 
-        'first_page', array('label' => 'First Page'));
-    $prev_page = placester_print_default_pager_renderer_button($data, 
-        'previous_page', array('label' => 'Previous Page'));
-    $next_page = placester_print_default_pager_renderer_button($data, 
-        'next_page', array('label' => 'Next Page'));
-    $last_page = placester_print_default_pager_renderer_button($data, 
-        'last_page', array('label' => 'Last Page'));
-    $numeric_links = placester_print_default_pager_renderer_button($data, 
+    $first_page = placester_print_default_pager_renderer_button( $data, 
+        'first_page', array( 'label' => 'First Page' ) );
+    $prev_page = placester_print_default_pager_renderer_button( $data, 
+        'previous_page', array( 'label' => 'Previous Page' ) );
+    $next_page = placester_print_default_pager_renderer_button( $data, 
+        'next_page', array( 'label' => 'Next Page' ) );
+    $last_page = placester_print_default_pager_renderer_button( $data, 
+        'last_page', array( 'label' => 'Last Page' ) );
+    $numeric_links = placester_print_default_pager_renderer_button( $data, 
         'numeric_links', 
-        array
-        (
+        array(
             'max_count' => 20, 
             'more_label' => '...',
             'css_outer' => ''
-        ));
+        ) );
 
     ?>
     /**
@@ -242,8 +229,7 @@ function placester_print_default_pager_renderer($data)
 
         <?php
         // Render "First Page"
-        if ($first_page['visible'])
-        {
+        if ( $first_page['visible'] ) {
             ?>
             output += placesterListLone_pagerHtml_item(
                 '<?php echo $first_page['label'] ?>', 1, 
@@ -252,8 +238,7 @@ function placester_print_default_pager_renderer($data)
         }
 
         // Render "Previous Page"
-        if ($prev_page['visible'])
-        {
+        if ( $prev_page['visible'] ) {
             ?>
             prev_page_number = current_page_number - 1;
             if (prev_page_number < 1)
@@ -265,9 +250,8 @@ function placester_print_default_pager_renderer($data)
         }
 
         // Render numberic links
-        if ($numeric_links['visible'])
-        {
-            if (strlen($numeric_links['css_outer']) > 0)
+        if ( $numeric_links['visible'] ) {
+            if ( strlen( $numeric_links['css_outer'] ) > 0 )
                 echo 'output += \'<div class="' . $numeric_links['css_outer'] . '">\';';
 
             ?>
@@ -299,13 +283,12 @@ function placester_print_default_pager_renderer($data)
 
             <?php
 
-            if (strlen($numeric_links['css_outer']) > 0)
+            if ( strlen( $numeric_links['css_outer'] ) > 0 )
                 echo 'output += \'</div>\';';
         }
 
         // Render "Next Page"
-        if ($next_page['visible'])
-        {
+        if ( $next_page['visible'] ) {
             ?>
             next_page_number = current_page_number + 1;
             if (next_page_number > pages_count)
@@ -317,8 +300,7 @@ function placester_print_default_pager_renderer($data)
         }
 
         // Render "Last Page"
-        if ($last_page['visible'])
-        {
+        if ( $last_page['visible'] ) {
             ?>
             output += placesterListLone_pagerHtml_item(
                 '<?php echo $last_page['label'] ?>', pages_count, 
@@ -336,10 +318,9 @@ function placester_print_default_pager_renderer($data)
 /**
  * Prints default "loading" element for divbased list
  */
-function placester_print_default_loading_element()
-{
-    $loading_id = get_option('placester_map_tile_loading_image');
-    $loading = wp_get_attachment_image_src($loading_id, 'full');
+function placester_print_default_loading_element() {
+    $loading_id = get_option( 'placester_map_tile_loading_image' );
+    $loading = wp_get_attachment_image_src( $loading_id, 'full' );
 
     $loading_image_url = $loading[0];
 

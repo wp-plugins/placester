@@ -71,7 +71,6 @@ function placester_admin_menu()
 
     wp_register_script('placester.admin.property', 
         plugins_url('/js/admin.property.js', dirname(__FILE__)));
-
 }
 
 
@@ -85,7 +84,7 @@ function placester_admin_menu()
  */
 function placester_admin_dashboard_html()
 {
-   require('dashboard.php');
+    require('dashboard.php');
 }
 
 
@@ -98,12 +97,18 @@ add_action('load-placester_page_placester_dashboard',
 
 function placester_admin_dashboard_onload()
 {
+    if (isset($_REQUEST['ajax_action']))
+    {
+        require('dashboard_ajax.php');
+        exit();
+    }
+
     wp_enqueue_script('dashboard');
     wp_enqueue_style('dashboard'); 
     wp_enqueue_style('wp-admin');
 
     wp_enqueue_script('placester.widgets', 
-        'http://placester.com/assets/api/v1.0/widgets.js');
+        'http://dhiodphkum9p1.cloudfront.net/assets/api/v1.0/widgets.js');
     wp_enqueue_script('placester.admin.widgets', 
         plugins_url('/js/admin.widgets.js', dirname(__FILE__)));
     wp_enqueue_style('placester.admin.widgets', 
@@ -144,6 +149,7 @@ function placester_admin_contact_onload()
         exit();
     }
 
+    wp_enqueue_style('placester.admin');
     wp_enqueue_script('jquery.upload');
     wp_enqueue_script('placester.admin.contact',
         plugins_url('/js/admin.contact.js', dirname(__FILE__)));
@@ -183,12 +189,9 @@ function placester_admin_properties_onload()
     if (isset($_REQUEST['id']))
     {
         wp_enqueue_style('placester.admin.jquery-ui');
-
         wp_enqueue_script('googlemaps_v3');
         wp_enqueue_script('jquery.lightbox');
         wp_enqueue_script('jquery.multifile');
-        wp_enqueue_script('jquery-ui.core');
-        wp_enqueue_script('jquery-ui.dialog');
         wp_enqueue_script('jquery-ui.datepicker');
         wp_enqueue_script('placester.admin.property');
         wp_enqueue_script('placester.admin.property_edit',
@@ -257,6 +260,7 @@ function placester_admin_settings_onload()
         exit();
     }
 
+    wp_enqueue_style('placester.admin');
     wp_enqueue_script('jquery.upload');
     wp_enqueue_script('placester.admin.settings',
         plugins_url('/js/admin.settings.js', dirname(__FILE__)));
@@ -299,6 +303,7 @@ function placester_admin_support_onload()
  */
 function placester_admin_themes_html() 
 {
+    // not used now
     require(dirname(__FILE__) . '/themes.php');
 }
 
@@ -311,6 +316,8 @@ add_action('load-placester_page_placester_themes', 'placester_admin_themes_onloa
 
 function placester_admin_themes_onload()
 {
+    wp_redirect('theme-install.php?tab=search&type=tag&s=placester&search=Search');
+
     wp_enqueue_style('theme-install');
     wp_enqueue_script('theme-install');
     add_thickbox();
@@ -341,9 +348,8 @@ function placester_admin_update_html()
 function placester_error_message($message)
 {
     ?>
-    <div class="updated fade below-h2" style="border: 1px solid #B11C22; background: #FFF3FC; margin: 10px 70px 10px 10px;">
-        <p style="color: #B11C22;font-size: 110%; font-weight: bold;  margin-bottom: -5px"><strong>Error</strong></p>
-        <p><?php echo $message ?></p>
+    <div class="error inline">
+      <p><?php echo $message ?></p>
     </div>
     <?php
 }
@@ -358,9 +364,8 @@ function placester_error_message($message)
 function placester_warning_message($message, $id = '')
 {
     ?>
-    <div id="<?php echo $id ?>" class="updated fade below-h2" style="margin: 10px 70px 10px 10px;" >
-        <p style="font-size: 110%; font-weight: bold;  margin-bottom: -5px"><strong>Warning</strong></p>
-        <p><?php echo $message ?></p>
+    <div id="<?php echo $id ?>" class="updated inline">
+      <p><?php echo $message ?></p>
     </div>
     <?php
 }
@@ -375,9 +380,8 @@ function placester_warning_message($message, $id = '')
 function placester_info_message($e)
 {
     ?>
-    <div class="updated fade below-h2" style="border: 1px solid #1F7DBF; background: #F0F5FA; padding: 10px; margin: 10px 70px 10px 10px;">
-        <p style="font-size: 110%; font-size: 110%; font-weight: bold;  margin-bottom: -5px"><strong>Message</strong></p>
-        <p><?php echo $e->getMessage(); ?></p>
+    <div class="updated inline">
+      <p><?php echo $e->getMessage(); ?></p>
     </div>
     <?php
 }
@@ -392,9 +396,8 @@ function placester_info_message($e)
 function placester_success_message($message)
 {
     ?>
-    <div class="updated fade below-h2" style="border: 1px solid #67910D; background: #F8FEF8; margin: 10px 85px 10px 15px;">
-        <p style="color: #67910D; font-size: 110%; font-weight: bold;  margin-bottom: -5px">Success</p>
-        <p><?php echo $message; ?></p>
+    <div class="updated">
+      <p><?php echo $message; ?></p>
     </div>
     <?php
 }
@@ -405,8 +408,8 @@ function placester_success_message($message)
  *
  * @param string $current_page
  */
-function admin_header($current_page)
-{
+function placester_admin_header($current_page, $title_postfix = '')
+{    
     $api_key = get_option('placester_api_key');
     if (empty($api_key))
         placester_warning_message(
@@ -415,8 +418,26 @@ function admin_header($current_page)
             'personal tab</a> and add an email address to start.',
             'warning_no_api_key');
 
+    global $wp_rewrite;
+
+    if (!$wp_rewrite->using_permalinks())
+    {
+        placester_warning_message(
+            'For best performance <input type="button" class="button " value="Enable Fancy Permalinks" onclick="document.location.href = \'/wp-admin/options-permalink.php\';">' .
+            'following the directions appropriate for your ' .
+            '<a href="http://codex.wordpress.org/Using_Permalinks#Choosing_your_permalink_structure">' .
+            'WordPress ' . get_bloginfo('version') .
+            '</a>');
+    }
+    
+    /**
+     *      Check to see if the agency is verified.
+     */
+    placester_verified_check()
+            
+
     ?>
-    <div id="icon-options-general" class="icon32" style="background: url('../wp-content/plugins/placester/images/logo_30.png') no-repeat"><br /></div>
+    <div id="icon-options-general" class="icon32 placester_icon"><br /></div>
     <h2 style="border-bottom: #ccc 1px solid; padding-bottom: 0px">
       <?php
       $current_title = '';
@@ -438,6 +459,7 @@ function admin_header($current_page)
       }
 
       echo $current_title;
+      echo $title_postfix;
       echo '&nbsp;&nbsp;&nbsp;';
       echo $v;
       ?>
@@ -491,16 +513,16 @@ function placester_admin_actualize_company_user()
  * Create a potbox widget
  */
 
-function create_postbox_container_top ($styles) {
-	?>
-		<div class="postbox-container" style="<?php echo $styles; ?>">
-			<div class="metabox-holder">	
-				<div class="meta-box-sortables ui-sortable">
-		
-	<?php
+function placester_postbox_container_header($styles = 'width: 100%') {
+    ?>
+    <div class="postbox-container" style="<?php echo $styles; ?>">
+        <div class="metabox-holder">	
+            <div class="meta-box-sortables ui-sortable">
+    	
+    <?php
 }
 
-function create_postbox_container_bottom () {
+function placester_postbox_container_footer() {
 	?>
 				</div>
 			</div>
@@ -509,7 +531,7 @@ function create_postbox_container_bottom () {
 	<?php
 }
 
-function create_postbox($id, $title, $content) {
+function placester_postbox($id, $title, $content) {
 ?>
 	<div id="<?php echo $id; ?>" class="postbox">
 		<div class="handlediv" title="Click to toggle"><br /></div>
@@ -522,3 +544,22 @@ function create_postbox($id, $title, $content) {
 }
 
 
+
+
+function placester_postbox_header($title, $id = '') {
+    ?>
+    <div id="<?php echo $id; ?>" class="postbox">
+    	<div class="handlediv" title="Click to toggle"><br /></div>
+    	<h3 class="hndle"><span><?php echo $title; ?></span></h3>
+    	<div class="inside">
+    <?php
+}
+
+
+
+function placester_postbox_footer() {
+    ?>
+		</div>
+	</div>
+    <?php
+}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Body of "register_filter_form()" function
+ * Body of "placester_register_filter_form()" function
  * This file is processed only when function is really called
  */
 
@@ -37,7 +37,7 @@ var placesterFilter_fields =
 /*
  * Utility to get current HTTP GET parameters
  */
-$.extend(
+jQuery.extend(
 {
     getUrlVars: function()
     {
@@ -62,9 +62,9 @@ $.extend(
 /*
  * Initialization of filter form
  */
-$('#<?php echo $form_dom_id ?>').ready(function()
+jQuery('#<?php echo $form_dom_id ?>').ready(function()
 {
-    var http = $.getUrlVars();
+    var http = jQuery.getUrlVars();
 
     var filter_query = '';
     for (var n = 0; n < placesterFilter_fields.length; n++)
@@ -73,7 +73,8 @@ $('#<?php echo $form_dom_id ?>').ready(function()
         var v = http[field];
         if (typeof(v) == 'string' && v.length > 0)
         {
-            $('#<?php echo $form_dom_id ?>').children('input[name=' + field + ']').val(v);
+            jQuery('#<?php echo $form_dom_id ?>').find('input[name="' + field + '"]').val(v);
+            jQuery('#<?php echo $form_dom_id ?>').find('select[name="' + field + '"]').val(v);
             filter_query += '&' + field + '=' + escape(v);
         }
     }
@@ -88,26 +89,28 @@ $('#<?php echo $form_dom_id ?>').ready(function()
  * Handler when filter form is submitted. 
  * Actually lists are asked to refresh with actual filter data.
  */
-$('#<?php echo $form_dom_id ?>').submit(function(event)
+jQuery('#<?php echo $form_dom_id ?>').submit(function(event)
 {
     var filter_query = '';
     for (var n = 0; n < placesterFilter_fields.length; n++)
     {
         var field = placesterFilter_fields[n];
         var v = null;
-        if ($(this).children('input[name="' + field + '"]').is('[type="checkbox"]'))
+        if (jQuery(this).find('input[name="' + field + '"]').is('[type="checkbox"]'))
         {
-            if ($(this).children('input[name="' + field + '"]').attr('checked'))
+            if (jQuery(this).find('input[name="' + field + '"]').attr('checked'))
                 v = 'true';
         }
         else
         {
-            v = $(this).children('input[name="' + field + '"]').val();
+            v = jQuery(this).find('input[name="' + field + '"]').val();
             if (typeof(v) != 'string')
-                v = $(this).children('select[name="' + field + '"]').val();
+                v = jQuery(this).find('select[name="' + field + '"]').val();
         }
-        if (typeof(v) == 'string' && v.length > 0)
+        if (typeof(v) == 'string' && v.length > 0) {
             filter_query += '&' + field + '=' + escape(v);
+        }
+
     }
    
     event.preventDefault();

@@ -84,13 +84,5 @@ if ($view_default)
     if (strlen($error_message) > 0)
         placester_error_message($error_message);
 
-    ?>
-    <?php
     details($signup_company, $signup_user, $error_validation_data);
-    ?>
-    <p class="submit">
-      <input type="submit" name="signup_finish" class="button-primary" 
-        value="Save Changes" />
-    </p>
-    <?php
 }

@@ -7,7 +7,7 @@
 
 $action = $_REQUEST['ajax_action'];
 
-echo '<input type="hidden" name="type" value="' . $action . '" />';
+echo '<input type="hidden" name="type" value="' . htmlspecialchars($action) . '" />';
 
 if ($action == 'intro')
     require('support/intro.php');

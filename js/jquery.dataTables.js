@@ -1987,7 +1987,7 @@
 						anTrs[i].appendChild( oSettings.aoColumns[iCol].anThExtra[i-1] );
 					}	
 					
-					if ( nTrFoot )
+					if ( nTrFoot && 0 > 1)
 					{
 						nTrFoot.appendChild( anTfootTh[iCol] );
 						anTrs = $('>tr', oSettings.nTFoot);

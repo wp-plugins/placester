@@ -13,7 +13,7 @@ function get_user_details()
 { 
     $user = get_option('placester_user');
 
-    $user->logo_url = plugins_url('/images/blank.gif', dirname(__FILE__));
+    $user->logo_url = plugins_url('/images/null/profile-110-90.png', dirname(__FILE__));
     if (property_exists($user, 'logo'))
     {
         $id = $user->logo;
@@ -24,18 +24,25 @@ function get_user_details()
         }
     }
 
-    if (!property_exists($user, 'first_name'))
-        $user->first_name = '';
-    if (!property_exists($user, 'last_name'))
-        $user->last_name = '';
-    if (!property_exists($user, 'location'))
+    if (!isset($user->first_name))
+        $user->first_name = null;
+    if (!isset($user->last_name))
+        $user->last_name = null;
+    if (!isset($user->location))
+    {
         $user->location = new StdClass;
-    if (!property_exists($user, 'phone'))
-        $user->phone = '';
-    if (!property_exists($user, 'email'))
-        $user->email = '';
-        
-        
+        $user->location->address = null;
+        $user->location->city = null;
+        $user->location->zip = null;
+        $user->location->country = null;
+        $user->location->unit = null;
+    }
+    if (!isset($user->phone))
+        $user->phone = null;
+    if (!isset($user->email))
+        $user->email = null;
+    if (!isset($user->description))
+        $user->description = "Just a simple description of myself. Something more substantial is coming shortly.";
 
     return $user;
 }
@@ -51,7 +58,7 @@ function get_company_details()
 {
     $company = get_option('placester_company');
 
-    $company->logo_url = plugins_url('/images/blank.gif', dirname(__FILE__));
+    $company->logo_url = plugins_url('/images/null/logo-190-160.png', dirname(__FILE__));
     if (property_exists($company, 'logo'))
     {
         $id = $company->logo;
@@ -62,12 +69,22 @@ function get_company_details()
         }
     }
 
-    if (!property_exists($company, 'location'))
+    if (!isset($company->name))
+        $company->name = null;
+    if (!isset($company->location))
+    {
         $company->location = new StdClass;
-    if (!property_exists($company, 'phone'))
-        $company->phone = '';
-    if (!property_exists($company, 'description'))
-        $company->description = '';
+        $company->location->address = null;
+        $company->location->city = null;
+        $company->location->zip = null;
+        $company->location->country = null;
+        $company->location->unit = null;
+        $company->location->coords = array(null, null);
+    }
+    if (!isset($company->phone))
+        $company->phone = null;
+    if (!isset($company->description))
+        $company->description = 'A great description is on the way, for now - this should do.';
 
     return $company;
 }

@@ -1,61 +1,60 @@
 <?php
 
 /**
- * Body of "listings_list_of_map()" function
+ * Body of "placester_listings_list_of_map()" function
  * For datatable-based mode
  */
 
-include('listings_list_datatable_parts.php');
+include( 'listings_list_datatable_parts.php' );
 
 
 
-$datatable_options = placester_listings_datatable_options($parameters);
+$datatable_options = placester_listings_datatable_options( $parameters );
 
 // Fields configuration
 $fields_config_array = array();
 $n = 0;
-foreach ($ui_fields as $field => $config)
-{
+foreach ( $ui_fields as $field => $config ) {
     $vars = array();
-    if (isset($config['js_renderer']))
-        array_push($vars, 
+    if ( isset( $config['js_renderer'] ) )
+        array_push( $vars, 
             '"fnRender": function (row_data) ' .
-            '{ return ' . $config['js_renderer'] . '(row_data.aData[' . $n . ']); }');
-    if (isset($config['width']))
-        array_push($vars, "'sWidth': '" . $config['width']. "'");
+            '{ return ' . $config['js_renderer'] . '(row_data.aData[' . $n . ']); }' );
+    if ( isset( $config['width'] ) )
+        array_push( $vars, "'sWidth': '" . $config['width']. "'" );
 
-    array_push($fields_config_array, '{' . implode($vars, ',') . '}');
+    array_push( $fields_config_array, '{' . implode($vars, ',') . '}' );
     $n++;
 }
 
 // Modify fields requested from web service
-array_push($webservice_fields, 'id');
-array_push($fields_config_array, "{'bVisible': false}");
+array_push( $webservice_fields, 'id' );
+array_push( $fields_config_array, "{'bVisible': false}" );
 
-if ($is_list_details)
+if ( $is_list_details )
 {
-    array_push($webservice_fields, 'list_details');
-    array_push($fields_config_array, "{'bVisible': false}");
+    array_push( $webservice_fields, 'list_details' );
+    array_push( $fields_config_array, "{'bVisible': false}" );
 }
 
 
-$fields_config = implode(',', $fields_config_array);
+$fields_config = implode( ',', $fields_config_array );
 $datatable_options['aoColumns'] = "[$fields_config]";
 
 // JS fields
-$fields = implode(',', $webservice_fields);
+$fields = implode( ',', $webservice_fields );
 $js_fields = '';
-foreach ($webservice_fields as $field)
-    $js_fields .= (strlen($js_fields) > 0 ? ',' : '') .
+foreach ( $webservice_fields as $field )
+    $js_fields .= ( strlen( $js_fields ) > 0 ? ',' : '' ) .
         'markersData[n].' . $field;
 
 //
 // Render options
 //
 $datatable_options_string = '';
-foreach ($datatable_options as $key => $value)
+foreach ( $datatable_options as $key => $value )
     $datatable_options_string .= 
-        (strlen($datatable_options_string) > 0 ? ',' : '') . 
+        ( strlen( $datatable_options_string ) > 0 ? ',' : '' ) . 
         "'$key': $value";
 
 ?>
@@ -184,10 +183,10 @@ $(document).ready(function()
 
     <?php
 
-    if ($is_list_details)
+    if ( $is_list_details )
         echo placester_listings_list_of_map_js_onclick(
             'placester_listings_list_of_map', 
-            'placesterListOfMap_datatable');
+            'placesterListOfMap_datatable' );
 
     ?>
 });
@@ -195,5 +194,5 @@ $(document).ready(function()
 
 <?php 
 
-echo placester_listings_list_datatable_html('placester_listings_list_of_map', 
-    $ui_fields);
+echo placester_listings_list_datatable_html( 'placester_listings_list_of_map', 
+    $ui_fields );

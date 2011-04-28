@@ -1,11 +1,11 @@
 <?php
 /**
-Plugin Name: Placester
+Plugin Name: Real Estate Pro by Placester
 Description: Easily create a rich real estate web site for yourself or your agency.
 Plugin URI: http://placester.com/wordpress/plugin/
-Author: Frederick Townes
-Version: 0.1.0
-Author URI: http://www.linkedin.com/in/w3edge
+Author: Frederick Townes, Matthew Barba, Placester
+Version: 0.2.0
+Author URI: http://www.placester.com/developer/wordpress
 */
 
 /*  Copyright (c) 2011 Frederick Townes <frederick@placester.com>
@@ -27,16 +27,16 @@ Author URI: http://www.linkedin.com/in/w3edge
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-include_once('core/init.php');
-include_once('core/util.php');
-include_once('core/webservice_client.php');
-include_once('core/settings_functions.php');
-include_once('core/listings_list_util.php');
-include_once('admin/init.php');
+include_once( 'core/init.php' );
+include_once( 'core/util.php' );
+include_once( 'core/webservice_client.php' );
+include_once( 'core/settings_functions.php' );
+include_once( 'core/listings_list_util.php' );
+include_once( 'admin/init.php' );
 
 
 
-register_activation_hook(__FILE__, 'placester_activate');
+register_activation_hook( __FILE__, 'placester_activate' );
 
 
 
@@ -46,9 +46,8 @@ register_activation_hook(__FILE__, 'placester_activate');
  * 
  * @param string $form_dom_id - DOM id of form object containing filter
  */
-function register_filter_form($form_dom_id)
-{
-    require_once('core/register_filter_form.php');
+function placester_register_filter_form( $form_dom_id ) {
+    require_once( 'core/register_filter_form.php' );
 }
 
 
@@ -70,9 +69,8 @@ function register_filter_form($form_dom_id)
  *           function(markerData)
  *             markerData - array of all queried property fields
  */
-function listings_map($parameters = array())
-{
-    require_once('core/listings_map.php');
+function placester_listings_map( $parameters = array() ) {
+    require_once( 'core/listings_map.php' );
 }
 
 
@@ -154,8 +152,7 @@ function listings_map($parameters = array())
  *            Dont ask for fields are really not displayed - that will
  *            unreasonably slow down requests.
  */
-function listings_list($parameters)
-{
+function placester_listings_list($parameters) {
     require_once('core/listings_list_lone.php');
 }
 
@@ -166,9 +163,8 @@ function listings_list($parameters)
  * So this list can be used only on pages with map
  *
  * @param array $parameters - configuration data
- *        The same as for "listings_list" function
+ *        The same as for "placester_listings_list" function
  */
-function listings_list_of_map($parameters)
-{
+function placester_listings_list_of_map($parameters) {
     require_once('core/listings_list_of_map.php');
 }
