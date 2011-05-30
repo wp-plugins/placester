@@ -18,6 +18,7 @@ function placester_plugin_register_widgets() {
  
 // Add ajax function to wp_ajax 
 add_action('wp_ajax_nopriv_placester_contact', 'ajax_placester_contact');
+add_action('wp_ajax_placester_contact', 'ajax_placester_contact');
 
 add_action( 'pre_get_posts', 'hide_contact');
 function hide_contact() {

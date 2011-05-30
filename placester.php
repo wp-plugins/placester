@@ -34,6 +34,7 @@ include_once( 'core/listings_list_util.php' );
 include_once( 'options/init.php' );
 include_once( 'admin/init.php' );
 include_once( 'admin/widgets.php' );
+include_once( 'core/shortcodes.php');
 
 register_activation_hook( __FILE__, 'placester_activate' );
 

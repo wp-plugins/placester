@@ -223,7 +223,7 @@ function placester_get_posts( $query ) {
  */
 function check_placester_theme() {
 
-    add_action( 'pre_get_posts', 'placester_get_posts' );
+    add_action( 'pre_get_posts', 'placester_get_posts', 0 );
 
 }
 add_action('init', 'check_placester_theme');

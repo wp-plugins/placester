@@ -5,7 +5,7 @@ jQuery(document).ready(function($) {
 		var str = jQuery(this).serialize();
 		jQuery.ajax({
 			type: 'POST',
-			url: '/wp-admin/admin-ajax.php',
+			url: ajaxurl,
 			data: 'action=placester_contact&'+str,
 			success: function(msg) {
 					if(msg === 'sent') {

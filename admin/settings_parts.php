@@ -145,7 +145,8 @@ function row_image($label, $option_name, $description = '')
 function row_textarea($label, $option_name, $description = '')
 {
     ?>
-    <th scope="row" style="width: 100px; padding-top: 50px"><label for="<?php echo $option_name ?>"><?php echo $label ?></label></th>
+    <tr>
+    <th scope="row" style="width: 200px; padding-top: 50px"><label for="<?php echo $option_name ?>"><?php echo $label ?></label></th>
     <td>
       <p align="right">
         <a id="<?php echo $option_name . "_toggleVisual"; ?>" class="button toggleVisual">Visual</a>
@@ -159,6 +160,7 @@ function row_textarea($label, $option_name, $description = '')
           echo '<br /><span class="description">' . $description . '</span>';
       ?>
     </td>
+    </tr>
     <?php
 }
 

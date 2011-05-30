@@ -164,3 +164,12 @@ function ajax_placester_contact() {
     die();
   }
 }
+
+add_action('wp_head', 'placester_ajax_url');
+function placester_ajax_url() {
+  ?>
+  <script>
+var ajaxurl = '<?php echo admin_url('admin-ajax.php')?>';
+  </script>
+  <?php
+}

@@ -12,52 +12,73 @@ class Placester_Search_Widget extends WP_Widget {
 
     function widget($args, $instance) {
         extract($args);
-        global $placester_taxonomies;
+ 
         $title = apply_filters('widget_title', empty($instance['title']) ? '&nbsp;' : $instance['title']);
         $selected = "selected='selected'";
-
+ 
         echo $before_widget;
-
+ 
         if ( $title ) echo $before_title . $title . $after_title;
-
+ 
         echo '<form action="' . get_bloginfo("url") . '" method="get" id="searchform" class="search_form">';
-        echo '<div><label class="search_label" for="s">Keywords</label>';
-        echo '<input name="s" type="text" id="s" class="input_search" value="' . $_GET["s"] . '" /></div>';
-        foreach ($placester_taxonomies as $tax) {
-            
-            if ( $tax['tax'] == 'bedrooms' || $tax['tax'] == 'baths' || $tax['tax'] == 'rent' ) {
-                echo '<div>' . $tax["name"];
-                echo '<select name="' . $tax["tax"] . '">';
-                sort($tax['terms'], SORT_NUMERIC);
-                foreach ( $tax["terms"] as $term ) {
-                    $selected = ($_GET[$tax['tax']] == $term) ? "selected='selected'" : '';
-                    $term = ( $term == '2500+' ) ? '2500' : $term;
-                    $term_name = ($tax["tax"] == 'bedrooms' || $tax["tax"] == 'baths' || $term == '2500') ? $term . '&#43;' : $term;
-                    $term_name = ($term == 'all') ? ucfirst($term) : $term_name;
-                    
-                    echo '<option value="' . $term . '" ' . $selected . ' >'  . $term_name . '</option>';
-                    
-                }
-                echo '</select>';
-            } elseif ( $tax['tax'] == 'city' || $tax['tax'] == 'state' || $tax['tax'] == 'zip' ) {
-                echo '<div>' . $tax["name"];
-                echo '<select name="' . $tax['tax'] . '" >';
-                placester_search_locations( $tax['tax'] );
-                echo '</select>';
-            } elseif ( $tax['tax'] == 'type' ) {
-                echo '<div>Filter results for: ';
-                foreach ($tax['terms'] as $term) {
-                    $checked = ($_GET['type'] == $term) ? "checked='checked'" : '';
-                    echo '<div>' . ucfirst($term) . '<input type="checkbox" name="type" value="' . $term . '" ' . $checked . ' ></div>'; 
-                    
-                }
-
-            }
-                echo '</div>';
+ 
+        
+        echo '<div>Bedrooms';
+        echo '<select name="bedrooms">';
+        echo '<option value="" ></option>';
+        for ($i=1; $i < 10; $i++) { ?>
+            <option value="<?php echo $i ?>"<?php if(isset($_GET['bedrooms']) && ($i == $_GET['bedrooms'])) echo "selected='selected'"; ?>> <?php echo "$i"; ?></option>
+        <?php
         }
-          
-        echo '<input type="submit" value="Search" /></form>' . $after_widget;
+        echo '</select>';
+        echo '</div>';
+ 
+        echo '<div>Bathrooms';
+        echo '<select name="bathrooms">';
+        echo '<option value="" ></option>';
+        for ($i=1; $i < 10; $i++) { ?>
+            <option value="<?php echo $i ?>"<?php if(isset($_GET['bathrooms']) && ($i == $_GET['bathrooms'])) echo "selected='selected'"; ?>> <?php echo "$i"; ?></option>
+        <?php
+        }
+        echo '</select>';
+        echo '</div>';
+        
+ 
+        $price = array('',200,500,1000,1500,2000,3000,4000,5000);
+        echo '<div>Minimum Price';
+        echo '<select name="min_price">';
+        foreach ($price as $value) { ?>
+            <option value="<?php echo $value ?>"<?php if(isset($_GET['min_price']) && ($value == $_GET['min_price'])) echo "selected='selected'"; ?>>&#36;<?php echo "$value"; ?></option>
+        <?php
+        }
+        echo '</select>';
+        echo '</div>';
+ 
+ 
+        $price = array(5000,4000,3000,2000,1500,1000,500,200);
+        echo '<div>Maximum Price';
+        echo '<select name="max_price">';
+        foreach ($price as $value) { ?>
+            <option value="<?php echo $value ?>"<?php if(isset($_GET['max_price']) && ($value == $_GET['max_price'])) echo "selected='selected'"; ?>>&#36;<?php echo "$value"; ?></option>
+        <?php
+        }
+        echo '</select>';
+        echo '</div>';
+ 
+        $locations = array('city', 'state', 'zip');
+        foreach($locations as $location) {
+        echo '<div>' . ucfirst($location);
+        echo '<select name="location['. $location . ']">'; 
+        ?>
+        <option value="" <?php if(!isset($_GET['location'][$location])) { echo "selected='selected'" ;} ?>></option>
+        <?php
+        placester_display_location($location);
+        echo '</select>';
+        echo '</div>';
     }
+           
+ echo '<input type="submit" value="Search" /></form>' . $after_widget;    
+}
 
     function update($new_instance, $old_instance){
         $instance = $old_instance;

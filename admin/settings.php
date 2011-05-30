@@ -157,6 +157,73 @@ if (array_key_exists('apply', $_POST))
     </p>
     <?php placester_postbox_footer(); ?>
 
+
+    <?php placester_postbox_header('Layout Style Settings'); ?>
+    <table class="form-table">
+      <?php 
+      row_textarea('Property snippet layout settings', 'placester_snippet_layout',
+          'The property snippet layout settings allow you to customize what ' .
+          'appears in the search results or on the home page.  You may use the shortcodes listed below.<br/>' .
+          '<strong>Note:</strong> Not every theme will use these settings, ' .
+          'and some themes might override your choices.  See your specific ' .
+          'theme for details.'); 
+      ?>
+      <?php 
+      row_textarea('Property listing page layout', 'placester_listing_layout',
+          'The property listing page layout settings allow you to customize what ' .
+          'appears on each individual property listing page.  You may use the shortcodes listed below.<br/>' .
+          '<strong>Note:</strong> Not every theme will use these settings, ' .
+          'and some themes might override your choices.  See your specific ' .
+          'theme for details.'); 
+      ?>
+
+    </table>
+    <div class="clear"></div>
+      <div style="padding-left:200px">
+      <p>
+            Available shortcodes:<br />
+            <div style="float: left; margin-right: 20px">
+            For property listings: <br/><br/>
+                [bedrooms]<br />
+                [bathrooms]<br />
+                [price]<br />
+                [available_on]<br />
+                [listing_address]<br />
+                [listing_city]<br />
+                [listing_state]<br />
+                [listing_unit]<br />
+                [listing_zip]<br />
+                [listing_neighborhood]<br />
+                [listing_map]<br/>
+                [listing_description]<br />
+                [listing_image]<br />
+                [listing_images]<br />
+
+            </div>
+            <div style="float: left; margin-right: 20px">
+            For listing agent information: <br/><br/>
+                [logo]<br />
+                [first_name]<br />
+                [last_name]<br />
+                [phone]<br />
+                [email]<br />
+                [user_address]<br />
+                [user_unit]<br />
+                [user_city]<br />
+                [user_state]<br />
+                [user_zip]<br />
+                [user_description]<br />
+
+            </div>
+            <div class="clear"></div>
+            </p>
+        </div>
+    <p class="submit">
+      <input type="submit" name="apply" class="button-primary" 
+        value="Save Layout Style Settings" />
+    </p>
+    <?php placester_postbox_footer(); ?>
+
     <?php placester_postbox_header('Map Style Settings'); ?>
     <table class="form-table">
       <?php 

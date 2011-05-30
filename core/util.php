@@ -597,113 +597,90 @@ function placester_get_template_content( $name ) {
     return array( $content, $thumbnail_url );
 }
 
-add_action('wp_head', 'placester_description_filter');
+add_action('pre_get_posts', 'placester_description_filter');
 
 function placester_description_filter() {
-    global $wp_query;
-    foreach ($wp_query->posts as $post) {
-        $data = json_decode(stripslashes($post->post_content));
-        if($data) {
-        $property_id = $data->id;
-            if($wp_query->is_home) {
-                $post->post_content = listing_basic_details($data);
-            } else {
-                $post->post_content = single_page_details($data);
-            }
-        }
+    if(is_home()) {
+        add_filter('the_content', 'listing_basic_details');
+    } elseif(is_single()) {
+        add_filter('the_content', 'single_page_details');
     }
 }
 
-function single_page_details($data) {
-    $user_details = placester_get_user_details();
-    //var_dump($user_details);
-    $post_content = '<div id="container" class="single-attachment">' .
-        '<div id="content" role="main" style="width: 100%">
-            <div class="about-user-wrapper" style="float: right; width: 300px">
-                <div class="about-user-content">
-                    <div class="about-user-details">
-                        <h3>Call For More Info:</h3>
-                        <p style="float: left; width: 110px; padding-right: 10px;"><img src="' . $user_details->logo_url . '" /></p>                        
-                        <p>' . $user_details->first_name . ' ' . $user_details->last_name . '<br />'
-                            . $user_details->phone . '<br />
-                            <a href="mailto:' . $data->contact->email . '?subject=feedback">Email me</a></p>
-                        <p>' . $user_details->location->address . '<br />' . $user_details->location->city . ", " . $user_details->location->state . " " . $user_details->location->zip . '</p>
+function single_page_details() {
+    global $post;
+
+    if($post->post_type == 'property') {
+        $content = get_option('placester_listing_layout');
+        if(isset($content) && $content != '') return $content;
+
+        $data = json_decode(stripslashes($post->post_content));
+        $user_details = placester_get_user_details();
+        $post_content = '<div id="container" class="single-attachment">' .
+            '<div id="content" role="main" style="width: 100%">
+                <div class="about-user-wrapper" style="float: right; width: 300px">
+                    <div class="about-user-content">
+                        <div class="about-user-details">
+                            <h3>Call For More Info:</h3>'
+                            . do_shortcode('[logo]') .                        
+                            '<p>' . do_shortcode('[first_name]') . ' ' . do_shortcode('[last_name]') . '<br />'
+                                . $user_details->phone . '<br />'
+                               . do_shortcode('[email]') .
+                            '<p>' . do_shortcode('[user_address]') . '<br />' . do_shortcode('[user_city]') . ", " . do_shortcode('[user_state]') . " " . do_shortcode('[user_zip]') . '</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="property-location-wrapper" style="float: left;">
-                <h3>Property Location:</h3>'
-                .
-                /**
-                 *      If we have a lat and lon, then 
-                 *      lets display a nice little map for the users
-                 *      to see where the property is located
-                 *      
-                 *      Note the javascript below does most of the heavy lifting.
-                 */
-                //placester_get_coordinates($data) .
-                '<div class="property-address">
-                    '.
-                    /**
-                     *      Note the addresses displayed here respect
-                     *      the users settings in the admin panel.
-                     */
-                    '
-                    <p>
-                        ' . $data->location->address . '<br />'
-                        . $data->location->city . ', ' . $data->location->state . ' ' . $data->location->zip . '
-                    </p>
-                    '. listing_beds_baths_price($data).'
+                <div class="property-location-wrapper" style="float: left;">
+                    <h3>Property Location:</h3>
+                    <div class="property-address">
+                        <p>
+                            ' . do_shortcode('[listing_address]') . '<br />'
+                            . do_shortcode('[listing_city]') . ', ' . do_shortcode('[listing_state]') . ' ' . do_shortcode('[listing_zip]') . '
+                        </p>
+                        '. listing_beds_baths_price().'
+                    </div>
                 </div>
-            </div>
-            <div class="basic-property-details-wrapper">
-                <div class="basic-property-description">
-                    <h3>Property Description</h3>
-                    <p>' . $data->description . '</p>
-                </div>
-                <div class="basic-property-images">
-                    '.
-                    /**
-                     *      Returns the html in parts/listing_images.php
-                     *      Function is defined in functions.php
-                     */
-                     //display_listing_images() .'
-                     placester_get_images($data) .
-                '</div>
-            </div></div></div>
-        <div class="cl"></div>
-    ';
-    /**
-     *      If the user's office has been geocoded,
-     *      let's give them a nice map. People like maps
-     */
-    //placester_office_geocoded($data);
-    
-    return $post_content;
-}
-
-function listing_basic_details($data) {
-    $base_url = WP_PLUGIN_URL . '/placester';
-    if (!empty($data->images)) {
-        $image = '<a class="" href="' . $data->images[0]->url . '"><img src="' . $data->images[0]->url . '" alt width="150" height="150" /></a>';
-    } else {
-            $image = '<a class="" ><img src="' . $base_url . '/images/null/property3-73-37.png" alt width="150" height="150" /></a>'; ;
-    }
+                <div class="basic-property-details-wrapper">
+                    <div class="basic-property-description">
+                        <h3>Property Description</h3>'
+                        . do_shortcode('[listing_description]') .
+                    '</div>
+                    <div class="basic-property-images">'
+                         . do_shortcode('[listing_images]') .
+                    '</div>
+                </div></div></div>
+            <div class="cl"></div>
+        ';
         
-    $post_content = '<div><div style="float:left; padding-right: 40px;">' . $image . '</div><div style="float:left">' . 
-        listing_beds_baths_price($data) . '</div></div>';
-
-    return $post_content;
+        return $post_content;
+    } else {
+    return $post->post_content;
+    }
 }
 
-function listing_beds_baths_price ($data) 
+function listing_basic_details() {
+    global $post;
+
+    if($post->post_type == 'property') {
+
+        $content = get_option('placester_snippet_layout');
+        if(isset($content) && $content != '') return $content;
+            
+        $post_content = '<div><div style="float:left; padding-right: 40px;">' . do_shortcode('[listing_image]') . '</div><div style="float:left">' . 
+            listing_beds_baths_price() . '</div></div>';
+
+        return $post_content;
+    }
+}
+
+function listing_beds_baths_price () 
 {
     return '<h3>Basic Details</h3>
     <p>
-        Beds: ' .$data->bedrooms . '<br />
-        Baths: ' . $data->bathrooms . '<br />
-        Rent: ' . $data->price . '<br />
-        Date Available: ' . $data->available_on . '<br />
+        Beds: ' .do_shortcode('[bedrooms]') . '<br />
+        Baths: ' . do_shortcode('[bathrooms]') . '<br />
+        Rent: ' . do_shortcode('[price]') . '<br />
+        Date Available: ' . do_shortcode('[available_on]') . '<br />
     </p>';
 }
 
@@ -739,17 +716,10 @@ function placester_office_geocoded($data) {
     endif; 
 }
 
-function placester_get_images($data) {
-
-    if (!empty($data->images)) {
-        $post_image = '';
-        foreach($data->images as $image) {
-            $post_image .= '<a class="placester_fancybox" href="' . $image->url . '"><img src="' . $image->url . '" alt width="150" height="150" /></a>';
-        }
-    return $post_image;
-    }
-}
-
+/**
+ * Used for the search widget to get listing locations
+ * @param $location (city, state, zip)
+ */
 function placester_display_location($location)
 {
     try {
