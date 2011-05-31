@@ -70,7 +70,14 @@ Note ^: Feature requires a Placester-enabled theme.
 1. Add your API key and configure the plugin via the "Placester" left-hand menu
 
 == Screenshots ==
-
+1. Admin Dashboard
+2. Active Listings 
+3. Create Listing Screen
+4. Setting screen
+5. Custom Layout Controls
+6. Custom property list controls
+7. Custom map controls
+8. Support Built in!
 
 == Frequently Asked Questions ==
 
