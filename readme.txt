@@ -21,17 +21,21 @@ From the creators of http://placester.com: Create your fully functional real est
 * Analytic dashboard showing you views and leads.
 
 
+http://www.youtube.com/watch?v=WZBha9cU0IM
+
 See it in action - fully functional demo:
+
 * http://plugin.placester.net/
 * http://allure-sample.placester.net/
 
 Checkout premium themes available to hosted users:
+
 * http://allure-pro-sample.placester.net/
 * http://radient-pro-sample.placester.net/
 
 This is the only plugin you need to create a powerful WordPress powered real estate website. Watch our quick demo about how to get started:
 
-http://www.youtube.com/watch?v=WZBha9cU0IM
+
 
 
 Highlights:
