@@ -1,0 +1,56 @@
+\hypertarget{update_8php}{
+\section{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/admin/update.php File Reference}
+\label{d9/da8/update_8php}\index{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/admin/update.php@{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/admin/update.php}}
+}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{update_8php_aebacc51188e2a01d35a6a6fe9161d0ce}{\$plugin\_\-name} = 'placester/placester.php'
+\begin{DoxyCompactList}\small\item\em Admin interface: Update tab. \end{DoxyCompactList}\item 
+\hyperlink{listings__list__lone__divbased_8php_a0b49fff73af3a13232913ea65ca484d9}{if}(array\_\-key\_\-exists('check\_\-updates', \$\_\-POST)) \hyperlink{update_8php_a5d52e11696b2fb4a270cb646bc74fa60}{\$last\_\-check} = 'never'
+\item 
+\hyperlink{update_8php_a336d585259ff900944c84863ccf978b3}{\$new\_\-version} = 'n/a'
+\item 
+\hyperlink{update_8php_ae119c8eda43eaef6fbe36934db8fdbcb}{\$update\_\-info} = get\_\-site\_\-transient('update\_\-plugins')
+\item 
+\hyperlink{listings__list__lone__divbased_8php_a0b49fff73af3a13232913ea65ca484d9}{if}(is\_\-object(\$update\_\-info)) \hyperlink{update_8php_acc9acb4ba121a45f67dcbe11d7d24062}{\$plugins} = get\_\-plugins()
+\item 
+\hyperlink{listings__list__of__map_8php_a0544c3fe466e421738dae463968b70ba}{else} \hyperlink{update_8php_a20b5dc30a183aec32d6989083c19d135}{\$current\_\-version} = 'n/a'
+\end{DoxyCompactItemize}
+
+
+\subsection{Variable Documentation}
+\hypertarget{update_8php_a20b5dc30a183aec32d6989083c19d135}{
+\index{update.php@{update.php}!\$current\_\-version@{\$current\_\-version}}
+\index{\$current\_\-version@{\$current\_\-version}!update.php@{update.php}}
+\subsubsection[{\$current\_\-version}]{\setlength{\rightskip}{0pt plus 5cm}{\bf else} \$current\_\-version = 'n/a'}}
+\label{d9/da8/update_8php_a20b5dc30a183aec32d6989083c19d135}
+\hypertarget{update_8php_a5d52e11696b2fb4a270cb646bc74fa60}{
+\index{update.php@{update.php}!\$last\_\-check@{\$last\_\-check}}
+\index{\$last\_\-check@{\$last\_\-check}!update.php@{update.php}}
+\subsubsection[{\$last\_\-check}]{\setlength{\rightskip}{0pt plus 5cm}{\bf if} (array\_\-key\_\-exists('check\_\-updates', \$\_\-POST)) \$last\_\-check = 'never'}}
+\label{d9/da8/update_8php_a5d52e11696b2fb4a270cb646bc74fa60}
+\hypertarget{update_8php_a336d585259ff900944c84863ccf978b3}{
+\index{update.php@{update.php}!\$new\_\-version@{\$new\_\-version}}
+\index{\$new\_\-version@{\$new\_\-version}!update.php@{update.php}}
+\subsubsection[{\$new\_\-version}]{\setlength{\rightskip}{0pt plus 5cm}\$new\_\-version = 'n/a'}}
+\label{d9/da8/update_8php_a336d585259ff900944c84863ccf978b3}
+\hypertarget{update_8php_aebacc51188e2a01d35a6a6fe9161d0ce}{
+\index{update.php@{update.php}!\$plugin\_\-name@{\$plugin\_\-name}}
+\index{\$plugin\_\-name@{\$plugin\_\-name}!update.php@{update.php}}
+\subsubsection[{\$plugin\_\-name}]{\setlength{\rightskip}{0pt plus 5cm}\$plugin\_\-name = 'placester/placester.php'}}
+\label{d9/da8/update_8php_aebacc51188e2a01d35a6a6fe9161d0ce}
+
+
+Admin interface: Update tab. 
+
+\hypertarget{update_8php_acc9acb4ba121a45f67dcbe11d7d24062}{
+\index{update.php@{update.php}!\$plugins@{\$plugins}}
+\index{\$plugins@{\$plugins}!update.php@{update.php}}
+\subsubsection[{\$plugins}]{\setlength{\rightskip}{0pt plus 5cm}{\bf if} (is\_\-object(\$update\_\-info)) \$plugins = get\_\-plugins()}}
+\label{d9/da8/update_8php_acc9acb4ba121a45f67dcbe11d7d24062}
+\hypertarget{update_8php_ae119c8eda43eaef6fbe36934db8fdbcb}{
+\index{update.php@{update.php}!\$update\_\-info@{\$update\_\-info}}
+\index{\$update\_\-info@{\$update\_\-info}!update.php@{update.php}}
+\subsubsection[{\$update\_\-info}]{\setlength{\rightskip}{0pt plus 5cm}\$update\_\-info = get\_\-site\_\-transient('update\_\-plugins')}}
+\label{d9/da8/update_8php_ae119c8eda43eaef6fbe36934db8fdbcb}
