@@ -1,0 +1,70 @@
+\hypertarget{settings__ajax_8php}{
+\section{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/admin/settings\_\-ajax.php File Reference}
+\label{d5/d83/settings__ajax_8php}\index{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/admin/settings\_\-ajax.php@{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/admin/settings\_\-ajax.php}}
+}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{settings__ajax_8php_aa1bfbd27060176201b271918dff57e8f}{\$file} = wp\_\-handle\_\-upload(\$\_\-FILES\mbox{[}'file'\mbox{]}, array('test\_\-form' =$>$ false))
+\item 
+\hyperlink{settings__ajax_8php_acf215f34a917d014776ce684a9ee8909}{\$url} = \$file\mbox{[}'url'\mbox{]}
+\item 
+\hyperlink{settings__ajax_8php_a9a4a6fba2208984cabb3afacadf33919}{\$type} = \$file\mbox{[}'type'\mbox{]}
+\item 
+\hyperlink{settings__ajax_8php_a0722441477f957078ee2437054556cbc}{\$filename} = basename(\$file)
+\item 
+\hyperlink{settings__ajax_8php_a52123b83a1952a68c5513e47d59ec4a6}{\$object}
+\item 
+\hyperlink{settings__ajax_8php_ae97941710d863131c700f069b109991e}{\$id} = wp\_\-insert\_\-attachment(\$object, \$file)
+\item 
+\hyperlink{settings__ajax_8php_a7f835c9ddb57cb4a7f20c89382f45dab}{\$thumbnail} = wp\_\-get\_\-attachment\_\-image\_\-src(\$id, 'thumbnail')
+\end{DoxyCompactItemize}
+
+
+\subsection{Variable Documentation}
+\hypertarget{settings__ajax_8php_aa1bfbd27060176201b271918dff57e8f}{
+\index{settings\_\-ajax.php@{settings\_\-ajax.php}!\$file@{\$file}}
+\index{\$file@{\$file}!settings_ajax.php@{settings\_\-ajax.php}}
+\subsubsection[{\$file}]{\setlength{\rightskip}{0pt plus 5cm}\$file = wp\_\-handle\_\-upload(\$\_\-FILES\mbox{[}'file'\mbox{]}, array('test\_\-form' =$>$ false))}}
+\label{d5/d83/settings__ajax_8php_aa1bfbd27060176201b271918dff57e8f}
+\hypertarget{settings__ajax_8php_a0722441477f957078ee2437054556cbc}{
+\index{settings\_\-ajax.php@{settings\_\-ajax.php}!\$filename@{\$filename}}
+\index{\$filename@{\$filename}!settings_ajax.php@{settings\_\-ajax.php}}
+\subsubsection[{\$filename}]{\setlength{\rightskip}{0pt plus 5cm}\$filename = basename(\$file)}}
+\label{d5/d83/settings__ajax_8php_a0722441477f957078ee2437054556cbc}
+\hypertarget{settings__ajax_8php_ae97941710d863131c700f069b109991e}{
+\index{settings\_\-ajax.php@{settings\_\-ajax.php}!\$id@{\$id}}
+\index{\$id@{\$id}!settings_ajax.php@{settings\_\-ajax.php}}
+\subsubsection[{\$id}]{\setlength{\rightskip}{0pt plus 5cm}\$id = wp\_\-insert\_\-attachment(\$object, \$file)}}
+\label{d5/d83/settings__ajax_8php_ae97941710d863131c700f069b109991e}
+\hypertarget{settings__ajax_8php_a52123b83a1952a68c5513e47d59ec4a6}{
+\index{settings\_\-ajax.php@{settings\_\-ajax.php}!\$object@{\$object}}
+\index{\$object@{\$object}!settings_ajax.php@{settings\_\-ajax.php}}
+\subsubsection[{\$object}]{\setlength{\rightskip}{0pt plus 5cm}\$object}}
+\label{d5/d83/settings__ajax_8php_a52123b83a1952a68c5513e47d59ec4a6}
+{\bfseries Initial value:}
+\begin{DoxyCode}
+ 
+    array
+    (
+        'post_title' => $filename,
+        'post_content' => $url,
+        'post_mime_type' => $type,
+        'guid' => $url
+    )
+\end{DoxyCode}
+\hypertarget{settings__ajax_8php_a7f835c9ddb57cb4a7f20c89382f45dab}{
+\index{settings\_\-ajax.php@{settings\_\-ajax.php}!\$thumbnail@{\$thumbnail}}
+\index{\$thumbnail@{\$thumbnail}!settings_ajax.php@{settings\_\-ajax.php}}
+\subsubsection[{\$thumbnail}]{\setlength{\rightskip}{0pt plus 5cm}\$thumbnail = wp\_\-get\_\-attachment\_\-image\_\-src(\$id, 'thumbnail')}}
+\label{d5/d83/settings__ajax_8php_a7f835c9ddb57cb4a7f20c89382f45dab}
+\hypertarget{settings__ajax_8php_a9a4a6fba2208984cabb3afacadf33919}{
+\index{settings\_\-ajax.php@{settings\_\-ajax.php}!\$type@{\$type}}
+\index{\$type@{\$type}!settings_ajax.php@{settings\_\-ajax.php}}
+\subsubsection[{\$type}]{\setlength{\rightskip}{0pt plus 5cm}\$type = \$file\mbox{[}'type'\mbox{]}}}
+\label{d5/d83/settings__ajax_8php_a9a4a6fba2208984cabb3afacadf33919}
+\hypertarget{settings__ajax_8php_acf215f34a917d014776ce684a9ee8909}{
+\index{settings\_\-ajax.php@{settings\_\-ajax.php}!\$url@{\$url}}
+\index{\$url@{\$url}!settings_ajax.php@{settings\_\-ajax.php}}
+\subsubsection[{\$url}]{\setlength{\rightskip}{0pt plus 5cm}\$url = \$file\mbox{[}'url'\mbox{]}}}
+\label{d5/d83/settings__ajax_8php_acf215f34a917d014776ce684a9ee8909}

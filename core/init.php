@@ -1,14 +1,14 @@
 <?php
-
 /**
- * Plugin initialization code, main dispatcher
+ * @file init.php
+ * Plugin initialization code, main dispatcher.
  */
 
 /**
- * Initialization of custom post type
+ * Initialization of custom post type.
  */
 function placester_init() {
-    // Create new custom post type
+    /** Create new custom post type */
     register_post_type( 'property',
         array(
             'taxonomies'      => array(),
@@ -19,7 +19,7 @@ function placester_init() {
             'hierarchical'    => false
         ) );
 
-    // post type for storing craiglist templates
+    /** Register post type for storing craiglist templates */
     register_post_type( 'placester_template',
         array(
             'taxonomies'      => array(),
@@ -28,12 +28,14 @@ function placester_init() {
             'capability_type' => 'post',
             'hierarchical'    => false
         ) );
+    /** Enqueue jquery and fancybox */
     $base_url = WP_PLUGIN_URL . '/placester';
     wp_enqueue_script('jquery');
     wp_enqueue_script('fancybox', $base_url . '/js/fancybox/jquery.fancybox-1.3.4.pack.js', array('jquery'));
     wp_enqueue_script('fancybox_easing', $base_url . '/js/fancybox/jquery.easing-1.3.pack.js', array('jquery', 'fancybox'));
     wp_enqueue_script('placester_fancybox', $base_url . '/js/placester.fancybox.js', array('jquery', 'fancybox', 'fancybox_easing'));
     wp_enqueue_style('fancybox_style', $base_url . '/js/fancybox/jquery.fancybox-1.3.4.css');
+    /** Flush rewrite rules */
     global $wp_rewrite;
     $wp_rewrite->flush_rules();
 }
@@ -55,9 +57,11 @@ function placester_activate()
 
 /**
  * When placester post object is requested - it's checked that
- * data are loaded from external storage
+ * data are loaded from external storage.
  *
  * @param object $query
+ * @deprecated Left to ensure no themes use this
+ * @see placester_get_posts($query)
  */
 function placester_pre_get_posts( $query ) {
    $vars = $query->query_vars;
@@ -75,7 +79,9 @@ function placester_pre_get_posts( $query ) {
 
 
 /**
- * Allows theme builders to create pages on theme activation
+ * Allows theme builders to create pages on theme activation.
+ *
+ * @param array $page_list List of pages to be created on theme activation
  */
 function placester_create_pages( $page_list )
 {
@@ -137,9 +143,9 @@ function placester_create_pages( $page_list )
     } 
 }
 
-/* 
+/** 
  * Function that inserts a page
- * @param array $args Array of ( title, template ) arrays
+ * @param  array $args Array of ( title, template ) arrays
  */
 function placester_insert_page( $args ) {
     $args = wp_parse_args( $args );
@@ -157,10 +163,11 @@ function placester_insert_page( $args ) {
 }
 
 /**
- * When placester post object is requested - it's checked that
- * data are loaded from external storage
+ * Filters Placester post objects.
+ * Ensures post object is a Placester listing. Listings are loaded from external storage
  *
  * @param object $query
+ * @since 0.3
  */
 function placester_get_posts( $query ) {
     if(!is_admin() && !$query->is_page) {
@@ -218,8 +225,8 @@ function placester_get_posts( $query ) {
 }
 
 /**
- *  Check if the current theme is a Placester theme from backbone/functions/admin.php
- *  If it's not, add needed functionality
+ *  Check if the current theme is a Placester theme. From backbone/functions/admin.php.
+ *  If it's not, add needed functionality.  Currently changed and not used.
  */
 function check_placester_theme() {
 
@@ -229,7 +236,12 @@ function check_placester_theme() {
 add_action('init', 'check_placester_theme');
 
 /**
- *  Utility function that outputs an admin notice 
+ *  Utility function that outputs an admin notice.
+ *  @param string $msg
+ *  @param string $class
+ *  @param bool $inline
+ *  @param bool $css
+ *  
  */
 function placester_admin_msg( $msg = '', $class = "updated", $inline = false, $css = false ) {
     if ( $css ) {

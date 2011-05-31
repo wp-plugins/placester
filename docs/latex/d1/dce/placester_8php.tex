@@ -1,0 +1,136 @@
+\hypertarget{placester_8php}{
+\section{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/placester.php File Reference}
+\label{d1/dce/placester_8php}\index{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/placester.php@{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/placester.php}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{placester_8php_aaa8c780df65fb8fb7ad39d7425e1e4ef}{placester\_\-register\_\-filter\_\-form} (\$form\_\-dom\_\-id)
+\begin{DoxyCompactList}\small\item\em Registers filter form on a page which will control property lists / property maps on this page. \end{DoxyCompactList}\item 
+\hyperlink{placester_8php_aee21f466b87c75f5b23a551bea39d0d9}{placester\_\-listings\_\-map} (\$parameters=array())
+\begin{DoxyCompactList}\small\item\em Prints google maps object containing properties. \end{DoxyCompactList}\item 
+\hyperlink{placester_8php_a61607d3fcf834826fba670e91e603e99}{placester\_\-listings\_\-list} (\$parameters)
+\begin{DoxyCompactList}\small\item\em Prints standalone list of properties. \end{DoxyCompactList}\item 
+\hyperlink{placester_8php_af1e56404742272b311a0332012dd4307}{placester\_\-listings\_\-list\_\-of\_\-map} (\$parameters)
+\begin{DoxyCompactList}\small\item\em Prints list of properties which are displayed right now on the map So this list can be used only on pages with map. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{placester_8php_a61607d3fcf834826fba670e91e603e99}{
+\index{placester.php@{placester.php}!placester\_\-listings\_\-list@{placester\_\-listings\_\-list}}
+\index{placester\_\-listings\_\-list@{placester\_\-listings\_\-list}!placester.php@{placester.php}}
+\subsubsection[{placester\_\-listings\_\-list}]{\setlength{\rightskip}{0pt plus 5cm}placester\_\-listings\_\-list (
+\begin{DoxyParamCaption}
+\item[{\$}]{parameters}
+\end{DoxyParamCaption}
+)}}
+\label{d1/dce/placester_8php_a61607d3fcf834826fba670e91e603e99}
+
+
+Prints standalone list of properties. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+array & {\em \$parameters} & -\/ Configuration data. Configuration elements are different based on list mode. There are different modes defined by 'table\_\-type' parameter.\\
+\hline
+\end{DoxyParams}
+For table\_\-type = datatable list is displayed using \href{http://datatables.net}{\tt datatables.net} library. Parameters are:
+\begin{DoxyItemize}
+\item table\_\-type =$>$ 'datatable'
+\item paginate =$>$ number of rows for each page
+\item attributes array, fields to display, where key is field name
+\begin{DoxyItemize}
+\item fieldname =$>$
+\item label =$>$ Name of field, how to display it
+\item width =$>$ Width of field
+\end{DoxyItemize}
+\item js\_\-renderer JS function called to convert field content and return html representation of field to display
+\end{DoxyItemize}
+
+For table\_\-type = html list is displayed as sequence of pure html $<$div$>$ elements where each element represent single listing. Parameters are:
+\begin{DoxyItemize}
+\item table\_\-type =$>$ 'html'
+\item js\_\-row\_\-renderer =$>$ JS function name taking array of property fields data and returning html to print.
+\item pager =$>$ array. Elements are:
+\begin{DoxyItemize}
+\item render\_\-in\_\-dom\_\-element =$>$ If specified -\/ pager will be rendered to that DOM id
+\item rows\_\-per\_\-page =$>$ Number of properties to print at single page
+\item css\_\-current\_\-button =$>$ CSS style of \char`\"{}current page\char`\"{} button
+\item css\_\-not\_\-current\_\-button =$>$ CSS style of other page-\/switch buttons
+\item first\_\-page =$>$ array, configuration of \char`\"{}first page\char`\"{} button of pager. parameters are:
+\begin{DoxyItemize}
+\item visible =$>$ true / false
+\item label =$>$ html of button' text
+\end{DoxyItemize}
+\item previous\_\-page =$>$ array, configuration of \char`\"{}previous page\char`\"{} button of pager. same as for \char`\"{}first page\char`\"{}
+\item next\_\-page =$>$ array, configuration of \char`\"{}next page\char`\"{} button of pager. same as for \char`\"{}first page\char`\"{}
+\item last\_\-page' =$>$ array, configuration of \char`\"{}last page\char`\"{} button of pager. same as for \char`\"{}first page\char`\"{}
+\item numeric\_\-links =$>$ array, configuration of numeric links buttons of pager. parameters are:
+\begin{DoxyItemize}
+\item visible =$>$ true / false
+\item max\_\-count =$>$ maximum number of page links to show
+\item more\_\-label if there are more pages than printed, this html is inserted
+\item css\_\-outer CSS class of outer div for numberic links
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item attributes =$>$ array of fields name to extract from data storage. Dont ask for fields not displayed -\/ that will unreasonably slow down requests. 
+\end{DoxyItemize}\hypertarget{placester_8php_af1e56404742272b311a0332012dd4307}{
+\index{placester.php@{placester.php}!placester\_\-listings\_\-list\_\-of\_\-map@{placester\_\-listings\_\-list\_\-of\_\-map}}
+\index{placester\_\-listings\_\-list\_\-of\_\-map@{placester\_\-listings\_\-list\_\-of\_\-map}!placester.php@{placester.php}}
+\subsubsection[{placester\_\-listings\_\-list\_\-of\_\-map}]{\setlength{\rightskip}{0pt plus 5cm}placester\_\-listings\_\-list\_\-of\_\-map (
+\begin{DoxyParamCaption}
+\item[{\$}]{parameters}
+\end{DoxyParamCaption}
+)}}
+\label{d1/dce/placester_8php_af1e56404742272b311a0332012dd4307}
+
+
+Prints list of properties which are displayed right now on the map So this list can be used only on pages with map. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+array & {\em \$parameters} & -\/ configuration data The same as for \char`\"{}placester\_\-listings\_\-list\char`\"{} function \\
+\hline
+\end{DoxyParams}
+\hypertarget{placester_8php_aee21f466b87c75f5b23a551bea39d0d9}{
+\index{placester.php@{placester.php}!placester\_\-listings\_\-map@{placester\_\-listings\_\-map}}
+\index{placester\_\-listings\_\-map@{placester\_\-listings\_\-map}!placester.php@{placester.php}}
+\subsubsection[{placester\_\-listings\_\-map}]{\setlength{\rightskip}{0pt plus 5cm}placester\_\-listings\_\-map (
+\begin{DoxyParamCaption}
+\item[{\$}]{parameters = {\ttfamily array()}}
+\end{DoxyParamCaption}
+)}}
+\label{d1/dce/placester_8php_aee21f466b87c75f5b23a551bea39d0d9}
+
+
+Prints google maps object containing properties. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+array & {\em \$parameters} & -\/ configuration data.\\
+\hline
+\end{DoxyParams}
+Configuration elements:
+
+
+\begin{DoxyItemize}
+\item js\_\-on\_\-marker\_\-click =$>$ js function name called when marker is clicked with prototype: function(markerData) markerData -\/ array of all queried property fields
+\item js\_\-get\_\-marker\_\-class =$>$ js function name called to get css class for marker with prototype: function(markerData) markerData -\/ array of all queried property fields 
+\end{DoxyItemize}\hypertarget{placester_8php_aaa8c780df65fb8fb7ad39d7425e1e4ef}{
+\index{placester.php@{placester.php}!placester\_\-register\_\-filter\_\-form@{placester\_\-register\_\-filter\_\-form}}
+\index{placester\_\-register\_\-filter\_\-form@{placester\_\-register\_\-filter\_\-form}!placester.php@{placester.php}}
+\subsubsection[{placester\_\-register\_\-filter\_\-form}]{\setlength{\rightskip}{0pt plus 5cm}placester\_\-register\_\-filter\_\-form (
+\begin{DoxyParamCaption}
+\item[{\$}]{form\_\-dom\_\-id}
+\end{DoxyParamCaption}
+)}}
+\label{d1/dce/placester_8php_aaa8c780df65fb8fb7ad39d7425e1e4ef}
+
+
+Registers filter form on a page which will control property lists / property maps on this page. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$form\_\-dom\_\-id} & -\/ DOM id of form object containing filter \\
+\hline
+\end{DoxyParams}

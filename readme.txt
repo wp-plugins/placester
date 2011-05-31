@@ -1,6 +1,6 @@
 === Plugin Name ===
 Contributors: fredericktownes, mattbarba, placester
-Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, yelp, zillow, widget, buddypress
+Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
 Tested up to: 3.2
 Stable tag: 0.2.1
@@ -9,7 +9,30 @@ Easily create and manage real estate sites powered by WordPress.
 
 == Description ==
 
-Simple tools make it easy to customize listings and pages. Robust search functionality as well as the power of WordPress make Placester a competitve advantage in today's saturated markets.
+From the creators of http://placester.com: Create your fully functional real estate website with a single plugin. Some of the features include: 
+
+* Free IDX integrations, continuously synchronized.
+* Create / edit / update / search listings.
+* Every listing pages automatically created, great for SEO.
+* Fully customizable layout for property search and property details pages.
+* Unlimited images per listing
+* Works with any theme
+* Lead capture widget
+* Analytic dashboard showing you views and leads.
+
+
+See it in action - fully functional demo:
+* http://plugin.placester.net/
+* http://allure-sample.placester.net/
+
+Checkout premium themes available to hosted users:
+* http://allure-pro-sample.placester.net/
+* http://radient-pro-sample.placester.net/
+
+This is the only plugin you need to create a powerful WordPress powered real estate website. Watch our quick demo about how to get started:
+
+http://www.youtube.com/watch?v=WZBha9cU0IM
+
 
 Highlights:
 
@@ -45,6 +68,16 @@ Note ^: Feature requires a Placester-enabled theme.
 1. Upload placester.zip file
 1. Once uploaded, click the "Activate Plugin" link
 1. Add your API key and configure the plugin via the "Placester" left-hand menu
+
+== Screenshots ==
+1. Admin Dashboard
+2. Active Listings 
+3. Create Listing Screen
+4. Setting screen
+5. Custom Layout Controls
+6. Custom property list controls
+7. Custom map controls
+8. Support Built in!
 
 == Frequently Asked Questions ==
 
@@ -105,3 +138,8 @@ In general real-time, but if you use 3rd party property management services, the
 * Usability improvements in WP Admin UI
 * Improved error messages and messaging
 * Improved permission handling
+
+= 0.2.1 = 
+* Added universal theme support
+* Added auto page creation for new listings
+*

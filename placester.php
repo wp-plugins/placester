@@ -55,16 +55,15 @@ function placester_register_filter_form( $form_dom_id ) {
 /**
  * Prints google maps object containing properties
  * 
- * @param array $parameters - configuration data
+ * @param array $parameters - configuration data.
  *
- *        configuration elements:
+ *        Configuration elements:
  *
- *        js_on_marker_click =>
+ *        - js_on_marker_click =>
  *           js function name called when marker is clicked with prototype:
  *           function(markerData)
  *             markerData - array of all queried property fields
- *
- *        js_get_marker_class => 
+ *        - js_get_marker_class => 
  *           js function name called to get css class for marker with prototype:
  *           function(markerData)
  *             markerData - array of all queried property fields
@@ -78,78 +77,74 @@ function placester_listings_map( $parameters = array() ) {
 /**
  * Prints standalone list of properties
  * 
- * @param array $parameters - configuration data
+ * @param array $parameters - Configuration data.
  *        Configuration elements are different based on list mode.
  *        There are different modes defined by 'table_type' parameter.
  *
- *        For table_type = datatable list is displayed using datatables.net 
- *        library. Parameters are:
- *
- *          table_type => 'datatable'
- *          paginate =>
+ *        For table_type = datatable list is displayed using
+ *		  <a href="http://datatables.net">datatables.net</a> library. 
+ *        Parameters are:
+ *			- table_type => 'datatable'
+ *			- paginate =>
  *            number of rows for each page
- *          attributes
+ *			- attributes
  *            array, fields to display, where key is field name
- *     
- *            fieldname => 
- *              label =>
+ *				- fieldname =>
+ *				- label =>
  *                Name of field, how to display it
- *              width =>
+ *				- width =>
  *                Width of field
- *              js_renderer
+ *			- js_renderer
  *                JS function called to convert field content and return
  *                html representation of field to display
  *
- *        For table_type = html list is displayed as sequence of pure html <div>
+ *        For table_type = html list is displayed as sequence of pure html &lt;div&gt;
  *        elements where each element represent single listing.
- *        Paramteres are:
- *        library. Parameters are:
- *
- *          table_type => 'html'
- *          js_row_renderer =>
+ *        Parameters are:
+ *				- table_type => 'html'
+ *				- js_row_renderer =>
  *            JS function name taking array of property fields data and 
  *            returning html to print.
- *          pager =>
+ *				- pager =>
  *            array. Elements are:
- *
- *            render_in_dom_element =>
+ *					- render_in_dom_element =>
  *              If specified - pager will be rendered to that DOM id
- *            rows_per_page =>
+ *            		- rows_per_page =>
  *              Number of properties to print at single page
- *            css_current_button =>
+ *            		- css_current_button =>
  *              CSS style of "current page" button
- *            css_not_current_button =>
+ *            		- css_not_current_button =>
  *              CSS style of other page-switch buttons
- *            first_page =>
+ *            		- first_page =>
  *              array, configuration of "first page" button of pager.
  *              parameters are:
- *              visible =>
+ *						- visible =>
  *                true / false
- *              label =>
+ *						- label =>
  *                html of button' text
- *            previous_page =>
+ *            		- previous_page =>
  *              array, configuration of "previous page" button of pager.
  *              same as for "first page"
- *            next_page =>
+ *            		- next_page =>
  *              array, configuration of "next page" button of pager.
  *              same as for "first page"
- *            last_page' => 
+ *            		- last_page' => 
  *              array, configuration of "last page" button of pager.
  *              same as for "first page"
- *            numeric_links =>
+ *            		- numeric_links =>
  *              array, configuration of numeric links buttons of pager.
  *              parameters are:
- *              visible =>
+ *						- visible =>
  *                true / false
- *              max_count => 
+ *						- max_count => 
  *                maximum number of page links to show
- *              more_label
+ *						- more_label
  *                if there are more pages than printed, this html is inserted
- *              css_outer
+ *						- css_outer
  *                CSS class of outer div for numberic links
- *          attributes =>
+ *				- attributes =>
  *            array of fields name to extract from data storage.
- *            Dont ask for fields are really not displayed - that will
+ *            Dont ask for fields not displayed - that will
  *            unreasonably slow down requests.
  */
 function placester_listings_list($parameters) {

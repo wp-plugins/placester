@@ -1,0 +1,230 @@
+\hypertarget{listings__list__divbased__parts_8php}{
+\section{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/core/listings\_\-list\_\-divbased\_\-parts.php File Reference}
+\label{d9/da6/listings__list__divbased__parts_8php}\index{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/core/listings\_\-list\_\-divbased\_\-parts.php@{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/core/listings\_\-list\_\-divbased\_\-parts.php}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{listings__list__divbased__parts_8php_a84d1e2d90b6c1c0035b870ecb88fcbe0}{placester\_\-listings\_\-divbased\_\-html\_\-default} (\$data)
+\begin{DoxyCompactList}\small\item\em Utilities for all div-\/based property lists. \end{DoxyCompactList}\item 
+\hyperlink{listings__list__divbased__parts_8php_a16c0546cd895368d212fab1c5a5d6c37}{placester\_\-listings\_\-list\_\-divbased\_\-html} (\$dom\_\-id, \$fields\_\-array)
+\begin{DoxyCompactList}\small\item\em Returns HTML of divbased list. \end{DoxyCompactList}\item 
+\hyperlink{listings__list__divbased__parts_8php_a02b13356e4fcb91f208672ba1a728e5e}{placester\_\-list\_\-divbased\_\-parse} (\$parameters)
+\begin{DoxyCompactList}\small\item\em Parses parameters gived to listings\_\-$\ast$ function and returns essential data for rendering. \end{DoxyCompactList}\item 
+\hyperlink{listings__list__divbased__parts_8php_acf828d1fb5f27629cb1330e6707e13a9}{placester\_\-print\_\-default\_\-row\_\-renderer} ()
+\begin{DoxyCompactList}\small\item\em Prints JS function -\/ default row renderer It actually only complains that JS renderer must be overriden by real call. \end{DoxyCompactList}\item 
+\hyperlink{listings__list__divbased__parts_8php_a37940b391fca9826095755ce09b5c159}{placester\_\-print\_\-default\_\-pager\_\-renderer\_\-default} (\$data, \$item\_\-name, \$default\_\-value)
+\begin{DoxyCompactList}\small\item\em Returns pager renderer -\/ specified by configuration data or default value. \end{DoxyCompactList}\item 
+\hyperlink{listings__list__divbased__parts_8php_a63aa02408bfaf0330c6bdc3737de2f02}{placester\_\-print\_\-default\_\-pager\_\-renderer\_\-button} (\$data, \$item\_\-name, \$defaults\_\-array)
+\begin{DoxyCompactList}\small\item\em Returns pager renderer button configuration -\/ specified by configuration data or default value. \end{DoxyCompactList}\item 
+\hyperlink{listings__list__divbased__parts_8php_a49a0d913da7fbba76d41585aef263753}{placester\_\-print\_\-default\_\-pager\_\-renderer} (\$data)
+\begin{DoxyCompactList}\small\item\em Prints default pager renderer for divbased list. \end{DoxyCompactList}\item 
+\hyperlink{listings__list__divbased__parts_8php_a3bb3fc54eb877fe1ca581ad90a4483bb}{placester\_\-print\_\-default\_\-loading\_\-element} ()
+\begin{DoxyCompactList}\small\item\em Prints default \char`\"{}loading\char`\"{} element for divbased list. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{listings__list__divbased__parts_8php_a02b13356e4fcb91f208672ba1a728e5e}{
+\index{listings\_\-list\_\-divbased\_\-parts.php@{listings\_\-list\_\-divbased\_\-parts.php}!placester\_\-list\_\-divbased\_\-parse@{placester\_\-list\_\-divbased\_\-parse}}
+\index{placester\_\-list\_\-divbased\_\-parse@{placester\_\-list\_\-divbased\_\-parse}!listings_list_divbased_parts.php@{listings\_\-list\_\-divbased\_\-parts.php}}
+\subsubsection[{placester\_\-list\_\-divbased\_\-parse}]{\setlength{\rightskip}{0pt plus 5cm}placester\_\-list\_\-divbased\_\-parse (
+\begin{DoxyParamCaption}
+\item[{\$}]{parameters}
+\end{DoxyParamCaption}
+)}}
+\label{d9/da6/listings__list__divbased__parts_8php_a02b13356e4fcb91f208672ba1a728e5e}
+
+
+Parses parameters gived to listings\_\-$\ast$ function and returns essential data for rendering. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+array & {\em \$parameters} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+array 
+\end{DoxyReturn}
+\hypertarget{listings__list__divbased__parts_8php_a84d1e2d90b6c1c0035b870ecb88fcbe0}{
+\index{listings\_\-list\_\-divbased\_\-parts.php@{listings\_\-list\_\-divbased\_\-parts.php}!placester\_\-listings\_\-divbased\_\-html\_\-default@{placester\_\-listings\_\-divbased\_\-html\_\-default}}
+\index{placester\_\-listings\_\-divbased\_\-html\_\-default@{placester\_\-listings\_\-divbased\_\-html\_\-default}!listings_list_divbased_parts.php@{listings\_\-list\_\-divbased\_\-parts.php}}
+\subsubsection[{placester\_\-listings\_\-divbased\_\-html\_\-default}]{\setlength{\rightskip}{0pt plus 5cm}placester\_\-listings\_\-divbased\_\-html\_\-default (
+\begin{DoxyParamCaption}
+\item[{\$}]{data}
+\end{DoxyParamCaption}
+)}}
+\label{d9/da6/listings__list__divbased__parts_8php_a84d1e2d90b6c1c0035b870ecb88fcbe0}
+
+
+Utilities for all div-\/based property lists. 
+
+Filter called to get HTML of divbased list.
+
+
+\begin{DoxyParams}[1]{Parameters}
+array & {\em \$data} & -\/ \{dom\_\-id, html\} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+array filtered data 
+\end{DoxyReturn}
+\hypertarget{listings__list__divbased__parts_8php_a16c0546cd895368d212fab1c5a5d6c37}{
+\index{listings\_\-list\_\-divbased\_\-parts.php@{listings\_\-list\_\-divbased\_\-parts.php}!placester\_\-listings\_\-list\_\-divbased\_\-html@{placester\_\-listings\_\-list\_\-divbased\_\-html}}
+\index{placester\_\-listings\_\-list\_\-divbased\_\-html@{placester\_\-listings\_\-list\_\-divbased\_\-html}!listings_list_divbased_parts.php@{listings\_\-list\_\-divbased\_\-parts.php}}
+\subsubsection[{placester\_\-listings\_\-list\_\-divbased\_\-html}]{\setlength{\rightskip}{0pt plus 5cm}placester\_\-listings\_\-list\_\-divbased\_\-html (
+\begin{DoxyParamCaption}
+\item[{\$}]{dom\_\-id, }
+\item[{\$}]{fields\_\-array}
+\end{DoxyParamCaption}
+)}}
+\label{d9/da6/listings__list__divbased__parts_8php_a16c0546cd895368d212fab1c5a5d6c37}
+
+
+Returns HTML of divbased list. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$dom\_\-id} & \\
+\hline
+array & {\em \$fields\_\-array} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string 
+\end{DoxyReturn}
+\hypertarget{listings__list__divbased__parts_8php_a3bb3fc54eb877fe1ca581ad90a4483bb}{
+\index{listings\_\-list\_\-divbased\_\-parts.php@{listings\_\-list\_\-divbased\_\-parts.php}!placester\_\-print\_\-default\_\-loading\_\-element@{placester\_\-print\_\-default\_\-loading\_\-element}}
+\index{placester\_\-print\_\-default\_\-loading\_\-element@{placester\_\-print\_\-default\_\-loading\_\-element}!listings_list_divbased_parts.php@{listings\_\-list\_\-divbased\_\-parts.php}}
+\subsubsection[{placester\_\-print\_\-default\_\-loading\_\-element}]{\setlength{\rightskip}{0pt plus 5cm}placester\_\-print\_\-default\_\-loading\_\-element (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{d9/da6/listings__list__divbased__parts_8php_a3bb3fc54eb877fe1ca581ad90a4483bb}
+
+
+Prints default \char`\"{}loading\char`\"{} element for divbased list. 
+
+\hypertarget{listings__list__divbased__parts_8php_a49a0d913da7fbba76d41585aef263753}{
+\index{listings\_\-list\_\-divbased\_\-parts.php@{listings\_\-list\_\-divbased\_\-parts.php}!placester\_\-print\_\-default\_\-pager\_\-renderer@{placester\_\-print\_\-default\_\-pager\_\-renderer}}
+\index{placester\_\-print\_\-default\_\-pager\_\-renderer@{placester\_\-print\_\-default\_\-pager\_\-renderer}!listings_list_divbased_parts.php@{listings\_\-list\_\-divbased\_\-parts.php}}
+\subsubsection[{placester\_\-print\_\-default\_\-pager\_\-renderer}]{\setlength{\rightskip}{0pt plus 5cm}placester\_\-print\_\-default\_\-pager\_\-renderer (
+\begin{DoxyParamCaption}
+\item[{\$}]{data}
+\end{DoxyParamCaption}
+)}}
+\label{d9/da6/listings__list__divbased__parts_8php_a49a0d913da7fbba76d41585aef263753}
+
+
+Prints default pager renderer for divbased list. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+array & {\em \$data} & \\
+\hline
+\end{DoxyParams}
+
+
+Returns HTML of \char`\"{}page link\char`\"{} element
+
+
+\begin{DoxyParams}{Parameters}
+{\em string} & label \\
+\hline
+{\em int} & page\_\-number \\
+\hline
+{\em int} & current\_\-page\_\-number \\
+\hline
+{\em string} & on\_\-click\_\-function\_\-name \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string
+\end{DoxyReturn}
+Returns HTML of pager
+
+
+\begin{DoxyParams}{Parameters}
+{\em int} & pages\_\-count \\
+\hline
+{\em int} & current\_\-page\_\-number \\
+\hline
+{\em string} & on\_\-click\_\-function\_\-name \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string
+\end{DoxyReturn}
+
+
+\hypertarget{listings__list__divbased__parts_8php_a63aa02408bfaf0330c6bdc3737de2f02}{
+\index{listings\_\-list\_\-divbased\_\-parts.php@{listings\_\-list\_\-divbased\_\-parts.php}!placester\_\-print\_\-default\_\-pager\_\-renderer\_\-button@{placester\_\-print\_\-default\_\-pager\_\-renderer\_\-button}}
+\index{placester\_\-print\_\-default\_\-pager\_\-renderer\_\-button@{placester\_\-print\_\-default\_\-pager\_\-renderer\_\-button}!listings_list_divbased_parts.php@{listings\_\-list\_\-divbased\_\-parts.php}}
+\subsubsection[{placester\_\-print\_\-default\_\-pager\_\-renderer\_\-button}]{\setlength{\rightskip}{0pt plus 5cm}placester\_\-print\_\-default\_\-pager\_\-renderer\_\-button (
+\begin{DoxyParamCaption}
+\item[{\$}]{data, }
+\item[{\$}]{item\_\-name, }
+\item[{\$}]{defaults\_\-array}
+\end{DoxyParamCaption}
+)}}
+\label{d9/da6/listings__list__divbased__parts_8php_a63aa02408bfaf0330c6bdc3737de2f02}
+
+
+Returns pager renderer button configuration -\/ specified by configuration data or default value. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+array & {\em \$data} & \\
+\hline
+string & {\em \$item\_\-name} & \\
+\hline
+string & {\em \$default\_\-array} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+array 
+\end{DoxyReturn}
+\hypertarget{listings__list__divbased__parts_8php_a37940b391fca9826095755ce09b5c159}{
+\index{listings\_\-list\_\-divbased\_\-parts.php@{listings\_\-list\_\-divbased\_\-parts.php}!placester\_\-print\_\-default\_\-pager\_\-renderer\_\-default@{placester\_\-print\_\-default\_\-pager\_\-renderer\_\-default}}
+\index{placester\_\-print\_\-default\_\-pager\_\-renderer\_\-default@{placester\_\-print\_\-default\_\-pager\_\-renderer\_\-default}!listings_list_divbased_parts.php@{listings\_\-list\_\-divbased\_\-parts.php}}
+\subsubsection[{placester\_\-print\_\-default\_\-pager\_\-renderer\_\-default}]{\setlength{\rightskip}{0pt plus 5cm}placester\_\-print\_\-default\_\-pager\_\-renderer\_\-default (
+\begin{DoxyParamCaption}
+\item[{\$}]{data, }
+\item[{\$}]{item\_\-name, }
+\item[{\$}]{default\_\-value}
+\end{DoxyParamCaption}
+)}}
+\label{d9/da6/listings__list__divbased__parts_8php_a37940b391fca9826095755ce09b5c159}
+
+
+Returns pager renderer -\/ specified by configuration data or default value. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+array & {\em \$data} & \\
+\hline
+string & {\em \$item\_\-name} & \\
+\hline
+string & {\em \$default\_\-value} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string 
+\end{DoxyReturn}
+\hypertarget{listings__list__divbased__parts_8php_acf828d1fb5f27629cb1330e6707e13a9}{
+\index{listings\_\-list\_\-divbased\_\-parts.php@{listings\_\-list\_\-divbased\_\-parts.php}!placester\_\-print\_\-default\_\-row\_\-renderer@{placester\_\-print\_\-default\_\-row\_\-renderer}}
+\index{placester\_\-print\_\-default\_\-row\_\-renderer@{placester\_\-print\_\-default\_\-row\_\-renderer}!listings_list_divbased_parts.php@{listings\_\-list\_\-divbased\_\-parts.php}}
+\subsubsection[{placester\_\-print\_\-default\_\-row\_\-renderer}]{\setlength{\rightskip}{0pt plus 5cm}placester\_\-print\_\-default\_\-row\_\-renderer (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{d9/da6/listings__list__divbased__parts_8php_acf828d1fb5f27629cb1330e6707e13a9}
+
+
+Prints JS function -\/ default row renderer It actually only complains that JS renderer must be overriden by real call. 
+
+
+
+Default row renderer
+
