@@ -23,6 +23,10 @@ From the creators of http://placester.com: Create your fully functional real est
 
 http://www.youtube.com/watch?v=WZBha9cU0IM
 
+Have questions? Need help. Drop us a line in Real Estate Pro Forum:
+
+* http://placester.com/forums/
+
 See it in action - fully functional demo:
 
 * http://plugin.placester.net/
@@ -146,4 +150,9 @@ In general real-time, but if you use 3rd party property management services, the
 = 0.2.1 = 
 * Added universal theme support
 * Added auto page creation for new listings
-*
+
+== Videos ==
+
+Getting Started:
+
+http://www.youtube.com/watch?v=WZBha9cU0IM

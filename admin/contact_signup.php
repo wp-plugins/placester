@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Contact tab
+ * Admin interface: Contact tab.
  * Sign up form
+ * @file /admin/contact_signup.php
  */
 $view_default = true;
 $error = false;

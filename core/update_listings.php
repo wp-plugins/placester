@@ -2,6 +2,7 @@
 
 /**
  * Checks for indexable pages for listings and creates if missing
+ * @file /core/update_listings.php
  */
 
 add_action('pre_get_posts', 'placester_intercept_query');
@@ -102,6 +103,12 @@ function placester_get_term_id($term) {
 	return $term['term_id'];
 }
 
+/**
+ * Prepares post information for insert into db.
+ * Not currently used.
+ * @param object $data
+ * @return array
+ */
 function placester_prep_properties($data) {
 	$image_info = "";
 	if($data->images) {
@@ -189,6 +196,13 @@ function placester_prep_properties($data) {
 			) ; 
 }
 
+/**
+ * Sets post information for taxonomy use.
+ * Not currently used.
+ * @param int $post_id
+ * @param array $terms
+ * @param object $data
+ */
 function placester_set_post_terms($post_id, $terms, $data) {
 	wp_set_post_terms( $post_id, $terms['bedroom_terms'], 'bedrooms');
 	wp_set_post_terms( $post_id, $terms['bathroom_terms'], 'baths');

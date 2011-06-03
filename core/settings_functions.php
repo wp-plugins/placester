@@ -2,6 +2,7 @@
 
 /**
  * Functions related to extraction of plugin settings
+ * @file /core/settings_functions.php
  */
 
 /**

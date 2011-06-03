@@ -26,6 +26,11 @@ Author URI: http://www.placester.com/developer/wordpress
 	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+/**
+ * Main plugin file
+ * @file placester.php
+ */
+
 include_once( 'core/init.php' );
 include_once( 'core/util.php' );
 include_once( 'core/webservice_client.php' );

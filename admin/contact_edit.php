@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Contact tab
- * Edit details form
+ * Admin interface: Contact tab.
+ * Edit details form.
+ * @file /admin/contact_edit.php
  */
 $view_success = false;
 

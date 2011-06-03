@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Support tab
- * Intro form displayed at the start to allow to chose "support request" type
+ * Admin interface: Support tab.
+ * Intro form displayed at the start to allow to chose "support request" type.
+ * @file /admin/support/intro.php
  */
 
 ?>

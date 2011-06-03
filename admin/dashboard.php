@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Dashboard tab
- * Entry point
+ * Admin interface: Dashboard tab.
+ * Entry point.
+ * @file /admin/dashboard.php
  */
 
 ?>

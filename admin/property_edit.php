@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Edit listing form
- * Entry point
+ * Admin interface: Edit listing form.
+ * Entry point.
+ * @file /admin/property_edit.php
  */
 
 include_once(dirname(__FILE__) . '/../core/const.php');

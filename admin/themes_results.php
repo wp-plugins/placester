@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Get Themes tab
- * Search results page
+ * Admin interface: Get Themes tab.
+ * Search results page.
+ * @file /admin/themes_results.php
  */
 
 global $theme_field_defaults;

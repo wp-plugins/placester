@@ -1,4 +1,17 @@
 <?php
+
+/**
+ * Listings Map Widget.
+ * Add a listings map to pages that do not display the map already.
+ * @file /admin/widgets/listings_map.php
+ */
+
+/**
+ * Listings Map Widget.
+ * Add a listings map to pages that do not display the map already.
+ * For more information see the <a href="http://codex.wordpress.org/Widgets_API">Widget API</a>.
+ */
+
 class Placester_Listing_Map_Widget extends WP_Widget {
 	function Placester_Listing_Map_Widget() {
 		$options = array(

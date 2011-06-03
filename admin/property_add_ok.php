@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Add listing tab
- * "Listing added successfully" message
+ * Admin interface: Add listing tab.
+ * "Listing added successfully" message.
+ * @file /admin/property_add_ok.php
  */
 
 ?>

@@ -2,6 +2,7 @@
 
 /**
  * Called by AJAX (div-based list) to get properties.
+ * @file properties_divbased.php
  */
 
 require( dirname( __FILE__ ) . '/../../../wp-load.php');

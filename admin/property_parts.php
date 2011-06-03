@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Admin interface: Edit listing / Add listing utilities
+ * Admin interface: Edit listing / Add listing utilities.
+ * @file /admin/property_parts.php
  */
 
 /**
@@ -98,8 +99,8 @@ function control_dropdown($property_name, $possible_values, $value,
 
 
 /**
- * Prints dropdown inside html <table> column
- * with possible validation error messages
+ * Prints dropdown inside html &lt;table&gt; column.
+ * Prints with possible validation error messages
  *
  * @param string $label
  * @param array $possible_values
@@ -134,8 +135,8 @@ function column_dropdown($label, $possible_values, $property_name,
 
 
 /**
- * Prints dropdown in html <table> row
- * with possible validation error messages
+ * Prints dropdown in html &lt;table&gt; row.
+ * Prints with possible validation error messages
  *
  * @param string $label
  * @param array $possible_values
@@ -159,8 +160,8 @@ function row_dropdown($label, $possible_values, $property_name,
 
 
 /**
- * Prints textbox inside html <table> column
- * with possible validation error messages
+ * Prints textbox inside html &lt;table&gt; column.
+ * Prints with possible validation error messages
  *
  * @param string $label
  * @param string $property_name
@@ -198,8 +199,8 @@ function column_textbox($label, $property_name, $value, $validation_object,
 
 
 /**
- * Prints textbox in html <table> row
- * with possible validation error messages
+ * Prints textbox in html &lt;table&gt; row.
+ * Prints with possible validation error messages
  *
  * @param string $label
  * @param string $property_name
@@ -221,8 +222,8 @@ function row_textbox($label, $property_name, $value, $validation_object)
 
 
 /**
- * Prints textarea in html <table> row
- * with possible validation error messages
+ * Prints textarea in html &lt;table&gt; row.
+ * Prints with possible validation error messages
  *
  * @param string $label
  * @param string $property_name
@@ -253,8 +254,8 @@ function control_textarea($label, $property_name, $value, $validation_object)
 
 
 /**
- * Prints images upload control in html <table> row
- * with possible validation error messages
+ * Prints images upload control in html &lt;table&gt; row.
+ * Prints with possible validation error messages
  *
  * @param string $validation_message
  */

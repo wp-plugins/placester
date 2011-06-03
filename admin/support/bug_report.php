@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Support tab
+ * Admin interface: Support tab.
  * "Bug report" form returned by AJAX
+ * @file /admin/support/bug_report.php
  */
 
 $url = get_home_url();
