@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Body of "placester_listings_list()" function
- * For datatable-based mode
+ * Body of "placester_listings_list()" function.
+ * For datatable-based mode.
+ * @file /core/listings_list_lone_datatable.php
  */
 
 include( 'listings_list_datatable_parts.php' );

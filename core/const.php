@@ -2,8 +2,10 @@
 
 /**
  * Constants
+ * @file /core/const.php
  */
 
+/// Global property types
 global $placester_const_property_types;
 $placester_const_property_types = 
     array(
@@ -24,6 +26,7 @@ $placester_const_property_types =
         'tent' => 'Tent'
     );
 
+/// Global listing types
 global $placester_const_listing_types;
 $placester_const_listing_types = 
     array(
@@ -35,6 +38,7 @@ $placester_const_listing_types =
         'other' => 'Other'
     );
 
+/// Global zoning types
 global $placester_const_zoning_types;
 $placester_const_zoning_types = 
     array(
@@ -42,6 +46,7 @@ $placester_const_zoning_types =
         'commercial' => 'Commercial'
     );
 
+/// Global purchase types
 global $placester_const_purchase_types;
 $placester_const_purchase_types = 
     array(

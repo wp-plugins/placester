@@ -1,5 +1,10 @@
 <?php
 
+/** 
+ * Iframe Templates
+ * @file /admin/template-iframe.php
+ */
+
 $name = $_REQUEST['template_iframe'];
 $name = preg_replace('/[^0-9A-Za-z_]/', '', $name);
 

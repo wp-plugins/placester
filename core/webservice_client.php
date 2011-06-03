@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Web service interface with placester remote properties storage
+ * Web service interface with placester remote properties storage.
+ * @file /core/webservice_client.php
  */
 
 /*
@@ -42,7 +43,7 @@ object(stdClass)[163]
   'description' => string 'Great Deal'
 */
 
-/*
+/**
  * "Field not valid" exception
  */
 class ValidationException extends Exception
@@ -73,7 +74,7 @@ define( 'PLACESTER_TIMEOUT_SEC', 10 );
 
 
 
-/*
+/**
  * Returns fields acceptable as filter parameters
  *
  * @return array
@@ -145,7 +146,7 @@ function placester_filter_parameters_from_http()
 
 
 
-/*
+/**
  * Returns list of properties
  *
  * @param array $parameters - http parameters for api
@@ -178,10 +179,10 @@ function placester_property_list($parameters)
 
 
 
-/*
+/**
  * Returns property
  *
- * @param array $parameters - http parameters for api
+ * @param array $id - property id
  * @return object
  */
 function placester_property_get($id)
@@ -195,7 +196,12 @@ function placester_property_get($id)
 }
 
 
-
+/**
+ * Returns API keyholder info
+ *
+ * @param array $api_key - API key
+ * @return object
+ */
 function placester_apikey_info($api_key)
 {
     
@@ -207,7 +213,7 @@ function placester_apikey_info($api_key)
 
 
 
-/*
+/**
  * Creates property
  *
  * @param array $p - http parameters for api
@@ -248,7 +254,7 @@ function placester_property_add($p)
 
 
 
-/*
+/**
  * Modifies property
  *
  * @param string $id
@@ -290,11 +296,11 @@ function placester_property_set($id, $p)
 
 
 
-/*
+/**
  * Bulk change of property urls
  *
  * @param string $url_format
- * @param array $p - http parameters for api
+ * @param array $filter - http parameters for api
  * @return array
  */
 function placester_property_seturl_bulk($url_format, $filter)
@@ -311,7 +317,7 @@ function placester_property_seturl_bulk($url_format, $filter)
 
 
 
-/*
+/**
  * Adds image to property
  *
  * @param string $property_id
@@ -335,7 +341,7 @@ function placester_property_image_add($property_id, $file_name,
 
 
 
-/*
+/**
  * Deletes image from property
  *
  * @param string $property_id
@@ -359,7 +365,7 @@ function placester_property_image_delete($property_id, $image_url)
 }
 
 
-/*
+/**
  * Adds new user
  *
  * @param object $user
@@ -391,7 +397,7 @@ function placester_user_add($user)
 
 
 
-/*
+/**
  * Returns user by id
  *
  * @param string $company_id
@@ -414,7 +420,7 @@ function placester_user_get($company_id, $user_id)
 
 
 
-/*
+/**
  * Modifies user
  *
  * @param object $user
@@ -447,7 +453,7 @@ function placester_user_set($user)
 
 
 
-/*
+/**
  * Returns current company
  *
  * @return array
@@ -462,9 +468,10 @@ function placester_company_get()
 
 
 
-/*
+/**
  * Modifies company
  *
+ * @param object $id
  * @param object $company
  * @return array
  */
@@ -495,7 +502,8 @@ function placester_company_set($id, $company)
 
 
 /**
- *      Checks Theme Compatibility
+ * Checks Theme Compatibility
+ * @param object $theme
  */
 function placester_theme_check($theme)
 {
@@ -518,7 +526,7 @@ function placester_theme_check($theme)
 
 }
 
-/*
+/**
  * Returns list of locations
  *
  * @return array
@@ -535,11 +543,11 @@ function placester_location_list()
 
 
 
-/*
+/**
  * Utils
  */
 
-/*
+/**
  * Sends HTTP request and parses genercic elements of API response
  *
  * @param string $url
@@ -647,7 +655,7 @@ function placester_send_request($url, $request, $method = 'GET')
 
 
 
-/*
+/**
  * Sends multipart HTTP request and parses genercic elements of API response.
  * Used to upload file
  *
@@ -718,7 +726,9 @@ function placester_send_request_multipart($url, $request, $file_name, $file_mime
 }
 
 
-
+/**
+ * Clears cache
+ */
 function placester_clear_cache()
 {
     global $wpdb;

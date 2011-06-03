@@ -1,12 +1,13 @@
 <?php
 
 /**
- * Admin interface: Settings tab
- * Utilities
+ * Admin interface: Settings tab.
+ * Utilities.
+ * @file /admin/settings_parts.php
  */
 
 /**
- * Cuts array with possible values
+ * Cuts array with possible values.
  *
  * @param array $array
  * @param array $possible_values
@@ -25,7 +26,7 @@ function cut_if_fullset(&$array, $possible_values)
 
 
 /**
- * Prints checkbox in html <table> row
+ * Prints checkbox in html &lt;table&gt; row.
  *
  * @param string $label
  * @param string $option_name
@@ -49,7 +50,7 @@ function row_checkbox($label, $option_name)
 
 
 /**
- * Prints list of checkboxes in html <table> row
+ * Prints list of checkboxes in html &lt;table&gt; row.
  *
  * @param string $label
  * @param array $values
@@ -93,12 +94,11 @@ function row_checkboxes($label, $values, $option_name)
 
 
 /**
- * Prints image upload box in html <table> row
+ * Prints image upload box in html &lt;table&gt; row.
  *
  * @param string $label
  * @param string $option_name
- * @param string $tip
- * @param string $tip2
+ * @param string $description
  */
 function row_image($label, $option_name, $description = '')
 {
@@ -137,10 +137,11 @@ function row_image($label, $option_name, $description = '')
 
 
 /**
- * Prints textarea in html <table> row
+ * Prints textarea in html &lt;table&gt; row.
  *
  * @param string $label
  * @param string $option_name
+ * @param string $description
  */
 function row_textarea($label, $option_name, $description = '')
 {
@@ -167,10 +168,11 @@ function row_textarea($label, $option_name, $description = '')
 
 
 /**
- * Prints textbox in html <table> row
+ * Prints textbox in html &lt;table&gt; row.
  *
  * @param string $label
  * @param string $option_name
+ * @param string $description
  */
 function row_textbox($label, $option_name, $description = '')
 {
@@ -193,10 +195,11 @@ function row_textbox($label, $option_name, $description = '')
 }
 
 /**
- * Prints hidden field in html <table> row
+ * Prints hidden field in html &lt;table&gt; row.
  *
  * @param string $label
  * @param string $option_name
+ * @param string $description
  */
 function row_hidden($label, $option_name, $description = '')
 {

@@ -2,6 +2,7 @@
 
 /**
  * Called by AJAX (datatable list) to get properties
+ * @file properties_datatable.php
  */
 
 require_once( dirname( __FILE__ ) . '/../../../wp-load.php' );

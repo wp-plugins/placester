@@ -1,5 +1,10 @@
 <?php
 
+/** 
+ * Templates
+ * @file /admin/templates.php
+ */
+ 
 //
 // save template
 //

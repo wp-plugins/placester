@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Admin interface: Settings tab
+ * Admin interface: Settings tab.
+ * @file /admin/settings.php
  */
 
 include_once(dirname(__FILE__) . '/../core/const.php');

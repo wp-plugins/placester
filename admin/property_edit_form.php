@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Edit listing form
- * Form for editing property
+ * Admin interface: Edit listing form.
+ * Form for editing property.
+ * @file /admin/property_edit_form.php
  */
 
 $images_url = plugins_url('/images', dirname(__FILE__));

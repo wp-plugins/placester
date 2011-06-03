@@ -2,6 +2,7 @@
 
 /**
  * Common code by all processors of AJAX get properties requests
+ * @file properties_util.php
  */
 
 $list_details_template = '';

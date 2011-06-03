@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Contact tab
- * Utilities
+ * Admin interface: Contact tab.
+ * Utilities.
+ * @file admin/contact_parts.php
  */
 
 /**
@@ -22,13 +23,14 @@ function p($o, $property)
 
 
 /**
- * Prints address fields in html <table> rows 
- * with possible validation error messages
+ * Prints address fields in html &lt;table&gt; rows.
+ * Prints with possible validation error messages.
  *
  * @param string $option_name_prefix
  * @param object $data
  * @param object $validation_data
  * @param string $property
+ * @param string $description
  */
 function row_address($option_name_prefix, $data, $validation_data, $property, 
     $description = '')
@@ -53,17 +55,18 @@ function row_address($option_name_prefix, $data, $validation_data, $property,
 
 
 /**
- * Prints image upload textbox in html <table> row
- * with possible validation error messages
+ * Prints image upload textbox in html &lt;table&gt; row.
+ * Prints with possible validation error messages.
  *
  * @param string $label
  * @param string $option_name
- * @param object $value_object, 
- * @param object $validation_objet
+ * @param object $value_object
+ * @param object $validation_object
  * @param string $property
+ * @param string $description
  */
 function row_image($label, $option_name, $value_object, 
-    $validation_objet, $property, $description = '')
+    $validation_object, $property, $description = '')
 {
     $id = p($value_object, $property);
     $img = '';
@@ -99,14 +102,15 @@ function row_image($label, $option_name, $value_object,
 
 
 /**
- * Prints textbox in html <table> row
- * with possible validation error messages
+ * Prints textbox in html &lt;table&gt; row.
+ * Prints with possible validation error messages.
  *
  * @param string $label
  * @param string $option_name
- * @param object $value_object, 
+ * @param object $value_object
  * @param object $validation_object
  * @param string $property
+ * @param string $description
  */
 function row_textbox($label, $option_name, $value_object, 
     $validation_object, $property, $description = '')
@@ -143,12 +147,12 @@ function row_textbox($label, $option_name, $value_object,
 
 
 /**
- * Prints textarea in html <table> row
- * with possible validation error messages
+ * Prints textarea in html &lt;table&gt; row.
+ * Prints with possible validation error messages.
  *
  * @param string $label
  * @param string $option_name
- * @param object $value_object, 
+ * @param object $value_object
  * @param object $validation_object
  * @param string $property
  */
@@ -182,8 +186,8 @@ function row_textarea($label, $option_name, $value_object,
 
 
 /**
- * Combines company / user object with data posted by POST method
- * from client (as a result of data modification)
+ * Combines company / user object with data posted by POST method.
+ * From client (as a result of data modification).
  *
  * @param object $company
  * @param object $user
@@ -218,12 +222,12 @@ function details_compine_with_http(&$company, &$user)
 
 
 /**
- * Prints contact details html form
- * with possible validation error messages
+ * Prints contact details html form.
+ * Prints with possible validation error messages.
  *
  * @param object $company
  * @param object $user
- * @param object $error_validation_data, 
+ * @param object $error_validation_data
  */
 function details($company, $user, $error_validation_data)
 {

@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Support tab
- * Script called by AJAX when question type is chosen
+ * Admin interface: Support tab.
+ * Script called by AJAX when question type is chosen.
+ * @file /admin/support_ajax.php
  */
 
 $action = $_REQUEST['ajax_action'];

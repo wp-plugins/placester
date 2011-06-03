@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Add listing tab
- * Entry point
+ * Admin interface: Add listing tab.
+ * Entry point.
+ * @file /admin/property_add.php
  */
 
 include_once(dirname(__FILE__) . '/../core/const.php');

@@ -1,4 +1,17 @@
-<?php 
+<?php
+
+/**
+ * Contact Widget.
+ * Add contact widget.
+ * @file /admin/widgets/contact.php
+ */
+
+/**
+ * Contact Widget.
+ * AJAX contact form added to all listings.
+ * For more information see the <a href="http://codex.wordpress.org/Widgets_API">Widget API</a>.
+ */
+
 class Placester_Contact_Widget extends WP_Widget {
 
   function Placester_Contact_Widget() {
@@ -81,7 +94,7 @@ class Placester_Contact_Widget extends WP_Widget {
 
 add_action('init', 'placester_contact_widget');
 
-// Style
+/// Adds css and js files.
 function placester_contact_widget() {
 
   $myStyleUrl = WP_PLUGIN_URL . '/placester/css/contact.widget.ajax.css';
@@ -90,7 +103,7 @@ function placester_contact_widget() {
   wp_enqueue_script( 'contactwidgetjs', $myScriptUrl, array('jquery') );
 }
 
-// Ajax function
+/// AJAX function.
 function ajax_placester_contact() {
     if( !empty($_POST) ) {
 
@@ -166,6 +179,7 @@ function ajax_placester_contact() {
 }
 
 add_action('wp_head', 'placester_ajax_url');
+/// Sets the AJAX file url for use in contact.widget.ajax.js
 function placester_ajax_url() {
   ?>
   <script>

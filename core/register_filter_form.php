@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Body of "placester_register_filter_form()" function
- * This file is processed only when function is really called
+ * Body of "placester_register_filter_form()" function.
+ * This file is processed only when function is really called.
+ * @file /core/register_filter_form.php
  */
 
 ?>

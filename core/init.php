@@ -1,11 +1,14 @@
 <?php
+
 /**
- * @file init.php
  * Plugin initialization code, main dispatcher.
+ * @file /core/init.php
  */
 
 /**
- * Initialization of custom post type.
+ * Initialization.
+ * Creates custom post types for properties and craigslist.
+ * Enqueues jquery and fancybox. Rewrites rules for permalinks
  */
 function placester_init() {
     /** Create new custom post type */
@@ -167,7 +170,7 @@ function placester_insert_page( $args ) {
  * Ensures post object is a Placester listing. Listings are loaded from external storage
  *
  * @param object $query
- * @since 0.3
+ * @since 0.21
  */
 function placester_get_posts( $query ) {
     if(!is_admin() && !$query->is_page) {

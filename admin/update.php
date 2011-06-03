@@ -2,6 +2,7 @@
 
 /**
  * Admin interface: Update tab
+ * @file /admin/update.php
  */
 
 $plugin_name = 'placester/placester.php';

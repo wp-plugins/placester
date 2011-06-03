@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Body of "placester_listings_list()" function
- * This file is processed only when function is really called
+ * Body of "placester_listings_list()" function.
+ * This file is processed only when function is really called.
+ * @file /core/listings_list_lone.php
  */
 
 // Check is api key specified

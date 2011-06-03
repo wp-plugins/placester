@@ -3,6 +3,7 @@
 /**
  * Body of "placester_listings_map()" function
  * This file is processed only when function is really called
+ * @file /core/listings_map.php
  */
 
 // Check if api key specified
@@ -239,7 +240,7 @@ endif;
 /**
  * Called to refresh data in map-linked list with actual visible markers
  *
- * @param array markerData
+ * @param array markersData
  */
 function placesterMap_reloadMarkers(markersData)
 {
@@ -250,7 +251,7 @@ function placesterMap_reloadMarkers(markersData)
 
 
 /**
- * Initiazliation of map
+ * Initialization of map
  */
 $('#placester_listings_map_map').ready(function() 
 {

@@ -2,6 +2,7 @@
 
 /**
  * Common plugin utilities
+ * @file /core/util.php
  */
 
 /**
@@ -19,7 +20,7 @@ function placester_post_slug()
 
 
 
-/*
+/**
  * "No API Key" exception
  */
 class PlaceSterNoApiKeyException extends Exception
@@ -71,7 +72,16 @@ function placester_is_api_key_specified()
 }
 
 
-
+/**
+ * Gets WordPress post id or creates post.
+ * Searches WordPress database for post with post_name equal to
+ * property id. If found, returns post id. Otherwise creates
+ * post and returns property id. Also updates any post older
+ * than 48 hours.
+ *
+ * @param string $property_id
+ * @return int $post_id
+ */
 function placester_get_post_id( $property_id ) {
     global $wpdb;
 
@@ -250,6 +260,8 @@ global $placester_warn_on_api_key;
 
 /**
  * Prints warning message if API key not set
+ *
+ * @return bool
  */
 function placester_warn_on_api_key()
 {
@@ -275,6 +287,7 @@ function placester_warn_on_api_key()
 /**
  * Returns URL of property page
  *
+ * @param int $id
  * @return string
  */
 function placester_get_property_url($id)
@@ -294,6 +307,8 @@ function placester_get_property_url($id)
 
 /**
  * Adds filters to property list request specified in admin section
+ *
+ * @param array $filter
  */
 function placester_add_admin_filters(&$filter)
 {
@@ -361,6 +376,8 @@ function unset_all_featured_new_properties() {
  * Returns value of property, when property can be "property1.property2"
  * meaning $o->property1->property2 value
  *
+ * @param object $o
+ * @param string $property_name
  * @return string
  */
 function placester_get_property_value($o, $property_name)
@@ -388,6 +405,9 @@ function placester_get_property_value($o, $property_name)
  * Sets value of property, when property can be "property1.property2"
  * meaning $o->property1->property2 value
  *
+ * @param object $o
+ * @param string $property_name
+ * @param $value
  * @return string
  */
 function placester_set_property_value($o, $property_name, $value)
@@ -411,6 +431,8 @@ function placester_set_property_value($o, $property_name, $value)
 
 /**
  * Cuts empty entries of array
+ *
+ * @param array $request
  */
 function placester_cut_empty_fields(&$request)
 {
@@ -459,7 +481,7 @@ function placester_provider_check()
 }
 
 /**
- *      Checks to see if the company is_verified
+ *      Checks to see if the company is_verified.
  *      Displays a warning message if not.
  */
 function placester_verified_check()
@@ -657,7 +679,9 @@ function single_page_details() {
     return $post->post_content;
     }
 }
-
+/**
+ * Shows basic details for property listing
+ */
 function listing_basic_details() {
     global $post;
 
@@ -673,6 +697,9 @@ function listing_basic_details() {
     }
 }
 
+/**
+ * Shows beds, baths, rent, date available for listing
+ */
 function listing_beds_baths_price () 
 {
     return '<h3>Basic Details</h3>
@@ -684,6 +711,11 @@ function listing_beds_baths_price ()
     </p>';
 }
 
+/**
+ * Gets coordinates of listing
+ * @param object $data
+ * @return string $post_content
+ */
 function placester_get_coordinates($data) {
     if (!empty($data->location->coords->latitude) && !empty($data->location->coords->longitude)):
         $post_content = '<div class="map-wrapper"><div id="map-container"></div></div>';
@@ -691,6 +723,11 @@ function placester_get_coordinates($data) {
     endif;
 }
 
+/**
+ * Shows google mapped property
+ * @param object $data
+ * @return string $post_content
+ */
 function placester_office_geocoded($data) {
     if (!empty($data->location->coords->latitude) && !empty($data->location->coords->longitude)): 
 
@@ -718,7 +755,7 @@ function placester_office_geocoded($data) {
 
 /**
  * Used for the search widget to get listing locations
- * @param $location (city, state, zip)
+ * @param object $location (city, state, zip)
  */
 function placester_display_location($location)
 {
@@ -742,6 +779,9 @@ function placester_display_location($location)
     }
 }
 
+/**
+ * Removes all wordpress 'property' posts
+ */
 function placester_remove_listings() {
     global $wpdb;
     $myrows = $wpdb->get_results( "DELETE FROM wp_posts WHERE post_type = 'property'" );

@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Get Themes tab
- * Intro form
+ * Admin interface: Get Themes tab.
+ * Intro form.
+ * @file /admin/themes_intro.php
  */
 
 $type = (isset($_REQUEST['type']) ? $_REQUEST['type'] : '');

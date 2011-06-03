@@ -1,8 +1,9 @@
 <?php
 
 /**
- * Admin interface: Add listing tab
- * "Add listing" form
+ * Admin interface: Add listing tab.
+ * "Add listing" form.
+ * @file /admin/property_add_form.php
  */
 
 ?>

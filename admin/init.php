@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Admin interface, disptaching all the stuff
+ * Admin interface, disptaching all the stuff.
+ * @file /admin/init.php
  */
 
 /**
@@ -79,6 +80,7 @@ add_action( 'admin_menu', 'placester_admin_menu' );
 
 /**
  * Admin menu
+ * @{
  */
 
 /**
@@ -344,11 +346,12 @@ function placester_admin_templates_html() {
 function placester_admin_update_html() {
     require( dirname( __FILE__ ) . '/update.php' );
 }
-
+/** @} */
 
 
 /**
  * Admin utilities
+ * @{
  */
 
 /**
@@ -370,6 +373,7 @@ function placester_error_message( $message ) {
  * Prints warning message
  *
  * @param string $message
+ * @param string $id
  */
 function placester_warning_message( $message, $id = '' ) {
     ?>
@@ -384,7 +388,7 @@ function placester_warning_message( $message, $id = '' ) {
 /**
  * Prints info message
  *
- * @param string $message
+ * @param object $e
  */
 function placester_info_message( $e ) {
     ?>
@@ -414,6 +418,7 @@ function placester_success_message( $message ) {
  * Header of all admin pages - shows tabs-like list
  *
  * @param string $current_page
+ * @param string $title_postfix
  */
 function placester_admin_header( $current_page, $title_postfix = '' ) {
     $api_key = get_option( 'placester_api_key' );
@@ -519,7 +524,11 @@ function placester_admin_actualize_company_user() {
 
 
 /**
- * Create a potbox widget
+ * Create a postbox widget.
+ * @{
+ */
+/**
+ * Container header
  */
 function placester_postbox_container_header( $styles = 'width: 100%' ) {
     ?>
@@ -531,7 +540,9 @@ function placester_postbox_container_header( $styles = 'width: 100%' ) {
 }
 
 
-
+/**
+ * Container footer
+ */
 function placester_postbox_container_footer() {
 	?>
    			</div>
@@ -542,7 +553,9 @@ function placester_postbox_container_footer() {
 }
 
 
-
+/**
+ * Main content
+ */
 function placester_postbox( $id, $title, $content ) {
 ?>
 	<div id="<?php echo $id; ?>" class="postbox">
@@ -557,7 +570,9 @@ function placester_postbox( $id, $title, $content ) {
 
 
 
-
+/**
+ * Postbox header
+ */
 function placester_postbox_header( $title, $id = '' ) {
     ?>
     <div id="<?php echo $id; ?>" class="postbox">
@@ -568,14 +583,16 @@ function placester_postbox_header( $title, $id = '' ) {
 }
 
 
-
+/**
+ * Postbox footer
+ */
 function placester_postbox_footer() {
     ?>
 		</div>
 	</div>
     <?php
 }
-
+/** @} */
 
 
 /**
@@ -599,3 +616,4 @@ function placester_is_template_active($name) {
 
     return false;
 }
+/** @} */
