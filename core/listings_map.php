@@ -279,6 +279,4 @@ $('#placester_listings_map_map').ready(function()
             markerFactory: placesterMap_markerFactory
         });
 });
-
 </script>
-<div id="placester_listings_map_map"></div>

@@ -289,7 +289,6 @@ add_action( 'load-placester_page_placester_support',
  * Admin menu - "Get Themes" page
  */
 function placester_admin_themes_html() {
-    // not used now
     require( dirname( __FILE__ ) . '/themes.php' );
 }
 
@@ -299,8 +298,6 @@ function placester_admin_themes_html() {
  * Admin menu - "Get Themes" page, on-load handler
  */
 function placester_admin_themes_onload() {
-    wp_redirect( 'theme-install.php?tab=search&type=tag&s=placester&search=Search' );
-
     wp_enqueue_style( 'theme-install' );
     wp_enqueue_script( 'theme-install' );
     add_thickbox();

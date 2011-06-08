@@ -18,6 +18,15 @@ jQuery(document).ready(function()
             },
             'json');
     });
+   
+   jQuery("#refresh_user_data")
+        .click(function(e) {
+            var answer = confirm("This will reset all you information. Do you want to continue?")
+            if (!answer) {
+                e.preventDefault();
+            }
+        });
+
 });
 
 

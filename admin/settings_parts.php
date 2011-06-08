@@ -220,3 +220,16 @@ function row_hidden($label, $option_name, $description = '')
 
     <?php
 }
+
+function placester_refresh_user_data() {
+    global $wpdb;
+    $placester_options = $wpdb->get_results(
+        'SELECT option_name FROM ' . $wpdb->prefix . 'options ' .
+        "WHERE ((option_name LIKE  'placester%') AND (option_name !=  'placester_api_key')) " .
+        "OR (option_name LIKE '_transient_pl%') " .
+        "OR (option_name LIKE '_transient_timeout_pl%');");
+
+    foreach ($placester_options as $option) {
+        delete_option( $option->option_name );
+    }
+}

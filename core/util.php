@@ -507,7 +507,7 @@ function placester_theme_compatibility ()
 {
     global $i_am_a_placester_theme;
     if (!$i_am_a_placester_theme) {
-        placester_warning_message('You are currently running the Placester plugin, but not with a Placester theme. You\'ll likely have a better experience with a compatible theme.  Download one here: <input type="button" class="button " value="Show a List of Placester Themes" onclick="document.location.href = \'/wp-admin/theme-install.php?tab=search&type=term&s=placester&search=Search\';">');
+        placester_warning_message('You are currently running the Placester plugin, but not with a Placester theme. You\'ll likely have a better experience with a compatible theme.  <a href="' . admin_url() . 'admin.php?page=placester_themes">Find a compatible theme here.</a>');
     }
 }
 add_action('admin_notices', 'placester_theme_compatibility',10);

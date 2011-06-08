@@ -73,8 +73,15 @@ function placester_register_filter_form( $form_dom_id ) {
  *           function(markerData)
  *             markerData - array of all queried property fields
  */
-function placester_listings_map( $parameters = array() ) {
+function placester_listings_map( $parameters = array(), $return = false ) {
     require_once( 'core/listings_map.php' );
+    if ( !$return ) {
+?>
+<div id="placester_listings_map_map"></div>
+<?php 
+    } else {
+        return '<div id="placester_listings_map_map"></div>';
+    }
 }
 
 
@@ -152,8 +159,12 @@ function placester_listings_map( $parameters = array() ) {
  *            Dont ask for fields not displayed - that will
  *            unreasonably slow down requests.
  */
-function placester_listings_list($parameters) {
+function placester_listings_list($parameters, $return = false) {
     require_once('core/listings_list_lone.php');
+    
+    if ( $return )
+        return $result; 
+    echo $result;
 }
 
 

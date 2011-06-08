@@ -1,0 +1,12 @@
+hello.php
+/akismet/
+/theme-check/
+/wordpress-beta-tester/
+/w3-total-cache/
+/wordpress-seo/
+/wordpress-importer/
+/google-sitemap-generator/
+.DS_Store
+*.swo
+*.swp
+.svn/

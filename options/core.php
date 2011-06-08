@@ -1,13 +1,11 @@
 <?php
 /* Add option page only if the user has the proper permissions */
-add_action('init', 'placester_of_rolescheck' );
-function placester_of_rolescheck () {
+add_action('init', 'define_global_vars' );
+function define_global_vars() {
     global $theme_options;
     $theme_options = array();
-    if ( current_user_can('edit_theme_options') ) {
-        add_action('admin_menu', 'placester_of_add_page');
-        add_action('admin_init', 'placester_of_init' );
-    }
+    global $options_defined;
+    $options_defined = false;
 }
 
 /* 
@@ -108,12 +106,17 @@ function placester_of_setdefaults() {
 /* Add a subpage called "Theme Options" to the appearance menu. */
 if ( !function_exists( 'placester_of_add_page' ) ) {
     function placester_of_add_page() {
-        $of_page = add_submenu_page('themes.php', 'Theme Options', 'Theme Options', 'edit_theme_options', 'options-framework', 'placester_of_page');
+        $of_page = add_menu_page( 'Theme Options', 
+            'Theme Options', 
+            'edit_theme_options', 
+            'placester_theme', 
+            'placester_of_page', 
+            plugins_url( '/images/icons/theme_options.png', dirname( __FILE__ ) ), 
+            '3c' /* position between 3 and 4 */ );
 
         // Adds actions to hook in the required css and javascript
         add_action("admin_print_styles-$of_page",'placester_of_load_styles');
         add_action("admin_print_scripts-$of_page", 'placester_of_load_scripts');
-
     }
 }
 
@@ -293,13 +296,23 @@ if ( !function_exists( 'placester_option_getter' ) ) {
 }
 
 /* 
- * Helper function to return the theme option value. If no value has been saved, it returns $default.
- * Needed because options are saved as serialized strings.
+ * Helper function to set the theme option value.
  *
  */
 if ( !function_exists( 'placester_option_setter' ) ) {
     function placester_option_setter($arg_array) {
         global $theme_options;
+        global $options_defined;
+
+        // Show menu only if options are defined
+        if ( !$options_defined ) {
+            if ( current_user_can('edit_theme_options') ) {
+                add_action('admin_menu', 'placester_of_add_page');
+                add_action('admin_init', 'placester_of_init' );
+            }
+            $options_defined = true;
+        }
+
         array_push( $theme_options, $arg_array );
     }
 }
