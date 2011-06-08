@@ -16,10 +16,212 @@ function placester_listing_shortcode_info() {
     return $data;
 }
 
-/**
- * Shows the listing's number of bedrooms
- * @return int $data->bedrooms
- */
+function placester_listings_map_shortcode( $atts ) {
+
+    $defaults = array(
+        'max_price' => 5000,
+        'min_price' => 200,
+    );
+
+    $args = shortcode_atts( $defaults, $atts );
+
+    $filter_query = '';
+
+    if ( isset( $atts['available_on'] ) ) $filter_query .= '&available_on=' . date( 'd-m-Y', strtotime( '1st' . $atts['available_on'] ) );
+    if ( isset( $atts['bathrooms'] ) ) $filter_query .= '&bathrooms=' . $atts['bathrooms'];
+    if ( isset( $atts['bedrooms'] ) ) $filter_query .= '&bedrooms=' . $atts['bedrooms'];
+    if ( isset( $atts['city'] ) ) $filter_query .= '&location[city]=' . $atts['city'];
+    $filter_query .= '&max_price=' . $args['max_price'] . '&min_price=' . $args['min_price'];
+
+?>
+    <script type="text/javascript">
+    jQuery("#placester_listings_map_map").ready(function() {
+        filter_query = '<?php echo $filter_query; ?>';
+        placesterMap_setFilter(filter_query);
+    });
+    </script>
+<?php
+    $return = '<section class="map">';
+    try {
+        $return .= placester_listings_map( array(), true );
+    }
+    catch (PlaceSterNoApiKeyException $e) {
+        display_no_api_key_error();
+    }
+    $return .= '</section>'; 
+    return $return;
+}
+
+
+function placester_listings_search( $atts ) {
+
+    $defaults = array(
+        'max_price' => 5000,
+        'min_price' => 200,
+        'rows_per_page' => 5,
+        'sort_by' => 'bathrooms',
+        'show_sort' => 1,
+    );
+
+    $args = wp_parse_args( $atts, $defaults );
+
+    $filter_query = '';
+
+    if ( isset( $args['available_on'] ) ) $filter_query .= '&available_on=' . date( 'd-m-Y', strtotime( '1st' . $args['available_on'] ) );
+    if ( isset( $args['bathrooms'] ) ) $filter_query .= '&bathrooms=' . $args['bathrooms'];
+    if ( isset( $args['bedrooms'] ) ) $filter_query .= '&bedrooms=' . $args['bedrooms'];
+    if ( isset( $args['city'] ) ) $filter_query .= '&location[city]=' . $args['city'];
+    if ( isset( $args['state'] ) ) $filter_query .= '&location[state]=' . $args['state'];
+    if ( isset( $args['zip'] ) ) $filter_query .= '&location[zip]=' . $args['zip'];
+    $filter_query .= '&max_price=' . $args['max_price'] . '&min_price=' . $args['min_price'];
+
+    // See if snippet format is defined
+    $snippet_layout = get_option('placester_snippet_layout');
+
+?>
+    <script type="text/javascript">
+    function placesterListLone_createRowHtml(row)
+    {
+        var null_image =  '<?php echo WP_PLUGIN_URL . '/placester/images/null/property3-73-37.png' ?>';
+        if (row.images.length > 0) {
+            var images_array = ('' + row.images).split(',');
+            var image = '';
+
+            if (images_array.length > 0 && images_array[0].length > 0)
+            {
+                image = '<img src="' + images_array[0] + '" width=100 />';
+            }        
+        } else {
+            var image = '<img src="' + null_image + '" width=100 />';
+        };
+        <?php if ( $snippet_layout != '' ) { ?>
+        s = '<?php echo $snippet_layout; ?>';
+        s = s.replace("\[bedrooms\]", row.bedrooms);
+        s = s.replace("\[bathrooms\]", row.bathrooms);
+        s = s.replace("\[price\]", row.price);
+        s = s.replace("\[available_on\]", row.available_on);
+        s = s.replace("\[listing_address\]", row.location.address);
+        s = s.replace("\[listing_city\]", row.location.city);
+        s = s.replace("\[listing_state\]", row.location.state);
+        s = s.replace("\[listing_zip\]", row.location.zip);
+        s = s.replace("\[listing_description\]", row.description);
+        s = s.replace("\[listing_image\]", image);
+        
+        /* s = s.replace("\[listing_unit\]", row.location.unit);  
+        /* s = s.replace("\[listing_neighborhood\]", row.); 
+        /* s = s.replace("\[listing_map\]", <?php do_shortcode("[listing_map]"); ?>); */
+        /* s = s.replace("\[listing_images\]", row.bedrooms); */     
+        
+        <?php } else { ?>
+        s = '  <li class="single-item clearfix">' +
+            '  <div class="thumbs"><a href="' + row.url + '" >' +
+            image + 
+            '  </a></div>' +
+            '  <div class="item-details">' +
+            '  <a href="'+ row.url +'" class="feat-title">' + row.location.address + ', ' + row.location.city + ', ' + row.location.state + '</a>' +
+            '  <ul class="item-details clearfix">' +
+            '  <li>Bedrooms: ' + row.bedrooms + '</li>' +
+            '  <li>Available: ' + row.available_on+'</li>' +
+            '  <li>Bathrooms: ' + row.bathrooms + '</li>' +
+            '  <li>Price: ' + row.price + '</li>' +
+            '  </ul>' +
+            '  <a href="' + row.url + '" class="seemore">See More Details</a>' +
+            '  </div>' +
+            '  </li>';
+        <?php } ?>
+        return s;
+    }
+
+    function custom_empty_listings_loader (dom_object) {
+        var empty_property_search = '<div><h5>No results</h5><p>Sorry, no listings match that search. Maybe try something a bit broader? Or just give us a call and we\'ll personally help you find the right place.</p></div>'
+            dom_object.html(empty_property_search);
+    }
+
+    jQuery("#placester_listings_list").ready(function() {
+        filter_query = '<?php echo $filter_query; ?>';
+        placesterListLone_setFilter(filter_query);
+
+        jQuery('#sort_list').change(function() {
+            var v = $('#sort_list').val();
+            a = v.split(' ');
+            placesterListLone_setSorting(a[0], a[1]);
+        });
+    });
+    </script>
+<?php
+    $list_args = array(
+        'table_type' => 'html',
+        'sort_by' => 'bathrooms',
+        'js_row_renderer' => 'placesterListLone_createRowHtml',
+        'loading' => array(
+            'render_in_dom_element' => 'my_loader_div'
+        ),
+        'attributes' => array(
+            'bathrooms',
+            'price',
+            'images',
+            'description',
+            'url',
+            'location.city',
+            'location.state',
+            'location.address',
+            'location.zip',
+            'bedrooms',
+            'id',
+            'available_on'
+        )
+    );
+
+    $pagination = '';
+    if ( $args['rows_per_page'] ) {
+        $list_args['pager'] = array(
+            'render_in_dom_element' => 'pagination_loads_here',
+            'rows_per_page' => $args['rows_per_page'],
+            'css_current_button' => 'prev-btn-passive',
+            'css_not_current_button' => 'next-btn-active',
+            'first_page' => array( 'visible' => false, 'label' => 'First'), 
+            'previous_page' => array( 'visible' => true, 'label' => 'Prev' ),
+            'numeric_links' => array(
+                'visible' => false, 
+                'max_count' => 10,
+                'more_label' => '..more..',
+                'css_outer' => 'pager_numberic_block'
+            ),
+            'next_page' => array(
+                'visible' => true,
+                'label' => 'Next',
+            ),
+            'last_page' => array(
+                'visible' => false,
+                'label' => 'Last'
+            )
+        );
+
+        $pagination = 
+            '<section id="pagination_loads_here" class="pagination">' . "\n" .
+            '   <a href="#" class="prev-btn-passive">Prev</a>' . "\n" .
+            '   <a href="#" class="next-btn-active">Next</a>' . "\n" .
+            '   <div class="clr"></div>' . "\n" .
+            '</section>';
+    }
+    $sort_widget = '';
+    if ( $args['show_sort'] ) {
+        $sort_widget = 
+            '<div>' . "\n" .  
+            '	<div class="selLabel2 sort-by">Sort by</div>' . "\n" .
+            '    <div class="cselect2">' . "\n" .
+            '        <select id="sort_list" class="sparkbox-custom">' . "\n" .
+            '          <option value="bathrooms asc">bathrooms</option>' . "\n";
+        $sort_widget .= ( $args['sort_by'] == 'price' ) ? '<option  selected="selected" value="price asc">price</option>' . "\n" : '<option value="price asc">price</option>' . "\n"; 
+        $sort_widget .= 
+            '        </select>' . "\n" .
+            '    </div>' . "\n" .                    
+            '</div>';
+    } 
+
+    return '<div class="placester_search_results">' . $sort_widget . '<ul class="item-list">' . placester_listings_list( $list_args, true ) . '</ul>' . $pagination . '</div>';
+}
+
 function placester_bedrooms() {
     $data = placester_listing_shortcode_info();
     if(!empty($data->bedrooms))
@@ -189,8 +391,9 @@ function placester_listing_single_image() {
 
     return $image;
 }
-/** @} */
-
+ 
+add_shortcode('listings_search', 'placester_listings_search');
+add_shortcode('listings_map', 'placester_listings_map_shortcode');
 add_shortcode('bedrooms', 'placester_bedrooms');
 add_shortcode('bathrooms', 'placester_bathrooms');
 add_shortcode('price', 'placester_price');

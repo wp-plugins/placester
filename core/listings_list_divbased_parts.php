@@ -37,7 +37,7 @@ function placester_listings_list_divbased_html( $dom_id, $fields_array ) {
             'fields' => $fields_array
         ) );
 
-    echo $a['html'];
+    return $a['html'];
 }
 
 

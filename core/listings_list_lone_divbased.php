@@ -229,5 +229,4 @@ if ( $default_loading_render_in_dom_element )
 if ( $default_pager_render_in_dom_element )
     echo '<div id="placester_listings_pager"></div>';
 
-echo placester_listings_list_divbased_html( 'placester_listings_list', 
-    $webservice_fields );
+   $result = placester_listings_list_divbased_html( 'placester_listings_list', $webservice_fields );

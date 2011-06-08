@@ -345,6 +345,9 @@ function property_form($p, $v)
     for ($n = 1; $n <= 9; $n++)
         $array_1_9[$n] = $n . '&nbsp;&nbsp;';
 
+    $array_0_9 = array();
+    for ($n = 0; $n <= 9; $n++)
+        $array_0_9[$n] = $n . '&nbsp;&nbsp;';
     ?>
 
     <?php placester_postbox_header('Type'); ?>
@@ -372,7 +375,7 @@ function property_form($p, $v)
       </tr>
       <tr>
         <?php
-        column_dropdown('Half baths', $array_1_9, 'half_baths', $p, $v);
+        column_dropdown('Half baths', $array_0_9, 'half_baths', $p, $v);
         column_textbox('Price', 'price', $p, $v);
         ?>
       </tr>

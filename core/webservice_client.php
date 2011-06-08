@@ -287,6 +287,8 @@ function placester_property_set($id, $p)
             'location[coords][latitude]' => $p->location->coords->latitude,
             'location[coords][longitude]' => $p->location->coords->longitude
         );
+    // Don't pass description if blank, API will create it automatically
+    if ( !$request['description'] ) unset( $request['description'] );
 
     $url = 'http://api.placester.com/v1.0/properties/' . $id . '.json';
 
@@ -732,8 +734,12 @@ function placester_send_request_multipart($url, $request, $file_name, $file_mime
 function placester_clear_cache()
 {
     global $wpdb;
-    $wpdb->query(
-        'DELETE FROM  ' . $wpdb->prefix . 'options '.
+    $placester_options = $wpdb->get_results(
+        'SELECT option_name FROM ' . $wpdb->prefix . 'options ' .
         "WHERE option_name LIKE '_transient_pl_%'");
+
+    foreach ($placester_options as $option) {
+        delete_option( $option->option_name );
+    }
 
 }
