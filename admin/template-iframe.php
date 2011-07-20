@@ -1,33 +1,32 @@
 <?php
 
-/** 
- * Iframe Templates
- * @file /admin/template-iframe.php
- */
-
 $name = $_REQUEST['template_iframe'];
 $name = preg_replace('/[^0-9A-Za-z_]/', '', $name);
 
 if ( strlen( $name ) <= 0)
 {
-    ?>
-    <div style="text-align: center; margin-top: 100px">
-        Select a template from the list of templates at the right to 
+?>
+<style type="text/css">
+html {
+    background-color: #eee;
+}
+#default_template_text {
+    text-align: center;
+    display: block;
+    font-size: 14px;
+    font-family: "Lucida Grande",Verdana,Arial,"Bitstream Vera Sans",sans-serif;
+    margin-top: 225px;
+    color: #444;
+}  
+</style>
+    <div id="default_template_text">
+        Please select a template from the list of templates at the right to 
         view the preview.
     </div>
     <?php
     return;
 }
 
-// check permission
-if ( ! placester_is_template_active( $name ) ) {
-    ?>
-    <div style="text-align: center; margin-top: 100px">
-        This template is not active.
-    </div>
-    <?php
-    return;
-}
 
 
 // load template

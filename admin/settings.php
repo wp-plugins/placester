@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Admin interface: Settings tab.
- * @file /admin/settings.php
+ * Admin interface: Settings tab
  */
 
 include_once(dirname(__FILE__) . '/../core/const.php');
@@ -44,7 +43,7 @@ if (array_key_exists('refresh_user_data', $_POST))
         $error_message = $e->getMessage();
     }
     
-    if (strlen($error_message) > 0)
+    if ( isset($error_message) )
         placester_error_message($error_message);
     else
         placester_success_message('User data has been refreshed');
@@ -72,6 +71,7 @@ if (array_key_exists('apply', $_POST))
     $placester_display_zoning_types = array();
     $placester_display_purchase_types = array();
     $placester_display_listings_blog = false;
+    $placester_display_exact_address = false;
 
     foreach ($_POST as $key => $value)
     {
@@ -83,17 +83,26 @@ if (array_key_exists('apply', $_POST))
             array_push($placester_display_zoning_types, substr($key, 31));
         elseif (substr($key, 0, 33) == 'placester_display_purchase_types_')
             array_push($placester_display_purchase_types, substr($key, 33));
-        elseif (substr($key, 0, 10) == 'placester_')   
+        elseif (substr($key, 0, 10) == 'placester_') {
             update_option($key, $value);
+        }  
 
+        // If checked, make flags true so they won't be updated again
+        // Necessary to set default value
         if ( $key == 'placester_display_listings_blog' ) {
             $placester_display_listings_blog = true;
         }
+        if ( $key == 'placester_display_exact_address' ) {
+            $placester_display_exact_address = true;
+        }
+        // if ( $key == 'placester_default_country' ) {
+        //     $placester_display_exact_address = true;
+        // }
 
     }
 
     placester_admin_actualize_company_user();
-                
+
     cut_if_fullset($placester_display_property_types, $placester_const_property_types);
     cut_if_fullset($placester_display_listing_types, $placester_const_listing_types);
     cut_if_fullset($placester_display_zoning_types, $placester_const_zoning_types);
@@ -103,7 +112,10 @@ if (array_key_exists('apply', $_POST))
     update_option('placester_display_listing_types', $placester_display_listing_types);
     update_option('placester_display_zoning_types', $placester_display_zoning_types);
     update_option('placester_display_purchase_types', $placester_display_purchase_types);
-    if ( !$placester_display_listings_blog ) update_option('placester_display_listings_blog', $placester_display_listings_blog);
+    if ( !$placester_display_listings_blog )
+        delete_option('placester_display_listings_blog');
+    if ( !$placester_display_exact_address )
+        delete_option('placester_display_exact_address');
 
     // Update property urls
     if (!empty($api_key))
@@ -145,7 +157,7 @@ if (array_key_exists('apply', $_POST))
 ?>
 <div class="wrap">
   <?php placester_admin_header('placester_settings') ?>
-  <?php if (isset($show_success_message)) { placester_success_message("You're settings have been successfully saved"); } ?>
+  <?php if (isset($show_success_message)) { placester_success_message("Your settings have been successfully saved"); } ?>
   <form method="post" action="admin.php?page=placester_settings" id="placester_form">
     <?php placester_postbox_container_header(); ?>
 
@@ -182,7 +194,6 @@ if (array_key_exists('apply', $_POST))
         value="Remove All Listings" />
     </p>
     <?php placester_postbox_footer(); ?>
-
 
     <?php placester_postbox_header('Layout Style Settings'); ?>
     <table class="form-table">
@@ -367,6 +378,19 @@ if (array_key_exists('apply', $_POST))
           'style="font-weight: bold;"></span>/4d6e805aabe10f0f1500004c');
 
       row_checkbox('Display listings on blog page', 'placester_display_listings_blog'); 
+      ?>
+    </table>
+    <p class="submit">
+      <input type="submit" name="apply" class="button-primary" 
+        value="Save All Changes" />
+    </p>
+    <?php placester_postbox_footer(); ?>
+
+    <?php placester_postbox_header('Other'); ?>
+    <table class="form-table">
+      <?php 
+      row_dropdown('Default country', 'placester_default_country', $placester_countries, 'US', 'The country that will be selected by default on the "Add listing" page.'); 
+      row_checkbox('Display exact listings address', 'placester_display_exact_address', 'Checking this would display the exact address instead of the block address.'); 
       ?>
     </table>
     <p class="submit">

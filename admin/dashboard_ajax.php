@@ -1,17 +1,15 @@
 <?php
 
 /**
- * Called by AJAX to upload image from Settings page.
- * @file /admin/dashboard_ajax.php
+ * Called by AJAX to upload image from Settings page
  */
 
 if (!current_user_can("edit_themes"))
     die("permission denied");
 
 require_once( ABSPATH . WPINC . '/default-widgets.php' );
-/// Sets placester feedburner url.
+
 $url = 'http://feeds.feedburner.com/placester/news';
-/// Fetches the rss feed.
 $rss = @fetch_feed( $url );
 
 if ( is_wp_error($rss) ) {

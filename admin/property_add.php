@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Admin interface: Add listing tab.
- * Entry point.
- * @file /admin/property_add.php
+ * Admin interface: Add listing tab
+ * Entry point
  */
 
 include_once(dirname(__FILE__) . '/../core/const.php');
@@ -24,6 +23,8 @@ if (isset($_POST['add_finish']))
 {
     $p = http_property_data();
 
+    $pdata = $p;
+
     try
     {
         $r = placester_property_add($p);
@@ -32,7 +33,7 @@ if (isset($_POST['add_finish']))
         // set_url
         $p = new StdClass;
         $p->url = placester_get_property_url($property_id);
-        placester_property_set($property_id, $p);
+        placester_property_set($property_id, $p, 'POST');
 
     }
     catch (ValidationException $e) 
@@ -57,7 +58,6 @@ if (isset($_POST['add_finish']))
             {
                 if (strlen($_FILES['images']['name'][$n]) <= 0)
                     continue;
-
                 placester_property_image_add($property_id, 
                     $_FILES['images']['name'][$n],
                     $_FILES['images']['type'][$n],
@@ -71,11 +71,10 @@ if (isset($_POST['add_finish']))
         }
     }
 
-    if (!$error)
-        $view_success = true;
+    if (!$error) {
+        placester_success_message( 'The "' . $pdata->location->address . '" listing has been added. You can <a href="' . site_url( '/listing/' . $property_id ) . '">View it</a> or <a href="' . admin_url( 'admin.php?page=placester_properties&id=' . $property_id  ) . '">Edit it</a>.' );
+    
+    }
 }
 
-if ($view_success)
-    include('property_add_ok.php');
-else
-    include('property_add_form.php');
+include('property_add_form.php');

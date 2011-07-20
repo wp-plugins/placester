@@ -1,17 +1,4 @@
 <?php
-
-/**
- * Listings Map Widget.
- * Add a listings map to pages that do not display the map already.
- * @file /admin/widgets/listings_map.php
- */
-
-/**
- * Listings Map Widget.
- * Add a listings map to pages that do not display the map already.
- * For more information see the <a href="http://codex.wordpress.org/Widgets_API">Widget API</a>.
- */
-
 class Placester_Listing_Map_Widget extends WP_Widget {
 	function Placester_Listing_Map_Widget() {
 		$options = array(
@@ -46,9 +33,24 @@ Warning: This widget does not work on pages that already display the listings ma
 ?>
         <section class="side-ctnr">
         <h3><?php echo $title; ?></h3>
-        <section class="common-side-cont"><?php display_map(); ?></section>
+        <section class="common-side-cont"><?php 
+        try { placester_listings_map(); }
+        catch (PlaceSterNoApiKeyException $e) { display_no_api_key_error(); }
+    ?></section>
         <div class="separator"></div>
         </section>
 <?php 
     }
 }
+ 
+add_action('init', 'placester_listings_map_widget');
+// Style
+function placester_listings_map_widget() {
+    global $i_am_a_placester_theme;
+    wp_register_style( 'placester.map.widget', 
+        plugins_url( '/css/listings_map.widget.css', dirname( __FILE__ ) ) );
+
+    if ( empty($i_am_a_placester_theme) )
+        wp_enqueue_style( 'placester.map.widget' );
+}
+

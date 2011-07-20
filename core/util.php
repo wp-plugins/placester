@@ -2,7 +2,6 @@
 
 /**
  * Common plugin utilities
- * @file /core/util.php
  */
 
 /**
@@ -20,7 +19,7 @@ function placester_post_slug()
 
 
 
-/**
+/*
  * "No API Key" exception
  */
 class PlaceSterNoApiKeyException extends Exception
@@ -72,16 +71,7 @@ function placester_is_api_key_specified()
 }
 
 
-/**
- * Gets WordPress post id or creates post.
- * Searches WordPress database for post with post_name equal to
- * property id. If found, returns post id. Otherwise creates
- * post and returns property id. Also updates any post older
- * than 48 hours.
- *
- * @param string $property_id
- * @return int $post_id
- */
+
 function placester_get_post_id( $property_id ) {
     global $wpdb;
 
@@ -116,11 +106,60 @@ function placester_get_post_id( $property_id ) {
             if ($post_id <= 0)
                 $post_id = wp_insert_post($post);
             else
-            {
+            {	
                 $post['ID'] = $post_id;
                 $post_id = wp_update_post($post);
             }
         }
+    }
+    catch (Exception $e) {
+    }
+
+    return $post_id;
+}
+
+/* 
+ * Updates the listing post type in the Wordpress database
+ * If the post does not exist, it gets added.
+ *
+ * @param string $property_id - the Placester property id
+ * @return int - the database row id
+ */
+function placester_update_listing( $property_id ) {
+	global $wpdb;
+
+    $sql = $wpdb->prepare(
+        'SELECT ID, post_modified ' .
+        'FROM ' . $wpdb->prefix . 'posts ' .
+        "WHERE post_type = 'property' AND post_name = %s " .
+        'LIMIT 0, 1', $property_id);
+ 
+	$row = $wpdb->get_row($sql);
+    $post_id = 0;
+    if ($row)
+        $post_id = $row->ID;
+
+	try {
+        $data = placester_property_get($property_id);
+        if($data) {
+            $post = array(
+                 'post_type'   => 'property',
+                 'post_title'  => $data->location->full_address,
+                 'post_name'   => $property_id,
+                 'post_status' => 'publish',
+                 'post_author' => 1,
+                 'post_content'=> json_encode($data),
+                 'filter'      => 'db'
+              );
+
+            if ($post_id <= 0)
+                $post_id = wp_insert_post($post);
+            else
+            {	
+                $post['ID'] = $post_id;
+                $post_id = wp_update_post($post);
+            }
+        } 
     }
     catch (Exception $e) {
     }
@@ -260,8 +299,6 @@ global $placester_warn_on_api_key;
 
 /**
  * Prints warning message if API key not set
- *
- * @return bool
  */
 function placester_warn_on_api_key()
 {
@@ -287,7 +324,6 @@ function placester_warn_on_api_key()
 /**
  * Returns URL of property page
  *
- * @param int $id
  * @return string
  */
 function placester_get_property_url($id)
@@ -307,8 +343,6 @@ function placester_get_property_url($id)
 
 /**
  * Adds filters to property list request specified in admin section
- *
- * @param array $filter
  */
 function placester_add_admin_filters(&$filter)
 {
@@ -376,8 +410,6 @@ function unset_all_featured_new_properties() {
  * Returns value of property, when property can be "property1.property2"
  * meaning $o->property1->property2 value
  *
- * @param object $o
- * @param string $property_name
  * @return string
  */
 function placester_get_property_value($o, $property_name)
@@ -405,9 +437,6 @@ function placester_get_property_value($o, $property_name)
  * Sets value of property, when property can be "property1.property2"
  * meaning $o->property1->property2 value
  *
- * @param object $o
- * @param string $property_name
- * @param $value
  * @return string
  */
 function placester_set_property_value($o, $property_name, $value)
@@ -431,8 +460,6 @@ function placester_set_property_value($o, $property_name, $value)
 
 /**
  * Cuts empty entries of array
- *
- * @param array $request
  */
 function placester_cut_empty_fields(&$request)
 {
@@ -481,7 +508,7 @@ function placester_provider_check()
 }
 
 /**
- *      Checks to see if the company is_verified.
+ *      Checks to see if the company is_verified
  *      Displays a warning message if not.
  */
 function placester_verified_check()
@@ -503,11 +530,13 @@ function placester_verified_check()
  *      with the plugin because a paired theme isn't used.
  */
  
-function placester_theme_compatibility () 
+function placester_theme_compatibility() 
 {
     global $i_am_a_placester_theme;
-    if (!$i_am_a_placester_theme) {
-        placester_warning_message('You are currently running the Placester plugin, but not with a Placester theme. You\'ll likely have a better experience with a compatible theme.  <a href="' . admin_url() . 'admin.php?page=placester_themes">Find a compatible theme here.</a>');
+    $placester_admin_options = get_option('placester_admin_options');
+
+    if ( !$i_am_a_placester_theme && !isset( $placester_admin_options['hide_theme_alert'] ) ) {
+        placester_warning_message('You are currently running the Placester plugin, but not with a Placester theme. You\'ll likely have a better experience with a compatible theme.  <a href="' . admin_url() . 'admin.php?page=placester_themes">Find a compatible theme here.</a> <a href="#" id="hide-theme-alert" class="button" style="margin-left: 15px;">Hide this notice.</a>', '', false);
     }
 }
 add_action('admin_notices', 'placester_theme_compatibility',10);
@@ -560,7 +589,7 @@ function placester_get_templates() {
 
     $files = array();
     while ( $file = readdir( $dir ) ) {
-        if ( $file != '.' && $file != '..' )
+        if ( file_exists( dirname( __FILE__ ) . '/../templates/' . $file . '/template.php' ) )
             $files[] = $file;
     }
 
@@ -679,9 +708,7 @@ function single_page_details() {
     return $post->post_content;
     }
 }
-/**
- * Shows basic details for property listing
- */
+
 function listing_basic_details() {
     global $post;
 
@@ -697,9 +724,6 @@ function listing_basic_details() {
     }
 }
 
-/**
- * Shows beds, baths, rent, date available for listing
- */
 function listing_beds_baths_price () 
 {
     return '<h3>Basic Details</h3>
@@ -711,11 +735,6 @@ function listing_beds_baths_price ()
     </p>';
 }
 
-/**
- * Gets coordinates of listing
- * @param object $data
- * @return string $post_content
- */
 function placester_get_coordinates($data) {
     if (!empty($data->location->coords->latitude) && !empty($data->location->coords->longitude)):
         $post_content = '<div class="map-wrapper"><div id="map-container"></div></div>';
@@ -723,11 +742,6 @@ function placester_get_coordinates($data) {
     endif;
 }
 
-/**
- * Shows google mapped property
- * @param object $data
- * @return string $post_content
- */
 function placester_office_geocoded($data) {
     if (!empty($data->location->coords->latitude) && !empty($data->location->coords->longitude)): 
 
@@ -755,7 +769,7 @@ function placester_office_geocoded($data) {
 
 /**
  * Used for the search widget to get listing locations
- * @param object $location (city, state, zip)
+ * @param $location (city, state, zip)
  */
 function placester_display_location($location)
 {
@@ -779,10 +793,31 @@ function placester_display_location($location)
     }
 }
 
-/**
- * Removes all wordpress 'property' posts
- */
 function placester_remove_listings() {
     global $wpdb;
     $myrows = $wpdb->get_results( "DELETE FROM wp_posts WHERE post_type = 'property'" );
+}
+
+function get_plugin_dir( $subpath = false ) {
+    // Extract current plugin dir
+    $basename = plugin_basename( __FILE__ );
+    $exploded = explode( '/', $basename );    
+
+    return ($subpath) ?  WP_PLUGIN_DIR . '/' . $exploded[0] . '/' . $subpath . '/' : WP_PLUGIN_DIR . '/' . $exploded[0];
+}
+
+function get_plugin_url( $subpath = false ) {
+    // Extract current plugin dir
+    $basename = plugin_basename( __FILE__ );
+    $exploded = explode( '/', $basename );    
+
+    return ($subpath) ?  WP_PLUGIN_URL . '/' . $exploded[0] . '/' . $subpath . '/' : WP_PLUGIN_URL . '/' . $exploded[0];
+}
+
+function placester_get_placeholder_if_empty( $string, $placeholder='' ) {
+    return !empty( $string ) ? $string : ( !empty( $placeholder ) ? 'PLACEHOLDER_' . strtoupper( str_replace( ' ', '_', $placeholder ) ) : 'PLACEHOLDER_TEXT' );
+}
+
+function placester_get_template_url() {
+    return get_plugin_url( "templates/" . $_GET['template_iframe'] );
 }

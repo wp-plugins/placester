@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Admin interface: Edit listing form.
- * "Edit images" Popup.
- * @file /admin/property_edit_images_popup.php
+ * Admin interface: Edit listing form
+ * "Edit images" Popup
  */
 
 $property_id = $_REQUEST['id'];

@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Utilities for all div-based property lists.
- * @file /core/listings_list_divbased_parts.php
+ * Utilities for all div-based property lists
  */
 
 /**

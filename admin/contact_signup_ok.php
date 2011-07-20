@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Admin interface: Contact tab.
- * Sign up successful final screen.
- * @file /admin/contact_signup_ok.php
+ * Admin interface: Contact tab
+ * Sign up successful final screen
  */
 ?>
 <h3>You have successfully signed up</h3>

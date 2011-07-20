@@ -1,13 +1,12 @@
 <?php
 
 /**
- * Admin interface: Settings tab.
- * Utilities.
- * @file /admin/settings_parts.php
+ * Admin interface: Settings tab
+ * Utilities
  */
 
 /**
- * Cuts array with possible values.
+ * Cuts array with possible values
  *
  * @param array $array
  * @param array $possible_values
@@ -24,14 +23,62 @@ function cut_if_fullset(&$array, $possible_values)
 }
 
 
+/**
+ * Prints dropdown in html <table> row
+ *
+ * @param string $label
+ * @param string $option_name
+ * @param array $possible_values
+ * @param string $default_value
+ * @param string $description
+ */
+function row_dropdown($label, $option_name, $possible_values, $default_value='', $description='')
+{
+    $value = get_option($option_name);
+    $value = empty($value) ? $default_value : $value;
+
+    ?>
+    <tr valign="top">
+      <th><?php echo $label ?></th>
+      <td>
+        <select class="heading form-input-tip" 
+          name="<?php echo $option_name ?>" 
+          id="dd_<?php echo $option_name ?>">
+          <?php 
+            foreach ($possible_values as $key => $name)
+            {
+                if (!is_array($value))
+                    $is_selected = ($key == $value);
+                else
+                {
+                    $is_selected = false;
+                    $possible_values_exploded = explode(',', $key);
+
+                    if ($possible_values_exploded == $value) {
+                        $is_selected = true;
+                    }
+                }
+
+                echo '<option value="' . $key . '"' . ($is_selected ? ' selected' : '') . '>' . $name . '</option>';
+            }
+            ?>  
+        </select>
+        <?php 
+        if (strlen($description) > 0)
+            echo '<br /><label for="dd_' . $option_name . '"><span class="description">' . $description . '</span></label>';
+        ?>
+      </td>
+    </tr>
+    <?php
+}
 
 /**
- * Prints checkbox in html &lt;table&gt; row.
+ * Prints checkbox in html <table> row
  *
  * @param string $label
  * @param string $option_name
  */
-function row_checkbox($label, $option_name)
+function row_checkbox($label, $option_name, $description='')
 {
     $v = get_option($option_name);
     $checked = (strlen($v) > 0 ? " checked" : "");
@@ -40,8 +87,11 @@ function row_checkbox($label, $option_name)
     <tr valign="top">
       <th><?php echo $label ?></th>
       <td>
-        <input type="checkbox" name="<?php echo $option_name ?>" value="1" <?php echo $checked ?>/>
-        <label for="<?php echo $option_name ?>"></label>
+        <input type="checkbox" name="<?php echo $option_name ?>" id="<?php echo 'cb_' . $option_name ?>" value="1" <?php echo $checked ?>/>
+        <?php 
+        if (strlen($description) > 0)
+            echo '<br /><label for="cb_' . $option_name . '"><span class="description">' . $description . '</span></label>';
+        ?>
       </td>
     </tr>
     <?php
@@ -50,7 +100,7 @@ function row_checkbox($label, $option_name)
 
 
 /**
- * Prints list of checkboxes in html &lt;table&gt; row.
+ * Prints list of checkboxes in html <table> row
  *
  * @param string $label
  * @param array $values
@@ -94,11 +144,12 @@ function row_checkboxes($label, $values, $option_name)
 
 
 /**
- * Prints image upload box in html &lt;table&gt; row.
+ * Prints image upload box in html <table> row
  *
  * @param string $label
  * @param string $option_name
- * @param string $description
+ * @param string $tip
+ * @param string $tip2
  */
 function row_image($label, $option_name, $description = '')
 {
@@ -137,11 +188,10 @@ function row_image($label, $option_name, $description = '')
 
 
 /**
- * Prints textarea in html &lt;table&gt; row.
+ * Prints textarea in html <table> row
  *
  * @param string $label
  * @param string $option_name
- * @param string $description
  */
 function row_textarea($label, $option_name, $description = '')
 {
@@ -168,11 +218,10 @@ function row_textarea($label, $option_name, $description = '')
 
 
 /**
- * Prints textbox in html &lt;table&gt; row.
+ * Prints textbox in html <table> row
  *
  * @param string $label
  * @param string $option_name
- * @param string $description
  */
 function row_textbox($label, $option_name, $description = '')
 {
@@ -195,11 +244,10 @@ function row_textbox($label, $option_name, $description = '')
 }
 
 /**
- * Prints hidden field in html &lt;table&gt; row.
+ * Prints hidden field in html <table> row
  *
  * @param string $label
  * @param string $option_name
- * @param string $description
  */
 function row_hidden($label, $option_name, $description = '')
 {

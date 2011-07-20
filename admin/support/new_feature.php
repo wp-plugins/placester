@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Admin interface: Support tab.
+ * Admin interface: Support tab
  * "Request feature" form returned by AJAX
- * @file /admin/support/new_feature.php
  */
 
 $url = get_home_url();

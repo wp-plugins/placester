@@ -1,9 +1,8 @@
 <?php 
 
 /**
- * Admin interface: My Listings tab.
- * Script called by AJAX to get properties.
- * @file /admin/properties_ajax.php
+ * Admin interface: My Listings tab
+ * Script called by AJAX to get properties
  */
 
 require_once(dirname(__FILE__) . "/../../../../wp-load.php");

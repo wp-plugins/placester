@@ -1,29 +1,45 @@
 jQuery(document).ready(function($) {
-	jQuery('#placester_contact').submit(function() {
-		jQuery('.widget_contact input[type="submit"]').hide();
-		jQuery('.placester_loading').show();
+   var widget = jQuery('.side-ctnr.placester_contact');
+	jQuery('.side-ctnr.placester_contact form').submit(function(e) {
+        $this = jQuery(this);
+        e.preventDefault();
+
+        widget.find('.placester_loading').show();
+
 		var str = jQuery(this).serialize();
+        
+        var clear_form = function(form) {
+            form.find('input[type="text"], input[type="email"], textarea').val('');
+        }
+        
 		jQuery.ajax({
 			type: 'POST',
-			url: ajaxurl,
-			data: 'action=placester_contact&'+str,
+            url: contactwidgetjs.ajaxurl,
+			data: 'action=placester_contact&' + str,
 			success: function(msg) {
 					if(msg === 'sent') {
-						
-						jQuery('#placester_msg').hide();
-						jQuery('.placester_loading').slideUp();
-						jQuery('.widget_contact input[type="submit"]').slideUp();
-						jQuery('#placester_contact').slideUp();
-						jQuery('#placester_success').fadeIn('slow');
+						// jQuery(this).append(success_msg);
+                        widget.find('.placester_loading').fadeOut('fast');
+						widget.find('.msg')
+                            .html('Thank you for the email. We\'ll get back to you shortly.')
+                            .removeClass('error')
+                            .addClass('success')
+                            .fadeIn('slow');
+                            // .delay(2000)
+                            // .fadeOut('slow')
+                            // .removeClass('success');
+                        clear_form($this);
 					}
 					else {
-						jQuery('#placester_msg').html(msg);
-						jQuery('.placester_loading').hide();
-						jQuery('.widget_contact input[type="submit"]').show();
-						jQuery('#placester_msg').fadeIn('slow');
+                        widget.find('.placester_loading').hide();
+						widget.find('.msg')
+                            .html(msg)
+                            .removeClass('success')
+                            .addClass('error')
+                            .fadeIn('slow');
 					}
 			}
 		});
-		return false;
+
 	});
 });

@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Admin interface: My Listings tab.
- * Entry point.
- * @file /admin/properties.php
+ * Admin interface: My Listings tab
+ * Entry point
  */
 
 $base_url = WP_PLUGIN_URL . '/placester';

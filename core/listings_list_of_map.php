@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Body of "placester_listings_list_of_map()" function.
- * This file is processed only when function is called.
- * @file /core/listings_list_of_map.php
+ * Body of "placester_listings_list_of_map()" function
+ * This file is processed only when function is called
  */
 
 // Check is API key specified

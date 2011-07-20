@@ -1,18 +1,11 @@
 <?php
 
 /**
- * Body of "placester_listings_list()" function.
- * For div-based mode.
- * @file /core/listings_list_lone_divbased.php
+ * Body of "placester_listings_list()" function
+ * For div-based mode
  */
 
 include( 'listings_list_divbased_parts.php' );
-
-
-
-// Data source url
-
-
 
 $fields = implode( ',', $webservice_fields );
 $datasource_url = $base_url . '/properties_divbased.php?fields=' . $fields;
@@ -28,14 +21,13 @@ list(
     $pager_render_in_dom_element
 ) = placester_list_divbased_parse( $parameters );
 
-
 // Loading
 $loading_data = array();
 if ( isset( $parameters['loading'] ) )
     $loading_data = $parameters['loading'];
 
 $default_loading_render_in_dom_element = 
-    ! isset( $loading_data['render_in_dom_element'] );
+    !isset( $loading_data['render_in_dom_element'] );
 if ( $default_loading_render_in_dom_element )
     $loading_render_in_dom_element = 'placester_listings_loading';
 else

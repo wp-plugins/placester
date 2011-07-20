@@ -1,15 +1,7 @@
 <?php
 
 /**
- * Search Widget.
- * Add a search widget for your listings to your site.
- * @file /admin/widgets/search.php
- */
-
-/**
- * Search Widget.
- * Add a search widget for your listings to your site.
- * For more information see the <a href="http://codex.wordpress.org/Widgets_API">Widget API</a>.
+ * Create Search Widget
  */
 class Placester_Search_Widget extends WP_Widget {
     

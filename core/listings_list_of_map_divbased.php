@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Body of "placester_listings_list_of_map()" function.
- * For div-based mode.
- * @file /core/listings_list_of_map_divbased.php
+ * Body of "placester_listings_list_of_map()" function
+ * For div-based mode
  */
 
 include( 'listings_list_divbased_parts.php' );

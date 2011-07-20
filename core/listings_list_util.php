@@ -2,7 +2,6 @@
 
 /**
  * Utilities for all property lists
-* @file /core/listings_list_util.php
  */
 
 /**

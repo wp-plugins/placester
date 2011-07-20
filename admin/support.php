@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Admin interface: Support tab.
- * Entry point.
- * @file /admin/support_ajax.php
+ * Admin interface: Support tab
+ * Entry point
  */
 
 $view_success = false;
