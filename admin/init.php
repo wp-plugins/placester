@@ -511,6 +511,14 @@ function placester_admin_update_html() {
     require( dirname( __FILE__ ) . '/update.php' );
 }
 
+/**
+ * Admin menu - "Update" page, on-load handler
+ */
+function placester_admin_update_onload() {
+    wp_enqueue_style( 'placester.admin' );
+}
+add_action( 'load-placester_page_placester_update', 
+    'placester_admin_update_onload' );
 
 
 /**
