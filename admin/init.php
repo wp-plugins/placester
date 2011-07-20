@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Admin interface, disptaching all the stuff.
- * @file /admin/init.php
+ * Admin interface, disptaching all the stuff
  */
 
 /**
@@ -42,9 +41,6 @@ function placester_admin_menu() {
         'Get Themes', 'edit_themes', 'placester_themes', 
         'placester_admin_themes_html' );
     add_submenu_page( 'placester', '', 
-        'Templates', 'edit_themes', 'placester_templates', 
-        'placester_admin_templates_html' );
-    add_submenu_page( 'placester', '', 
         'Support', 'edit_themes', 'placester_support', 
         'placester_admin_support_html' );
     add_submenu_page( 'placester', '', 
@@ -59,6 +55,8 @@ function placester_admin_menu() {
 
     wp_register_script( 'googlemaps_v3',
         'http://maps.google.com/maps/api/js?sensor=false&amp;v=3.3' );
+    wp_register_script( 'zeroclipboard',
+        plugins_url( '/js/zeroclipboard/ZeroClipboard.js', dirname( __FILE__ ) ) );
     wp_register_script( 'jquery.datatables',
         plugins_url( '/js/jquery.dataTables.js', dirname( __FILE__ ) ) );
     wp_register_script( 'jquery.lightbox',
@@ -72,15 +70,45 @@ function placester_admin_menu() {
 
     wp_register_script( 'placester.admin.property', 
         plugins_url( '/js/admin.property.js', dirname( __FILE__ ) ) );
-}
+    wp_register_script( 'placester.admin.settings', 
+        plugins_url( '/js/admin.settings.js', dirname( __FILE__ ) ) );
 
+    wp_register_script( 'uploadify',
+        plugins_url( '/js/uploadify/jquery.uploadify.v2.1.4.js', dirname( __FILE__ ) ) );
+
+    wp_register_script( 'uploadify_swfobject', plugins_url( '/js/uploadify/swfobject.js', dirname( __FILE__ ) ) );
+    wp_register_script( 'uploadify_settings',
+        plugins_url( '/js/uploadify/uploadify_settings.js', dirname( __FILE__ ) ) );
+    wp_register_script( 'uploadify_settings_add',
+        plugins_url( '/js/uploadify/uploadify_settings_add.js', dirname( __FILE__ ) ) );
+    
+    // Styles
+    wp_register_style( 'uploadify',
+        plugins_url( '/js/uploadify/uploadify.css', dirname( __FILE__ ) ) );
+}
 add_action( 'admin_menu', 'placester_admin_menu' );
 
+add_action( 'admin_init', 'placester_admin_init');
+function placester_admin_init() {
+    wp_enqueue_script( 'placester.admin', 
+        plugins_url( '/js/placester.admin.js', dirname( __FILE__ ) ) );
+}
 
+/**
+ * Called when hide non-placester alert button is pushed
+ */
+add_action( 'wp_ajax_update_theme_alert', 'update_theme_alert' );
+function update_theme_alert() {
+    $placester_admin_options = get_option('placester_admin_options');
+    $placester_admin_options = isset($placester_admin_options) ? $placester_admin_options : array();
+    $placester_admin_options['hide_theme_alert'] = true;
+
+    echo update_option( 'placester_admin_options', $placester_admin_options );
+    die;
+}
 
 /**
  * Admin menu
- * @{
  */
 
 /**
@@ -107,6 +135,8 @@ function placester_admin_dashboard_onload() {
 
     wp_enqueue_script( 'placester.widgets', 
         'http://dhiodphkum9p1.cloudfront.net/assets/api/v1.0/widgets.js' );
+
+    wp_enqueue_style( 'placester.admin' );
     wp_enqueue_script( 'placester.admin.widgets', 
         plugins_url( '/js/admin.widgets.js', dirname( __FILE__ ) ) );
     wp_enqueue_style( 'placester.admin.widgets', 
@@ -144,10 +174,11 @@ function placester_admin_contact_onload() {
         exit();
     }
 
-    wp_enqueue_style( 'placester.admin' );
     wp_enqueue_script( 'jquery.upload' );
     wp_enqueue_script( 'placester.admin.contact',
         plugins_url( '/js/admin.contact.js', dirname( __FILE__ ) ) );
+
+    wp_enqueue_style( 'placester.admin' );
 }
 
 add_action( 'load-placester_page_placester_contact', 
@@ -159,7 +190,10 @@ add_action( 'load-placester_page_placester_contact',
  * Admin menu - "Properties" page
  */
 function placester_admin_properties_html() {
-    if ( isset( $_REQUEST['id'] ) )
+
+    if ( isset( $_REQUEST['craigslist_template'] ) )
+        require( dirname( __FILE__ ) . '/templates.php' );
+    else if ( isset( $_REQUEST['id'] ) )
         require( 'property_edit.php' );
     else
         require( 'properties.php' );
@@ -168,32 +202,164 @@ function placester_admin_properties_html() {
 
 
 /**
+ * Called after an uploadify image has been uploaded
+ * 
+ * Data sent in uploadify_settings.js
+ */
+add_action( 'wp_ajax_after_uploadify', 'ajax_after_uploadify' );
+function ajax_after_uploadify() {
+    // Clear the cache
+    placester_clear_cache();
+
+    // Update the wordpress listing post
+    $property_id = trim( $_POST['property_id'] );
+    placester_update_listing( $property_id );
+    die; 
+}
+
+/**
+ * Called when a image delete button has been pressed 
+ * in a edit listing form
+ * 
+ */
+add_action( 'wp_ajax_listing_image_delete', 'ajax_listing_image_delete' );
+function ajax_listing_image_delete() {
+    $property_id = trim( $_POST['property_id'] );
+    $images = is_array( $_POST['image'] ) ? $_POST['image'] : trim( $_POST['image'] );
+
+    if ( is_array($images) ) {
+        $errors = 0;
+        $successes = 0;
+        foreach ($images as $image) {
+            $r = placester_property_image_delete($property_id, $image);
+            if ( !$r ) {
+                $successes++;
+            } else {
+                $errors++;
+            }      
+            if ($successes) {
+                placester_update_listing( $property_id );
+            }
+        }
+        echo '{"s":"' . $successes . '","e":"' . $errors . '"}';
+    } else {
+        $r = placester_property_image_delete($property_id, $images);
+        if ( !$r ) {
+            echo 1;
+            placester_update_listing( $property_id );
+        } else {
+            echo 0;
+        }      
+    }
+
+    die; 
+}
+
+
+/**
+ * Called to update the listing image list in the backend
+ */
+add_action( 'wp_ajax_update_images', 'ajax_update_images' );
+function ajax_update_images() {
+    $p = placester_property_get( $_GET['property_id'] );
+    $form_url = admin_url() . 'admin.php?page=placester_properties&id=' . $p->id;
+    if ( $p->images ) {
+        foreach ( $p->images as $i )
+        {
+?>
+            <div class="img">
+                <img src="<?php echo $i->url ?>"/>
+                <a href="<?php echo $form_url ?>&delete=<?php echo urlencode($i->id) ?>" class="remove">
+                Delete
+                </a>
+            </div>
+<?php
+        }
+    }
+    die; 
+}
+
+/**
  * Admin menu - "Properties" page, on-load handler
  */
 function placester_admin_properties_onload() {
-    if ( isset( $_REQUEST['popup'] ) ) {
-        wp_enqueue_script( 'jquery.multifile' );
+    if ( isset( $_REQUEST['craigslist_template'] ) ) {
+        if ( isset( $_REQUEST['template_iframe'] ) ) {
+            require( dirname(__FILE__) . '/template-iframe.php' );
+            exit();
+        }
 
-        require( 'property_edit_images_popup.php' );
-        exit();
-    }
-
-    if ( isset( $_REQUEST['id'] ) ) {
-        wp_enqueue_style( 'placester.admin.jquery-ui' );
         wp_enqueue_script( 'googlemaps_v3' );
-        wp_enqueue_script( 'jquery.lightbox' );
-        wp_enqueue_script( 'jquery.multifile' );
-        wp_enqueue_script( 'jquery-ui.datepicker' );
-        wp_enqueue_script( 'placester.admin.property' );
-        wp_enqueue_script( 'placester.admin.property_edit',
-            plugins_url( '/js/admin.property_edit.js', dirname( __FILE__ ) ) );
-    }
-    else {
+        wp_enqueue_script( 'zeroclipboard' );
+        wp_enqueue_script( 'placester.admin.templates',
+            plugins_url( '/js/admin.templates.js', dirname( __FILE__ ) ) );
+
         wp_enqueue_style( 'placester.admin' );
-        wp_enqueue_script( 'jquery.datatables' );
-        wp_enqueue_script('placester.admin.properties',
-            plugins_url( '/js/admin.properties.js', dirname( __FILE__ ) ) );
+
+        $params = array(
+            'plugin_url' => get_plugin_url()
+        );
+        if ( isset($_GET['id']) ) 
+            $params['property_id'] = $_GET['id'];
+
+        wp_localize_script( 'placester.admin.templates', 'placester_templates', $params );
+    } else {
+        if ( isset( $_REQUEST['popup'] ) ) {
+            wp_enqueue_script( 'jquery.multifile' );
+
+            // require( 'property_edit_images_popup.php' );
+            // exit();
+        }
+
+        wp_enqueue_script( 'swfobject' );
+        wp_enqueue_script( 'uploadify' );
+        wp_enqueue_script( 'uploadify_settings' );
+
+        wp_enqueue_style( 'placester.admin' );
+
+        // Get current page protocol
+        $protocol = isset( $_SERVER['HTTPS'] ) ? 'https://' : 'http://';
+        // Output admin-ajax.php URL with same protocol as current page
+        $upload_dir = wp_upload_dir();
+        $api_key = get_option('placester_api_key');
+
+        $params = array(
+            'ajaxurl' => get_plugin_url(),
+            'wpajaxurl' => admin_url( 'admin-ajax.php', $protocol ),
+            'root' => $upload_dir['path'],
+            'loader' => site_url('wp-admin/images/wpspin_light.gif'),//get_plugin_url() . '/images/lightbox-ico-loading.gif',
+            'api_key' => $api_key
+        );
+        if ( isset($_GET['id']) ) 
+            $params['property_id'] = $_GET['id'];    
+        wp_localize_script( 'uploadify_settings', 'uploadify_settings', $params );
+
+        if ( isset( $_REQUEST['id'] ) ) {
+            wp_enqueue_style( 'placester.admin.jquery-ui' );
+            wp_enqueue_script( 'googlemaps_v3' );
+            wp_enqueue_script( 'jquery.lightbox' );
+            wp_enqueue_script( 'jquery.multifile' );
+            wp_enqueue_script( 'jquery-ui.datepicker' );
+            wp_enqueue_script( 'placester.admin.property' );
+            wp_enqueue_script( 'placester.admin.property_edit',
+                plugins_url( '/js/admin.property_edit.js', dirname( __FILE__ ) ) );
+
+            $params = array(
+                'spinner' => site_url('wp-admin/images/wpspin_light.gif')
+            );
+            wp_localize_script( 'placester.admin.property_edit', 'params', $params );
+        }
+
+        else {
+            wp_enqueue_style( 'placester.admin' );
+            wp_enqueue_script( 'jquery.datatables' );
+            wp_enqueue_script('placester.admin.properties',
+                plugins_url( '/js/admin.properties.js', dirname( __FILE__ ) ) );
+        }
+
+
     }
+ 
 }
 
 add_action( 'load-placester_page_placester_properties', 
@@ -214,6 +380,31 @@ function placester_admin_property_add_html() {
  * Admin menu - "Add Listing" page, on-load handler
  */
 function placester_admin_property_add_onload() {
+
+        wp_enqueue_script( 'swfobject' );
+        wp_enqueue_script( 'uploadify' );
+        wp_enqueue_script( 'uploadify_settings_add' );
+
+        wp_enqueue_style( 'placester.admin' );
+
+        // Get current page protocol
+        $protocol = isset( $_SERVER['HTTPS'] ) ? 'https://' : 'http://';
+        // Output admin-ajax.php URL with same protocol as current page
+        $upload_dir = wp_upload_dir();
+        $api_key = get_option('placester_api_key');
+
+        $params = array(
+            'ajaxurl' => get_plugin_url(),
+            'wpajaxurl' => admin_url( 'admin-ajax.php', $protocol ),
+            'root' => $upload_dir['path'],
+            'loader' => site_url('wp-admin/images/wpspin_light.gif'),//get_plugin_url() . '/images/lightbox-ico-loading.gif',
+            'api_key' => $api_key
+        );
+        if ( isset($_GET['id']) ) 
+            $params['property_id'] = $_GET['id'];    
+
+        wp_localize_script( 'uploadify_settings_add', 'uploadify_settings', $params );
+
     wp_enqueue_style( 'placester.admin.jquery-ui' );
 
     wp_enqueue_script( 'googlemaps_v3' );
@@ -233,6 +424,8 @@ add_action( 'load-placester_page_placester_property_add',
  */
 function placester_admin_settings_html() {
     require( 'settings.php' );
+
+
 }
 
 
@@ -245,11 +438,11 @@ function placester_admin_settings_onload() {
         require( 'settings_ajax.php' );
         exit();
     }
+    wp_enqueue_script( 'jquery.upload' );
+    wp_enqueue_script( 'placester.admin.settings' );
 
     wp_enqueue_style( 'placester.admin' );
-    wp_enqueue_script( 'jquery.upload' );
-    wp_enqueue_script( 'placester.admin.settings',
-        plugins_url( '/js/admin.settings.js', dirname( __FILE__ ) ) );
+    
 }
 
 add_action( 'load-placester_page_placester_settings', 
@@ -275,9 +468,10 @@ function placester_admin_support_onload() {
         exit();
     }
 
-    wp_enqueue_style( 'placester.admin' );
     wp_enqueue_script( 'placester.admin.support',
         plugins_url( '/js/admin.support.js', dirname( __FILE__ ) ) );
+
+    wp_enqueue_style( 'placester.admin' );
 }
 
 add_action( 'load-placester_page_placester_support', 
@@ -302,39 +496,12 @@ function placester_admin_themes_onload() {
     wp_enqueue_script( 'theme-install' );
     add_thickbox();
     wp_enqueue_script( 'theme-preview' );
+
+    wp_enqueue_style( 'placester.admin' );
 }
 
 add_action( 'load-placester_page_placester_themes', 
     'placester_admin_themes_onload' );
-
-
-
-/**
- * Admin menu - "Templates" page, on-load handler
- */
-function placester_admin_templates_onload() {
-    if ( isset( $_REQUEST['template_iframe'] ) ) {
-        require( dirname(__FILE__) . '/template-iframe.php' );
-        exit();
-    }
-
-    wp_enqueue_style( 'placester.admin' );
-    wp_enqueue_script( 'placester.admin.templates',
-        plugins_url( '/js/admin.templates.js', dirname( __FILE__ ) ) );
-}
-
-add_action( 'load-placester_page_placester_templates', 
-    'placester_admin_templates_onload' );
-
-
-
-/**
- * Admin menu - "Templates" page
- */
-function placester_admin_templates_html() {
-    require( dirname( __FILE__ ) . '/templates.php' );
-}
-
 
 
 /**
@@ -343,12 +510,19 @@ function placester_admin_templates_html() {
 function placester_admin_update_html() {
     require( dirname( __FILE__ ) . '/update.php' );
 }
-/** @} */
+
+/**
+ * Admin menu - "Update" page, on-load handler
+ */
+function placester_admin_update_onload() {
+    wp_enqueue_style( 'placester.admin' );
+}
+add_action( 'load-placester_page_placester_update', 
+    'placester_admin_update_onload' );
 
 
 /**
  * Admin utilities
- * @{
  */
 
 /**
@@ -370,11 +544,10 @@ function placester_error_message( $message ) {
  * Prints warning message
  *
  * @param string $message
- * @param string $id
  */
-function placester_warning_message( $message, $id = '' ) {
+function placester_warning_message( $message, $id = '', $inline = true ) {
     ?>
-    <div id="<?php echo $id ?>" class="updated inline">
+        <div <?php if ($id) echo 'id="' . $id . '" '; ?>class="updated <?php if ($inline) echo ' inline'; ?>">
       <p><?php echo $message ?></p>
     </div>
     <?php
@@ -385,7 +558,7 @@ function placester_warning_message( $message, $id = '' ) {
 /**
  * Prints info message
  *
- * @param object $e
+ * @param string $message
  */
 function placester_info_message( $e ) {
     ?>
@@ -415,7 +588,6 @@ function placester_success_message( $message ) {
  * Header of all admin pages - shows tabs-like list
  *
  * @param string $current_page
- * @param string $title_postfix
  */
 function placester_admin_header( $current_page, $title_postfix = '' ) {
     $api_key = get_option( 'placester_api_key' );
@@ -445,7 +617,7 @@ function placester_admin_header( $current_page, $title_postfix = '' ) {
 
     ?>
     <div id="icon-options-general" class="icon32 placester_icon"><br /></div>
-    <h2 style="border-bottom: #ccc 1px solid; padding-bottom: 0px">
+    <h2 id="placester-admin-menu">
       <?php
       $current_title = '';
       $v = '';
@@ -479,6 +651,7 @@ function placester_admin_header( $current_page, $title_postfix = '' ) {
  */
 function placester_admin_actualize_company_user() {
     $api_key = get_option( 'placester_api_key' );
+
     if ( strlen( $api_key ) <= 0 ) {
         update_option( 'placester_user_id', '' );
         update_option( 'placester_company_id', '' );
@@ -486,7 +659,7 @@ function placester_admin_actualize_company_user() {
         update_option( 'placester_company', new StdClass );
     } else {
         $r = placester_apikey_info( $api_key );
-        
+
         if (isset($r) && isset($r->api_key_id)) {
             update_option( 'placester_api_id', $r->api_key_id);
         }
@@ -496,6 +669,8 @@ function placester_admin_actualize_company_user() {
             $old_company = get_company_details();
         if ( isset( $old_company->logo ) )
             $company->logo = $old_company->logo;
+        if ( isset( $old_company->description ) )
+            $company->description = $old_company->description;
 
         if (isset($r->id) && isset($r->user->id)) {
             $user = placester_user_get( $r->id, $r->user->id );
@@ -503,29 +678,27 @@ function placester_admin_actualize_company_user() {
             update_option( 'placester_company_id', $r->id );
         }
         $user = $r->user;
-        if ( isset($user) ) {
-            update_option( 'placester_user', $user );
-        }
 
         $old_user = placester_get_user_details();
         if ( isset( $old_user->logo ) )
             $user->logo = $old_user->logo;
+        if ( isset( $old_user->description ) )
+            $user->description = $old_user->description;
 
-
+        if ( isset($user) ) {
+            update_option( 'placester_user', $user );
+        }
 
 
         update_option( 'placester_company', $company );
+
     }
 }
 
 
 
 /**
- * Create a postbox widget.
- * @{
- */
-/**
- * Container header
+ * Create a potbox widget
  */
 function placester_postbox_container_header( $styles = 'width: 100%' ) {
     ?>
@@ -537,9 +710,7 @@ function placester_postbox_container_header( $styles = 'width: 100%' ) {
 }
 
 
-/**
- * Container footer
- */
+
 function placester_postbox_container_footer() {
 	?>
    			</div>
@@ -550,9 +721,7 @@ function placester_postbox_container_footer() {
 }
 
 
-/**
- * Main content
- */
+
 function placester_postbox( $id, $title, $content ) {
 ?>
 	<div id="<?php echo $id; ?>" class="postbox">
@@ -567,9 +736,7 @@ function placester_postbox( $id, $title, $content ) {
 
 
 
-/**
- * Postbox header
- */
+
 function placester_postbox_header( $title, $id = '' ) {
     ?>
     <div id="<?php echo $id; ?>" class="postbox">
@@ -580,16 +747,14 @@ function placester_postbox_header( $title, $id = '' ) {
 }
 
 
-/**
- * Postbox footer
- */
+
 function placester_postbox_footer() {
     ?>
 		</div>
 	</div>
     <?php
 }
-/** @} */
+
 
 
 /**
@@ -613,4 +778,3 @@ function placester_is_template_active($name) {
 
     return false;
 }
-/** @} */

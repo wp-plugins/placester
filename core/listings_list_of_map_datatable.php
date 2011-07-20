@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Body of "placester_listings_list_of_map()" function.
- * For datatable-based mode.
- * @file /core/listings_list_of_map_datatable.php
+ * Body of "placester_listings_list_of_map()" function
+ * For datatable-based mode
  */
 
 include( 'listings_list_datatable_parts.php' );

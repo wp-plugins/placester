@@ -2,8 +2,7 @@
 
 /**
  * Admin interface: Support tab
- * Email content with "support request" which is sent to admin.
- * @file /admin/support/email.php
+ * Email content with "support request" which is sent to admin
  */
 
 ?>

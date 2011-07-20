@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Admin interface: Support tab.
- * Common Footer used by different types of "support requests".
- * @file /admin/support/footer.php
+ * Admin interface: Support tab
+ * Common Footer used by different types of "support requests"
  */
 
 ?>

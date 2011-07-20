@@ -41,6 +41,13 @@ jQuery(document).ready(function()
         jQuery("#location_zip").val() + ", " +
         jQuery("#location_city").val() + ", " +
         jQuery("#location_state").val();
+
+   console.log(jQuery('#property_add_form'));
+    
+    jQuery('#property_add_form').submit(function(e) {
+        // $('#file_upload').uploadifyUpload();
+    });
+
 });
 
 

@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Admin interface: Contact tab.
- * Edit details form.
- * @file /admin/contact_edit.php
+ * Admin interface: Contact tab
+ * Edit details form
  */
 $view_success = false;
 
@@ -22,11 +21,13 @@ if (isset($_POST['edit_finish']))
     details_compine_with_http($company, $user);
     $error = false;
 
+
     try
     {
         try
         {
             placester_user_set($user);
+
             update_option('placester_user', $user);
         }
         catch (ValidationException $e) 
@@ -75,7 +76,9 @@ else
     }
 
     $company = get_company_details();
+
     $user = placester_get_user_details();
+
 }
 
 if ($view_success)

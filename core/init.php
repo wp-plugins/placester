@@ -33,25 +33,31 @@ function placester_init() {
         ) );
     /** Enqueue jquery and fancybox */
     $base_url = WP_PLUGIN_URL . '/placester';
-    wp_register_script( 'sparkbox_select', $base_url . '/js/jquery.tools.min.js' );
-    wp_register_script( 'jquery_tools', $base_url . '/js/jquery.sparkbox-select.js' );
+    wp_register_script( 'jquery_tools', $base_url . '/js/jquery.tools.min.js' );
+    wp_register_script( 'sparkbox_select', $base_url . '/js/jquery.sparkbox-select.js' );
     wp_register_script( 'colorbox', $base_url . '/js/jquery.colorbox.js' );
-    // Always have the latest version of jquery included
-    wp_deregister_script( 'jquery' );
+
+     // Creates problem in backend, visual editor cannot change tabs (behaves 
+    // like no jquery included)
+    //wp_deregister_script( 'jquery' );
+    //wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js');
+ 
     wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js');
     wp_register_style( 'shortcodes', $base_url . '/css/shortcodes.css' );
-
-    wp_enqueue_script( 'sparkbox_select' );
-    wp_enqueue_script( 'jquery_tools' );
-    wp_enqueue_script( 'colorbox' );
-    wp_enqueue_style( 'shortcodes' );
+    wp_register_style( 'placester.map.widget', 
+        plugins_url( '/css/listings_map.widget.css', dirname( __FILE__ ) ) );
 
     wp_enqueue_script( 'jquery' );
-
+    wp_enqueue_style( 'shortcodes' );
+    wp_enqueue_script( 'jquery_tools' );
+    wp_enqueue_script( 'sparkbox_select' );
+    wp_enqueue_script( 'colorbox' );
     wp_enqueue_script('fancybox', $base_url . '/js/fancybox/jquery.fancybox-1.3.4.pack.js', array('jquery'));
     wp_enqueue_script('fancybox_easing', $base_url . '/js/fancybox/jquery.easing-1.3.pack.js', array('jquery', 'fancybox'));
     wp_enqueue_script('placester_fancybox', $base_url . '/js/placester.fancybox.js', array('jquery', 'fancybox', 'fancybox_easing'));
+
     wp_enqueue_style('fancybox_style', $base_url . '/js/fancybox/jquery.fancybox-1.3.4.css');
+
     /** Flush rewrite rules */
     global $wp_rewrite;
     $wp_rewrite->flush_rules();
@@ -180,7 +186,7 @@ function placester_insert_page( $args ) {
 }
 
 /**
- * Filters Placester post objects.
+ * Filters Placester postt objects.
  * Ensures post object is a Placester listing. Listings are loaded from external storage
  *
  * @param object $query
@@ -242,15 +248,17 @@ function placester_get_posts( $query ) {
 }
 
 /**
- *  Check if the current theme is a Placester theme. From backbone/functions/admin.php.
- *  If it's not, add needed functionality.  Currently changed and not used.
+ *  Adds the appropriate actions before returning the post
  */
-function check_placester_theme() {
+function placeser_pre_get_posts_actions() {
+    add_action( 'pre_get_posts', 'placester_pre_get_posts', 0 );
+
     $display_listings_on_blog = get_option( 'placester_display_listings_blog' );
+
     if ( $display_listings_on_blog )
         add_action( 'pre_get_posts', 'placester_get_posts', 0 );
 }
-add_action('init', 'check_placester_theme');
+add_action('init', 'placeser_pre_get_posts_actions');
 
 /**
  *  Utility function that outputs an admin notice.

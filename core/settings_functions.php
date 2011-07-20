@@ -2,7 +2,6 @@
 
 /**
  * Functions related to extraction of plugin settings
- * @file /core/settings_functions.php
  */
 
 /**
@@ -13,6 +12,7 @@
 function placester_get_user_details()
 { 
     $user = get_option('placester_user');
+
     $company = get_option('placester_company');
     if(isset($company->location)) $location = $company->location;
 
@@ -47,7 +47,7 @@ function placester_get_user_details()
     if (!isset($user->email))
         $user->email = null;
     if (!isset($user->description))
-        $user->description = "Just a simple description of myself. Something more substantial is coming shortly.";
+        $user->description = null;//"Just a simple description of myself. Something more substantial is coming shortly.";
 
     return $user;
 }
@@ -90,7 +90,7 @@ function get_company_details()
     if (!isset($company->phone))
         $company->phone = null;
     if (!isset($company->description))
-        $company->description = 'A great description is on the way, for now - this should do.';
+        $company->description = null;//'A great description is on the way, for now - this should do.';
 
     return $company;
 }

@@ -2,7 +2,6 @@
 
 /**
  * Called by AJAX (div-based list) to get properties.
- * @file properties_divbased.php
  */
 
 require( dirname( __FILE__ ) . '/../../../wp-load.php');
@@ -21,6 +20,10 @@ if ( isset( $_REQUEST['sort_by'] ) )
     $filter_request['sort_by'] = $_REQUEST['sort_by'];
 if ( isset( $_REQUEST['sort_type'] ) )
     $filter_request['sort_type'] = $_REQUEST['sort_type'];
+
+$placester_display_exact_address = get_option('placester_display_exact_address');
+if ( $placester_display_exact_address ) 
+    $filter_request['address_mode'] = 'exact';
 
 // Request
 try {

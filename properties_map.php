@@ -2,7 +2,6 @@
 
 /**
  * Called by AJAX (by map object) to get properties
- * @file properties_map.php
  */
 
 if ( ! defined( 'ABSPATH' ) )

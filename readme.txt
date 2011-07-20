@@ -3,7 +3,7 @@ Contributors: fredericktownes, mattbarba, placester
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
 Tested up to: 3.2.1
-Stable tag: 0.2.2
+Stable tag: 0.3
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -22,10 +22,6 @@ From the creators of http://placester.com: Create your fully functional real est
 
 
 http://www.youtube.com/watch?v=WZBha9cU0IM
-
-Have questions? Need help. Drop us a line in Real Estate Pro Forum:
-
-* http://placester.com/forums/
 
 See it in action - fully functional demo:
 
@@ -139,20 +135,22 @@ In general real-time, but if you use 3rd party property management services, the
 
 == Changelog ==
 
-= 0.1.0 =
-* Initial release
+= 0.3 = 
+* Added better image management
+* Added support for countries (US and Canada)
+* Added support for displaying the exact address
+* Visual compatibility with Wordpress 3.2
+* Corrected various bugs
+
+= 0.2.1 = 
+* Added universal theme support
+* Added auto page creation for new listings
 
 = 0.2.0 =
 * Usability improvements in WP Admin UI
 * Improved error messages and messaging
 * Improved permission handling
 
-= 0.2.1 = 
-* Added universal theme support
-* Added auto page creation for new listings
+= 0.1.0 =
+* Initial release
 
-== Videos ==
-
-Getting Started:
-
-http://www.youtube.com/watch?v=WZBha9cU0IM

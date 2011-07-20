@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Admin interface: Edit listing form.
- * Form for editing property.
- * @file /admin/property_edit_form.php
+ * Admin interface: Edit listing form
+ * Form for editing property
  */
 
 $images_url = plugins_url('/images', dirname(__FILE__));
@@ -28,7 +27,11 @@ jQuery(document).ready(function()
 <div class="wrap">
   <?php placester_admin_header('placester_properties') ?>
 
-  <h3>Edit Listing</h3>
+    <div style="position: relative">
+        <h3>Edit Listing</h3>
+        <a class="button view_listing" href="<?php echo site_url( '/listing/' . $property_id ); ?>" target="_blank">View listing</a>
+        <a class="craiglist_template button" href="admin.php?page=placester_properties&craigslist_template=1&id=<?php echo $_GET['id'] ?>">Post to Craigslist</a>
+    </div>
       <?php if ($provider = placester_provider_check()): ?>
           <div style="margin: 50px 50px 0 50px; padding: 10px; border: 2px solid #E6DB55; background: lightYellow; margin-bottom: 10px">
               <p style="margin-bottom: 0px"><?php echo 'Your account is being synced with ' . $provider["name"] . ' and so you can\'t create new listings inside this website. However, any property you create in <a href="'.$provider["url"].'">'.$provider["name"].'</a> will appear here automatically.'; ?></p>
@@ -41,16 +44,16 @@ jQuery(document).ready(function()
 
         placester_postbox_container_header();
         property_form($p, $v);
-        placester_postbox_container_footer();
-        ?>
-
-        <div id="images"></div>
-        <input type="button" name="images" class="button" value="Edit Images" onclick="images_popup()" />
-
-        <p class="submit">
+?>
+        <p class="submit" style="padding: 0; margin: 0 0 20px 0;">
           <input type="submit" name="edit_finish" class="button-primary" 
             value="Modify Listing" />
         </p>
+<?php
+        uploadify_box($p);
+        placester_postbox_container_footer();
+        ?>
+
       </form>
     <?php endif ?>
     

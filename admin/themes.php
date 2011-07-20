@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Admin interface: Get Themes tab.
- * Entry point.
- * @file /admin/themes.php
+ * Admin interface: Get Themes tab
+ * Entry point
  */
 
 include(ABSPATH . 'wp-admin/includes/theme-install.php');

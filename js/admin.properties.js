@@ -183,6 +183,7 @@ function placesterListLone_create()
                         'fnRender': 
                             function(row_data) 
                             { 
+                            console.log(row_data);
                                 var control_div =
                                     '<div class="row-actions">';
 
@@ -192,6 +193,10 @@ function placesterListLone_create()
                                 control_div += 
                                     '<span><a href="admin.php?page=placester_properties&id=' + 
                                     row_data.aData[10] + '">Edit</a> | </span>';
+
+                                control_div += 
+                                    '<span><a href="admin.php?page=placester_properties&id=' + 
+                                    row_data.aData[10] + '&craigslist_template=1">Post to craigslist</a> | </span>';
 
                                 if (typeof(placesterAdmin_properties_item_menu) != 'undefined')
                                 {
@@ -249,6 +254,11 @@ jQuery(document).ready(function()
     
         placesterListLone_create();
     }
+    jQuery('#placester_listings_list .manage-column.sorting, #placester_listings_list .manage-column.sorting_asc, #placester_listings_list .manage-column.sorting_desc').each(function(){
+        html = jQuery(this).html();
+        jQuery(this).html('<span>' + html + '</span>');
+    
+    });
     jQuery('#filter_button').click(function()
     {
         placesterListLone_filter = 

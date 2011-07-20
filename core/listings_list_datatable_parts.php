@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Utilities for all datatable-based property lists.
- * @file /core/listings_list_datatable_parts.php
+ * Utilities for all datatable-based property lists
  */
 
 /**

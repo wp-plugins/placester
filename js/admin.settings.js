@@ -37,33 +37,36 @@ jQuery(document).ready(function()
 jQuery(document).ready(function($) {
 
     var id = 'placester_map_info_template';
-
-    
-    $('#'+id+'_toggleVisual').click(
-        function() {
+    jQuery('#'+id+'_toggleVisual').click(function() {
             tinyMCE.execCommand('mceAddControl', false, id);
-        }
-    );
-
-    $('#'+id+'_toggleHTML').click(
-        function() {
+    });
+    jQuery('#'+id+'_toggleHTML').click(function() {
             tinyMCE.execCommand('mceRemoveControl', false, id);
-        }
-    );
+    });
 
     var id2 = 'placester_list_details_template';
-
-    $('#'+id2+'_toggleVisual').click(
-        function() {
+    jQuery('#'+id2+'_toggleVisual').click(function() {
             tinyMCE.execCommand('mceAddControl', false, id2);
-        }
-    );
-
-    $('#'+id2+'_toggleHTML').click(
-        function() {
+    }); 
+    jQuery('#'+id2+'_toggleHTML').click(function() {
             tinyMCE.execCommand('mceRemoveControl', false, id2);
-        }
-    );
+    });
+
+    var id3 = 'placester_snippet_layout';
+    jQuery('#'+id3+'_toggleVisual').click(function() {
+            tinyMCE.execCommand('mceAddControl', false, id3);
+    }); 
+    jQuery('#'+id3+'_toggleHTML').click(function() {
+            tinyMCE.execCommand('mceRemoveControl', false, id3);
+    });
+
+    var id4 = 'placester_listing_layout';
+    jQuery('#'+id4+'_toggleVisual').click(function() {
+            tinyMCE.execCommand('mceAddControl', false, id4);
+    }); 
+    jQuery('#'+id4+'_toggleHTML').click(function() {
+            tinyMCE.execCommand('mceRemoveControl', false, id4);
+    });
 
 });
 

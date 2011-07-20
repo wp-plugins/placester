@@ -2,7 +2,6 @@
 
 /**
  * Called by AJAX (datatable list) to get properties
- * @file properties_datatable.php
  */
 
 require_once( dirname( __FILE__ ) . '/../../../wp-load.php' );
@@ -20,9 +19,10 @@ if ( ! isset( $_REQUEST['no_admin_filter'] ) )
 else {
     if ( ! current_user_can( 'edit_themes' ) )
         die( 'permission denied' );
-
-    $filter_request['address_mode'] = 'exact';
 }
+$placester_display_exact_address = get_option('placester_display_exact_address');
+if ( $placester_display_exact_address ) 
+    $filter_request['address_mode'] = 'exact';
 
 // Paging parameters
 if ( isset( $_GET['iDisplayStart'] ) )

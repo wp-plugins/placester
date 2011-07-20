@@ -1,27 +1,31 @@
 <?php
 
 /**
- * Admin interface: Edit listing / Add listing utilities.
- * @file /admin/property_parts.php
+ * Admin interface: Edit listing / Add listing utilities
  */
 
-/**
- * @var array $multi_types - list of property types for use from UI
- */
-global $multi_types;
-$multi_types = array();
-$multi_types['housing,commercial,rental'] = 'Commercial Rental';
-$multi_types['housing,commercial,sale'] = 'Commercial Sale';
-$multi_types['land,,'] = 'Land';
-$multi_types['other,,'] = 'Other';
-$multi_types['parking,,rental'] = 'Parking';
-$multi_types['housing,residential,rental'] = 'Residential Rental';
-$multi_types['housing,residential,sale'] = 'Residential Sale';
-$multi_types['sublet,residential'] = 'Residential Sublet';
-$multi_types['sublet,commercial'] = 'Commercial Sublet';
-$multi_types['vacation,,rental'] = 'Vacation Rental';
+global $listing_types;
+global $zoning_types;
+global $purchase_types;
 
+$listing_types = array();
+$zoning_types = array();
+$purchase_types = array();
 
+$listing_types['housing'] = 'Housing';
+$listing_types['parking'] = 'Parking';
+$listing_types['sublet'] = 'Sublet';
+$listing_types['vacation'] = 'Vacation';
+$listing_types['land'] = 'Land';
+$listing_types['other'] = 'Other';
+
+$zoning_types['residential'] = 'Residential';
+$zoning_types['commercial'] = 'Commercial';
+$zoning_types['residential,commercial'] = 'Mixed';
+
+$purchase_types['rental'] = 'Rental';
+$purchase_types['sale'] = 'Sale';
+$purchase_types['rental,sale'] = 'Rental or Sale';
 
 /**
  * Returns property value, or null if not exists.
@@ -79,13 +83,10 @@ function control_dropdown($property_name, $possible_values, $value,
         else
         {
             $is_selected = false;
-            foreach ($value as $v)
-            {
-                if ($key == $v)
-                {
-                    $is_selected = true;
-                    break;
-                }
+            $possible_values_exploded = explode(',', $key);
+
+            if ($possible_values_exploded == $value) {
+                $is_selected = true;
             }
         }
 
@@ -99,8 +100,8 @@ function control_dropdown($property_name, $possible_values, $value,
 
 
 /**
- * Prints dropdown inside html &lt;table&gt; column.
- * Prints with possible validation error messages
+ * Prints dropdown inside html <table> column
+ * with possible validation error messages
  *
  * @param string $label
  * @param array $possible_values
@@ -111,9 +112,17 @@ function control_dropdown($property_name, $possible_values, $value,
  * @param string $colspan
  */
 function column_dropdown($label, $possible_values, $property_name, 
-    $value, $validation_object, $width = '', $colspan = '1')
+    $value, $validation_object, $width = '', $colspan = '1', $default_value ='')
 {
     $value = placester_get_property_value($value, $property_name);
+
+    $value = empty($value) ? $default_value : $value;
+    // if (is_array($value)) {
+    //     $count = count($value);
+    //     if ($count > 1) {
+    //     
+    //     }
+    // }
     $validation_message = p($validation_object, $property_name);
 
     ?>
@@ -123,7 +132,7 @@ function column_dropdown($label, $possible_values, $property_name,
       control_dropdown($property_name, $possible_values, $value, $width);
       if (isset($validation_message))
       {
-          echo '<br/><div style="color:red">';
+          echo '<br/><div class="placester_error">';
           echo $validation_message;
           echo '</div>';
       }
@@ -135,8 +144,8 @@ function column_dropdown($label, $possible_values, $property_name,
 
 
 /**
- * Prints dropdown in html &lt;table&gt; row.
- * Prints with possible validation error messages
+ * Prints dropdown in html <table> row
+ * with possible validation error messages
  *
  * @param string $label
  * @param array $possible_values
@@ -160,8 +169,8 @@ function row_dropdown($label, $possible_values, $property_name,
 
 
 /**
- * Prints textbox inside html &lt;table&gt; column.
- * Prints with possible validation error messages
+ * Prints textbox inside html <table> column
+ * with possible validation error messages
  *
  * @param string $label
  * @param string $property_name
@@ -173,6 +182,8 @@ function column_textbox($label, $property_name, $value, $validation_object,
     $colspan = '1')
 {
     $value = placester_get_property_value($value, $property_name);
+
+    $value = ($property_name == 'available_on') ? str_replace('-', '/', $value) : $value;
     $validation_message = p($validation_object, $property_name);
     $id = str_replace('/', '_', $property_name);
 
@@ -187,7 +198,7 @@ function column_textbox($label, $property_name, $value, $validation_object,
       <?php 
       if (isset($validation_message))
       {
-          echo '<br/><div style="color:red">';
+          echo '<br/><div class="placester_error">';
           echo $validation_message;
           echo '</div>';
       }
@@ -199,8 +210,8 @@ function column_textbox($label, $property_name, $value, $validation_object,
 
 
 /**
- * Prints textbox in html &lt;table&gt; row.
- * Prints with possible validation error messages
+ * Prints textbox in html <table> row
+ * with possible validation error messages
  *
  * @param string $label
  * @param string $property_name
@@ -222,8 +233,8 @@ function row_textbox($label, $property_name, $value, $validation_object)
 
 
 /**
- * Prints textarea in html &lt;table&gt; row.
- * Prints with possible validation error messages
+ * Prints textarea in html <table> row
+ * with possible validation error messages
  *
  * @param string $label
  * @param string $property_name
@@ -251,11 +262,55 @@ function control_textarea($label, $property_name, $value, $validation_object)
     }
 }
 
-
+/**
+ * Prints the images box containing the uploadify button
+ *
+ */
+function uploadify_box($p) {
+    placester_postbox_header('Images'); 
+?>
+      <div id="placester_images_box" class="clearfix">
+<?php
+    $uploadify_button = '';
+    $form_url = admin_url() . 'admin.php?page=placester_properties&id=' . $p->id;
+    echo '<div id="placester_listing_images" class="clearfix" style="padding: 10px">';
+    if ( $p->images ) { 
+?>
+    <form>
+<?php
+        foreach ( $p->images as $i ) {
+?>
+            <div class="img">
+                <img src="<?php echo $i->url ?>"/>
+                <a href="<?php echo $form_url ?>&delete=<?php echo urlencode($i->id) ?>" class="remove">
+                Delete
+                </a>
+            </div>
+<?php
+        }
+    } else {
+?>
+     <p>This listing has no images added</p>
+<?php
+    }
+    echo '</div>';
+?>
+    <div class="foot clearfix">
+        <a href="#" class="refresh">Refresh</a>
+        <a href="#" class="button" id="placester_delete_all_images">Delete all images</a>
+    </div>
+<?php
+        ?>
+      </div>
+    <?php 
+    placester_postbox_footer(); 
+    $uploadify_button = '<input id="file_upload" name="file_upload" type="file" />'; 
+    echo '<div class="uploadify_button" style="margin-bottom: 20px">' . $uploadify_button . '</div>';
+}
 
 /**
- * Prints images upload control in html &lt;table&gt; row.
- * Prints with possible validation error messages
+ * Prints images upload control in html <table> row
+ * with possible validation error messages
  *
  * @param string $validation_message
  */
@@ -264,6 +319,8 @@ function box_images($validation_message = '')
     placester_postbox_header('Images');
 
     ?>
+
+  <div id="placester_images_box" class="clearfix" style="padding: 10px">
     <input type="file" name="images[]" class="multi" />
     <?php 
 
@@ -274,6 +331,9 @@ function box_images($validation_message = '')
         echo '</div>';
     }
     placester_postbox_footer();
+?>
+        </div>
+    <?php
 }
 
 
@@ -283,32 +343,34 @@ function box_images($validation_message = '')
  *
  * @return object
  */
+
 function http_property_data()
 {
     $p = new StdClass;
     foreach ($_POST as $key => $value)
         placester_set_property_value($p, $key, $value);
 
-    $a = explode(',', $p->combined_type);
-
-    $p->listing_types = array();
-    if (count($a) >= 1)
-        $p->listing_types[] = $a[0];
+    $lt = explode(',', $p->listing_types);
+    $zt = explode(',', $p->zoning_types);
+    $pt = explode(',', $p->purchase_types);
 
     $p->zoning_types = array();
-    if (count($a) >= 2)
-        if (strlen($a[1]) > 0)
-            $p->zoning_types[] = $a[1];
+    foreach ($zt as $zone) {
+        $p->zoning_types[] = $zone;
+    }
+
+    $p->listing_types = array();
+    foreach ($lt as $listing) {
+        $p->listing_types[] = $listing;
+    }
 
     $p->purchase_types = array();
-    if (count($a) >= 3)
-        if (strlen($a[2]) > 0)
-            $p->purchase_types[] = $a[2];
+    foreach ($pt as $purchase) {
+        $p->purchase_types[] = $purchase;
+    }
 
     return $p;
 }
-
-
 
 /**
  * Prints property add / edit form
@@ -319,7 +381,19 @@ function http_property_data()
 function property_form($p, $v)
 {
     global $placester_const_property_types;
-    global $multi_types;
+    global $listing_types;
+    global $zoning_types;
+    global $purchase_types;
+
+    if (isset($_REQUEST['delete']))
+    {
+        $r = placester_property_image_delete($p->id, $_REQUEST['delete']);
+        if ( !$r ) {
+            header( 'Location: ' . admin_url('admin.php?page=placester_properties&id=' . $_REQUEST['id'] . '&deleted=1') );
+        }
+    } else if (isset($_REQUEST['deleted'])) {
+        placester_warning_message( 'Image was deleted' );
+    }         
 
     $company = get_option('placester_company');
 
@@ -332,7 +406,7 @@ function property_form($p, $v)
     else if ($company instanceof StdClass &&
         isset($company->provider) && isset($company->provider->name))
     {
-        $name = 'aa'; //$company->provider->name;
+        $name = $company->provider->name;
         placester_warning_message("We're automatically pulling " .
             'in your listings from ' . $name . '. ' .
             'Add or edit your listings with ' . $name, 'provider_warning');
@@ -340,6 +414,7 @@ function property_form($p, $v)
         <input id="property_readonly" type="hidden" value="provider_warning" />
         <?php
     }
+
 
     $array_1_9 = array();
     for ($n = 1; $n <= 9; $n++)
@@ -352,9 +427,21 @@ function property_form($p, $v)
 
     <?php placester_postbox_header('Type'); ?>
     <table class="form-table">
+      <tr>
       <?php
-      row_dropdown('Listing Type', $multi_types, 'combined_type', $p, $v);
+      row_dropdown('Listing type', $listing_types, 'listing_types', $p, $v);
       ?>
+      </tr>
+      <tr>
+      <?php
+      row_dropdown('Zoning Type', $zoning_types, 'zoning_types', $p, $v);
+      ?>
+      </tr>
+      <tr>
+      <?php
+      row_dropdown('Purchase Type', $purchase_types, 'purchase_types', $p, $v);
+      ?>
+      <tr>
     </table>
     <?php placester_postbox_footer(); ?>
 
@@ -363,7 +450,7 @@ function property_form($p, $v)
       <tr>
         <?php
         column_dropdown('Beds', $array_1_9, 'bedrooms', $p, $v);
-        column_textbox('Available_on', 'available_on', $p, $v);
+        column_textbox('Available on<span class="placester_required">*</span>', 'available_on', $p, $v);
         ?>
       </tr>
       <tr>
@@ -376,7 +463,7 @@ function property_form($p, $v)
       <tr>
         <?php
         column_dropdown('Half baths', $array_0_9, 'half_baths', $p, $v);
-        column_textbox('Price', 'price', $p, $v);
+        column_textbox('Price<span class="placester_required">*</span>', 'price', $p, $v);
         ?>
       </tr>
     </table>
@@ -386,22 +473,30 @@ function property_form($p, $v)
     <table class="form-table">
       <tr>
         <?php
-        column_textbox('Address', 'location/address', $p, $v);
-        column_textbox('Zip', 'location/zip', $p, $v);
+        column_textbox('Address<span class="placester_required">*</span>', 'location/address', $p, $v);
+        column_textbox('Zip<span class="placester_required">*</span>', 'location/zip', $p, $v);
         ?>
       </tr>
       <tr>
         <?php
-        column_textbox('City', 'location/city', $p, $v);
+        column_textbox('City<span class="placester_required">*</span>', 'location/city', $p, $v);
         column_textbox('Unit', 'location/unit', $p, $v);
         ?>
       </tr>
       <tr>
         <?php
-        column_textbox('State', 'location/state', $p, $v);
+        column_textbox('State<span class="placester_required">*</span>', 'location/state', $p, $v);
         column_textbox('Neighborhood', 'location/neighborhood', $p, $v);
         ?>
       </tr>
+      <tr>
+    <?php
+
+        $default_country = get_option('placester_default_country'); 
+        global $placester_countries;
+        column_dropdown('Country', $placester_countries, 'location/country', $p, $v, '', 1, $default_country);
+        ?>
+        </tr>
       <tr>
         <?php
         column_textbox('Latitude', 'location/coords/latitude', $p, $v);
@@ -435,5 +530,6 @@ function property_form($p, $v)
         <?php control_textarea('Description', 'description', $p, $v); ?>
       </div>
     <?php placester_postbox_footer(); ?>
+    
     <?php
 }

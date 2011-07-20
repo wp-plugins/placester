@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Admin interface: Edit listing form.
- * Entry point.
- * @file /admin/property_edit.php
+ * Admin interface: Edit listing form
+ * Entry point
  */
 
 include_once(dirname(__FILE__) . '/../core/const.php');
@@ -24,7 +23,7 @@ $property_id = $_REQUEST['id'];
 if (isset($_POST['edit_finish']))
 {
     $p = http_property_data();
-
+    
     try
     {
         $p->url = placester_get_property_url($property_id);
@@ -34,39 +33,24 @@ if (isset($_POST['edit_finish']))
     {
         $error_message = $e->getMessage();
         $v = $e->validation_data;
-        $error = true;
+
+        if ($error_message != 'OK')
+            $error = true;
     }
     catch (Exception $e) 
     {
-        $error_message = $e->getMessage();
-        $error = true;
+        $error_message = $e->getmessage();
+        if ($error_message != 'OK')
+            $error = true;
+    }
+    if (!$error) {
+        placester_update_listing( $property_id );
+        placester_success_message('This listing has been successfully modified.');
+        $view_success = true;
     }
 
-    if (!$error)
-        $view_success = true;
 }
 
 $p = placester_property_get($property_id);
-$combined = '';
-if (isset($p->listing_types) && is_array($p->listing_types) && 
-    count($p->listing_types) > 0)
-    $combined .= $p->listing_types[0];
-$combined .= ',';
-if (isset($p->zoning_types) && is_array($p->zoning_types) && 
-    count($p->zoning_types) > 0)
-    $combined .= $p->zoning_types[0];
-$combined .= ',';
-if (isset($p->purchase_types) && is_array($p->purchase_types) && 
-    count($p->purchase_types) > 0)
-    $combined .= $p->purchase_types;
 
-if (!isset($multi_types[$combined]))
-    $combined = 'other,,';
-$p->combined_type = $combined;
-
-
-
-if ($view_success)
-    include('property_edit_ok.php');
-else
-    include('property_edit_form.php');
+include('property_edit_form.php');

@@ -1,13 +1,8 @@
 <?php
 /**
- * Create Custom Taxonomies.
- * Not currently used.
- * @file /core/taxonomies.php
+ * Create Custom Taxonomies
  */
-
-/**
- * Create Placester taxonomies.
- */
+    
 function placester_taxonomies() {
  
     $placester_taxonomies = array(

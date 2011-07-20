@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Admin interface: Add listing tab.
- * "Add listing" form.
- * @file /admin/property_add_form.php
+ * Admin interface: Add listing tab
+ * "Add listing" form
  */
 
 ?>
@@ -16,7 +15,7 @@
             <p style="margin-bottom: 0px"><?php echo 'Your account is being synced with ' . $provider["name"] . ' and so you can\'t create new listings inside this website. However, any property you create in <a href="'.$provider["url"].'">'.$provider["name"].'</a> will appear here automatically.'; ?></p>
         </div>
     <?php else: ?>
-        <form method="post" action="admin.php?page=placester_property_add"
+        <form method="post" id="property_add_form" action="admin.php?page=placester_property_add"
           enctype="multipart/form-data">  
           <?php
           if (strlen($error_message) > 0)

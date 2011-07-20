@@ -1,13 +1,11 @@
 <?php
 
 /**
- * Admin interface: Contact tab.
+ * Admin interface: Contact tab
  * Entry point
- * @file /admin/contact.php
  */
 include('contact_parts.php');
 
-/// Get API key
 $api_key = get_option('placester_api_key');
 
 ?>

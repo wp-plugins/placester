@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Web service interface with placester remote properties storage.
- * @file /core/webservice_client.php
+ * Web service interface with placester remote properties storage
  */
 
 /*
@@ -43,7 +42,7 @@ object(stdClass)[163]
   'description' => string 'Great Deal'
 */
 
-/**
+/*
  * "Field not valid" exception
  */
 class ValidationException extends Exception
@@ -74,7 +73,7 @@ define( 'PLACESTER_TIMEOUT_SEC', 10 );
 
 
 
-/**
+/*
  * Returns fields acceptable as filter parameters
  *
  * @return array
@@ -146,7 +145,7 @@ function placester_filter_parameters_from_http()
 
 
 
-/**
+/*
  * Returns list of properties
  *
  * @param array $parameters - http parameters for api
@@ -179,29 +178,26 @@ function placester_property_list($parameters)
 
 
 
-/**
+/*
  * Returns property
  *
- * @param array $id - property id
+ * @param array $parameters - http parameters for api
  * @return object
  */
 function placester_property_get($id)
 {
     // Prepare parameters
     $url = 'http://api.placester.com/v1.0/properties/' . $id . '.json';
-    $request = array('api_key' => placester_get_api_key());
+    $request = array(
+        'api_key' => placester_get_api_key()
+    );
 
     // Do request
     return placester_send_request($url, $request);
 }
 
 
-/**
- * Returns API keyholder info
- *
- * @param array $api_key - API key
- * @return object
- */
+
 function placester_apikey_info($api_key)
 {
     
@@ -213,7 +209,7 @@ function placester_apikey_info($api_key)
 
 
 
-/**
+/*
  * Creates property
  *
  * @param array $p - http parameters for api
@@ -240,6 +236,7 @@ function placester_property_add($p)
             'location[neighborhood]' => $p->location->neighborhood,
             'location[city]' => $p->location->city,
             'location[state]' => $p->location->state,
+            'location[country]' => $p->location->country,
             'location[zip]' => $p->location->zip,
             'location[unit]' => $p->location->unit,
             'location[coords][latitude]' => $p->location->coords->latitude,
@@ -254,55 +251,56 @@ function placester_property_add($p)
 
 
 
-/**
+/*
  * Modifies property
  *
  * @param string $id
  * @param array $p - http parameters for api
  * @return array
  */
-function placester_property_set($id, $p)
+function placester_property_set($id, $p, $method='PUT')
 {
-    $request = 
-        array
-        (
-            'api_key' => placester_get_api_key(),
-            'property_type' => $p->property_type,
-            'listing_types' => $p->listing_types,
-            'zoning_types' => $p->zoning_types,
-            'purchase_types' => $p->purchase_types,
-            'bedrooms' => $p->bedrooms,
-            'bathrooms' => $p->bathrooms,
-            'half_baths' => $p->half_baths,
-            'price' => $p->price,
-            'available_on' => $p->available_on,
-            'url' => placester_get_property_value($p, 'url'),
-            'description' => $p->description,
-            'location[address]' => $p->location->address,
-            'location[neighborhood]' => $p->location->neighborhood,
-            'location[city]' => $p->location->city,
-            'location[state]' => $p->location->state,
-            'location[zip]' => $p->location->zip,
-            'location[unit]' => $p->location->unit,
-            'location[coords][latitude]' => $p->location->coords->latitude,
-            'location[coords][longitude]' => $p->location->coords->longitude
-        );
-    // Don't pass description if blank, API will create it automatically
-    if ( !$request['description'] ) unset( $request['description'] );
-
-    $url = 'http://api.placester.com/v1.0/properties/' . $id . '.json';
-
-    // Do request
-    return placester_send_request($url, $request, 'PUT');
+    if ( isset($p->location->coords) ) {
+        $request = 
+            array
+            (
+                'api_key' => placester_get_api_key(),
+                'property_type' => $p->property_type,
+                'listing_types' => $p->listing_types,
+                'zoning_types' => $p->zoning_types,
+                'purchase_types' => $p->purchase_types,
+                'bedrooms' => $p->bedrooms,
+                'bathrooms' => $p->bathrooms,
+                'half_baths' => $p->half_baths,
+                'price' => $p->price,
+                'available_on' => $p->available_on,
+                'url' => placester_get_property_value($p, 'url'),
+                'description' => $p->description,
+                'location[address]' => $p->location->address,
+                'location[neighborhood]' => $p->location->neighborhood,
+                'location[city]' => $p->location->city,
+                'location[state]' => $p->location->state,
+                'location[country]' => $p->location->country,
+                'location[zip]' => $p->location->zip,
+                'location[unit]' => $p->location->unit,
+                'location[coords][latitude]' => $p->location->coords->latitude,
+                'location[coords][longitude]' => $p->location->coords->longitude
+            );
+        // Don't pass description if blank, API will create it automatically
+        if ( !$request['description'] ) unset( $request['description'] );
+        $url = 'http://api.placester.com/v1.0/properties/' . $id . '.xml';
+        // Do request
+        return placester_send_request($url, $request, $method);
+    }
 }
 
 
 
-/**
+/*
  * Bulk change of property urls
  *
  * @param string $url_format
- * @param array $filter - http parameters for api
+ * @param array $p - http parameters for api
  * @return array
  */
 function placester_property_seturl_bulk($url_format, $filter)
@@ -319,7 +317,7 @@ function placester_property_seturl_bulk($url_format, $filter)
 
 
 
-/**
+/*
  * Adds image to property
  *
  * @param string $property_id
@@ -328,46 +326,45 @@ function placester_property_seturl_bulk($url_format, $filter)
  * @param string $file_tmpname
  * @return array
  */
-function placester_property_image_add($property_id, $file_name, 
-    $file_mime_type, $file_tmpname)
+function placester_property_image_add($property_id, $file_name, $file_mime_type, $file_tmpname, $api_key = '')
 {
-    $url = 'http://api.placester.com/v1.0/properties/media/image/' . 
-        $property_id . '.json';
-    $request = array('api_key' => placester_get_api_key());
+    $url = 'http://api.placester.com/v1.0/properties/media/image/' .  $property_id . '.json';
+    if ( $api_key )
+        $request = array('api_key' => $api_key);
+    else 
+        $request = array('api_key' => placester_get_api_key());
 
-    $ret = placester_send_request_multipart($url, $request, $file_name, 
-        $file_mime_type, $file_tmpname);
-    placester_clear_cache();
+    $ret = placester_send_request_multipart($url, $request, $file_name, $file_mime_type, $file_tmpname);
+
     return $ret;
 }
 
 
 
-/**
+/*
  * Deletes image from property
  *
  * @param string $property_id
  * @param string $image_url
  * @return array
  */
-function placester_property_image_delete($property_id, $image_url)
+function placester_property_image_delete($property_id, $image_id)
 {
     $request = 
         array
         (
             'api_key' => placester_get_api_key(),
-            'url' => $image_url
+            'image_id' => $image_id
         );
 
-    $url = 'http://api.placester.com/v1.0/properties/media/image/' . 
-        $property_id . '.json';
+    $url = 'http://placester.com/api/v1.0/properties/media/image/' . $property_id . '.xml';
 
     // Do request
     return placester_send_request($url, $request, 'DELETE');
 }
 
 
-/**
+/*
  * Adds new user
  *
  * @param object $user
@@ -399,7 +396,7 @@ function placester_user_add($user)
 
 
 
-/**
+/*
  * Returns user by id
  *
  * @param string $company_id
@@ -422,7 +419,7 @@ function placester_user_get($company_id, $user_id)
 
 
 
-/**
+/*
  * Modifies user
  *
  * @param object $user
@@ -434,6 +431,7 @@ function placester_user_set($user)
         array
         (
             'api_key' => placester_get_api_key(),
+            'user_id' => $user->id,
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'email' => $user->email,
@@ -448,14 +446,14 @@ function placester_user_set($user)
     placester_cut_empty_fields($request);
 
     $url = 'http://api.placester.com/v1.0/users.json';
-        
+
     // Do request
     return placester_send_request($url, $request, 'PUT');
 }
 
 
 
-/**
+/*
  * Returns current company
  *
  * @return array
@@ -470,10 +468,9 @@ function placester_company_get()
 
 
 
-/**
+/*
  * Modifies company
  *
- * @param object $id
  * @param object $company
  * @return array
  */
@@ -504,8 +501,7 @@ function placester_company_set($id, $company)
 
 
 /**
- * Checks Theme Compatibility
- * @param object $theme
+ *      Checks Theme Compatibility
  */
 function placester_theme_check($theme)
 {
@@ -528,7 +524,7 @@ function placester_theme_check($theme)
 
 }
 
-/**
+/*
  * Returns list of locations
  *
  * @return array
@@ -545,11 +541,11 @@ function placester_location_list()
 
 
 
-/**
+/*
  * Utils
  */
 
-/**
+/*
  * Sends HTTP request and parses genercic elements of API response
  *
  * @param string $url
@@ -585,13 +581,13 @@ function placester_send_request($url, $request, $method = 'GET')
         $response = get_transient($transient_id);
     }
 
+    $response = !is_array( $response ) ? $response : false;
     if ($response === false)
     {
         if ($method == 'POST' || $method == 'PUT')
         {
             $response = wp_remote_post($url, 
-                array
-                (
+                array (
                     'body' => $request, 
                     'timeout' => PLACESTER_TIMEOUT_SEC,
                     'method' => $method
@@ -599,21 +595,40 @@ function placester_send_request($url, $request, $method = 'GET')
         }
         else if ($method == 'DELETE')
         {
-            $request['_method'] = 'DELETE';
-            $response = wp_remote_post($url, 
-                array
-                (
-                    'body' => $request, 
-                    'timeout' => PLACESTER_TIMEOUT_SEC,
-                    'method' => 'POST'
-                ));
+            $ch = curl_init( $url );
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
+            curl_setopt($ch, CURLOPT_HEADER, 0); 
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            if (!$response)
+                $response['headers']["status"] = 200;
+            else {
+                $response = array();
+                $response['headers']["status"] = 400;
+            }
+
+            // Old way
+            // $request['_method'] = 'DELETE';
+            // $response = wp_remote_post($url, 
+            //     array
+            //     (
+            //         'body' => $request_body, 
+            //         'timeout' => PLACESTER_TIMEOUT_SEC,
+            //         'method' => 'POST'
+            //     ));
         }
         else {
+
             $response = wp_remote_get($url . '?' . $request_string, 
                 array
                 (
                     'timeout' => PLACESTER_TIMEOUT_SEC
                 ));
+
         }
         
         
@@ -622,42 +637,46 @@ function placester_send_request($url, $request, $method = 'GET')
          *      
          *      Only cache get requests, requests without errors, and valid responses.
          */
-        if ($affects_cache && !isset($response->errors) && $response['headers']["status"] === 200) {
-                placester_clear_cache();
-        }            
     }
 
-    // throw http-level exception if no response
-    if (isset($response->errors))
-        throw new Exception(json_encode($response->errors));
-    if ($response['response']['code'] == '204')
-        return null;
+    if ($affects_cache && !isset($response->errors) && $response['headers']["status"] === 200) {
+        placester_clear_cache();
+        return 0;
+    } else {
+        // throw http-level exception if no response
+        if (isset($response->errors))
+            throw new Exception(json_encode($response->errors));
+        if ($response['response']['code'] == '204')
+            return null;
 
-    $o = json_decode($response['body']);
-    if (!isset($o))
-        throw new Exception($response['response']['message']);
+        $o = json_decode($response['body']);
 
-    if (!isset($o->code))
-    {}
-    else if ($o->code == '201')
-    {}
-    else if (isset ($o->validations))
-        throw new ValidationException($o->message, $o->validations);
-    else
-        return false;
+        if (!isset($o) && ( $response['response']['code'] != 200 ) ) {
+
+        // echo $response['response']['message'];
+            throw new Exception($response['response']['message']);
+        }
+
+        if (!isset($o->code))
+        {}
+        else if ($o->code == '201')
+        {}
+        else if (isset ($o->validations))
+            throw new ValidationException($o->message, $o->validations);
+        else
+            return false;
         // throw new Exception($o->message);
 
-    if (isset($transient_id)) {
-        set_transient($transient_id, $response, 3600 * 48);
-    }
-
-
-    return $o;
+        if (isset($transient_id)) {
+            set_transient($transient_id, $response, 3600 * 48);
+        }
+        return $o;
+    }            
 }
 
 
 
-/**
+/*
  * Sends multipart HTTP request and parses genercic elements of API response.
  * Used to upload file
  *
@@ -698,11 +717,11 @@ function placester_send_request_multipart($url, $request, $file_name, $file_mime
                       'header' => 'Content-Type: multipart/form-data; boundary=' . $mime_boundary . $eol,
                       'content' => $data
                    ));
-     
-    $ctx = stream_context_create($params);
-  
+    
+   $ctx = stream_context_create($params);
+
     $handle = @fopen($url, 'r', false, $ctx);
-    if ( ! $handle )
+    if ( !$handle )
     	return false;
         // throw new Exception('http_request_failed');
 
@@ -724,13 +743,12 @@ function placester_send_request_multipart($url, $request, $file_name, $file_mime
         return false;
         // throw new Exception($o->message);
 
-    return $o;
+    return $o; 
+
 }
 
 
-/**
- * Clears cache
- */
+
 function placester_clear_cache()
 {
     global $wpdb;

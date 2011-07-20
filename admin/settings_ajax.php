@@ -2,7 +2,6 @@
 
 /**
  * Called by AJAX to upload image from Settings page
- * @file /admin/settings_ajax.php
  */
 
 if (!current_user_can("edit_themes"))
