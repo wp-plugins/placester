@@ -16,6 +16,7 @@ From the creators of http://placester.com: Create your fully functional real est
 * Every listing pages automatically created, great for SEO.
 * Fully customizable layout for property search and property details pages.
 * Unlimited images per listing
+* Export to Craiglist
 * Works with any theme
 * Lead capture widget
 * Analytic dashboard showing you views and leads.
@@ -47,6 +48,7 @@ Highlights:
 * Manage and track lead performance,
 * Customize layout using robust widgets and shortcodes ^,
 * Intuitive help tools,
+* Export to Craiglist,
 * Powerful search based on the Placester API and Google Maps,
 * Easily promote featured properties across your site,
 * Filter listings by any modality for promotion, focus on the clientele of interest,
@@ -139,6 +141,7 @@ In general real-time, but if you use 3rd party property management services, the
 * Added better image management
 * Added support for countries (US and Canada)
 * Added support for displaying the exact address
+* Added Craiglist template support
 * Visual compatibility with Wordpress 3.2
 * Corrected various bugs
 
