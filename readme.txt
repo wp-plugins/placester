@@ -135,6 +135,13 @@ In general real-time, but if you use 3rd party property management services, the
 
 == Changelog ==
 
+= 0.3 = 
+* Added better image management
+* Added support for countries (US and Canada)
+* Added support for displaying the exact address
+* Visual compatibility with Wordpress 3.2
+* Corrected various bugs
+
 = 0.2.1 = 
 * Added universal theme support
 * Added auto page creation for new listings
