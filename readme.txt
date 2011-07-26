@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: fredericktownes, mattbarba, placester
+ Contributors: fredericktownes, mattbarba, placester
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
 Tested up to: 3.2.1
@@ -22,7 +22,7 @@ From the creators of http://placester.com: Create your fully functional real est
 * Analytic dashboard showing you views and leads.
 
 
-http://www.youtube.com/watch?v=WZBha9cU0IM
+http://vimeo.com/26889189
 
 See it in action - fully functional demo:
 
