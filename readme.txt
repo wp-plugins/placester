@@ -22,7 +22,7 @@ From the creators of http://placester.com: Create your fully functional real est
 * Analytic dashboard showing you views and leads.
 
 
-http://www.youtube.com/watch?v=WZBha9cU0IM
+http://vimeo.com/26889189
 
 See it in action - fully functional demo:
 
