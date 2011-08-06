@@ -11,8 +11,8 @@ $placester_const_property_types =
         'penthouse' => 'Penthouse',
         'townhouse' => 'Townhouse',
         'brownstone' => 'Brownstone',
-        'family_home' => 'Family home',
-        'multi_fam_home' => 'Multi family home',
+        'family_home' => 'Single Family Home',
+        'multi_fam_home' => 'Multi Family Home',
         'flat' => 'Flat',
         'loft' => 'Loft',
         'cottage' => 'Cottage',
@@ -20,7 +20,7 @@ $placester_const_property_types =
         'mansion' => 'Mansion',
         'ranch' => 'Ranch',
         'island' => 'Island',
-        'log_cabin' => 'Log cabin',
+        'log_cabin' => 'Log Cabin',
         'tent' => 'Tent'
     );
 

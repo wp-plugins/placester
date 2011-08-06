@@ -1,4 +1,8 @@
 <?php
+/*
+* Slightly modifed version of the Options Framework by Devin Price
+*/
+
 /* Add option page only if the user has the proper permissions */
 add_action('init', 'define_global_vars' );
 function define_global_vars() {

@@ -363,6 +363,40 @@ function placester_property_image_delete($property_id, $image_id)
     return placester_send_request($url, $request, 'DELETE');
 }
 
+/*
+ * Deletes property
+ *
+ * @param string $property_id
+ * @return array
+ */
+function placester_property_delete($property_id)
+{
+    $request = 
+        array
+        (
+            'api_key' => placester_get_api_key(),
+        );
+
+    $url = 'http://placester.com/api/v1.0/properties/' . $property_id . '.xml';
+
+    $response = placester_send_request($url, $request, 'DELETE');
+    
+    // Delete any property posts
+    if ( empty($response) ) {
+        $args = array (
+            'post_type' => 'property',
+        );
+        $posts = get_posts($args);
+        foreach( $posts as $post ) {
+            if ( $post->post_name == $property_id ) {
+                $deleted = wp_delete_post($post->ID);
+                break;
+            }
+        }
+    } 
+
+    return $response;
+}
 
 /*
  * Adds new user
@@ -487,6 +521,7 @@ function placester_company_set($id, $company)
             'settings[require_approval]' => false,
             'location[address]' => $company->location->address,
             'location[city]' => $company->location->city,
+            'location[country]' => $company->location->country,
             'location[zip]' => $company->location->zip,
             'location[state]' => $company->location->state,
             'location[unit]' => $company->location->unit
@@ -610,7 +645,6 @@ function placester_send_request($url, $request, $method = 'GET')
                 $response = array();
                 $response['headers']["status"] = 400;
             }
-
             // Old way
             // $request['_method'] = 'DELETE';
             // $response = wp_remote_post($url, 
@@ -622,13 +656,13 @@ function placester_send_request($url, $request, $method = 'GET')
             //     ));
         }
         else {
-
+            // $x = $url . '?' . $request_string;
+            // var_dump($x);
             $response = wp_remote_get($url . '?' . $request_string, 
                 array
                 (
                     'timeout' => PLACESTER_TIMEOUT_SEC
                 ));
-
         }
         
         
@@ -746,7 +780,6 @@ function placester_send_request_multipart($url, $request, $file_name, $file_mime
     return $o; 
 
 }
-
 
 
 function placester_clear_cache()

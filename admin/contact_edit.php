@@ -4,6 +4,8 @@
  * Admin interface: Contact tab
  * Edit details form
  */
+
+include_once(dirname(__FILE__) . '/../core/const.php');
 $view_success = false;
 
 $error_message = '';
@@ -21,7 +23,6 @@ if (isset($_POST['edit_finish']))
     details_compine_with_http($company, $user);
     $error = false;
 
-
     try
     {
         try
@@ -36,7 +37,7 @@ if (isset($_POST['edit_finish']))
             $error_validation_data->user = $e->validation_data;
             $error = true;
         }
-
+                      
         if (!$error)
         {
             try

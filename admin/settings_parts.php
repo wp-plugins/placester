@@ -223,14 +223,16 @@ function row_textarea($label, $option_name, $description = '')
  * @param string $label
  * @param string $option_name
  */
-function row_textbox($label, $option_name, $description = '')
+function row_textbox($label, $option_name, $description = '', $default_value='')
 {
+    $value = htmlspecialchars(get_option($option_name));
+    $value = empty( $value ) ? $default_value : $value;
     ?>
-
+      <tr>
       <th scope="row"><label for="<?php echo $option_name ?>"><?php echo $label ?></label></th>
       <td>
         <input type="text" name="<?php echo $option_name ?>"
-          value="<?php echo htmlspecialchars(get_option($option_name)) ?>" 
+          value="<?php echo $value ?>" 
           id="<?php echo $option_name ?>"
           class="heading form-input-tip" 
           style="width:100%" />
@@ -240,8 +242,10 @@ function row_textbox($label, $option_name, $description = '')
         ?>
       </td>
 
+      </tr>
     <?php
 }
+
 
 /**
  * Prints hidden field in html <table> row

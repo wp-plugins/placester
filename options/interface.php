@@ -1,8 +1,9 @@
 <?php
-
-/**
- * Generates the options fields that are used in the form.
- */
+/*
+* Slightly modifed version of the Options Framework by Devin Price
+*
+* interface.php: Generates the options fields that are used in the form.
+*/
 
 function placester_of_fields() {
 
