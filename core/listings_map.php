@@ -66,6 +66,10 @@ if ( $default_get_marker_class )
 else
     $js_get_marker_class = $parameters['js_get_marker_class'];
 
+// Set latidude/longitude to the parameter if set, else if an address exists hold off til 
+// geocoding that, else use the default setting
+
+$default_zoom = isset( $parameters['zoom'] ) ? $parameters['zoom'] : get_option( 'placester_map_zoom' ); 
 ?>
 <script src="http://maps.google.com/maps/api/js?sensor=false&amp;v=3.1"></script>
 <script src="<?php echo $base_url ?>/js/FastMarkerOverlay.js"></script>  
@@ -247,17 +251,32 @@ function placesterMap_reloadMarkers(markersData)
         placesterListOfMap_reloadMarkers(markersData);
 }
 
+function placesterMap_geocode(address) {
+    geocoder = new google.maps.Geocoder();
+    geocoder.geocode(
+        { 
+            "address": address
+        }, 
+        function(results, status) 
+        {
+            if (status == google.maps.GeocoderStatus.OK) {
+                loc = results[0].geometry.location;
+                result.lat = loc.lat();
+                result.lng = loc.lng();
+            }
+            else 
+                return false;
+        });
 
+    return result;
+}
 
-/**
- * Initiazliation of map
- */
-$('#placester_listings_map_map').ready(function() 
-{
-    var latLng = new google.maps.LatLng(42.3684, -71.0354);
+function placesterMap_generateMap(center_coord) {
+    var latLng = new google.maps.LatLng(center_coord.lat, center_coord.lng);
+
     placesterMap_map = new google.maps.Map(document.getElementById('placester_listings_map_map'),
         {
-            zoom: 13,
+            zoom: <?php echo $default_zoom; ?>,
             center: latLng,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         });
@@ -277,5 +296,41 @@ $('#placester_listings_map_map').ready(function()
             map: placesterMap_map, 
             markerFactory: placesterMap_markerFactory
         });
+}
+/**
+ * Initialization of map
+ */
+$('#placester_listings_map_map').ready(function() {
+    var center_coord = new Object;
+<?php
+if ( isset( $parameters['center'] ) ) {
+?>
+
+    geocoder = new google.maps.Geocoder();
+    geocoder.geocode( 
+        { "address": "<?php echo $parameters['center'] ?>" }, 
+        function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                loc = results[0].geometry.location;
+                center_coord.lat = loc.lat();
+                center_coord.lng = loc.lng();
+                placesterMap_generateMap(center_coord);
+            }
+        });
+<?php
+} elseif ( isset($parameters['center_latitude']) && isset($parameters['center_latitude']) ) {
+?>
+        center_coord.lat = <?php echo $parameters['center_latitude'] ?>;
+        center_coord.lng = <?php echo $parameters['center_longitude'] ?>;
+        placesterMap_generateMap(center_coord);
+<?php 
+} else {
+?>
+        center_coord.lat = <?php echo get_option('placester_center_latitude') ?>;
+        center_coord.lng = <?php echo get_option('placester_center_longitude') ?>;
+        placesterMap_generateMap(center_coord);
+<?php 
+}
+?>
 });
 </script>

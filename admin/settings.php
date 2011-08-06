@@ -7,6 +7,10 @@
 include_once(dirname(__FILE__) . '/../core/const.php');
 include_once('settings_parts.php');
 
+$default_map_center = 'Boston, MA';
+$default_lat = 42.3584308;
+$default_lng = -71.0597732;
+$default_zoom = 13;
 //
 // Save values
 //
@@ -27,6 +31,10 @@ if (array_key_exists('set_default', $_POST))
     update_option('placester_display_listing_types', array());
     update_option('placester_display_zoning_types', array());
     update_option('placester_display_purchase_types', array());
+    update_option('placester_map_center_address', $default_map_center);
+    update_option('placester_center_longitude', $default_lng);
+    update_option('placester_center_latitude', $default_lat);
+    update_option('placester_map_zoom', $default_zoom);
 }
 
 if (array_key_exists('refresh_user_data', $_POST))
@@ -391,7 +399,21 @@ if (array_key_exists('apply', $_POST))
       <?php 
       row_dropdown('Default country', 'placester_default_country', $placester_countries, 'US', 'The country that will be selected by default on the "Add listing" page.'); 
       row_checkbox('Display exact listings address', 'placester_display_exact_address', 'Checking this would display the exact address instead of the block address.'); 
+
+      $latlong = '<label style="width: 100px; float: left;" for="placester_center_latitude">Latitude</label><input type="text" id="placester_center_latitude" value="' . get_option('placester_center_latitude', $default_lat) . '" name="placester_center_latitude" readonly="readonly"><br />';
+      $latlong .= '<label style="width: 100px; float: left;" for="placester_center_longitude">Longitude</label><input type="text" id="placester_center_longitude" value="' . get_option('placester_center_longitude', $default_lng) . '" name="placester_center_longitude" readonly="readonly"><br />';
+      $latlong .= '<label style="width: 100px; float: left;" for="placester_map_zoom">Map Zoom</label><input type="text" value="' . get_option('placester_map_zoom', $default_zoom) . '" id="placester_map_zoom" name="placester_map_zoom" readonly="readonly"><br />';
+
+      $latlong = '<div style="margin-top: 10px">' . $latlong . '</div>';
+
+      row_textbox(
+          'Map center address',
+          'placester_map_center_address',
+          '<div><div id="map" style="width: 450px; float: left; height: 250px; margin:  0 10px 0 0; border: 1px solid #ddd;"></div>' . $latlong . '</div>',
+          $default_map_center
+      );
       ?>
+
     </table>
     <p class="submit">
       <input type="submit" name="apply" class="button-primary" 

@@ -141,12 +141,12 @@ function placesterListLone_create()
     {
         placesterListLone_datatable.fnClearTable(false);
     }
-
+    // placesterListLone_datatable.fnDestroy();
     placesterListLone_datatable = jQuery('#placester_listings_list').dataTable(
         {
             'bFilter': false,
             'bPaginate': true,
-            'iDisplayLength': 5,
+            'iDisplayLength': 3,
             'bLengthChange': false,
             'bSort': true,
             'bInfo': true,
@@ -183,7 +183,7 @@ function placesterListLone_create()
                         'fnRender': 
                             function(row_data) 
                             { 
-                            console.log(row_data);
+                            console.log('rowdata', row_data);
                                 var control_div =
                                     '<div class="row-actions">';
 
@@ -193,7 +193,9 @@ function placesterListLone_create()
                                 control_div += 
                                     '<span><a href="admin.php?page=placester_properties&id=' + 
                                     row_data.aData[10] + '">Edit</a> | </span>';
-
+                                control_div += 
+                                    '<span><a href="admin.php?page=placester_properties&id=' + 
+                                    row_data.aData[10] +'" class="pl_listing_delete">Delete</a> | </span>';
                                 control_div += 
                                     '<span><a href="admin.php?page=placester_properties&id=' + 
                                     row_data.aData[10] + '&craigslist_template=1">Post to craigslist</a> | </span>';
@@ -237,6 +239,7 @@ function placesterListLone_create()
                     {'bVisible': false}
                 ]
         });
+     // placesterListLone_datatable.fnUpdate();
 }
 
 
@@ -254,6 +257,30 @@ jQuery(document).ready(function()
     
         placesterListLone_create();
     }
+    // When the delete button from the My Listings table is clicked
+    jQuery('.pl_listing_delete').live('click', function(e){
+        e.preventDefault();
+        var answer = confirm("Are you sure you want to delete this listing?");
+        console.log(placesterListLone_datatable.fnGetData());
+                    placesterListLone_datatable.dataTable();
+        if (answer) {
+            id = $(this).attr('href').split('&id=')[1];
+            data = {
+                action: 'delete_listing',
+                listing_id : id
+            };
+            $row = $(this).closest('tr');
+            $.post(ajaxurl, data, function(response) {
+                if (response) {
+                    placesterListLone_datatable.fnDeleteRow($row);
+                    placesterListLone_datatable.fnDraw();
+                    // placesterListLone_datatable.fnUpdate();
+
+                }
+                // console.log('RSP ', response);
+            });
+        }
+    });
     jQuery('#placester_listings_list .manage-column.sorting, #placester_listings_list .manage-column.sorting_asc, #placester_listings_list .manage-column.sorting_desc').each(function(){
         html = jQuery(this).html();
         jQuery(this).html('<span>' + html + '</span>');

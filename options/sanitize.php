@@ -1,4 +1,7 @@
 <?php
+/*
+* Slightly modifed version of the Options Framework by Devin Price
+*/
 
 /* Text */
 add_filter( 'of_sanitize_text', 'sanitize_text_field' );

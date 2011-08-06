@@ -46,11 +46,77 @@ function row_address($option_name_prefix, $data, $validation_data, $property,
         $location_data, $location_validation, 'city');
     row_textbox('State', $option_name_prefix . 'state', 
         $location_data, $location_validation, 'state');
+    $default_country = get_option('placester_default_country'); 
+    global $placester_countries;
+    column_dropdown('Country', $placester_countries, $option_name_prefix . 'country', $location_data, $location_validation, 'country', '', 1, $default_country);
     row_textbox('Zip', $option_name_prefix . 'zip', 
         $location_data, $location_validation, 'zip');
 }
 
+/**
+ * Prints dropdown with possible selected value $value.
+ *
+ * @param string $property_name
+ * @param array $possible_values
+ * @param string $value
+ * @param string $width
+ */
+ function column_dropdown($label, $possible_values, $property_name, 
+    $value_object, $validation_object, $property, $width = '', $colspan = '1', $default_value ='')
+{
+    $value = p($value_object, $property);
 
+    $value = empty($value) ? $default_value : $value;
+    ?>
+    <th scope="row"><label for="<?php echo $property_name ?>"><?php echo $label ?></label></th>
+    <td colspan="<?php echo $colspan ?>">
+      <?php 
+      control_dropdown($property_name, $possible_values, $value, $width);
+      if (isset($validation_message))
+      {
+          echo '<br/><div class="placester_error">';
+          echo $validation_message;
+          echo '</div>';
+      }
+      ?>
+    </td>
+    <?php
+}    
+
+/**
+ * Prints a dropdown
+ */
+function control_dropdown($property_name, $possible_values, $value, 
+    $width = '')
+{
+    ?>
+    <select class="heading form-input-tip" 
+      name="<?php echo $property_name ?>" 
+      id="<?php echo $property_name ?>" 
+      style="width: <?php echo $width ?>" 
+      class="heading form-input-tip">
+    <?php
+
+    foreach ($possible_values as $key => $name)
+    {
+        if (!is_array($value))
+            $is_selected = ($key == $value);
+        else
+        {
+            $is_selected = false;
+            $possible_values_exploded = explode(',', $key);
+
+            if ($possible_values_exploded == $value) {
+                $is_selected = true;
+            }
+        }
+
+        echo '<option value="' . $key . '"' . ($is_selected ? ' selected' : '') . 
+            '>' . $name . '</option>';
+    }
+
+    echo '</select>';
+}
 
 /**
  * Prints image upload textbox in html <table> row
@@ -108,8 +174,7 @@ function row_image($label, $option_name, $value_object,
  * @param object $validation_object
  * @param string $property
  */
-function row_textbox($label, $option_name, $value_object, 
-    $validation_object, $property, $description = '')
+function row_textbox($label, $option_name, $value_object, $validation_object, $property, $description = '')
 {
     ?>
     <tr valign="top">

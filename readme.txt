@@ -1,9 +1,9 @@
 === Plugin Name ===
- Contributors: fredericktownes, mattbarba, placester
+Contributors: fredericktownes, mattbarba, placester
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
 Tested up to: 3.2.1
-Stable tag: 0.3
+Stable tag: 0.3.1
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -16,13 +16,12 @@ From the creators of http://placester.com: Create your fully functional real est
 * Every listing pages automatically created, great for SEO.
 * Fully customizable layout for property search and property details pages.
 * Unlimited images per listing
-* Export to Craiglist
 * Works with any theme
 * Lead capture widget
 * Analytic dashboard showing you views and leads.
 
 
-http://vimeo.com/26889189
+http://www.youtube.com/watch?v=WZBha9cU0IM
 
 See it in action - fully functional demo:
 
@@ -48,7 +47,6 @@ Highlights:
 * Manage and track lead performance,
 * Customize layout using robust widgets and shortcodes ^,
 * Intuitive help tools,
-* Export to Craiglist,
 * Powerful search based on the Placester API and Google Maps,
 * Easily promote featured properties across your site,
 * Filter listings by any modality for promotion, focus on the clientele of interest,
@@ -137,11 +135,15 @@ In general real-time, but if you use 3rd party property management services, the
 
 == Changelog ==
 
+= 0.3.1 = 
+* Added support for listing delete
+* Added the ability to set the default listings map position and zoom
+* Corrected various bugs
+
 = 0.3 = 
 * Added better image management
 * Added support for countries (US and Canada)
 * Added support for displaying the exact address
-* Added Craiglist template support
 * Visual compatibility with Wordpress 3.2
 * Corrected various bugs
 

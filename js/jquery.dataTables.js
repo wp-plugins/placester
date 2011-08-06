@@ -3270,6 +3270,7 @@
 				/* Sorting */
 				if ( oSettings.oFeatures.bSort !== false )
 				{
+                console.log('Sorting');
 					var iFixed = oSettings.aaSortingFixed !== null ? oSettings.aaSortingFixed.length : 0;
 					var iUser = oSettings.aaSorting.length;
 					aoData.push( { "name": "iSortingCols",   "value": iFixed+iUser } );

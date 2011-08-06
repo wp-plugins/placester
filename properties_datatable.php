@@ -23,7 +23,7 @@ else {
 $placester_display_exact_address = get_option('placester_display_exact_address');
 if ( $placester_display_exact_address ) 
     $filter_request['address_mode'] = 'exact';
-
+// print_r($_REQUEST);
 // Paging parameters
 if ( isset( $_GET['iDisplayStart'] ) )
     $filter_request['offset'] = $_GET['iDisplayStart'];
@@ -46,6 +46,8 @@ if ( $_GET['sSearch'] != "" )
 // Request
 try {
     $response = placester_property_list($filter_request);
+    // print_r($response);
+    // print_r($filter_request);
     $response_properties = $response->properties;
     $response_total = $response->total;
 }

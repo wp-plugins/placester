@@ -282,12 +282,14 @@ function ajax_update_images() {
 /**
  * Admin menu - "Properties" page, on-load handler
  */
+add_action( 'load-placester_page_placester_properties', 
+    'placester_admin_properties_onload' );
 function placester_admin_properties_onload() {
     if ( isset( $_REQUEST['craigslist_template'] ) ) {
-        if ( isset( $_REQUEST['template_iframe'] ) ) {
-            require( dirname(__FILE__) . '/template-iframe.php' );
-            exit();
-        }
+        // if ( isset( $_REQUEST['template_iframe'] ) ) {
+        //     require( dirname(__FILE__) . '/template-iframe.php' );
+        //     exit();
+        // }
 
         wp_enqueue_script( 'googlemaps_v3' );
         wp_enqueue_script( 'zeroclipboard' );
@@ -304,12 +306,12 @@ function placester_admin_properties_onload() {
 
         wp_localize_script( 'placester.admin.templates', 'placester_templates', $params );
     } else {
-        if ( isset( $_REQUEST['popup'] ) ) {
-            wp_enqueue_script( 'jquery.multifile' );
+        // if ( isset( $_REQUEST['popup'] ) ) {
+        //     wp_enqueue_script( 'jquery.multifile' );
 
-            // require( 'property_edit_images_popup.php' );
-            // exit();
-        }
+        //     // require( 'property_edit_images_popup.php' );
+        //     // exit();
+        // }
 
         wp_enqueue_script( 'swfobject' );
         wp_enqueue_script( 'uploadify' );
@@ -351,6 +353,7 @@ function placester_admin_properties_onload() {
         }
 
         else {
+            // If on the table view
             wp_enqueue_style( 'placester.admin' );
             wp_enqueue_script( 'jquery.datatables' );
             wp_enqueue_script('placester.admin.properties',
@@ -359,11 +362,8 @@ function placester_admin_properties_onload() {
 
 
     }
- 
 }
-
-add_action( 'load-placester_page_placester_properties', 
-    'placester_admin_properties_onload' );
+require('property_table_ajax.php');
 
 
 
@@ -438,6 +438,7 @@ function placester_admin_settings_onload() {
         require( 'settings_ajax.php' );
         exit();
     }
+    wp_enqueue_script( 'googlemaps_v3' );
     wp_enqueue_script( 'jquery.upload' );
     wp_enqueue_script( 'placester.admin.settings' );
 

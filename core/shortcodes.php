@@ -39,8 +39,16 @@ function placester_listings_map_shortcode( $atts ) {
     </script>
 <?php
     $return = '<section class="map">';
+
+    $map_parameters = array();
+    $param_keys = array( 'center', 'center_latitude', 'center_longitude', 'zoom' );
+    foreach ( $param_keys as $key ) {
+        if ( array_key_exists( $key, $atts ) ) {
+            $map_parameters[$key] = $atts[$key];
+        }
+    }
     try {
-        $return .= placester_listings_map( array(), true );
+        $return .= placester_listings_map( $map_parameters, true );
     }
     catch (PlaceSterNoApiKeyException $e) {
         display_no_api_key_error();
