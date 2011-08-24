@@ -143,7 +143,7 @@ In general real-time, but if you use 3rd party property management services, the
 
 == Changelog ==
 
-= 0.3.2 = 
+= 0.3.3 = 
 * Make "Delete" listing link red
 * Change the listings table pagination limit to 15 
 
