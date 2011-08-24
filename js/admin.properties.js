@@ -146,7 +146,7 @@ function placesterListLone_create()
         {
             'bFilter': false,
             'bPaginate': true,
-            'iDisplayLength': 3,
+            'iDisplayLength': 15,
             'bLengthChange': false,
             'bSort': true,
             'bInfo': true,

@@ -1,9 +1,9 @@
 === Plugin Name ===
-Contributors: fredericktownes, mattbarba, placester
+Contributors: Placester
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
 Tested up to: 3.2.1
-Stable tag: 0.3.2
+Stable tag: 0.3.3
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -28,7 +28,7 @@ See it in action - fully functional demo:
 * http://plugin.placester.net/
 * http://allure-sample.placester.net/
 
-Checkout premium themes available to hosted users:
+Check out premium themes available to hosted users:
 
 * http://allure-pro-sample.placester.net/
 * http://radient-pro-sample.placester.net/
@@ -93,6 +93,14 @@ Any professional seeking the competitive advantage of having a robust real estat
 
 Not unless you want there to be, that is Placester is your marketing partner. Our goal is to help you generate leads for your listing and help you easily create niche web sites for marketing purposes using our themes.
 
+= Which markets (countries) are supported? =
+
+Placester Real Estate Pro currently supports the following markets:
+* United States
+* Canada
+
+We'll be adding more as time goes on. [Reach out](mailto:support@placester.com) to us if you would like to see your market supported.
+
 = Where does my information go? Who owns it? =
 
 The data is yours, Placester seeks only to a cost-effective means to generate more leads. All data is Moreover, there is no data "lock-in," if you've created listings (ads) in our system, that data can be exported at any time for use elsewhere. Simply let us know what your needs are.
@@ -134,6 +142,10 @@ Absolutely, [reach out](mailto:support@placester.com) to us and let us know what
 In general real-time, but if you use 3rd party property management services, the updates will only be as recent as your provider allows.
 
 == Changelog ==
+
+= 0.3.2 = 
+* Make "Delete" listing link red
+* Change the listings table pagination limit to 15 
 
 = 0.3.2 = 
 * Fix 0.3.1 missing files errors

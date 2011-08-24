@@ -1,0 +1,401 @@
+\hypertarget{property__parts_8php}{
+\section{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/admin/property\_\-parts.php File Reference}
+\label{db/d70/property__parts_8php}\index{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/admin/property\_\-parts.php@{/Users/joshvermaire/Sites/wordpress/wp-\/content/wordpress-\/plugin/placester/admin/property\_\-parts.php}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{property__parts_8php_af485f972f0f0ec073357a35b6ed12949}{p} (\$o, \$property)
+\begin{DoxyCompactList}\small\item\em Returns property value, or null if not exists. \end{DoxyCompactList}\item 
+\hyperlink{property__parts_8php_ada17cd77079aa6878a2646fa596ae1a3}{control\_\-dropdown} (\$property\_\-name, \$possible\_\-values, \$value, \$width= '')
+\begin{DoxyCompactList}\small\item\em Prints dropdown with possible selected value \$value. \end{DoxyCompactList}\item 
+\hyperlink{property__parts_8php_aa3560b3163965920cf137c4157724599}{column\_\-dropdown} (\$label, \$possible\_\-values, \$property\_\-name, \$value, \$validation\_\-object, \$width= '', \$colspan= '1')
+\begin{DoxyCompactList}\small\item\em Prints dropdown inside html. \end{DoxyCompactList}\item 
+\hyperlink{property__parts_8php_a57b2969978e1695f5675d8d2a2eead97}{row\_\-dropdown} (\$label, \$possible\_\-values, \$property\_\-name, \$value, \$validation\_\-object)
+\begin{DoxyCompactList}\small\item\em Prints dropdown in html. \end{DoxyCompactList}\item 
+\hyperlink{property__parts_8php_ae56df385ef1c3b02c90788419bb0d335}{column\_\-textbox} (\$label, \$property\_\-name, \$value, \$validation\_\-object, \$colspan= '1')
+\begin{DoxyCompactList}\small\item\em Prints textbox inside html. \end{DoxyCompactList}\item 
+\hyperlink{property__parts_8php_aa28f91331c1f0c72ca017c384cd3f0e5}{row\_\-textbox} (\$label, \$property\_\-name, \$value, \$validation\_\-object)
+\begin{DoxyCompactList}\small\item\em Prints textbox in html. \end{DoxyCompactList}\item 
+\hyperlink{property__parts_8php_a15fccfbc50eb7f3d3433c1411b1e273e}{control\_\-textarea} (\$label, \$property\_\-name, \$value, \$validation\_\-object)
+\begin{DoxyCompactList}\small\item\em Prints textarea in html. \end{DoxyCompactList}\item 
+\hyperlink{property__parts_8php_aca9f1318d86ccdadee8fd1a867396b00}{box\_\-images} (\$validation\_\-message= '')
+\begin{DoxyCompactList}\small\item\em Prints images upload control in html. \end{DoxyCompactList}\item 
+\hyperlink{property__parts_8php_a1402429f319a83589d7a72d4feddf4e1}{http\_\-property\_\-data} ()
+\begin{DoxyCompactList}\small\item\em Returns property object from HTTP POST data. \end{DoxyCompactList}\item 
+\hyperlink{property__parts_8php_a88cf9bb7bd8e7c8251f4f7462571bc9d}{property\_\-form} (\$p, \$v)
+\begin{DoxyCompactList}\small\item\em Prints property add / edit form. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+global \hyperlink{property__parts_8php_ab4fafae45f9617d14e385aa7a46febfd}{\$multi\_\-types} = array()
+\item 
+\hyperlink{property__parts_8php_a7d06c706405f05fda8e18bcba6326a3c}{\$multi\_\-types} \mbox{[}'housing, commercial, rental'\mbox{]} = 'Commercial Rental'
+\item 
+\hyperlink{property__parts_8php_a217608fa0ac106b169a30dad1465a854}{\$multi\_\-types} \mbox{[}'housing, commercial, sale'\mbox{]} = 'Commercial Sale'
+\item 
+\hyperlink{property__parts_8php_a13fb2935c84b64bd46b19bd98d2449e7}{\$multi\_\-types} \mbox{[}'land,,'\mbox{]} = 'Land'
+\item 
+\hyperlink{property__parts_8php_adb418ac26e935420125e9b43c66002d5}{\$multi\_\-types} \mbox{[}'other,,'\mbox{]} = 'Other'
+\item 
+\hyperlink{property__parts_8php_adb9d81733515b43316891a8690626f8a}{\$multi\_\-types} \mbox{[}'parking,, rental'\mbox{]} = 'Parking'
+\item 
+\hyperlink{property__parts_8php_a6abbaf78939f062bf5c79379cbe877d2}{\$multi\_\-types} \mbox{[}'housing, residential, rental'\mbox{]} = 'Residential Rental'
+\item 
+\hyperlink{property__parts_8php_a415467622892231f6996a1a79be00b9b}{\$multi\_\-types} \mbox{[}'housing, residential, sale'\mbox{]} = 'Residential Sale'
+\item 
+\hyperlink{property__parts_8php_a5e7262a6e1423f6922813401b816b017}{\$multi\_\-types} \mbox{[}'sublet, residential'\mbox{]} = 'Residential Sublet'
+\item 
+\hyperlink{property__parts_8php_a527d17f35f9614ce95a35a6dd6c391c3}{\$multi\_\-types} \mbox{[}'sublet, commercial'\mbox{]} = 'Commercial Sublet'
+\item 
+\hyperlink{property__parts_8php_a84f08c325359c2ffc08a14f7a1397ca2}{\$multi\_\-types} \mbox{[}'vacation,, rental'\mbox{]} = 'Vacation Rental'
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{property__parts_8php_aca9f1318d86ccdadee8fd1a867396b00}{
+\index{property\_\-parts.php@{property\_\-parts.php}!box\_\-images@{box\_\-images}}
+\index{box\_\-images@{box\_\-images}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{box\_\-images}]{\setlength{\rightskip}{0pt plus 5cm}box\_\-images (
+\begin{DoxyParamCaption}
+\item[{\$}]{validation\_\-message = {\ttfamily ''}}
+\end{DoxyParamCaption}
+)}}
+\label{db/d70/property__parts_8php_aca9f1318d86ccdadee8fd1a867396b00}
+
+
+Prints images upload control in html. 
+
+\begin{TabularC}{0}
+\hline
+\end{TabularC}
+with possible validation error messages
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$validation\_\-message} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{property__parts_8php_aa3560b3163965920cf137c4157724599}{
+\index{property\_\-parts.php@{property\_\-parts.php}!column\_\-dropdown@{column\_\-dropdown}}
+\index{column\_\-dropdown@{column\_\-dropdown}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{column\_\-dropdown}]{\setlength{\rightskip}{0pt plus 5cm}column\_\-dropdown (
+\begin{DoxyParamCaption}
+\item[{\$}]{label, }
+\item[{\$}]{possible\_\-values, }
+\item[{\$}]{property\_\-name, }
+\item[{\$}]{value, }
+\item[{\$}]{validation\_\-object, }
+\item[{\$}]{width = {\ttfamily ''}, }
+\item[{\$}]{colspan = {\ttfamily '1'}}
+\end{DoxyParamCaption}
+)}}
+\label{db/d70/property__parts_8php_aa3560b3163965920cf137c4157724599}
+
+
+Prints dropdown inside html. 
+
+\begin{TabularC}{0}
+\hline
+\end{TabularC}
+with possible validation error messages
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$label} & \\
+\hline
+array & {\em \$possible\_\-values} & \\
+\hline
+string & {\em \$property\_\-name} & \\
+\hline
+string & {\em \$value} & \\
+\hline
+object & {\em \$validation\_\-object} & \\
+\hline
+string & {\em \$width} & \\
+\hline
+string & {\em \$colspan} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{property__parts_8php_ae56df385ef1c3b02c90788419bb0d335}{
+\index{property\_\-parts.php@{property\_\-parts.php}!column\_\-textbox@{column\_\-textbox}}
+\index{column\_\-textbox@{column\_\-textbox}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{column\_\-textbox}]{\setlength{\rightskip}{0pt plus 5cm}column\_\-textbox (
+\begin{DoxyParamCaption}
+\item[{\$}]{label, }
+\item[{\$}]{property\_\-name, }
+\item[{\$}]{value, }
+\item[{\$}]{validation\_\-object, }
+\item[{\$}]{colspan = {\ttfamily '1'}}
+\end{DoxyParamCaption}
+)}}
+\label{db/d70/property__parts_8php_ae56df385ef1c3b02c90788419bb0d335}
+
+
+Prints textbox inside html. 
+
+\begin{TabularC}{0}
+\hline
+\end{TabularC}
+with possible validation error messages
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$label} & \\
+\hline
+string & {\em \$property\_\-name} & \\
+\hline
+string & {\em \$value} & \\
+\hline
+object & {\em \$validation\_\-object} & \\
+\hline
+string & {\em \$colspan} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{property__parts_8php_ada17cd77079aa6878a2646fa596ae1a3}{
+\index{property\_\-parts.php@{property\_\-parts.php}!control\_\-dropdown@{control\_\-dropdown}}
+\index{control\_\-dropdown@{control\_\-dropdown}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{control\_\-dropdown}]{\setlength{\rightskip}{0pt plus 5cm}control\_\-dropdown (
+\begin{DoxyParamCaption}
+\item[{\$}]{property\_\-name, }
+\item[{\$}]{possible\_\-values, }
+\item[{\$}]{value, }
+\item[{\$}]{width = {\ttfamily ''}}
+\end{DoxyParamCaption}
+)}}
+\label{db/d70/property__parts_8php_ada17cd77079aa6878a2646fa596ae1a3}
+
+
+Prints dropdown with possible selected value \$value. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$property\_\-name} & \\
+\hline
+array & {\em \$possible\_\-values} & \\
+\hline
+string & {\em \$value} & \\
+\hline
+string & {\em \$width} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{property__parts_8php_a15fccfbc50eb7f3d3433c1411b1e273e}{
+\index{property\_\-parts.php@{property\_\-parts.php}!control\_\-textarea@{control\_\-textarea}}
+\index{control\_\-textarea@{control\_\-textarea}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{control\_\-textarea}]{\setlength{\rightskip}{0pt plus 5cm}control\_\-textarea (
+\begin{DoxyParamCaption}
+\item[{\$}]{label, }
+\item[{\$}]{property\_\-name, }
+\item[{\$}]{value, }
+\item[{\$}]{validation\_\-object}
+\end{DoxyParamCaption}
+)}}
+\label{db/d70/property__parts_8php_a15fccfbc50eb7f3d3433c1411b1e273e}
+
+
+Prints textarea in html. 
+
+\begin{TabularC}{0}
+\hline
+\end{TabularC}
+with possible validation error messages
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$label} & \\
+\hline
+string & {\em \$property\_\-name} & \\
+\hline
+string & {\em \$value} & \\
+\hline
+object & {\em \$validation\_\-object} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{property__parts_8php_a1402429f319a83589d7a72d4feddf4e1}{
+\index{property\_\-parts.php@{property\_\-parts.php}!http\_\-property\_\-data@{http\_\-property\_\-data}}
+\index{http\_\-property\_\-data@{http\_\-property\_\-data}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{http\_\-property\_\-data}]{\setlength{\rightskip}{0pt plus 5cm}http\_\-property\_\-data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{db/d70/property__parts_8php_a1402429f319a83589d7a72d4feddf4e1}
+
+
+Returns property object from HTTP POST data. 
+
+\begin{DoxyReturn}{Returns}
+object 
+\end{DoxyReturn}
+\hypertarget{property__parts_8php_af485f972f0f0ec073357a35b6ed12949}{
+\index{property\_\-parts.php@{property\_\-parts.php}!p@{p}}
+\index{p@{p}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{p}]{\setlength{\rightskip}{0pt plus 5cm}p (
+\begin{DoxyParamCaption}
+\item[{\$}]{o, }
+\item[{\$}]{property}
+\end{DoxyParamCaption}
+)}}
+\label{db/d70/property__parts_8php_af485f972f0f0ec073357a35b6ed12949}
+
+
+Returns property value, or null if not exists. 
+
+Returns value of \$o-\/$>$p1-\/$>$p2 when \$property = 'p1/p2'
+
+
+\begin{DoxyParams}[1]{Parameters}
+object & {\em \$o} & \\
+\hline
+string & {\em \$property} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string or null 
+\end{DoxyReturn}
+\hypertarget{property__parts_8php_a88cf9bb7bd8e7c8251f4f7462571bc9d}{
+\index{property\_\-parts.php@{property\_\-parts.php}!property\_\-form@{property\_\-form}}
+\index{property\_\-form@{property\_\-form}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{property\_\-form}]{\setlength{\rightskip}{0pt plus 5cm}property\_\-form (
+\begin{DoxyParamCaption}
+\item[{\$}]{p, }
+\item[{\$}]{v}
+\end{DoxyParamCaption}
+)}}
+\label{db/d70/property__parts_8php_a88cf9bb7bd8e7c8251f4f7462571bc9d}
+
+
+Prints property add / edit form. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+object & {\em \$p} & \\
+\hline
+object & {\em \$v} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{property__parts_8php_a57b2969978e1695f5675d8d2a2eead97}{
+\index{property\_\-parts.php@{property\_\-parts.php}!row\_\-dropdown@{row\_\-dropdown}}
+\index{row\_\-dropdown@{row\_\-dropdown}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{row\_\-dropdown}]{\setlength{\rightskip}{0pt plus 5cm}row\_\-dropdown (
+\begin{DoxyParamCaption}
+\item[{\$}]{label, }
+\item[{\$}]{possible\_\-values, }
+\item[{\$}]{property\_\-name, }
+\item[{\$}]{value, }
+\item[{\$}]{validation\_\-object}
+\end{DoxyParamCaption}
+)}}
+\label{db/d70/property__parts_8php_a57b2969978e1695f5675d8d2a2eead97}
+
+
+Prints dropdown in html. 
+
+\begin{TabularC}{0}
+\hline
+\end{TabularC}
+with possible validation error messages
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$label} & \\
+\hline
+array & {\em \$possible\_\-values} & \\
+\hline
+string & {\em \$property\_\-name} & \\
+\hline
+string & {\em \$value} & \\
+\hline
+object & {\em \$validation\_\-object} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{property__parts_8php_aa28f91331c1f0c72ca017c384cd3f0e5}{
+\index{property\_\-parts.php@{property\_\-parts.php}!row\_\-textbox@{row\_\-textbox}}
+\index{row\_\-textbox@{row\_\-textbox}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{row\_\-textbox}]{\setlength{\rightskip}{0pt plus 5cm}row\_\-textbox (
+\begin{DoxyParamCaption}
+\item[{\$}]{label, }
+\item[{\$}]{property\_\-name, }
+\item[{\$}]{value, }
+\item[{\$}]{validation\_\-object}
+\end{DoxyParamCaption}
+)}}
+\label{db/d70/property__parts_8php_aa28f91331c1f0c72ca017c384cd3f0e5}
+
+
+Prints textbox in html. 
+
+\begin{TabularC}{0}
+\hline
+\end{TabularC}
+with possible validation error messages
+
+
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$label} & \\
+\hline
+string & {\em \$property\_\-name} & \\
+\hline
+string & {\em \$value} & \\
+\hline
+object & {\em \$validation\_\-object} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Variable Documentation}
+\hypertarget{property__parts_8php_ab4fafae45f9617d14e385aa7a46febfd}{
+\index{property\_\-parts.php@{property\_\-parts.php}!\$multi\_\-types@{\$multi\_\-types}}
+\index{\$multi\_\-types@{\$multi\_\-types}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{\$multi\_\-types}]{\setlength{\rightskip}{0pt plus 5cm}\$multi\_\-types = array()}}
+\label{db/d70/property__parts_8php_ab4fafae45f9617d14e385aa7a46febfd}
+\hypertarget{property__parts_8php_a84f08c325359c2ffc08a14f7a1397ca2}{
+\index{property\_\-parts.php@{property\_\-parts.php}!\$multi\_\-types@{\$multi\_\-types}}
+\index{\$multi\_\-types@{\$multi\_\-types}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{\$multi\_\-types}]{\setlength{\rightskip}{0pt plus 5cm}\$multi\_\-types\mbox{[}'vacation,, rental'\mbox{]} = 'Vacation Rental'}}
+\label{db/d70/property__parts_8php_a84f08c325359c2ffc08a14f7a1397ca2}
+\hypertarget{property__parts_8php_a527d17f35f9614ce95a35a6dd6c391c3}{
+\index{property\_\-parts.php@{property\_\-parts.php}!\$multi\_\-types@{\$multi\_\-types}}
+\index{\$multi\_\-types@{\$multi\_\-types}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{\$multi\_\-types}]{\setlength{\rightskip}{0pt plus 5cm}\$multi\_\-types\mbox{[}'sublet, commercial'\mbox{]} = 'Commercial Sublet'}}
+\label{db/d70/property__parts_8php_a527d17f35f9614ce95a35a6dd6c391c3}
+\hypertarget{property__parts_8php_a5e7262a6e1423f6922813401b816b017}{
+\index{property\_\-parts.php@{property\_\-parts.php}!\$multi\_\-types@{\$multi\_\-types}}
+\index{\$multi\_\-types@{\$multi\_\-types}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{\$multi\_\-types}]{\setlength{\rightskip}{0pt plus 5cm}\$multi\_\-types\mbox{[}'sublet, residential'\mbox{]} = 'Residential Sublet'}}
+\label{db/d70/property__parts_8php_a5e7262a6e1423f6922813401b816b017}
+\hypertarget{property__parts_8php_a415467622892231f6996a1a79be00b9b}{
+\index{property\_\-parts.php@{property\_\-parts.php}!\$multi\_\-types@{\$multi\_\-types}}
+\index{\$multi\_\-types@{\$multi\_\-types}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{\$multi\_\-types}]{\setlength{\rightskip}{0pt plus 5cm}\$multi\_\-types\mbox{[}'housing, residential, sale'\mbox{]} = 'Residential Sale'}}
+\label{db/d70/property__parts_8php_a415467622892231f6996a1a79be00b9b}
+\hypertarget{property__parts_8php_a6abbaf78939f062bf5c79379cbe877d2}{
+\index{property\_\-parts.php@{property\_\-parts.php}!\$multi\_\-types@{\$multi\_\-types}}
+\index{\$multi\_\-types@{\$multi\_\-types}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{\$multi\_\-types}]{\setlength{\rightskip}{0pt plus 5cm}\$multi\_\-types\mbox{[}'housing, residential, rental'\mbox{]} = 'Residential Rental'}}
+\label{db/d70/property__parts_8php_a6abbaf78939f062bf5c79379cbe877d2}
+\hypertarget{property__parts_8php_adb9d81733515b43316891a8690626f8a}{
+\index{property\_\-parts.php@{property\_\-parts.php}!\$multi\_\-types@{\$multi\_\-types}}
+\index{\$multi\_\-types@{\$multi\_\-types}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{\$multi\_\-types}]{\setlength{\rightskip}{0pt plus 5cm}\$multi\_\-types\mbox{[}'parking,, rental'\mbox{]} = 'Parking'}}
+\label{db/d70/property__parts_8php_adb9d81733515b43316891a8690626f8a}
+\hypertarget{property__parts_8php_adb418ac26e935420125e9b43c66002d5}{
+\index{property\_\-parts.php@{property\_\-parts.php}!\$multi\_\-types@{\$multi\_\-types}}
+\index{\$multi\_\-types@{\$multi\_\-types}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{\$multi\_\-types}]{\setlength{\rightskip}{0pt plus 5cm}\$multi\_\-types\mbox{[}'other,,'\mbox{]} = 'Other'}}
+\label{db/d70/property__parts_8php_adb418ac26e935420125e9b43c66002d5}
+\hypertarget{property__parts_8php_a13fb2935c84b64bd46b19bd98d2449e7}{
+\index{property\_\-parts.php@{property\_\-parts.php}!\$multi\_\-types@{\$multi\_\-types}}
+\index{\$multi\_\-types@{\$multi\_\-types}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{\$multi\_\-types}]{\setlength{\rightskip}{0pt plus 5cm}\$multi\_\-types\mbox{[}'land,,'\mbox{]} = 'Land'}}
+\label{db/d70/property__parts_8php_a13fb2935c84b64bd46b19bd98d2449e7}
+\hypertarget{property__parts_8php_a217608fa0ac106b169a30dad1465a854}{
+\index{property\_\-parts.php@{property\_\-parts.php}!\$multi\_\-types@{\$multi\_\-types}}
+\index{\$multi\_\-types@{\$multi\_\-types}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{\$multi\_\-types}]{\setlength{\rightskip}{0pt plus 5cm}\$multi\_\-types\mbox{[}'housing, commercial, sale'\mbox{]} = 'Commercial Sale'}}
+\label{db/d70/property__parts_8php_a217608fa0ac106b169a30dad1465a854}
+\hypertarget{property__parts_8php_a7d06c706405f05fda8e18bcba6326a3c}{
+\index{property\_\-parts.php@{property\_\-parts.php}!\$multi\_\-types@{\$multi\_\-types}}
+\index{\$multi\_\-types@{\$multi\_\-types}!property_parts.php@{property\_\-parts.php}}
+\subsubsection[{\$multi\_\-types}]{\setlength{\rightskip}{0pt plus 5cm}\$multi\_\-types\mbox{[}'housing, commercial, rental'\mbox{]} = 'Commercial Rental'}}
+\label{db/d70/property__parts_8php_a7d06c706405f05fda8e18bcba6326a3c}

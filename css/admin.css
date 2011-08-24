@@ -68,7 +68,13 @@ padding: 0 10px;
 /**
  * Styles used by Properties page
  */
-/*
+
+.pl_listing_delete, .delete_link {
+    color: #BC0B0B;
+}
+.pl_listing_delete:hover, .delete_link:hover {
+    color: red;
+}
 
 /**
  * Styles used by Datatables object in Admin interface
