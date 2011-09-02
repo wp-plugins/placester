@@ -172,10 +172,28 @@ function placester_property_list($parameters)
         $request['ids'] = placester_properties_new_ids();
     }
 
+    $request['address_mode'] = placester_get_property_address_mode();
     // Do request
     return placester_send_request($url, $request);
 }
 
+/**
+ * Returns all property listings
+ *
+ * @return object 
+ */
+function placester_get_properties()
+{
+    $request = array(
+        'api_key' => placester_get_api_key(),
+        'address_mode' => placester_get_property_address_mode(),
+    );
+
+    var_dump($request);
+    $url = 'http://api.placester.com/v1.0/properties.json';
+
+    return placester_send_request($url, $request, 'GET');
+}
 
 
 /*
@@ -189,7 +207,8 @@ function placester_property_get($id)
     // Prepare parameters
     $url = 'http://api.placester.com/v1.0/properties/' . $id . '.json';
     $request = array(
-        'api_key' => placester_get_api_key()
+        'api_key' => placester_get_api_key(),
+        'address_mode' => placester_get_property_address_mode(),
     );
 
     // Do request
@@ -522,10 +541,12 @@ function placester_company_set($id, $company)
             'location[address]' => $company->location->address,
             'location[city]' => $company->location->city,
             'location[country]' => $company->location->country,
-            'location[zip]' => $company->location->zip,
             'location[state]' => $company->location->state,
             'location[unit]' => $company->location->unit
         );
+
+    if ( $request['location[country]'] != 'BZ' )
+        $request['location[zip]'] = $company->location->zip;
 
     placester_cut_empty_fields($request);
     $url = 'http://api.placester.com/v1.0/organizations/' . $id . '.json';

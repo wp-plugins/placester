@@ -51,6 +51,9 @@ $placester_const_purchase_types =
 
 global $placester_countries;
 $placester_countries = array (
+    'AU' => 'Australia',
+    'BZ' => 'Belize',
+    'CA' => 'Canada',
+    'RU' => 'Russia',
     'US' => 'United States',
-    'CA' => 'Canada'
 );   

@@ -36,7 +36,6 @@ class PlaceSterNoApiKeyException extends Exception
 }
 
 
-
 /**
  * Returns API key. throws exception if not set
  *
@@ -806,12 +805,30 @@ function get_plugin_dir( $subpath = false ) {
     return ($subpath) ?  WP_PLUGIN_DIR . '/' . $exploded[0] . '/' . $subpath . '/' : WP_PLUGIN_DIR . '/' . $exploded[0];
 }
 
-function get_plugin_url( $subpath = false ) {
-    // Extract current plugin dir
-    $basename = plugin_basename( __FILE__ );
-    $exploded = explode( '/', $basename );    
+/**
+ * Returns the property address mode 
+ *
+ * Verifies the 'placester_display_block' option which is set 
+ * in the plugin settings, and returns the correct address mode.
+ * 
+ * @return string The property address mode
+ */
+function placester_get_property_address_mode() {
+    $placester_display_block_address = get_option('placester_display_block_address');
+    if ( $placester_display_block_address ) 
+        return 'polygon';
+    else
+        return 'exact';
+}
 
-    return ($subpath) ?  WP_PLUGIN_URL . '/' . $exploded[0] . '/' . $subpath . '/' : WP_PLUGIN_URL . '/' . $exploded[0];
+if ( !function_exists('get_plugin_url') ) {
+    function get_plugin_url( $subpath = false ) {
+        // Extract current plugin dir
+        $basename = plugin_basename( __FILE__ );
+        $exploded = explode( '/', $basename );    
+
+        return ($subpath) ?  WP_PLUGIN_URL . '/' . $exploded[0] . '/' . $subpath . '/' : WP_PLUGIN_URL . '/' . $exploded[0];
+    }
 }
 
 function placester_get_placeholder_if_empty( $string, $placeholder='' ) {

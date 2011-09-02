@@ -20,23 +20,8 @@ function placester_intercept_query($query) {
 		$vars = $query->query_vars;
 		if( $query->is_home && !isset( $vars['post_type'] ) )
 			$query->set( 'post_type', 'property' );
-
 		placester_update_listings();
 	}
-}
-
-/**
- * Returns all property listings
- *
- * @return object 
- */
-function placester_get_properties()
-{
-    $request = array('api_key' => placester_get_api_key());
-
-    $url = 'http://api.placester.com/v1.0/properties.json';
-
-    return placester_send_request($url, $request, 'GET');
 }
 
 /**

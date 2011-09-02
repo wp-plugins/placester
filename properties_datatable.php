@@ -20,10 +20,8 @@ else {
     if ( ! current_user_can( 'edit_themes' ) )
         die( 'permission denied' );
 }
-$placester_display_exact_address = get_option('placester_display_exact_address');
-if ( $placester_display_exact_address ) 
-    $filter_request['address_mode'] = 'exact';
-// print_r($_REQUEST);
+$filter_request['address_mode'] = placester_get_property_address_mode();
+
 // Paging parameters
 if ( isset( $_GET['iDisplayStart'] ) )
     $filter_request['offset'] = $_GET['iDisplayStart'];

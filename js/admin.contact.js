@@ -18,4 +18,22 @@ jQuery(document).ready(function()
             },
             'json');
     });
+
+    // Remove ZIP for Belize
+    detached_zip_row = false>;
+    $zip_row = jQuery('#company_location_zip').closest('tr');
+    if (jQuery('#company_location_country').val() == "BZ") {
+        $zip_row = $zip_row.detach();
+        detached_zip_row = true;
+    }
+    jQuery('#company_location_country').change(function(){
+        if ($(this).val() == "BZ") {
+            $zip_row = $zip_row.detach();
+            detached_zip_row = true;
+        } else if (detached_zip_row) {
+            $(this).closest('tr').after($zip_row);
+            detached_zip_row = false;
+        }
+
+    });
 });

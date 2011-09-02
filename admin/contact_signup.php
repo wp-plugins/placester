@@ -15,6 +15,7 @@ $signup_user = new StdClass;
 //
 // Sign up action
 //
+// @TODO Properly inform the user of the fact that this is a signup form
 if (isset($_POST['signup_finish']))
 {
     details_compine_with_http($signup_company, $signup_user);

@@ -300,7 +300,8 @@ function details($company, $user, $error_validation_data)
         $v_company = $error_validation_data->company;
     if (property_exists($error_validation_data, 'user'))
         $v_user = $error_validation_data->user;
- 
+    $api_key_type = get_option( 'placester_api_key_type' );
+    if ( $api_key_type == "user" ) {
     ?>
 
     <?php placester_postbox_header('Basic Details'); ?>
@@ -319,7 +320,9 @@ function details($company, $user, $error_validation_data)
       <input type="submit" name="<?php echo CONTACT_SIGNUP_FORM ? 'signup_finish' : 'edit_finish' ?>" class="button-primary" 
         value="Save All Changes" />
     </p>        
-    <?php placester_postbox_footer(); ?>
+    <?php placester_postbox_footer(); 
+    }
+?>
 
     <?php placester_postbox_header('Company'); ?>
     <table class="form-table">
@@ -350,7 +353,10 @@ function details($company, $user, $error_validation_data)
     </p>
     <?php placester_postbox_footer(); ?>
     
-    <?php placester_postbox_header('Personal Details'); ?>
+<?php
+    if ( $api_key_type == "user" ) {
+        placester_postbox_header('Personal Details'); 
+?>
     <table class="form-table">
         <?php 
         row_image('Headshot', 'user_logo', $user, $v_user, 'logo',
@@ -376,5 +382,5 @@ function details($company, $user, $error_validation_data)
            class="button-primary" value="Save All Changes" />
     </p>
     <?php placester_postbox_footer(); ?>
-    <?php
+    <?php  }
 }

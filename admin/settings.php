@@ -64,6 +64,7 @@ if (array_key_exists('remove', $_POST))
 
 if (array_key_exists('apply', $_POST))
 {
+    $placester_display_block_address_old = get_option( 'placester_display_block_address' );
     // Flag for showing success message
     $show_success_message = TRUE;
     
@@ -79,10 +80,13 @@ if (array_key_exists('apply', $_POST))
     $placester_display_zoning_types = array();
     $placester_display_purchase_types = array();
     $placester_display_listings_blog = false;
-    $placester_display_exact_address = false;
+    $placester_display_block_address = false;
+
 
     foreach ($_POST as $key => $value)
     {
+
+
         if (substr($key, 0, 33) == 'placester_display_property_types_')
             array_push($placester_display_property_types, substr($key, 33));
         elseif (substr($key, 0, 32) == 'placester_display_listing_types_')
@@ -100,8 +104,9 @@ if (array_key_exists('apply', $_POST))
         if ( $key == 'placester_display_listings_blog' ) {
             $placester_display_listings_blog = true;
         }
-        if ( $key == 'placester_display_exact_address' ) {
-            $placester_display_exact_address = true;
+
+        if ( $key == 'placester_display_block_address' ) {
+            $placester_display_block_address = true;
         }
         // if ( $key == 'placester_default_country' ) {
         //     $placester_display_exact_address = true;
@@ -122,8 +127,19 @@ if (array_key_exists('apply', $_POST))
     update_option('placester_display_purchase_types', $placester_display_purchase_types);
     if ( !$placester_display_listings_blog )
         delete_option('placester_display_listings_blog');
-    if ( !$placester_display_exact_address )
-        delete_option('placester_display_exact_address');
+    if ( !$placester_display_block_address )
+        delete_option('placester_display_block_address');
+
+    // Change in this option requires deleting property posts
+    if ( $placester_display_block_address != $placester_display_block_address_old ) {
+        global $wpdb;
+
+        $sql = $wpdb->get_results(
+            'DELETE ' .
+            'FROM ' . $wpdb->prefix . 'posts ' .
+            "WHERE post_type = 'property' ");
+    }
+    
 
     // Update property urls
     if (!empty($api_key))
@@ -172,14 +188,16 @@ if (array_key_exists('apply', $_POST))
     <?php placester_postbox_header('API Key'); ?>
     <table class="form-table">
       <?php 
-      row_textbox('API Key', 'placester_api_key',
-          'This is your api key from <a href="http://placester.com">Placester</a> ' .
-          'a company dedicated to making real estate marketing painless.' .
-          'If you have an api key (found in the ' .
-          '<a href="http://placester.com/company/distribution/">distribution</a>' .
-          ' tab) copy and paste it in above.' .
-          'If you don\'t have an api key, don\'t worry. Just fill out the ' .
-          'fields in the <a href="admin.php?page=placester_personal">contact</a> tab '.
+      $api_key_type = get_option( 'placester_api_key_type' );
+      $label = ( $api_key_type ) ? "API Key<br /><span style='margin-top: 8px; float:left; font-size: 0.9em;'>Current: " . ucfirst($api_key_type) . " API Key</span>" : "API Key";
+      row_textbox($label, 'placester_api_key',
+          'This is your API key from <a href="http://placester.com">Placester</a>, ' .
+          'a company dedicated to making real estate marketing painless.<br/>' .
+          'If you have an API key (found on your ' .
+          '<a href="http://placester.com/user/apikeys/">Placester account management page</a>' .
+          ') copy and paste it in above.<br />' .
+          'If you don\'t have an API key, don\'t worry. Just fill out the ' .
+          'fields on the <a href="admin.php?page=placester_personal">Contact</a> page '.
           'and one will be generated automatically (and for free).'); 
       ?>
     </table>
@@ -398,7 +416,7 @@ if (array_key_exists('apply', $_POST))
     <table class="form-table">
       <?php 
       row_dropdown('Default country', 'placester_default_country', $placester_countries, 'US', 'The country that will be selected by default on the "Add listing" page.'); 
-      row_checkbox('Display exact listings address', 'placester_display_exact_address', 'Checking this would display the exact address instead of the block address.'); 
+      row_checkbox('Display block listings address', 'placester_display_block_address', 'Checking this would display the block address instead of the exact address.'); 
 
       $latlong = '<label style="width: 100px; float: left;" for="placester_center_latitude">Latitude</label><input type="text" id="placester_center_latitude" value="' . get_option('placester_center_latitude', $default_lat) . '" name="placester_center_latitude" readonly="readonly"><br />';
       $latlong .= '<label style="width: 100px; float: left;" for="placester_center_longitude">Longitude</label><input type="text" id="placester_center_longitude" value="' . get_option('placester_center_longitude', $default_lng) . '" name="placester_center_longitude" readonly="readonly"><br />';

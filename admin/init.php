@@ -658,8 +658,11 @@ function placester_admin_actualize_company_user() {
         update_option( 'placester_company_id', '' );
         update_option( 'placester_user', new StdClass );
         update_option( 'placester_company', new StdClass );
+        delete_option( 'placester_api_key_type' );
     } else {
         $r = placester_apikey_info( $api_key );
+
+        $saved_api_key_type = get_option( 'placester_api_key_type' );
 
         if (isset($r) && isset($r->api_key_id)) {
             update_option( 'placester_api_id', $r->api_key_id);
@@ -673,23 +676,31 @@ function placester_admin_actualize_company_user() {
         if ( isset( $old_company->description ) )
             $company->description = $old_company->description;
 
-        if (isset($r->id) && isset($r->user->id)) {
-            $user = placester_user_get( $r->id, $r->user->id );
-            update_option( 'placester_user_id', $r->user->id );
+        $api_key_type = 'user';
+        if ( isset($r->id) ) {
+            if ( isset($r->user->id) ) {
+                $user = placester_user_get( $r->id, $r->user->id );
+                update_option( 'placester_user_id', $r->user->id );
+            } else {
+                $api_key_type = 'agency';
+            }
             update_option( 'placester_company_id', $r->id );
         }
-        $user = $r->user;
+        // Update the API key type
+        if ( $saved_api_key_type != $api_key_type ) 
+            update_option( 'placester_api_key_type', $api_key_type );
 
-        $old_user = placester_get_user_details();
-        if ( isset( $old_user->logo ) )
-            $user->logo = $old_user->logo;
-        if ( isset( $old_user->description ) )
-            $user->description = $old_user->description;
+        if ( isset($r->user) ) {
+            $user = $r->user;
 
-        if ( isset($user) ) {
+            $old_user = placester_get_user_details();
+            if ( isset( $old_user->logo ) )
+                $user->logo = $old_user->logo;
+            if ( isset( $old_user->description ) )
+                $user->description = $old_user->description;
+
             update_option( 'placester_user', $user );
         }
-
 
         update_option( 'placester_company', $company );
 

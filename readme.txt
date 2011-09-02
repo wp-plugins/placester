@@ -96,8 +96,11 @@ Not unless you want there to be, that is Placester is your marketing partner. Ou
 = Which markets (countries) are supported? =
 
 Placester Real Estate Pro currently supports the following markets:
-* United States
+* Australia
+* Belize
 * Canada
+* Russia
+* United States
 
 We'll be adding more as time goes on. [Reach out](mailto:support@placester.com) to us if you would like to see your market supported.
 
@@ -142,6 +145,12 @@ Absolutely, [reach out](mailto:support@placester.com) to us and let us know what
 In general real-time, but if you use 3rd party property management services, the updates will only be as recent as your provider allows.
 
 == Changelog ==
+
+= 0.3.4 = 
+* Added support for Australia, Belize and Russia
+* Added information about the type of the API key
+* Contact page updated to match the API key type
+* Fixed the "Exact address" functionality
 
 = 0.3.3 = 
 * Make "Delete" listing link red

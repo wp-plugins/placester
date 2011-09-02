@@ -21,9 +21,8 @@ if ( isset( $_REQUEST['sort_by'] ) )
 if ( isset( $_REQUEST['sort_type'] ) )
     $filter_request['sort_type'] = $_REQUEST['sort_type'];
 
-$placester_display_exact_address = get_option('placester_display_exact_address');
-if ( $placester_display_exact_address ) 
-    $filter_request['address_mode'] = 'exact';
+$filter_request['address_mode'] = placester_get_property_address_mode();
+
 
 // Request
 try {
