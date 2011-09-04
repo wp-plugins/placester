@@ -4,7 +4,7 @@ Plugin Name: Real Estate Pro by Placester
 Description: Easily create a rich real estate web site for yourself or your agency.
 Plugin URI: http://placester.com/wordpress/plugin/
 Author: Frederick Townes, Matthew Barba, Placester
-Version: 0.3.4
+Version: 0.3.5
 Author URI: http://www.placester.com/developer/wordpress
 */
 

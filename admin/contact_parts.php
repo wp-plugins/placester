@@ -301,7 +301,6 @@ function details($company, $user, $error_validation_data)
     if (property_exists($error_validation_data, 'user'))
         $v_user = $error_validation_data->user;
     $api_key_type = get_option( 'placester_api_key_type' );
-    if ( $api_key_type == "user" ) {
     ?>
 
     <?php placester_postbox_header('Basic Details'); ?>
@@ -321,7 +320,6 @@ function details($company, $user, $error_validation_data)
         value="Save All Changes" />
     </p>        
     <?php placester_postbox_footer(); 
-    }
 ?>
 
     <?php placester_postbox_header('Company'); ?>
@@ -354,7 +352,7 @@ function details($company, $user, $error_validation_data)
     <?php placester_postbox_footer(); ?>
     
 <?php
-    if ( $api_key_type == "user" ) {
+
         placester_postbox_header('Personal Details'); 
 ?>
     <table class="form-table">
@@ -382,5 +380,5 @@ function details($company, $user, $error_validation_data)
            class="button-primary" value="Save All Changes" />
     </p>
     <?php placester_postbox_footer(); ?>
-    <?php  }
+    <?php  
 }
