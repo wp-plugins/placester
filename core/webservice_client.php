@@ -42,8 +42,10 @@ object(stdClass)[163]
   'description' => string 'Great Deal'
 */
 
-/*
- * "Field not valid" exception
+/**
+ * ValidationException 
+ * 
+ * @internal
  */
 class ValidationException extends Exception
 {
@@ -429,6 +431,7 @@ function placester_user_add($user)
         array
         (
             'first_name' => $user->first_name,
+            'source' => 'wordpress',
             'last_name' => $user->last_name,
             'email' => $user->email,
             'website' => $user->website,
@@ -484,6 +487,7 @@ function placester_user_set($user)
         array
         (
             'api_key' => placester_get_api_key(),
+            'source' => 'wordpress',
             'user_id' => $user->id,
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,

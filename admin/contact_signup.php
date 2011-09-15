@@ -4,6 +4,7 @@
  * Admin interface: Contact tab
  * Sign up form
  */
+include_once(dirname(__FILE__) . '/../core/const.php');
 $view_default = true;
 $error = false;
 $error_message = '';

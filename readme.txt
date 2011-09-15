@@ -3,7 +3,7 @@ Contributors: Placester
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
 Tested up to: 3.2.1
-Stable tag: 0.3.5
+Stable tag: 0.3.6
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -11,7 +11,7 @@ Easily create and manage real estate sites powered by WordPress.
 
 From the creators of http://placester.com: Create your fully functional real estate website with a single plugin. Some of the features include: 
 
-* Free IDX integrations, continuously synchronized.
+* Free RETS integrations available, continuously updated so you don't have to.
 * Create / edit / update / search listings.
 * Every listing pages automatically created, great for SEO.
 * Fully customizable layout for property search and property details pages.
@@ -145,6 +145,9 @@ Absolutely, [reach out](mailto:support@placester.com) to us and let us know what
 In general real-time, but if you use 3rd party property management services, the updates will only be as recent as your provider allows.
 
 == Changelog ==
+
+= 0.3.6 = 
+* Bugfixes
 
 = 0.3.5 = 
 * Show hidden Contact hidden fields for all API types 

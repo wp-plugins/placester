@@ -18,9 +18,10 @@ function placester_post_slug()
 }
 
 
-
-/*
- * "No API Key" exception
+/**
+ * "No API Key" exception 
+ * 
+ * @internal
  */
 class PlaceSterNoApiKeyException extends Exception
 {
@@ -174,6 +175,7 @@ function placester_update_listing( $property_id ) {
  * @param object $o
  * @param string $property
  * @return string
+ * @internal
  */
 function placester_p1($o, $property)
 {
@@ -191,6 +193,7 @@ function placester_p1($o, $property)
  * @param string $property1
  * @param string $property2
  * @return string
+ * @internal
  */
 function placester_p2($o, $property1, $property2)
 {

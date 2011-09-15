@@ -3,8 +3,12 @@
 * Slightly modifed version of the Options Framework by Devin Price
 */
 
-/* Add option page only if the user has the proper permissions */
 add_action('init', 'define_global_vars' );
+/**
+ * Add option page only if the user has the proper permissions  
+ * 
+ * @internal
+ */
 function define_global_vars() {
     global $theme_options;
     $theme_options = array();
@@ -12,7 +16,7 @@ function define_global_vars() {
     $options_defined = false;
 }
 
-/* 
+/**
  * Creates the settings in the database by looping through the array
  * we supplied in options.php.  This is a neat way to do it since
  * we won't have to save settings for headers, descriptions, or arguments-
@@ -21,6 +25,7 @@ function define_global_vars() {
  * Read more about the Settings API in the WordPress codex:
  * http://codex.wordpress.org/Settings_API
  *
+ * @internal
  */
 function placester_of_init() {
 
@@ -39,14 +44,13 @@ function placester_of_init() {
     register_setting('placester_theme_options', $option_name, 'placester_of_validate' );
 }
 
-/* 
+/** 
  * Adds default options to the database if they aren't already present.
  * May update this later to load only on plugin activation, or theme
  * activation since most people won't be editing the options.php
  * on a regular basis.
  *
- * http://codex.wordpress.org/Function_Reference/add_option
- *
+ * @internal
  */
 function placester_of_setdefaults() {
 
@@ -107,8 +111,12 @@ function placester_of_setdefaults() {
     }
 }
 
-/* Add a subpage called "Theme Options" to the appearance menu. */
 if ( !function_exists( 'placester_of_add_page' ) ) {
+    /**
+     * Add a subpage called "Theme Options" to the appearance menu.
+     * 
+     * @internal
+     */
     function placester_of_add_page() {
         $of_page = add_menu_page( 'Theme Options', 
             'Theme Options', 
@@ -124,13 +132,21 @@ if ( !function_exists( 'placester_of_add_page' ) ) {
     }
 }
 
-/* Loads the CSS */
+/**
+ * Loads The CSS
+ * 
+ * @internal
+ */
 function placester_of_load_styles() {
     wp_enqueue_style('admin-style', OPTIONS_FRAMEWORK_DIRECTORY .'css/admin-style.css');
     wp_enqueue_style('color-picker', OPTIONS_FRAMEWORK_DIRECTORY .'css/colorpicker.css');
 }	
 
-/* Loads the javascript */
+/**
+ * Loads The js
+ * 
+ * @internal
+ */
 function placester_of_load_scripts() {
     // Inline scripts from options-interface.php
     // add_action('admin_head', 'of_admin_head');
@@ -141,6 +157,9 @@ function placester_of_load_scripts() {
     wp_enqueue_script('options-custom', OPTIONS_FRAMEWORK_DIRECTORY . 'js/options-custom.js', array('jquery'));
 }
 
+/**
+ * @internal
+ */
 function of_admin_head() {
 
     // Hook to add custom scripts
@@ -157,6 +176,7 @@ function of_admin_head() {
  *
  * Nonces are provided using the settings_fields()
  *
+ * @internal
  */
 if ( !function_exists( 'placester_of_page' ) ) {
     function placester_of_page() {
@@ -207,12 +227,13 @@ if ( !function_exists( 'placester_of_page' ) ) {
     }
 }
 
-/* 
+/**
  * Data sanitization!
  *
  * This runs after the submit/reset button has been clicked and
  * validates the inputs.
  *
+ * @internal
  */
 function placester_of_validate($input) {
 
@@ -274,49 +295,49 @@ function placester_of_validate($input) {
 
 }
 
-/* 
- * Helper function to return the theme option value. If no value has been saved, it returns $default.
- * Needed because options are saved as serialized strings.
+/**
+ * Helper function that returns the theme option value.  
  *
+ * If no value has been saved, it returns $default.
+ * 
+ * @param string $name The name of the option as it was registered.
+ * @param mixed $default What to return if the option has not been set
  */
-if ( !function_exists( 'placester_option_getter' ) ) {
-    function placester_option_getter($name, $default = false) {
+function placester_option_getter( $name, $default = false ) {
 
-        $placester_of_settings = get_option('placester_theme_options');
+    $placester_of_settings = get_option('placester_theme_options');
 
-        // Gets the unique option id
-        $option_name = $placester_of_settings['id'];
+    // Gets the unique option id
+    $option_name = $placester_of_settings['id'];
 
-        if ( get_option($option_name) ) {
-            $options = get_option($option_name);
-        }
+    if ( get_option($option_name) ) {
+        $options = get_option($option_name);
+    }
 
-        if ( !empty($options[$name]) ) {
-            return $options[$name];
-        } else {
-            return $default;
-        }
+    if ( !empty($options[$name]) ) {
+        return $options[$name];
+    } else {
+        return $default;
     }
 }
 
-/* 
- * Helper function to set the theme option value.
- *
+/**
+ * Helper function to set the theme option value. 
+ * 
+ * @param mixed $arg_array 
  */
-if ( !function_exists( 'placester_option_setter' ) ) {
-    function placester_option_setter($arg_array) {
-        global $theme_options;
-        global $options_defined;
+function placester_option_setter( $arg_array ) {
+    global $theme_options;
+    global $options_defined;
 
-        // Show menu only if options are defined
-        if ( !$options_defined ) {
-            if ( current_user_can('edit_theme_options') ) {
-                add_action('admin_menu', 'placester_of_add_page');
-                add_action('admin_init', 'placester_of_init' );
-            }
-            $options_defined = true;
+    // Show menu only if options are defined
+    if ( !$options_defined ) {
+        if ( current_user_can('edit_theme_options') ) {
+            add_action('admin_menu', 'placester_of_add_page');
+            add_action('admin_init', 'placester_of_init' );
         }
-
-        array_push( $theme_options, $arg_array );
+        $options_defined = true;
     }
+
+    array_push( $theme_options, $arg_array );
 }

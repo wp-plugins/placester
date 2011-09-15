@@ -9,6 +9,8 @@
  * Initialization.
  * Creates custom post types for properties and craigslist.
  * Enqueues jquery and fancybox. Rewrites rules for permalinks
+ *
+ * @internal
  */
 function placester_init() {
     /** Create new custom post type */
@@ -67,6 +69,8 @@ add_action( 'init', 'placester_init' );
 
 /**
  * Called on plugin activation.
+ *
+ * @internal
  */
 function placester_activate()
 {
@@ -85,6 +89,8 @@ function placester_activate()
  * @param object $query
  * @deprecated Left to ensure no themes use this
  * @see placester_get_posts($query)
+ *
+ * @internal
  */
 function placester_pre_get_posts( $query ) {
    $vars = $query->query_vars;
@@ -97,9 +103,6 @@ function placester_pre_get_posts( $query ) {
        placester_get_post_id( $id );
    }
 }
-
-
-
 
 /**
  * Allows theme builders to create pages on theme activation.
@@ -168,7 +171,10 @@ function placester_create_pages( $page_list )
 
 /** 
  * Function that inserts a page
- * @param  array $args Array of ( title, template ) arrays
+ *
+ * @param array $args Array of ( title, template ) arrays
+ *
+ * @internal
  */
 function placester_insert_page( $args ) {
     $args = wp_parse_args( $args );
@@ -186,11 +192,12 @@ function placester_insert_page( $args ) {
 }
 
 /**
- * Filters Placester postt objects.
+ * Filters Placester post objects.
  * Ensures post object is a Placester listing. Listings are loaded from external storage
  *
  * @param object $query
- * @since 0.21
+ *
+ * @internal
  */
 function placester_get_posts( $query ) {
     if(!is_admin() && !$query->is_page) {
@@ -248,7 +255,9 @@ function placester_get_posts( $query ) {
 }
 
 /**
- *  Adds the appropriate actions before returning the post
+ * Adds the appropriate actions before returning the post
+ *
+ * @internal
  */
 function placeser_pre_get_posts_actions() {
     add_action( 'pre_get_posts', 'placester_pre_get_posts', 0 );
@@ -261,12 +270,14 @@ function placeser_pre_get_posts_actions() {
 add_action('init', 'placeser_pre_get_posts_actions');
 
 /**
- *  Utility function that outputs an admin notice.
- *  @param string $msg
- *  @param string $class
- *  @param bool $inline
- *  @param bool $css
- *  
+ * Utility function that outputs an admin notice.
+ *
+ * @param string $msg
+ * @param string $class
+ * @param bool $inline
+ * @param bool $css
+ *
+ * @internal
  */
 function placester_admin_msg( $msg = '', $class = "updated", $inline = false, $css = false ) {
     if ( $css ) {
