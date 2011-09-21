@@ -102,7 +102,7 @@ function placester_filter_parameters_from_http()
             'max_bathrooms',
             'max_bedrooms',
             'max_half_baths',
-            'max_price',
+            'MAX_PRICE',
             'min_bathrooms',
             'min_bedrooms',
             'min_half_baths',
@@ -166,12 +166,12 @@ function placester_property_list($parameters)
     if (isset($request['is_featured']))
     {
         unset($request['is_featured']);
-        $request['ids'] = placester_properties_featured_ids();
+        $request['property_ids'] = placester_properties_featured_ids();
     }
     if (isset($request['is_new']))
     {
         unset($request['is_new']);
-        $request['ids'] = placester_properties_new_ids();
+        $request['property_ids'] = placester_properties_new_ids();
     }
 
     $request['address_mode'] = placester_get_property_address_mode();
@@ -191,7 +191,6 @@ function placester_get_properties()
         'address_mode' => placester_get_property_address_mode(),
     );
 
-    var_dump($request);
     $url = 'http://api.placester.com/v1.0/properties.json';
 
     return placester_send_request($url, $request, 'GET');
@@ -553,6 +552,7 @@ function placester_company_set($id, $company)
         $request['location[zip]'] = $company->location->zip;
 
     placester_cut_empty_fields($request);
+
     $url = 'http://api.placester.com/v1.0/organizations/' . $id . '.json';
 
     // Do request

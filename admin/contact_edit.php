@@ -55,6 +55,7 @@ if (isset($_POST['edit_finish']))
     }
     catch (Exception $e) 
     {
+
         $error_message = $e->getMessage();
         $error = true;
     }
@@ -74,6 +75,7 @@ else
     catch (Exception $e)
     {
         $error_message = $e->getMessage();
+        $error = true;
     }
 
     $company = get_company_details();

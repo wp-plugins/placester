@@ -68,10 +68,12 @@ function p($o, $property)
 function control_dropdown($property_name, $possible_values, $value, 
     $width = '')
 {
+
+    $id = str_replace('/', '_', $property_name);
     ?>
     <select class="heading form-input-tip" 
       name="<?php echo $property_name ?>" 
-      id="<?php echo $property_name ?>" 
+      id="<?php echo $id ?>" 
       style="width: <?php echo $width ?>" 
       class="heading form-input-tip">
     <?php
@@ -474,7 +476,9 @@ function property_form($p, $v)
       <tr>
         <?php
         column_textbox('Address<span class="placester_required">*</span>', 'location/address', $p, $v);
+        echo '<p>';
         column_textbox('Zip<span class="placester_required">*</span>', 'location/zip', $p, $v);
+        echo '</p>';
         ?>
       </tr>
       <tr>
@@ -485,7 +489,9 @@ function property_form($p, $v)
       </tr>
       <tr>
         <?php
+        echo '<p>';
         column_textbox('State<span class="placester_required">*</span>', 'location/state', $p, $v);
+        echo '</p>';
         column_textbox('Neighborhood', 'location/neighborhood', $p, $v);
         ?>
       </tr>

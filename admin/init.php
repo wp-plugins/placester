@@ -70,6 +70,8 @@ function placester_admin_menu() {
 
     wp_register_script( 'placester.admin.property', 
         plugins_url( '/js/admin.property.js', dirname( __FILE__ ) ) );
+    wp_register_script( 'placester.admin.property_form', 
+        plugins_url( '/js/admin.property_form.js', dirname( __FILE__ ) ) );
     wp_register_script( 'placester.admin.settings', 
         plugins_url( '/js/admin.settings.js', dirname( __FILE__ ) ) );
 
@@ -343,6 +345,7 @@ function placester_admin_properties_onload() {
             wp_enqueue_script( 'jquery.multifile' );
             wp_enqueue_script( 'jquery-ui.datepicker' );
             wp_enqueue_script( 'placester.admin.property' );
+            wp_enqueue_script( 'placester.admin.property_form' );
             wp_enqueue_script( 'placester.admin.property_edit',
                 plugins_url( '/js/admin.property_edit.js', dirname( __FILE__ ) ) );
 
@@ -412,6 +415,7 @@ function placester_admin_property_add_onload() {
     wp_enqueue_script( 'jquery-ui.core' );
     wp_enqueue_script( 'jquery-ui.datepicker' );
     wp_enqueue_script( 'placester.admin.property' );
+    wp_enqueue_script( 'placester.admin.property_form' );
 }
 
 add_action( 'load-placester_page_placester_property_add', 

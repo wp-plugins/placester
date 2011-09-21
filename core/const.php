@@ -54,6 +54,9 @@ $placester_countries = array (
     'AU' => 'Australia',
     'BZ' => 'Belize',
     'CA' => 'Canada',
+    'IN' => 'India',
     'RU' => 'Russia',
+    'ZA' => 'South Africa',
+    'UK' => 'United Kingdom',
     'US' => 'United States',
 );   

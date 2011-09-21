@@ -3,7 +3,7 @@ Contributors: Placester
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
 Tested up to: 3.2.1
-Stable tag: 0.3.6
+Stable tag: 0.3.7
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -100,6 +100,8 @@ Placester Real Estate Pro currently supports the following markets:
 * Belize
 * Canada
 * Russia
+* South Africa
+* United Kingdom
 * United States
 
 We'll be adding more as time goes on. [Reach out](mailto:support@placester.com) to us if you would like to see your market supported.
@@ -145,6 +147,11 @@ Absolutely, [reach out](mailto:support@placester.com) to us and let us know what
 In general real-time, but if you use 3rd party property management services, the updates will only be as recent as your provider allows.
 
 == Changelog ==
+
+= 0.3.7 = 
+* Added support for India, South Africa, and United Kingdom
+* Fixed the Contact images bug
+* API updates
 
 = 0.3.6 = 
 * Bugfixes

@@ -37,20 +37,31 @@ jQuery(document).ready(function()
     jQuery("#location_city").keydown(map_geocode_address_delayed);
     jQuery("#location_state").keydown(map_geocode_address_delayed);
 
-    map_geocoded_address = jQuery("#location_address").val() + ", " +
-        jQuery("#location_zip").val() + ", " +
-        jQuery("#location_city").val() + ", " +
-        jQuery("#location_state").val();
+    map_geocoded_address = 
+        clearIfEmpty({val: jQuery("#location_address").val(), pre: false}) +
+        clearIfEmpty({val: jQuery("#location_zip").val()}) +
+        clearIfEmpty({val: jQuery("#location_city").val()}) +
+        clearIfEmpty({val: jQuery("#location_state").val()});
 
-   console.log(jQuery('#property_add_form'));
-    
     jQuery('#property_add_form').submit(function(e) {
         // $('#file_upload').uploadifyUpload();
     });
 
 });
 
+function clearIfEmpty( arg ) {
+    defaults = {
+        pre: true
+    };
+    arg = jQuery.extend( defaults, arg )
+    string = arg.val;
+    if ( typeof( arg.val ) == 'undefined' || arg.val === '' ) 
+        return '';
+    else if (arg.pre)
+        string = ', ' + arg.val;
 
+    return string;
+}
 
 var map_timeout = null;
 
@@ -76,10 +87,13 @@ function map_geocode_address_delayed()
  */
 function map_geocode_address()
 {
-    var address = jQuery("#location_address").val() + ", " +
-        jQuery("#location_zip").val() + ", " +
-        jQuery("#location_city").val() + ", " +
-        jQuery("#location_state").val();
+    var address = 
+        clearIfEmpty({val: jQuery("#location_address").val(), pre: false}) +
+        clearIfEmpty({val: jQuery("#location_zip").val()}) +
+        clearIfEmpty({val: jQuery("#location_city").val()}) +
+        clearIfEmpty({val: jQuery("#location_state").val()});
+
+        console.log('adress', address);
 
     if (address == map_geocoded_address)
         return;
@@ -93,8 +107,13 @@ function map_geocode_address()
         {
             if (status == google.maps.GeocoderStatus.OK) 
                 map_create_marker(results[0].geometry.location);
-            else
-                alert("Geocode was not successful, address used " + address);
+            else {
+                $alert_div = jQuery('<div class="error inline"><p>Geocode was not successful, address used "' + address + '"</p></div>');
+                jQuery('.wrap #location_state').closest('.postbox').before($alert_div);
+                $alert_div.delay(5000).hide('slow', function() { 
+                    $(this).remove();
+                });
+            }
         });
 }
 

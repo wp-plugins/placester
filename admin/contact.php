@@ -12,7 +12,7 @@ $api_key = get_option('placester_api_key');
 <div class="wrap">
   <?php placester_admin_header('placester_contact') ?>
 
-  <form method="post" action="admin.php?page=placester_contact" id="placester_form">
+  <form method="post" action="admin.php?page=placester_contact" id="placester_form" enctype="multipart/form-data">
     <?php
     placester_postbox_container_header();
 
