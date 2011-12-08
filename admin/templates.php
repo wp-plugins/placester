@@ -2,61 +2,56 @@
 /**
  *  Craiglist templates
  */
-
 if ( isset($_GET['id']) ) {
 
     $current_template_name = '';
 
-    if ( isset( $_REQUEST['save_template_as'] ) ) {
-        $template_name = $_REQUEST['save_template_name'];
-        $v = stripslashes( $_REQUEST['save_template_content'] );
+    // if ( isset( $_REQUEST['save_template_as'] ) ) {
+        // $template_name = $_REQUEST['save_template_name'];
+        // $v = stripslashes( $_REQUEST['save_template_content'] );
 
-        $post = array(
-            'post_type' => 'placester_template',
-            'post_title' => $template_name,
-            'post_status' => 'publish',
-            'post_author' => 1,
-            'post_content' => $v
-        );
+        // $post = array(
+            // 'post_type' => 'placester_template',
+            // 'post_title' => $template_name,
+            // 'post_status' => 'publish',
+            // 'post_author' => 1,
+            // 'post_content' => $v
+        // );
 
-        $post_id = wp_insert_post( $post );
-        if ( $post_id > 0 ) {
-            delete_post_meta( $post_id, 'thumbnail_url' );
-            add_post_meta( $post_id, 'thumbnail_url', $_REQUEST['save_thumbnail_url'] );
-        }
+        // $post_id = wp_insert_post( $post );
+        // if ( $post_id > 0 ) {
+            // delete_post_meta( $post_id, 'thumbnail_url' );
+            // add_post_meta( $post_id, 'thumbnail_url', $_REQUEST['save_thumbnail_url'] );
+        // }
 
-        placester_success_message( 'Template saved for that listing' );
-        $current_template_name = 'user_' . $post_id;
-    }
+        // placester_success_message( 'Template saved for that listing' );
+        // $current_template_name = 'user_' . $post_id;
+    // }
 
+    // if ( isset( $_REQUEST['save_template'] ) ) {
+        // $template_name = $_REQUEST['save_template_name'];
+        // $v = stripslashes( $_REQUEST['save_template_content'] );
 
-    if ( isset( $_REQUEST['save_template'] ) ) {
-        $template_name = $_REQUEST['save_template_name'];
-        $v = stripslashes( $_REQUEST['save_template_content'] );
+        // $post_id = substr( $_REQUEST['current_template_name'], 5 );
+        // $post = array(
+            // 'ID' => $post_id,
+            // 'post_type' => 'placester_template',
+            // 'post_content' => $v
+        // );
 
-        $post_id = substr( $_REQUEST['current_template_name'], 5 );
-        $post = array(
-            'ID' => $post_id,
-            'post_type' => 'placester_template',
-            'post_content' => $v
-        );
+        // wp_update_post( $post );
 
-        wp_update_post( $post );
+        // placester_success_message( 'Template saved for that listing' );
+        // $current_template_name = 'user_' . $post_id;
+    // }
 
-        placester_success_message( 'Template saved for that listing' );
-        $current_template_name = 'user_' . $post_id;
-    }
+    // if ( isset( $_REQUEST['delete_template'] ) ) {
+        // $post_id = substr( $_REQUEST['current_template_name'], 5 );
+        // wp_delete_post( $post_id );
 
-
-    if ( isset( $_REQUEST['delete_template'] ) ) {
-        $post_id = substr( $_REQUEST['current_template_name'], 5 );
-        wp_delete_post( $post_id );
-
-        placester_success_message( 'Template was deleted' );
-        $current_template_name = '';
-    }
-
-
+        // placester_success_message( 'Template was deleted' );
+        // $current_template_name = '';
+    // }
 
     //
     // load templates list
@@ -73,11 +68,11 @@ if ( isset($_GET['id']) ) {
     $current_name = '';
     $current_iframe_src = $base_iframe_url . '&craigslist_template=1&template_iframe=';
 
-    if ( strlen( $current_template_name ) > 0 ) {
-        $current_name = $current_template_name;
-        $current_iframe_src = $base_iframe_url .
-            '&template_iframe=' . $current_template_name;
-    }
+    // if ( strlen( $current_template_name ) > 0 ) {
+        // $current_name = $current_template_name;
+        // $current_iframe_src = $base_iframe_url .
+            // '&template_iframe=' . $current_template_name;
+    // }
 
 
 ?>

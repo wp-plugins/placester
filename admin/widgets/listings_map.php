@@ -5,7 +5,7 @@ class Placester_Listing_Map_Widget extends WP_Widget {
 			'classname' => 'Placester_Listing_Map_Widget',
 			'description' => 'Does not work on the search page',
 			);
-		$this->WP_Widget( 'Placester_Listing_Map_Widget', 'Placester | Sidebar - Listings Map', $options ); //'Placester | Sidebar - Listings map', $options );
+		$this->WP_Widget( 'Placester_Listing_Map_Widget', 'Placester | Sidebar - Listings Map', $options );
 	}
 	
 	function form($instance) {

@@ -73,7 +73,6 @@ if (isset($_POST['add_finish']))
 
     if (!$error) {
         placester_success_message( 'The "' . $pdata->location->address . '" listing has been added. You can <a href="' . site_url( '/listing/' . $property_id ) . '">View it</a> or <a href="' . admin_url( 'admin.php?page=placester_properties&id=' . $property_id  ) . '">Edit it</a>.' );
-    
     }
 }
 

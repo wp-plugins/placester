@@ -93,8 +93,6 @@ function map_geocode_address()
         clearIfEmpty({val: jQuery("#location_city").val()}) +
         clearIfEmpty({val: jQuery("#location_state").val()});
 
-        console.log('adress', address);
-
     if (address == map_geocoded_address)
         return;
     map_geocoded_address = address;

@@ -432,6 +432,143 @@ function placester_user_description() {
         return $user->description; 
 }
 
+/**
+ * Adds a "Add property to favorites" link 
+ * if the user is not logged in, or if 
+ * the property is not in the favorite list, 
+ * and a "Remove property from favorites" otherwise
+ * 
+ * TODO If logged in and not lead display something informing them 
+ * of what they need to do to register a lead account
+ */
+function placester_favorite_link_toggle( $atts ) {
+    $defaults = array(
+        'add_text' => 'Add property to favorites',
+        'remove_text' => 'Remove property from favorites',
+        'spinner' => admin_url( 'images/wpspin_light.gif' ),
+    );
+
+    $args = wp_parse_args( $atts, $defaults );
+    extract( $args, EXTR_SKIP );
+
+    global $wp_query;
+    $property_id = $wp_query->query['property'];
+    
+    $is_lead = current_user_can( 'placester_lead' );
+    if ( !$is_lead ) {
+        return;
+    }
+
+    $add_link_attr = array(
+        'href' => "#{$property_id}",
+        'id' => 'pl_add_favorite',
+        'class' => 'pl_prop_fav_link'
+    );
+    $remove_link_attr = array(
+        'href' => "#{$property_id}",
+        'id' => 'pl_remove_favorite',
+        'class' => 'pl_prop_fav_link'
+    );
+    // Add extra classes if user not loggend in or 
+    // doesn't have a lead account
+    if ( !is_user_logged_in() ) {
+        $add_link_attr['class'] .= ' guest'; 
+        // TODO redirect add get message that informs the user
+        // that they need an accoutn to add that property to fav
+        $add_link_attr['href'] = site_url('wp-login.php?action=register&role=lead'); 
+        $add_link_attr['target'] = "_blank"; 
+    } else {
+        $is_favorite = placester_is_favorite_property( $property_id );
+        // Return the remove link if favorite
+        if ( $is_favorite )
+            $add_link_attr['style'] = "display:none;";
+    }
+
+    if ( !isset($add_link_attr['style']) ) {
+        $remove_link_attr['style'] = "display:none;";
+    }
+
+    $add_link = placester_html( 
+        'a',
+        $add_link_attr,
+        $add_text
+    );                     
+    $remove_link = placester_html( 
+        'a',
+        $remove_link_attr,
+        $remove_text
+    );                     
+    return placester_html( 
+        'div',
+        array(
+            'id' => 'pl_add_remove_lead_favorites'
+        ),
+        $add_link . 
+        $remove_link .
+        placester_html(
+            'img',
+            array(
+                'src' => $spinner,
+                'class' => "pl_spinner",
+                'alt' => "ajax-spinner",
+                'style' => 'display:none; margin-left: 5px;'
+            ) 
+        )
+    );
+}
+
+/**
+ * Adds "Login | Register" if not logged in
+ * or "Logout | My account" if logged in 
+ *
+ * TODO If logged in and not lead display something informing them 
+ * of what they need to do to register a lead account
+ */
+function placester_lead_control_panel( $atts ) {
+    $defaults = array(
+        'loginout' => true,
+        'profile' => true,
+        'register' => true,
+    );
+
+    $args = wp_parse_args( $atts, $defaults );
+    extract( $args, EXTR_SKIP );
+
+    $is_lead = current_user_can( 'placester_lead' );
+
+    /** The login or logout link. */
+	if ( ! is_user_logged_in() )
+		$loginout_link = '<a id="pl_login_link" href="#pl_login_form">Log in</a>';
+	else
+		$loginout_link = '<a href="' . esc_url( wp_logout_url($_SERVER['REQUEST_URI']) ) . '" id="pl_logout_link">Log out</a>';
+
+    /** The register link. */
+    $register_link = '<a id="pl_register_lead_link" href="#pl_lead_register_form">Register</a>';
+
+    /** The profile link. */
+    $profile_link = '<a id="pl_lead_profile_link" target="_blank" href="' . admin_url( 'admin.php?page=placester_lead_profile' ) . '">My Account</a>';
+
+    $loginout_link = ( $loginout ) ? $loginout_link : '';
+    $register_link = ( $register ) ? ( empty($loginout_link) ? $register_link : ' | ' . $register_link ) : '';
+    $profile_link = ( $profile ) ? ( empty($loginout_link) ? $profile_link : ' | ' . $profile_link ) : '';
+
+    if ( ! is_user_logged_in() ) {
+        $args = array( 
+            'echo' => false,
+            'form_id' => 'pl_login_form',
+        );
+        /** Get the login form. */
+        $login_form = wp_login_form( $args );
+
+        return $loginout_link . $register_link . PLS_Membership::generate_lead_reg_form() . "<div style='display:none;'>{$login_form}</div>";
+    } else {
+
+        /** Remove the link to the profile if the current user is not a lead. */
+        $extra = $is_lead ? $profile_link : "";
+
+        return $loginout_link . $extra;
+    }
+}
 
 add_shortcode('logo', 'placester_user_logo');
 add_shortcode('first_name', 'placester_user_first_name');
@@ -444,3 +581,9 @@ add_shortcode('user_city', 'placester_user_city');
 add_shortcode('user_state', 'placester_user_state');
 add_shortcode('user_zip', 'placester_user_zip');
 add_shortcode('user_description', 'placester_user_description');
+
+if ( placester_is_membership_active() ) {
+    add_shortcode('favorite_link_toggle', 'placester_favorite_link_toggle');
+    add_shortcode('lead_user_navigation', 'placester_lead_control_panel');
+}
+

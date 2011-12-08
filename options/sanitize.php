@@ -4,24 +4,24 @@
 */
 
 /* Text */
-add_filter( 'of_sanitize_text', 'sanitize_text_field' );
+add_filter( 'pl_of_sanitize_text', 'sanitize_text_field' );
 
 /* Textarea */
-add_filter( 'of_sanitize_textarea', 'of_sanitize_textarea' );
-function of_sanitize_textarea($input) {
+add_filter( 'pl_of_sanitize_textarea', 'pl_of_sanitize_textarea' );
+function pl_of_sanitize_textarea($input) {
 	global $allowedtags;
 	$output = wp_kses( $input, $allowedtags );
 	return $output;
 }
 
 /* Select */
-add_filter( 'of_sanitize_select', 'of_sanitize_enum', 10, 2);
+add_filter( 'pl_of_sanitize_select', 'pl_of_sanitize_enum', 10, 2);
 
 /* Radio */
-add_filter( 'of_sanitize_radio', 'of_sanitize_enum', 10, 2);
+add_filter( 'pl_of_sanitize_radio', 'pl_of_sanitize_enum', 10, 2);
 
 /* Check that the key value sent is valid */
-function of_sanitize_enum( $input, $option ) {
+function pl_of_sanitize_enum( $input, $option ) {
 	$output = '';
 	if ( array_key_exists( $input, $option['options'] ) ) {
 		$output = $input;
@@ -30,8 +30,8 @@ function of_sanitize_enum( $input, $option ) {
 }
 
 /* Checkbox */
-add_filter( 'of_sanitize_checkbox', 'of_sanitize_checkbox' );
-function of_sanitize_checkbox( $input ) {
+add_filter( 'pl_of_sanitize_checkbox', 'pl_of_sanitize_checkbox' );
+function pl_of_sanitize_checkbox( $input ) {
 	if ( $input ) {
 		$output = "1";
 	} else {
@@ -41,8 +41,8 @@ function of_sanitize_checkbox( $input ) {
 }
 
 /* Multicheck */
-add_filter( 'of_sanitize_multicheck', 'of_sanitize_multicheck', 10, 2 );
-function of_sanitize_multicheck( $input, $option ) {
+add_filter( 'pl_of_sanitize_multicheck', 'pl_of_sanitize_multicheck', 10, 2 );
+function pl_of_sanitize_multicheck( $input, $option ) {
 	$output = '';
 	if ( is_array( $input ) ) {
 		foreach( $option['options'] as $key => $value ) {
@@ -66,9 +66,9 @@ function of_sanitize_multicheck( $input, $option ) {
  * @return   string
  *
  */
-add_filter( 'of_sanitize_color', 'of_sanitize_hex' );
-function of_sanitize_hex( $hex, $default = '' ) {
-    $valid_hex =  of_validate_hex( $hex );
+add_filter( 'pl_of_sanitize_color', 'pl_of_sanitize_hex' );
+function pl_of_sanitize_hex( $hex, $default = '' ) {
+    $valid_hex =  pl_of_validate_hex( $hex );
 	if ( $valid_hex ) {
         $hex = $valid_hex === 3 ? $hex . $hex : $hex;
 		return '#' . $hex;
@@ -83,7 +83,7 @@ function of_sanitize_hex( $hex, $default = '' ) {
  * @return   bool
  *
  */
-function of_validate_hex( $hex ) {
+function pl_of_validate_hex( $hex ) {
 	$hex = trim( $hex );
 	// Strip recognized prefixes.
 	if ( 0 === strpos( $hex, '#' ) ) {

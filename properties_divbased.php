@@ -8,7 +8,6 @@ require( dirname( __FILE__ ) . '/../../../wp-load.php');
 include( 'properties_util.php' );
 wp();
 status_header( 200 );
-
 //
 // Get data
 //
@@ -22,8 +21,6 @@ if ( isset( $_REQUEST['sort_type'] ) )
     $filter_request['sort_type'] = $_REQUEST['sort_type'];
 
 $filter_request['address_mode'] = placester_get_property_address_mode();
-
-
 // Request
 try {
     $response = placester_property_list( $filter_request );
@@ -41,8 +38,17 @@ catch (Exception $e) {
 init_templates();
 
 $rows = array();
-foreach ( $response_properties as $i )
+foreach ( $response_properties as $i ) {
+    if ( isset( $_REQUEST['crop_description'] ) && ! empty( $i->description ) ) {
+        /** Set up the paramenters for pl_html_substr. */
+        $crop_description_params = explode( ' ', $_REQUEST['crop_description'] );
+        array_unshift( $crop_description_params, $i->description );
+
+        /** Trim the property description. */
+        $i->description = call_user_func_array( 'pl_html_substr', $crop_description_params );
+    }
     array_push( $rows, convert_row($i, $fields, false ) );
+}
 
 echo json_encode(
     array(

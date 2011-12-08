@@ -13,7 +13,6 @@ var placesterFilter_fields =
         'bathrooms',
         'bedrooms',
         'half_baths',
-        'listing_types',
         'location[city]',
         'location[state]',
         'location[zip]',
@@ -26,6 +25,7 @@ var placesterFilter_fields =
         'min_half_baths',
         'min_price',
         'property_type',
+        'listing_types',
         'purchase_types',
         'zoning_types',
         'is_new',
@@ -109,6 +109,10 @@ jQuery('#<?php echo $form_dom_id ?>').submit(function(event)
         }
         if (typeof(v) == 'string' && v.length > 0) {
             filter_query += '&' + field + '=' + escape(v);
+        } else if (jQuery.isArray(v)) {
+            $.each(v, function(i, val) {
+                filter_query += '&' + field + '[]=' + val;
+            });
         }
 
     }

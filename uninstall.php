@@ -23,6 +23,8 @@ print_r($properties);
 foreach ( $properties as $property ) {
     wp_delete_post( $property->ID, true );
 }
+
 // TODO Add documents 
+
 // TODO Remove lead related info: roles, users, options, transients etc.
 

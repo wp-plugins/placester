@@ -4,44 +4,6 @@
  * Web service interface with placester remote properties storage
  */
 
-/*
-response structure:
-
-object(stdClass)[163]
-  'half_baths' => int 0
-  'price' => float 1250
-  'bedrooms' => int 2
-  'location' => 
-    object(stdClass)[143]
-      'address' => string '131 Marion St' (length=13)
-      'city' => string 'East Boston' (length=11)
-      'zip' => string '02128' (length=5)
-      'unit' => string '1' (length=1)
-      'state' => string 'MA' (length=2)
-      'coords' => 
-        object(stdClass)[142]
-          'latitude' => float 42.376889
-          'longitude' => float -71.036665
-  'available_on' => string '02-02-2011' (length=10)
-  'amenities' => 
-    array
-      empty
-  'contact' => 
-    object(stdClass)[141]
-      'phone' => string '+16177345050' (length=12)
-      'email' => string 'inquiries-p-a2a134e8-04bf63@placester.net' (length=41)
-  'url' => string 'http://placester.com/listing/lead/4d4b04b1abe10f50f4000003/4d4b10ffabe10f55b7000561/' (length=84)
-  'id' => string '4d4b10ffabe10f55b7000561' (length=24)
-  'images' => 
-    array
-      0 => 
-        object(stdClass)[140]
-          'url' => string 'http://placester.com/listing/image/4d4b04b1abe10f50f4000003/4d49fd5adf093a112b028f17.jpg' (length=88)
-          'order' => int 0
-  'bathrooms' => int 2
-  'description' => string 'Great Deal'
-*/
-
 /**
  * ValidationException 
  * 
@@ -74,6 +36,14 @@ class ValidationException extends Exception
 define( 'PLACESTER_TIMEOUT_SEC', 10 );
 
 
+function placester_process_array_into_curl_string( $array, $name ) {
+    $return = '';
+    foreach( $array as $key => $value ) {
+        $return .= "&{$name}[{$key}]={$value}";
+    }
+    
+    return substr( $return, 1 );
+}
 
 /*
  * Returns fields acceptable as filter parameters
@@ -102,7 +72,7 @@ function placester_filter_parameters_from_http()
             'max_bathrooms',
             'max_bedrooms',
             'max_half_baths',
-            'MAX_PRICE',
+            'max_price',
             'min_bathrooms',
             'min_bedrooms',
             'min_half_baths',
@@ -145,7 +115,158 @@ function placester_filter_parameters_from_http()
     return $filter_request;
 }
 
+/**
+ * Creates a lead
+ * 
+ * @param object $lead_object The lead object with all the lead information
+ *
+ * @return The lead API id
+ */
+function placester_lead_add( $lead_object ) {
+            /** Define the default argument array. */
+    
+    $request =
+        array (
+            'api_key' => placester_get_api_key(),
+            'lead_type' => $lead_object->lead_type,
+            'contact[name]' =>$lead_object->name ,
+            'contact[email]' => $lead_object->email,
+            'contact[phone]' => $lead_object->phone 
+        );
 
+    $url = 'http://placester.com/api/v1.0/leads.json';
+        
+    // Do request
+    try {
+        $return = placester_send_request($url, $request, 'POST');    
+    } catch (Exception $e) {
+        return 'error';
+    }
+    
+
+    return $return; 
+}
+
+/*
+ * Gets all information about a lead
+ * 
+ * @param string $id 
+ * @param string $method
+ */
+function placester_lead_get( $id )
+{
+    if ( isset( $id ) ) {
+        $request = 
+            array (
+                'api_key' => placester_get_api_key(),
+            );
+        // Don't pass description if blank, API will create it automatically
+        $url = 'http://api.placester.com/v1.0/leads/' . $id . '.json';
+        // Do request
+        return placester_send_request( $url, $request, 'GET' );
+    }
+}
+
+/*
+ * Modifies a lead
+ * 
+ * @param string $id 
+ * @param stdClass $lead_object The lead object with all the information
+ * @param string $method
+ */
+function placester_lead_set($id, $lead_object, $method = 'PUT')
+{
+    if ( isset( $id ) ) {
+        $request = 
+            array (
+                'api_key' => placester_get_api_key(),
+                'notes' => $lead_object->notes,
+                'status' => $lead_object->status,
+                'est_value' => $lead_object->est_value,
+                'contact[name]' => trim($lead_object->contact->name),
+                'contact[email]' => $lead_object->contact->email,
+                'contact[phone]' => $lead_object->contact->phone,
+            );
+
+        // Don't pass description if blank, API will create it automatically
+        $url = 'http://api.placester.com/v1.0/leads/' . $id . '.json';
+
+        placester_cut_empty_fields( $request );
+
+        // Set after cutting because if empty array is passed all associated 
+        // properties are deleted
+        $request['property_ids'] = $lead_object->property_ids;
+// echo "\n <pre>XSTART \n";
+// print_r($request );
+// echo "\n XEND </pre>";
+
+        return placester_send_request( $url, $request, $method );
+    }
+}
+
+/*
+ * Deletes a lead
+ * 
+ * @param string $id 
+ */
+function placester_lead_delete( $id ) {
+    if ( isset( $id ) ) {
+        $request = 
+            array (
+                'api_key' => placester_get_api_key(),
+            );
+        // Don't pass description if blank, API will create it automatically
+        $url = 'http://api.placester.com/v1.0/leads/' . $id . '.json';
+        // Do request
+
+        return placester_send_request( $url, $request, 'DELETE' );
+    }
+}
+
+/*
+ * Associates leads
+ * 
+ * @param string $id 
+ * @param array $lead_ids_array The lead object with all the information
+ * @param string $method
+ */
+function placester_assoc_leads( $lead_ids_array, $method = 'POST') {
+    if ( is_array( $lead_ids_array ) ) {
+        $request = 
+            array (
+                'api_key' => placester_get_api_key(),
+                'lead_ids' => $lead_ids_array
+            );
+
+        $url = 'http://api.placester.com/v1.0/leads/assoc';
+
+        // Do request
+        $r = placester_send_request($url, $request, $method);
+
+        return $r;
+    }
+}
+
+/*
+ * Unassociates leads
+ * 
+ * @param string $id 
+ * @param array $lead_ids_array The lead object with all the information
+ */
+function placester_unassoc_leads( $lead_ids_array ) {
+    if ( is_array( $lead_ids_array ) ) {
+        $request = 
+            array (
+                'api_key' => placester_get_api_key(),
+                'lead_ids' => $lead_ids_array,
+            );
+
+        $url = 'http://api.placester.com/v1.0/leads/assoc/';
+
+        // Make the request
+        return placester_send_request($url, $request, 'DELETE');
+    }
+}
 
 /*
  * Returns list of properties
@@ -153,30 +274,32 @@ function placester_filter_parameters_from_http()
  * @param array $parameters - http parameters for api
  * @return array
  */
-function placester_property_list($parameters)
-{
+function placester_property_list($parameters = array()) {
     // Prepare parameters
-
     $url = 'http://api.placester.com/v1.0/properties.json';
         
     $request = $parameters;
     $request['api_key'] = placester_get_api_key();
 
     // Override is_featured & is_new
-    if (isset($request['is_featured']))
-    {
-        unset($request['is_featured']);
+    if ( isset( $request['is_featured'] ) || isset( $request['featured'] ) ) {
+        unset( $request['is_featured'], $request['featured'] );
         $request['property_ids'] = placester_properties_featured_ids();
     }
-    if (isset($request['is_new']))
-    {
-        unset($request['is_new']);
+
+    if ( isset( $request['is_new'] ) || isset( $request['new'] ) ) {
+        unset( $request['is_new'], $request['new'] );
         $request['property_ids'] = placester_properties_new_ids();
     }
 
     $request['address_mode'] = placester_get_property_address_mode();
+
+    placester_cut_empty_fields($request);
+
+    $return = placester_send_request( $url, $request, "GET" );
+
     // Do request
-    return placester_send_request($url, $request);
+    return $return;
 }
 
 /**
@@ -263,7 +386,7 @@ function placester_property_add($p)
             'location[coords][longitude]' => $p->location->coords->longitude
         );
 
-    $url = 'http://api.placester.com/v1.0/properties.json';
+    $url = 'https://api.placester.com/v1.0/properties.json';
         
     // Do request
     return placester_send_request($url, $request, 'POST');
@@ -308,7 +431,7 @@ function placester_property_set($id, $p, $method='PUT')
             );
         // Don't pass description if blank, API will create it automatically
         if ( !$request['description'] ) unset( $request['description'] );
-        $url = 'http://api.placester.com/v1.0/properties/' . $id . '.xml';
+        $url = 'https://api.placester.com/v1.0/properties/' . $id . '.xml';
         // Do request
         return placester_send_request($url, $request, $method);
     }
@@ -348,7 +471,7 @@ function placester_property_seturl_bulk($url_format, $filter)
  */
 function placester_property_image_add($property_id, $file_name, $file_mime_type, $file_tmpname, $api_key = '')
 {
-    $url = 'http://api.placester.com/v1.0/properties/media/image/' .  $property_id . '.json';
+    $url = 'https://api.placester.com/v1.0/properties/media/image/' .  $property_id . '.json';
     if ( $api_key )
         $request = array('api_key' => $api_key);
     else 
@@ -426,9 +549,7 @@ function placester_property_delete($property_id)
  */
 function placester_user_add($user)
 {
-    $request =
-        array
-        (
+    $request = array(
             'first_name' => $user->first_name,
             'source' => 'wordpress',
             'last_name' => $user->last_name,
@@ -443,7 +564,7 @@ function placester_user_add($user)
         );
     placester_cut_empty_fields($request);
 
-    $url = 'http://api.placester.com/v1.0/users/setup.json';
+    $url = 'https://api.placester.com/v1.0/users/setup.json';
         
     // Do request
     return placester_send_request($url, $request, 'POST');
@@ -482,26 +603,23 @@ function placester_user_get($company_id, $user_id)
  */
 function placester_user_set($user)
 {
-    $request =
-        array
-        (
+    
+    $request = array(
             'api_key' => placester_get_api_key(),
-            'source' => 'wordpress',
-            'user_id' => $user->id,
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'email' => $user->email,
             'website' => $user->website,
             'phone' => $user->phone,
-            'location[address]' => $user->location->address,
-            'location[city]' => $user->location->city,
-            'location[zip]' => $user->location->zip,
-            'location[state]' => $user->location->state,
-            'location[unit]' => $user->location->unit
+            'location[address]' => (isset($user->location) ? $user->location->address : ''),
+            'location[city]' => (isset($user->location) ? $user->location->city : ''),
+            'location[zip]' => (isset($user->location) ? $user->location->zip : ''),
+            'location[state]' => (isset($user->location) ? $user->location->state : ''),
+            'location[unit]' => (isset($user->location) ? $user->location->unit : '')
         );
     placester_cut_empty_fields($request);
 
-    $url = 'http://api.placester.com/v1.0/users.json';
+    $url = 'https://api.placester.com/v1.0/users.json';
 
     // Do request
     return placester_send_request($url, $request, 'PUT');
@@ -553,7 +671,7 @@ function placester_company_set($id, $company)
 
     placester_cut_empty_fields($request);
 
-    $url = 'http://api.placester.com/v1.0/organizations/' . $id . '.json';
+    $url = 'https://api.placester.com/v1.0/organizations/' . $id . '.json';
 
     // Do request
     return placester_send_request($url, $request, 'PUT');
@@ -615,13 +733,17 @@ function placester_location_list()
  */
 function placester_send_request($url, $request, $method = 'GET')
 {
-    $affects_cache = ($method != 'GET');
+    PL_Debug::add_msg('Endpoint Logged As: ' . $method . ' ' . $url);
 
     $request_string = '';
+    
     foreach ($request as $key => $value)
     {
         if (is_array($value))
         {
+            if ( empty($value) ) {
+                $request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[]=';
+            }
             foreach ($value as $v)
                 $request_string .= (strlen($request_string) > 0 ? '&' : '') . 
                     urlencode($key) . '[]=' . urlencode($v);
@@ -630,6 +752,12 @@ function placester_send_request($url, $request, $method = 'GET')
             $request_string .= (strlen($request_string) > 0 ? '&' : '') . 
                 $key . '=' . urlencode($value);
     }
+
+    PL_Debug::add_msg(array('-------','Request String Logged As: ', $request_string, '-------'));    
+
+    // If the request is a get, attempt to retrieve the response
+    // from the transient cache. POSTs and PUTs are ommited.
+    $affects_cache = ($method != 'GET');
 
     if ($affects_cache)
         $response = false;
@@ -642,21 +770,21 @@ function placester_send_request($url, $request, $method = 'GET')
     }
 
     $response = !is_array( $response ) ? $response : false;
-    if ($response === false)
-    {
-        if ($method == 'POST' || $method == 'PUT')
-        {
-            $response = wp_remote_post($url, 
-                array (
-                    'body' => $request, 
+    
+    if ($response === false) {
+
+        if ($method == 'POST' || $method == 'PUT') {
+            
+            $response = wp_remote_post($url, array(
+                    'body' => $request_string, 
                     'timeout' => PLACESTER_TIMEOUT_SEC,
                     'method' => $method
                 ));
-        }
-        else if ($method == 'DELETE')
-        {
+
+        } else if ($method == 'DELETE') {
+            
             $ch = curl_init( $url );
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $request_string);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
             curl_setopt($ch, CURLOPT_HEADER, 0); 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -664,55 +792,55 @@ function placester_send_request($url, $request, $method = 'GET')
             $response = curl_exec($ch);
             curl_close($ch);
 
-            if (!$response)
+            if (!$response) {
+                $response = array();
                 $response['headers']["status"] = 200;
+            }
             else {
                 $response = array();
                 $response['headers']["status"] = 400;
             }
-            // Old way
-            // $request['_method'] = 'DELETE';
-            // $response = wp_remote_post($url, 
-            //     array
-            //     (
-            //         'body' => $request_body, 
-            //         'timeout' => PLACESTER_TIMEOUT_SEC,
-            //         'method' => 'POST'
-            //     ));
-        }
-        else {
-            // $x = $url . '?' . $request_string;
-            // var_dump($x);
+
+        } else {
             $response = wp_remote_get($url . '?' . $request_string, 
                 array
                 (
                     'timeout' => PLACESTER_TIMEOUT_SEC
                 ));
         }
-        
-        
-        /**
-         *      Defines the caching behavior.
-         *      
-         *      Only cache get requests, requests without errors, and valid responses.
-         */
     }
 
+    PL_Debug::add_msg('-------');
+    PL_Debug::add_msg('Response Logged as:');
+    PL_Debug::add_msg($response);
+    PL_Debug::add_msg('-------');
+
+    /**
+     *      Defines the caching behavior.
+     *      
+     *      Only cache get requests, requests without errors, and valid responses.
+     */
     if ($affects_cache && !isset($response->errors) && $response['headers']["status"] === 200) {
         placester_clear_cache();
         return 0;
     } else {
+        if (is_array($response) && isset($response['response']['code'] ) ) {   
+            $response_code = $response['response']['code'];
+        } else {
+            // timeout?
+            $response_code = '408';
+        }
+
         // throw http-level exception if no response
         if (isset($response->errors))
             throw new Exception(json_encode($response->errors));
-        if ($response['response']['code'] == '204')
+        if ( $response_code == '204' )
             return null;
 
         $o = json_decode($response['body']);
 
-        if (!isset($o) && ( $response['response']['code'] != 200 ) ) {
-
-        // echo $response['response']['message'];
+        // TODO When would the body wouldn't contain anything?
+        if ( !isset($o) && ( ($response_code != 200) && ($response_code != 201) ) ) {
             throw new Exception($response['response']['message']);
         }
 
@@ -726,10 +854,12 @@ function placester_send_request($url, $request, $method = 'GET')
             return false;
         // throw new Exception($o->message);
 
-        if (isset($transient_id)) {
-            set_transient($transient_id, $response, 3600 * 48);
+        if ( isset($transient_id) ) {
+            set_transient( $transient_id, $response, 3600 * 48 );
         }
         return $o;
+        
+
     }            
 }
 

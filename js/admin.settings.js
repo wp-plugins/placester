@@ -83,7 +83,7 @@ function map_geocode_address()
             if (status == google.maps.GeocoderStatus.OK) 
                 loc = results[0].geometry.location;
                 map.setCenter(loc);
-                 console.log('location', jQuery("#placester_center_longitude"),jQuery("#placester_center_latitude") );
+
                  jQuery("#placester_center_latitude").val(loc.lat());
                  jQuery("#placester_center_longitude").val(loc.lng());
 

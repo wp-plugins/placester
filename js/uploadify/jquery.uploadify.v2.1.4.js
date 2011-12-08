@@ -161,7 +161,7 @@ if(jQuery)(
 					var postData = new Object();
 					postData = fileQueueObj;
 					postData.folder = (folder.substr(0,1) == '/') ? folder : pagePath + folder;
-                    console.log(postData.folder);
+
 					if (single) {
 						for (var ID in fileQueueObj) {
 							var singleFileID = ID;

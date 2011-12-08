@@ -138,8 +138,8 @@ if ( !function_exists( 'placester_of_add_page' ) ) {
  * @internal
  */
 function placester_of_load_styles() {
-    wp_enqueue_style('admin-style', OPTIONS_FRAMEWORK_DIRECTORY .'css/admin-style.css');
-    wp_enqueue_style('color-picker', OPTIONS_FRAMEWORK_DIRECTORY .'css/colorpicker.css');
+    wp_enqueue_style('admin-style', PL_OPTIONS_FRAMEWORK_DIRECTORY .'css/admin-style.css');
+    wp_enqueue_style('color-picker', PL_OPTIONS_FRAMEWORK_DIRECTORY .'css/colorpicker.css');
 }	
 
 /**
@@ -149,18 +149,18 @@ function placester_of_load_styles() {
  */
 function placester_of_load_scripts() {
     // Inline scripts from options-interface.php
-    // add_action('admin_head', 'of_admin_head');
+    // add_action('admin_head', 'placester_of_admin_head');
 
     // Enqueued scripts
     wp_enqueue_script('jquery-ui-core');
-    wp_enqueue_script('color-picker', OPTIONS_FRAMEWORK_DIRECTORY . 'js/colorpicker.js', array('jquery'));
-    wp_enqueue_script('options-custom', OPTIONS_FRAMEWORK_DIRECTORY . 'js/options-custom.js', array('jquery'));
+    wp_enqueue_script('color-picker', PL_OPTIONS_FRAMEWORK_DIRECTORY . 'js/colorpicker.js', array('jquery'));
+    wp_enqueue_script('options-custom', PL_OPTIONS_FRAMEWORK_DIRECTORY . 'js/options-custom.js', array('jquery'));
 }
 
 /**
  * @internal
  */
-function of_admin_head() {
+function placester_of_admin_head() {
 
     // Hook to add custom scripts
     do_action( 'placester_of_custom_scripts' );

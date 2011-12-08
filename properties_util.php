@@ -3,7 +3,6 @@
 /**
  * Common code by all processors of AJAX get properties requests
  */
-
 $list_details_template = '';
 $map_details_template = '';
 $placester_post_slug = '';
@@ -54,11 +53,12 @@ function convert_row( $row, $fields, $is_simple_array ) {
         if ( $field == 'available_on' ||
                 $field == 'bathrooms' ||
                 $field == 'bedrooms' ||
+                $field == 'amenities' ||
                 $field == 'description' ||
                 $field == 'half_baths' ||
                 $field == 'id' ||
                 $field == 'price' ) {
-            $v = $row->$field;
+            $v = ! empty( $row->$field ) ? $row->$field : '';
         } else if ( $field == 'contact.email' ||
                 $field == 'contact.phone' ) {
             $subfield = substr( $field, 8 );

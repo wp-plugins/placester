@@ -1,5 +1,5 @@
 	jQuery(document).ready(function() {
-        console.log('API', uploadify_settings.ajaxurl + '/js/uploadify/uploadify.php?property_id=' + uploadify_settings.property_id + '&api_key=' + uploadify_settings.api_key);
+
 	  jQuery('#file_upload').uploadify({
           'uploader'  : uploadify_settings.ajaxurl + '/js/uploadify/uploadify.swf',
           'script'    : uploadify_settings.ajaxurl + '/js/uploadify/uploadify.php',
@@ -35,7 +35,7 @@ var after_uploadify = function(pid) {
         action: 'after_uploadify',
         property_id: pid
     };
-    jQuery.post(uploadify_settings.wpajaxurl, data, function(response) {
+    jquery.post(uploadify_settings.wpajaxurl, data, function(response) {
     });  
 }
  jQuery(document).ready(function() {

@@ -65,6 +65,10 @@ if (array_key_exists('remove', $_POST))
 if (array_key_exists('apply', $_POST))
 {
     $placester_display_block_address_old = get_option( 'placester_display_block_address' );
+
+    // Save previous activate account preference
+    $placester_activate_client_accounts_old = get_option( 'placester_activate_client_accounts' );
+
     // Flag for showing success message
     $show_success_message = TRUE;
     
@@ -81,12 +85,9 @@ if (array_key_exists('apply', $_POST))
     $placester_display_purchase_types = array();
     $placester_display_listings_blog = false;
     $placester_display_block_address = false;
+    $placester_activate_client_accounts = false;
 
-
-    foreach ($_POST as $key => $value)
-    {
-
-
+    foreach ($_POST as $key => $value) {
         if (substr($key, 0, 33) == 'placester_display_property_types_')
             array_push($placester_display_property_types, substr($key, 33));
         elseif (substr($key, 0, 32) == 'placester_display_listing_types_')
@@ -108,6 +109,9 @@ if (array_key_exists('apply', $_POST))
         if ( $key == 'placester_display_block_address' ) {
             $placester_display_block_address = true;
         }
+        if ( $key == 'placester_activate_client_accounts' ) {
+            $placester_activate_client_accounts = true;
+        } 
         // if ( $key == 'placester_default_country' ) {
         //     $placester_display_exact_address = true;
         // }
@@ -139,7 +143,62 @@ if (array_key_exists('apply', $_POST))
             'FROM ' . $wpdb->prefix . 'posts ' .
             "WHERE post_type = 'property' ");
     }
-    
+
+    if ( !$placester_activate_client_accounts )
+        delete_option('placester_activate_client_accounts');
+
+    if ( $placester_activate_client_accounts_old != $placester_activate_client_accounts ) {
+        if ( $placester_activate_client_accounts ) {
+            // Get the default administrator role.
+            $role =& get_role( 'administrator' );
+            // Add forum capabilities to the administrator role. 
+            if ( !empty( $role ) ) {
+                $role->add_cap( 'add_roomates' );
+                $role->add_cap( 'read_roomates' );
+                $role->add_cap( 'delete_roomates' );
+                $role->add_cap( 'add_favorites' );
+                $role->add_cap( 'delete_roomates' );
+            }
+            // Create the "Property lead" role
+            $lead_role = add_role( 
+                'placester_lead',
+                'Property Lead',
+                array(
+                    'add_roomates' => true,
+                    'read_roomates' => true,
+                    'delete_roomates' => true,
+                    'add_favorites' => true,
+                    'delete_roomates' => true,
+                    'level_0' => true,
+                    'read' => true
+                )
+            );
+        } else {
+            // Get the default administrator role.
+            $role =& get_role( 'administrator' );
+            // Remove lead capabilities to the administrator role. 
+            if ( !empty( $role ) ) {
+                $role->remove_cap( 'add_roomates' );
+                $role->remove_cap( 'read_roomates' );
+                $role->remove_cap( 'delete_roomates' );
+                $role->remove_cap( 'add_favorites' );
+                $role->remove_cap( 'delete_roomates' );
+            }
+            // Create the "Property lead" role
+            $roles_to_delete = array(
+                'placester_lead',
+            );
+
+            // Delete the roles with no users
+            foreach ( $roles_to_delete as $role ) {
+                $users = get_users( array( 'role' => $role ) );
+
+                if ( count($users) <= 0 ) {
+                    remove_role( $role );
+                }
+            }
+        }
+    }
 
     // Update property urls
     if (!empty($api_key))
@@ -180,8 +239,8 @@ if (array_key_exists('apply', $_POST))
 
 ?>
 <div class="wrap">
-  <?php placester_admin_header('placester_settings') ?>
   <?php if (isset($show_success_message)) { placester_success_message("Your settings have been successfully saved"); } ?>
+  <?php placester_admin_header('placester_settings') ?>
   <form method="post" action="admin.php?page=placester_settings" id="placester_form">
     <?php placester_postbox_container_header(); ?>
 
@@ -404,6 +463,22 @@ if (array_key_exists('apply', $_POST))
           'style="font-weight: bold;"></span>/4d6e805aabe10f0f1500004c');
 
       row_checkbox('Display listings on blog page', 'placester_display_listings_blog'); 
+      ?>
+    </table>
+    <p class="submit">
+      <input type="submit" name="apply" class="button-primary" 
+        value="Save All Changes" />
+    </p>
+    <?php placester_postbox_footer(); ?>
+
+    <?php placester_postbox_header('Client accounts'); ?>
+    <table class="form-table">
+      <?php 
+      row_checkbox('Activate client accounts', 'placester_activate_client_accounts', 'Checking this would allow users to register lead accounts.'); 
+      $client_info = 'You can now make use of the <strong>[favorite_link_toggle]</strong> and <strong>[lead_user_navigation]</strong> shortcodes. <br /> ' .
+          'To use them, just add <strong>do_shortcode("[shortcode_name]");</strong> to your theme.<br />' . 
+          'The <strong>Placester Property Favorites</strong> widget is active. It will display a list of favorite widgets when the lead is logged in.'; 
+      echo "<tr class='extra_info' style='display:none;color:#666;'><th scope='row'></th><td><p>{$client_info}</p></td></tr>";
       ?>
     </table>
     <p class="submit">

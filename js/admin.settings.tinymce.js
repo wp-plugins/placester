@@ -7,7 +7,7 @@
 
         init : function(ed, url){
             var t = this;
-            // console.log(ed);
+
             tbId = ed.getParam('wordpress_adv_toolbar', 'toolbar2');
 
             // required because of the hackish way wordpress implemented tinymce.

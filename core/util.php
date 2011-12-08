@@ -328,8 +328,7 @@ function placester_warn_on_api_key()
  *
  * @return string
  */
-function placester_get_property_url($id)
-{
+function placester_get_property_url($id) {
     global $placester_post_slug;
     global $wp_rewrite;
 
@@ -341,31 +340,46 @@ function placester_get_property_url($id)
     return site_url() . '/?post_type=property&property=' . $id;
 }
 
-
-
 /**
- * Adds filters to property list request specified in admin section
+ * Adds filters to property list request specified in admin section.
+ * If a filter has been already set, it makes sure that it does not include the 
+ * excluded fields from admin.
+ *
+ * @param array $filter The filters defined until this point.
  */
-function placester_add_admin_filters(&$filter)
-{
+function placester_add_admin_filters( &$filter ) {
+
+    /** Define an anonymous function that preserves the subset of allowed 
+     * filters for a given custom filter array. */
+    $add_admin_filter_by_type = create_function(
+        '$types, &$filter_types',
+        'if ( isset( $filter_types ) && ! empty( $filter_types ) ) {
+            if ( ! empty( $types ) && is_array( $types ) ) {
+                foreach ( $filter_types as $key => $type )
+                    if ( ! in_array( $type, $types ) )
+                        unset( $filter_types[$key] );
+            }
+            return;
+        } 
+        $filter_types = $types;'
+    );
+
+    /** 
+     * TODO: API requires a property_type string, not a property_types array, 
+     * so not sure what is the deal with this.
+     */
     $property_types = get_option('placester_display_property_types');
-    if (is_array($property_types))
-        $filter['property_types'] = $property_types;
+    $add_admin_filter_by_type( $property_types, $filter['property_types'] );
 
     $listing_types = get_option('placester_display_listing_types');
-    if (is_array($listing_types))
-        $filter['listing_types'] = $listing_types;
+    $add_admin_filter_by_type( $listing_types, $filter['listing_types'] );
 
     $zoning_types = get_option('placester_display_zoning_types');
-    if (is_array($zoning_types))
-        $filter['zoning_types'] = $zoning_types;
+    $add_admin_filter_by_type( $zoning_types, $filter['zoning_types'] );
 
     $purchase_types = get_option('placester_display_purchase_types');
-    if (is_array($purchase_types))
-        $filter['purchase_types'] = $purchase_types;
+    $add_admin_filter_by_type( $purchase_types, $filter['purchase_types'] );
 }
-
-
 
 /**
  * Returns IDs of properties marked as "New"
@@ -434,6 +448,21 @@ function placester_get_property_value($o, $property_name)
 }
 
 
+
+/**
+ * Returns the variable if set, null otherwise
+ * 
+ * @param mixed $var 
+ * @return mixed
+ */
+function placester_get_if_set( $var, $null = false ) {
+    if ( isset( $var ) )
+        return $var;
+    elseif ( $null ) 
+        return null;
+    else 
+        return '';
+}
 
 /**
  * Sets value of property, when property can be "property1.property2"
@@ -520,45 +549,58 @@ function placester_verified_check()
     if (strlen($api_key) > 0) {
         $api_key_info = placester_apikey_info($api_key);
         // var_dump($api_key_info);
-        if (!empty($api_key_info) && !$api_key_info->is_verified) {
+        if (!empty($api_key_info) && !$api_key_info->is_verified && current_user_can( 'edit_plugins' )) {
             echo '<div class="updated inline"><p>You don\'t have enough contact information in your account to distribute your listings around the web. Placester requires you to verify your email address and enter a phone number so leads have accurate contact information.  Enter that information here: <input type="button" class="button " value="Contact Settings" onclick="document.location.href = \'/wp-admin/admin.php?page=placester_contact\';">. If you\'ve already entered that information, your account will be verified in 24 hours.</p></div>';        
         } 
     }
 }
 
 /**
- *      Checks to make sure a placester theme is active
- *      so the user doesn't have a negative experience
- *      with the plugin because a paired theme isn't used.
+ * Prints the lead invititation aleterts
+ * 
  */
- 
+add_action('admin_notices', 'placester_lead_invite_message', 10); 
+function placester_lead_invite_message() {
+    if ( current_user_can( 'placester_lead' ) ) {
+        $current_user = wp_get_current_user();
+        // TODO this method does not work when the user changes his email
+        $invitations = get_transient( 'pl_rm_invite_' . $current_user->user_email );
+        if ( $invitations && is_array( $invitations ) ) {
+            foreach( $invitations as $inviter_id => $value ) {
+                $inviter = get_userdata( $inviter_id );
+                placester_warning_message( $inviter->user_nicename . ' wants to add you as a roommate. <a href="#" class="accept-invite button" style="margin-left: 15px;">Accept</a><a href="#" class="decline-invite button" style="margin-left: 15px;">Decline</a>', $inviter->ID, false);
+            }
+        }
+
+    }
+}
+
+add_action('admin_notices', 'placester_theme_compatibility',10); 
 function placester_theme_compatibility() 
 {
     global $i_am_a_placester_theme;
     $placester_admin_options = get_option('placester_admin_options');
 
-    if ( !$i_am_a_placester_theme && !isset( $placester_admin_options['hide_theme_alert'] ) ) {
-        placester_warning_message('You are currently running the Placester plugin, but not with a Placester theme. You\'ll likely have a better experience with a compatible theme.  <a href="' . admin_url() . 'admin.php?page=placester_themes">Find a compatible theme here.</a> <a href="#" id="hide-theme-alert" class="button" style="margin-left: 15px;">Hide this notice.</a>', '', false);
+    if ( !$i_am_a_placester_theme && !isset( $placester_admin_options['hide_theme_alert'] ) && current_user_can( 'switch_themes' ) ) {
+        placester_warning_message('You are currently running the Placester plugin, but not with a Placester theme. You\'ll likely have a better experience with a compatible theme.  <a href="' . admin_url( 'admin.php?page=placester_themes' ) . '">Find a compatible theme here.</a> <a href="#" id="hide-theme-alert" class="button" style="margin-left: 15px;">Hide this notice.</a>', '', false);
     }
 }
-add_action('admin_notices', 'placester_theme_compatibility',10);
 
-
-function placester_check_theme ()
-{
-    $path = pathinfo(get_bloginfo('template_directory'));
+// function placester_check_theme ()
+// {
+//     $path = pathinfo(get_bloginfo('template_directory'));
     
-    $all_files = recursive_directory_search("../wp-content/themes/" . $path['filename']);
+//     $all_files = recursive_directory_search("../wp-content/themes/" . $path['filename']);
     
-    $theme->hash = @md5(implode($all_files, ' '), 0 );
-    $theme->domain = $_SERVER['HTTP_HOST'];
-    $theme->name = pathinfo(get_bloginfo('template_directory'));
+//     $theme->hash = @md5(implode($all_files, ' '), 0 );
+//     $theme->domain = $_SERVER['HTTP_HOST'];
+//     $theme->name = pathinfo(get_bloginfo('template_directory'));
 
     
-    placester_theme_check($theme);
+//     placester_theme_check($theme);
     
-}
-add_action("switch_theme", 'placester_check_theme', 1);
+// }
+//add_action("switch_theme", 'placester_check_theme', 1);
 
 function recursive_directory_search( $path = '.')
 { 
@@ -653,11 +695,16 @@ function placester_get_template_content( $name ) {
 add_action('pre_get_posts', 'placester_description_filter');
 
 function placester_description_filter() {
-    if(is_home()) {
-        add_filter('the_content', 'listing_basic_details');
-    } elseif(is_single()) {
-        add_filter('the_content', 'single_page_details');
+
+    global $post;
+    
+    if ( isset( $post ) && $post->post_type == 'property' ) {
+        if(is_home())
+            add_filter('the_content', 'listing_basic_details');
+        elseif(is_single())
+            add_filter('the_content', 'single_page_details');    
     }
+    
 }
 
 function single_page_details() {
@@ -669,8 +716,8 @@ function single_page_details() {
 
         $data = json_decode(stripslashes($post->post_content));
         $user_details = placester_get_user_details();
-        $post_content = '<div id="container" class="single-attachment">' .
-            '<div id="content" role="main" style="width: 100%">
+        $post_content = '<div class="single-attachment">' .
+            '<div id="content" role="main" >
                 <div class="about-user-wrapper" style="float: right; width: 300px">
                     <div class="about-user-content">
                         <div class="about-user-details">
@@ -683,9 +730,9 @@ function single_page_details() {
                         </div>
                     </div>
                 </div>
-                <div class="property-location-wrapper" style="float: left;">
+                <div class="property-location-wrapper">
                     <h3>Property Location:</h3>
-                    <div class="property-address">
+                    <div class="property-address" style="float: left">
                         <p>
                             ' . do_shortcode('[listing_address]') . '<br />'
                             . do_shortcode('[listing_city]') . ', ' . do_shortcode('[listing_state]') . ' ' . do_shortcode('[listing_zip]') . '
@@ -693,7 +740,7 @@ function single_page_details() {
                         '. listing_beds_baths_price().'
                     </div>
                 </div>
-                <div class="basic-property-details-wrapper">
+                <div class="basic-property-details-wrapper" style="float: left; clear: both;">
                     <div class="basic-property-description">
                         <h3>Property Description</h3>'
                         . do_shortcode('[listing_description]') .
@@ -795,6 +842,17 @@ function placester_display_location($location)
     }
 }
 
+/**
+ * Verifies if the "Activate client accounts"
+ * setting is checked
+ * 
+ * @return bool True if active, False otherwise
+ */
+function placester_is_membership_active() {
+    $is_active = get_option( 'placester_activate_client_accounts' );
+    return get_option( 'placester_activate_client_accounts' );
+}
+
 function placester_remove_listings() {
     global $wpdb;
     $myrows = $wpdb->get_results( "DELETE FROM wp_posts WHERE post_type = 'property'" );
@@ -840,4 +898,50 @@ function placester_get_placeholder_if_empty( $string, $placeholder='' ) {
 
 function placester_get_template_url() {
     return get_plugin_url( "templates/" . $_GET['template_iframe'] );
+}
+
+/**
+ * Crops a text while preserving the html.
+ *
+ * @param string $s The input string. Must be one character or longer.
+ * @param integer $start Start of the crop.
+ * @param integer $length Length of the crop.
+ * @param mixed	$strict If this is defined, then the last word will be complete. If this is set to 2 then the last sentence will be completed.
+ * @param string $suffix A string to suffix the value, only if it has been chopped.
+ *
+ * @return string The cropped string.
+ *
+ * @link http://perplexed.co.uk/290_html_substr_crop_html_text.htm
+ */
+function pl_html_substr( $s, $start, $length = NULL, $strict = false, $suffix = NULL ) {
+
+    if ( is_null( $length ) )
+        $length = strlen( $s ); 
+
+    /** Function body that crops the text. */
+    $f = 'static $startlen = 0; 
+        if ( $startlen >= ' . $length . ' ) return "><"; 
+        $html_str = html_entity_decode( $a[1] );
+        $subsrt = max( 0, ( ' . $start . ' - $startlen ) );
+        $sublen = ' . ( empty( $strict ) ? '( ' . $length . ' - $startlen )' : 'max( @strpos( $html_str, "' . ( $strict == 2 ? '.' : ' ' ) . '", (' . $length . ' - $startlen + $subsrt - 1 ) ), ' . $length . ' - $startlen )' ) . ';
+        $new_str = substr( $html_str, $subsrt, $sublen ); 
+        $startlen += $new_str_len = strlen( $new_str );
+        $suffix = ' . ( !empty( $suffix ) ? '( $new_str_len === $sublen ? "' . $suffix . '" : "" )' : ' "" ' ) . ';
+        return ">" . htmlentities( $new_str, ENT_QUOTES, "UTF-8" ) . "$suffix<";';
+
+    return preg_replace( 
+        array( "#<[^/][^>]+>(?R)*</[^>]+>#", "#(<(b|h)r\s?/?>){2,}$#is"), 
+        "", 
+        trim( 
+            rtrim( 
+                ltrim( 
+                    preg_replace_callback( 
+                        "#>([^<]+)<#", 
+                        create_function( '$a', $f ), 
+                        ">$s<" 
+                    ), 
+                    ">" ), 
+                "<" ) 
+            )
+        );
 }

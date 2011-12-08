@@ -1,14 +1,14 @@
 <?php
 /**
-Plugin Name: Real Estate Pro by Placester
-Description: Easily create a rich real estate web site for yourself or your agency.
+Plugin Name: Real Estate Website Builder
+Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: http://placester.com/wordpress/plugin/
-Author: Frederick Townes, Matthew Barba, Placester
-Version: 0.3.7
+Author: Placester, Inc.
+Version: 0.3.8
 Author URI: http://www.placester.com/developer/wordpress
 */
 
-/*  Copyright (c) 2011 Frederick Townes <frederick@placester.com>
+/*  Copyright (c) 2011 Placester, Inc. <frederick@placester.com>
 	All rights reserved.
 
 	Placester Promoter is distributed under the GNU General Public License, Version 2,
@@ -26,6 +26,7 @@ Author URI: http://www.placester.com/developer/wordpress
 	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 include_once( 'core/init.php' );
 include_once( 'core/util.php' );
 include_once( 'core/webservice_client.php' );
@@ -35,8 +36,13 @@ include_once( 'options/init.php' );
 include_once( 'admin/init.php' );
 include_once( 'admin/widgets.php' );
 include_once( 'core/shortcodes.php');
+include_once( 'core/leads.php' );
+include_once( 'core/membership.php' );
+include_once( 'lib/debug.php' );
+
 
 register_activation_hook( __FILE__, 'placester_activate' );
+register_deactivation_hook( __FILE__, 'placester_deactivate' );
 
 
 
@@ -45,9 +51,20 @@ register_activation_hook( __FILE__, 'placester_activate' );
  * property lists / property maps on this page.
  * 
  * @param string $form_dom_id - DOM id of form object containing filter
+ * @param bool $echo Wether to echo or return the content.
  */
-function placester_register_filter_form( $form_dom_id ) {
-    require_once( 'core/register_filter_form.php' );
+function placester_register_filter_form( $form_dom_id, $echo = true ) {
+
+    if ( ! $echo ) {
+        ob_start(); 
+        require_once( 'core/register_filter_form.php' );
+        $content = ob_get_contents(); 
+        ob_end_clean(); 
+
+        return $content;
+    } else {
+        require_once( 'core/register_filter_form.php' );
+    }
 }
 
 
@@ -155,14 +172,22 @@ function placester_listings_map( $parameters = array(), $return = false ) {
  *            unreasonably slow down requests.
  */
 function placester_listings_list($parameters, $return = false) {
+
+    /** Extract the crop description settings before moving forward. */
+    if ( isset( $parameters['crop_description'] ) ) {
+        $crop_description = $parameters['crop_description'];
+        unset( $parameters['crop_description'] );
+    } else {
+        $crop_description = false;
+    }
+
     require_once('core/listings_list_lone.php');
-    
+
+    /** Return or echo. */
     if ( $return )
         return $result; 
     echo $result;
 }
-
-
 
 /**
  * Prints list of properties which are displayed right now on the map

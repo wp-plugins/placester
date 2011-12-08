@@ -7,13 +7,14 @@
 
 /**
  * Initialization.
- * Creates custom post types for properties and craigslist.
- * Enqueues jquery and fancybox. Rewrites rules for permalinks
+ * Creates custom post types needed by the plugin
+ * Enqueues different scripts.
  *
  * @internal
  */
+add_action( 'init', 'placester_init' );
 function placester_init() {
-    /** Create new custom post type */
+    /** Property (Listing) custom post type */
     register_post_type( 'property',
         array(
             'taxonomies'      => array(),
@@ -24,62 +25,176 @@ function placester_init() {
             'hierarchical'    => false
         ) );
 
-    /** Register post type for storing craiglist templates */
-    register_post_type( 'placester_template',
+    /** Document custom post type */
+    register_post_type( 'placester_document',
         array(
+            'label' => 'Documents',
             'taxonomies'      => array(),
-            'show_ui'         => false,
-            'public'          => true,
+            'public'          => false,
             'capability_type' => 'post',
-            'hierarchical'    => false
         ) );
-    /** Enqueue jquery and fancybox */
-    $base_url = WP_PLUGIN_URL . '/placester';
-    wp_register_script( 'jquery_tools', $base_url . '/js/jquery.tools.min.js' );
-    wp_register_script( 'sparkbox_select', $base_url . '/js/jquery.sparkbox-select.js' );
-    wp_register_script( 'colorbox', $base_url . '/js/jquery.colorbox.js' );
 
-     // Creates problem in backend, visual editor cannot change tabs (behaves 
-    // like no jquery included)
-    //wp_deregister_script( 'jquery' );
-    //wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js');
- 
-    wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js');
-    wp_register_style( 'shortcodes', $base_url . '/css/shortcodes.css' );
+    $base_url = WP_PLUGIN_URL . '/placester';
+
+    /** Register the scripts needed by the leads. */
+    wp_register_script( 'placester.theme.leads', "{$base_url}/js/theme/placester.leads.js" );
+
     wp_register_style( 'placester.map.widget', 
         plugins_url( '/css/listings_map.widget.css', dirname( __FILE__ ) ) );
 
-    wp_enqueue_script( 'jquery' );
+    /** TODO
+     * When WP 3.3 is released, shorcode scripts will be able to be 
+     * included only the shorcodes are used.
+     * The only method currently available can be found in the attached link.
+     * @link http://scribu.net/wordpress/optimal-script-loading.html
+     */
+    wp_register_style( 'shortcodes', $base_url . '/css/shortcodes.css' );
     wp_enqueue_style( 'shortcodes' );
-    wp_enqueue_script( 'jquery_tools' );
-    wp_enqueue_script( 'sparkbox_select' );
-    wp_enqueue_script( 'colorbox' );
-    wp_enqueue_script('fancybox', $base_url . '/js/fancybox/jquery.fancybox-1.3.4.pack.js', array('jquery'));
-    wp_enqueue_script('fancybox_easing', $base_url . '/js/fancybox/jquery.easing-1.3.pack.js', array('jquery', 'fancybox'));
-    wp_enqueue_script('placester_fancybox', $base_url . '/js/placester.fancybox.js', array('jquery', 'fancybox', 'fancybox_easing'));
 
-    wp_enqueue_style('fancybox_style', $base_url . '/js/fancybox/jquery.fancybox-1.3.4.css');
+    /** Fancybox. Used in frontend for membership login and register forms. */
+    wp_register_script( 'fancybox', $base_url . '/js/fancybox/jquery.fancybox-1.3.4.pack.js', array('jquery'), false, true );
+    wp_register_script( 'fancybox_easing', $base_url . '/js/fancybox/jquery.easing-1.3.pack.js', array( 'jquery', 'fancybox' ), false, true );
+    wp_register_style( 'fancybox_style', $base_url . '/js/fancybox/jquery.fancybox-1.3.4.css' );
+
+    /** The membershipt scripts file. */
+    wp_register_script( 'placester.membership', $base_url . '/js/theme/placester.membership.js', dirname( __FILE__ ) );
+
+
+    /** TODO 
+     * These scripts should be removed from here. The plugin should make 
+     * no assumptions about what scripts are needed in the theme. Theme 
+     * developers will include the scripts they need. 
+     */
+    if ( ! defined( 'PL_NO_SCRIPTS' ) ) {
+        wp_enqueue_script( 'jquery_tools' );
+        wp_enqueue_script( 'sparkbox_select' );
+
+        /** TODO Determine why was this included */
+        wp_register_script( 'colorbox', $base_url . '/js/jquery.colorbox.js' );
+        wp_enqueue_script( 'colorbox' );
+
+        wp_register_script( 'jquery_tools', $base_url . '/js/jquery.tools.min.js' );
+        wp_register_script( 'sparkbox_select', $base_url . '/js/jquery.sparkbox-select.js' );
+        wp_enqueue_script( 'placester_fancybox', $base_url . '/js/placester.fancybox.js', array('jquery', 'fancybox', 'fancybox_easing') );
+
+    }
+
+    // TODO A better method would be to include this only if the shortcode is 
+    // used. Sadly, do_shortcode is unhookable.
+    if ( placester_is_membership_active() ) {
+        wp_enqueue_script( 'placester.membership' );
+
+        wp_enqueue_script( 'fancybox' );
+        wp_enqueue_script( 'fancybox_easing' );
+        wp_enqueue_style( 'fancybox_style' );
+    }
 
     /** Flush rewrite rules */
     global $wp_rewrite;
     $wp_rewrite->flush_rules();
 }
 
-add_action( 'init', 'placester_init' );
+/**
+ * Add things only to the backend.
+ * 
+ */
+add_action( 'admin_init', 'pl_admin_init' );
+function pl_admin_init() {
+
+    /** Explicitly include jQuery so you can use '$' instead of 'jQuery'. */
+    wp_register_script( 'jquery_lib', 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js');
+    wp_enqueue_script( 'jquery_lib' );
+}
+
+/**
+ * Executed on frontend
+ * 
+ */
+add_action( 'template_redirect', 'placester_theme_includes' );
+function placester_theme_includes() {
+
+    wp_enqueue_script( 'placester.theme.leads' );
+    // Pass the ajax url to this script 
+    // Get current page protocol
+    $protocol = isset( $_SERVER['HTTPS'] ) ? 'https://' : 'http://';
+    // Output admin-ajax.php URL with same protocol as current page
+    $params = array(
+        'ajaxurl' => admin_url( 'admin-ajax.php', $protocol ),
+    );
+    wp_localize_script( 'placester.theme.leads', 'info', $params );
+
+}
 
 /**
  * Called on plugin activation.
  *
  * @internal
  */
-function placester_activate()
-{
-    placester_init();
+function placester_activate() {
+    // placester_init();
+
+    // // Get the default administrator role.
+    // $role =& get_role( 'administrator' );
+    // // Add forum capabilities to the administrator role. 
+    // if ( !empty( $role ) ) {
+        // $role->add_cap( 'add_roomates' );
+        // $role->add_cap( 'read_roomates' );
+        // $role->add_cap( 'delete_roomates' );
+        // $role->add_cap( 'add_favorites' );
+        // $role->add_cap( 'delete_roomates' );
+    // }
+    // // Create the "Property lead" role
+    // $lead_role = add_role( 
+        // 'placester_lead',
+        // 'Property Lead',
+        // array(
+            // 'add_roomates' => true,
+            // 'read_roomates' => true,
+            // 'delete_roomates' => true,
+            // 'add_favorites' => true,
+            // 'delete_roomates' => true,
+            // 'level_0' => true,
+            // 'read' => true
+        // )
+    // );
 
     global $wp_rewrite;
     $wp_rewrite->flush_rules();
 }
 
+/**
+ * Called on plugin deactivation.
+ */
+function placester_deactivate() {
+    // // Get the default administrator role.
+    // $role =& get_role( 'administrator' );
+    // // Remove lead capabilities to the administrator role. 
+    // if ( !empty( $role ) ) {
+        // $role->remove_cap( 'add_roomates' );
+        // $role->remove_cap( 'read_roomates' );
+        // $role->remove_cap( 'delete_roomates' );
+        // $role->remove_cap( 'add_favorites' );
+        // $role->remove_cap( 'delete_roomates' );
+    // }
+    // // Create the "Property lead" role
+    // $roles_to_delete = array(
+        // 'placester_lead',
+    // );
+
+    // // Delete the roles with no users
+    // foreach ( $roles_to_delete as $role ) {
+        // $users = get_users( array( 'role' => $role ) );
+
+        // if ( count($users) <= 0 ) {
+            // remove_role( $role );
+        // }
+    // }
+
+    global $wp_rewrite;
+    $wp_rewrite->flush_rules();
+
+   // TODO: delete rewrite rules on uninstall
+}
 
 
 /**
@@ -288,5 +403,24 @@ function placester_admin_msg( $msg = '', $class = "updated", $inline = false, $c
             echo "<div class='$class fade' style=\"padding: 0.5em\">$css$msg</div>\n";
         else
             echo "<div class='$class fade'>$css$msg</div>\n";
+    }
+}
+
+/**
+ * Deletes expired transients in the database
+ * 
+ * @access public
+ * @return void
+ */
+add_action( 'wp_scheduled_delete', 'delete_delete_expired_db_transients' );
+function placester_delete_expired_db_transients() {
+    global $wpdb, $_wp_using_ext_object_cache;
+    if( $_wp_using_ext_object_cache )
+        return;
+    $time = isset ( $_SERVER['REQUEST_TIME'] ) ? (int)$_SERVER['REQUEST_TIME'] : time() ;
+    $expired = $wpdb->get_col( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout%' AND option_value < {$time};" );
+    foreach( $expired as $transient ) {
+        $key = str_replace('_transient_timeout_', '', $transient);
+        delete_transient($key);
     }
 }

@@ -183,7 +183,6 @@ function placesterListLone_create()
                         'fnRender': 
                             function(row_data) 
                             { 
-                            console.log('rowdata', row_data);
                                 var control_div =
                                     '<div class="row-actions">';
 
@@ -196,9 +195,6 @@ function placesterListLone_create()
                                 control_div += 
                                     '<span><a href="admin.php?page=placester_properties&id=' + 
                                     row_data.aData[10] +'" class="pl_listing_delete">Delete</a> | </span>';
-                                control_div += 
-                                    '<span><a href="admin.php?page=placester_properties&id=' + 
-                                    row_data.aData[10] + '&craigslist_template=1">Post to craigslist</a> | </span>';
 
                                 if (typeof(placesterAdmin_properties_item_menu) != 'undefined')
                                 {
@@ -261,7 +257,6 @@ jQuery(document).ready(function()
     jQuery('.pl_listing_delete').live('click', function(e){
         e.preventDefault();
         var answer = confirm("Are you sure you want to delete this listing?");
-        console.log(placesterListLone_datatable.fnGetData());
                     placesterListLone_datatable.dataTable();
         if (answer) {
             id = $(this).attr('href').split('&id=')[1];
@@ -277,7 +272,6 @@ jQuery(document).ready(function()
                     // placesterListLone_datatable.fnUpdate();
 
                 }
-                // console.log('RSP ', response);
             });
         }
     });

@@ -318,15 +318,22 @@ function placester_print_default_pager_renderer( $data ) {
 /**
  * Prints default "loading" element for divbased list
  */
-function placester_print_default_loading_element() {
+function placester_print_default_loading_element( $args ) {
+
+    $defaults = array( 
+        'echo' => true
+    );
+
+    extract( wp_parse_args( $args, $defaults ), EXTR_SKIP );
+
     $loading_id = get_option( 'placester_map_tile_loading_image' );
     $loading = wp_get_attachment_image_src( $loading_id, 'full' );
 
     $loading_image_url = $loading[0];
+    $return = '<div id="placester_listings_loading" style="display: none"><img src="' . $loading_image_url . '" alt="" /></div>';
 
-    ?>
-    <div id="placester_listings_loading" style="display: none">
-      <img src="<?php echo $loading_image_url ?>" alt="" />
-    </div>
-    <?php
+    if ( $echo ) 
+        echo $return;
+    else 
+        return $return;
 }

@@ -1,4 +1,3 @@
-
 var placester_template_edit_mode = false;
 var template_chosen = false;
 
@@ -13,9 +12,8 @@ jQuery(document).ready(function() {
     // Add copy to clipboard button click event
     clip.addEventListener( 'onMouseDown', function(){
         if (template_chosen) {
-            var test = document.getElementById("preview_iframe").contentWindow.document.body.innerHTML;
-            clip.setText(document.getElementById("preview_iframe").contentWindow.document.body.innerHTML);
-            console.log(clip);
+            template_html = document.getElementById("preview_iframe").contentWindow.document.body.innerHTML;
+            clip.setText(template_html);
         }
     });
 

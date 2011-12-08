@@ -11,7 +11,6 @@ if ( placester_warn_on_api_key() )
 
 $base_url = WP_PLUGIN_URL . '/placester';
 
-
 list( $ui_fields, $webservice_fields, $is_list_details, $is_divbased ) =
     placester_listings_parse_parameters( $parameters );
 
