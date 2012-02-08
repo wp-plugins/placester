@@ -86,7 +86,7 @@ remove_filter( 'authenticate', 'wp_authenticate_username_password', 20, 3 );
 add_filter( 'authenticate', 'placester_email_authentification', 20, 3 );
 function placester_email_authentification( $user, $username, $password ) {
 	if ( !empty( $username ) )
-		$user = get_user_by_email( $username );
+		$user = get_user_by( $username, '' );
 	if ( $user )
 		$username = $user->user_login;
 	
@@ -336,8 +336,8 @@ function placester_hide_admin_bar_for_leads() {
  * lead profile page
  * 
  */
-add_action( 'personal_options', 'placester_redirect_to_lead_profile' );
-add_action( 'wp_dashboard_setup', 'placester_redirect_to_lead_profile' );
+// add_action( 'personal_options', 'placester_redirect_to_lead_profile' );
+// add_action( 'wp_dashboard_setup', 'placester_redirect_to_lead_profile' );
 function placester_redirect_to_lead_profile() {
     if ( current_user_can('placester_lead') ) {
         wp_redirect( 'admin.php?page=placester_lead_profile', 301 );
