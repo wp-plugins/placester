@@ -59,5 +59,27 @@ class PL_Option_Helper {
 		return $response;
 	}
 
+	public function set_block_address ($block_address = 0) {
+		$response = PL_Options::set('pls_block_address', $block_address);
+		return $response;
+	}
+
+	public function get_block_address () {
+		$response = PL_Options::get('pls_block_address');	
+		if ($response == NULL) {
+			return true;
+		}
+		return $response;
+	}
+
+	public function set_default_country ($default_country) {
+		return PL_Options::set('pls_default_country', $default_country);
+	}
+
+	public function get_default_country () {
+		$response = PL_Options::get('pls_default_country');	
+		return $response;
+	}
+
 //end of class
 }

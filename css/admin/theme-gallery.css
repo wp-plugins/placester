@@ -1,0 +1,16 @@
+.theme-search-wrapper ul {
+	margin: 10lspx 0 0 10px
+}
+.theme-search-header {
+	float: left
+}
+.premium-ribbon {
+	width: auto !important;
+	position: absolute;
+	margin: 10px 0 0 150px;
+}
+
+p#for_themes {
+	width: 200px;
+	margin: 20px auto;
+}

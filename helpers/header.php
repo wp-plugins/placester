@@ -40,7 +40,7 @@
       }
       ?>
       <div class='clear'></div>
-      <div id="icon-options-general" class="icon32 placester_icon"><br /></div>
+      <!-- <div id="icon-options-general" class="icon32 placester_icon"><br /></div> -->
       <h2 id="placester-admin-menu">
         <?php
         $current_title = '';
@@ -57,7 +57,9 @@
                 $current_title = $title;
             }
 
-            $v .= "<a href='admin.php?page=$slug' style='font-size: 15px' class='nav-tab $style'>$title</a>";
+            $id = str_replace(' ', '_', $title);
+
+            $v .= "<a href='admin.php?page=$slug' style='font-size: 15px' class='nav-tab $style' id='$id'>$title</a>";
         }
 
         echo $current_title;

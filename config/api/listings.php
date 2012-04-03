@@ -339,7 +339,7 @@ $PL_API_LISTINGS = array(
                 'desc' => array('type' => 'checkbox', 'group' => 'advanced', 'label' => 'Has Description'),
                 'ngb_shop' => array(),
                 'ngb_hgwy' => array(),
-                '	' => array('type' => 'checkbox', 'group' => 'amenities', 'label' => 'Garnite Countertops'),
+                'grnt_tops' => array('type' => 'checkbox', 'group' => 'amenities', 'label' => 'Granite Countertops'),
                 'ngb_med' => array(),
                 'ngb_trails' => array(),
                 'cent_ht' => array('type' => 'checkbox', 'group' => 'amenities', 'label' => 'Central Heat'),
@@ -429,7 +429,8 @@ $PL_API_LISTINGS = array(
 				'phone' => false
 			),
 			'images' => false,
-			'tracker_url' => false
+			'tracker_url' => false,
+			'rets' => array()
 		)
 	),
 	'details' => array(
@@ -676,7 +677,16 @@ $PL_API_LISTINGS = array(
 				'postal' => array('type' => 'text','group' => 'location', 'label' => 'Zip Code'),
 				'unit'  => array('type' => 'text','group' => 'location', 'label' => 'Unit'),
 				'neighborhood'  => array('type' => 'text','group' => 'location', 'label' => 'Neighborhood'),
-				'country'  => array('type' => 'select','group' => 'location', 'label' => 'Country', 'options' => array('US' => 'United States', 'CA' => 'Canada', 'AU' => 'Australia','MX' => 'Mexico', 'BZ' => 'Belize', 'RU' => 'Russia', 'IN' => 'India','ZA' => 'South Africa','TH' => 'Thailand', 'DO' => 'Dominican Republic'))
+				'country'  => array(
+					'type' => 'select',
+					'group' => 'location',
+					'label' => 'Country',
+					'bound' => array(
+						'class' => 'PL_Listing_Helper',
+						'method' => 'supported_countries',
+						'default' => array('PL_Listing_Helper','convert_default_country')
+					)
+				 )
 			),
 			// // binds to keys / values of all attributes (cur + uncur)	
 			'metadata' => array(

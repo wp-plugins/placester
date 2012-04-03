@@ -57,6 +57,9 @@ define( 'PL_JS_PUB_URL', trailingslashit(PL_JS_URL) . 'public/' );
 define( 'PL_CSS_DIR', trailingslashit(PL_PARENT_DIR) . 'css/' );
 define( 'PL_CSS_URL', trailingslashit(PL_PARENT_URL) . 'css/' );
 
+define( 'PL_IMG_DIR', trailingslashit(PL_PARENT_DIR) . 'images/' );
+define( 'PL_IMG_URL', trailingslashit(PL_PARENT_URL) . 'images/' );
+
 define( 'PL_CSS_ADMIN_DIR', trailingslashit(PL_CSS_DIR) . 'admin/' );
 define( 'PL_CSS_ADMIN_URL', trailingslashit(PL_CSS_URL) . 'admin/' );
 
@@ -87,6 +90,7 @@ include_once('models/custom_attribute.php');
 include_once('models/options.php');
 include_once('models/user.php');
 include_once('models/people.php');
+include_once('models/themes.php');
 
 //helpers
 include_once('helpers/listing.php');
@@ -100,6 +104,7 @@ include_once('helpers/user.php');
 include_once('helpers/pages.php');
 include_once('helpers/people.php');
 include_once('helpers/logging.php');
+include_once('helpers/compliance.php');
 
 
 register_activation_hook( __FILE__, 'placester_activate' );
@@ -119,9 +124,11 @@ function placester_admin_menu() {
     $submenu['placester'] = array();
 
     add_submenu_page( 'placester', '','Listings', 'edit_pages', 'placester_properties', array('PL_Router','my_listings'));
-    add_submenu_page( 'placester', '', 'Add Listing', 'edit_pages', 'placester_property_add', array('PL_Router','add_listings') );
-    // add_submenu_page( 'placester', '', 'Theme Gallery', 'edit_pages', 'placester_themes', array('PL_Router','theme_gallery') );    
+    add_submenu_page( 'placester', '', 'Add Listing', 'edit_pages', 'placester_property_add', array('PL_Router','add_listings') );    
+    if ( !is_multisite() || !is_network_admin() ) {
+    	add_submenu_page( 'placester', '', 'Theme Gallery', 'edit_pages', 'placester_theme_gallery', array('PL_Router','theme_gallery') );    	
+    }
     add_submenu_page( 'placester', '', 'Settings', 'edit_pages', 'placester_settings', array('PL_Router','settings') );    
-    add_submenu_page( 'placester', '', 'Theme Gallery', 'edit_pages', 'placester_theme_gallery', array('PL_Router','theme_gallery') );    
     add_submenu_page( 'placester', '', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );    
+    // add_submenu_page( 'placester', '', 'MLS Integrations', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );    
 }

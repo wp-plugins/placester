@@ -10,7 +10,7 @@ class PL_Js_Helper {
 	}	
 
 	public function admin ($hook) {
-		$pages = array('placester_page_placester_properties', 'placester_page_placester_property_add', 'placester_page_placester_settings', 'placester_page_placester_support', 'placester_page_placester_theme_gallery');
+		$pages = array('placester_page_placester_properties', 'placester_page_placester_property_add', 'placester_page_placester_settings', 'placester_page_placester_support', 'placester_page_placester_theme_gallery', 'placester_page_placester_integrations');
 		if (!in_array($hook, $pages)) { return; }
 
 		// hack to force jquery to load properly. Needs to be removed once there's time to 
@@ -40,6 +40,10 @@ class PL_Js_Helper {
 			self::register_enqueue_if_not('blueimp-iframe', trailingslashit(PL_JS_LIB_URL) .  'blueimp/js/jquery.iframe-transport.js', array( 'jquery'));			
 			self::register_enqueue_if_not('blueimp-file-upload', trailingslashit(PL_JS_LIB_URL) .  'blueimp/js/jquery.fileupload.js', array( 'jquery'));			
 			self::register_enqueue_if_not('add-listing', trailingslashit(PL_JS_URL) .  'admin/add-listing.js', array( 'jquery'));			
+		}
+
+		if ($hook == 'placester_page_placester_theme_gallery') {						
+			self::register_enqueue_if_not('theme-gallery', trailingslashit(PL_JS_URL) .  'admin/theme-gallery.js', array( 'jquery'));			
 		}
 		
 	}

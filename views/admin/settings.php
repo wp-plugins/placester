@@ -2,7 +2,9 @@
 <?php extract(PL_Page_Helper::get_types()); ?>
 <?php extract(PL_Helper_User::get_cached_items()); ?>
 <?php extract(PL_Helper_User::get_global_filters()); ?>
+<?php extract(PL_Helper_User::get_default_country()); ?>
 <?php extract(array('error_logging' => PL_Option_Helper::get_log_errors())); ?>
+<?php extract(array('block_address' => PL_Option_Helper::get_block_address())); ?>
 <?php $_POST = $filters; ?>
 	<div class="wrap">
 		<?php if (PL_Option_Helper::api_key() && isset($email)): ?>
@@ -115,6 +117,24 @@
 			</div>
 			<p>Cacheing speeds up your real estate website by storing data locally rather then pulling it in from Placester everytime it's needed. If you've recently updated a lot of your data, and don't see it appearing in your website try emptying the cache. Learn more about cacheing <a href="#">here</a></p>
 
+			<div class="header-wrapper">
+				<h2>Set Default Country</h2>
+				<select name="" class="set_default_country" id="set_default_country_select">
+					<?php pls_dump($default_country) ?>
+					<?php foreach (PL_Listing_Helper::supported_countries() as $key => $value): ?>
+						<?php if ($key === $default_country): ?>
+							<option value="<?php echo $key ?>" selected><?php echo $value ?></option>		
+						<?php else: ?>
+							<option value="<?php echo $key ?>"><?php echo $value ?></option>	
+						<?php endif ?>
+						
+					<?php endforeach ?>
+				</select>	
+				<a class="button-secondary" id="set_default_country" >Set Default</a>		
+				<div id="default_country_message"></div>
+			</div>
+			<p>Setting the default country will change the default option in the country selector everywhere in the plguin. This is most convenient when creating a website with listings in a specific country.</p>
+
 			<div class="<?php echo !empty($filters['location']) ? 'filters_active' : '' ?>">
 				<div class="header-wrapper">
 					<h2>Global Listing Search Filters</h2>
@@ -145,6 +165,18 @@
 					 ?>
 				</div>	
 			</div>
+
+			<div class="header-wrapper">
+				<h2>Listings Settings</h2>
+				<div class="ajax_message" id="block_address_messages"></div>
+			</div>
+			<div class="clear"></div>
+			<ul>
+				<li>
+					<input id="block_address" type="checkbox" name="block_address" <?php echo $block_address ? 'checked="checked"' : '' ?>>
+					<label for="block_address">Use <b>Block Addresses</b> rather then exact addresses. Using block addresses will switch over all the addresses in your website to the nearest block, rather then exact address.</label>
+				</li>
+			</ul>
 
 			<div class="header-wrapper">
 				<h2>Other Settings</h2>

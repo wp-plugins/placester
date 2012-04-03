@@ -2,24 +2,67 @@
 <?php //pls_dump(wp_widget_rss_output('https://placester.com/themes/feed/')) ?>
 <?php  
 
-	$response = wp_remote_get("http://corporate.com/theme-api/", array('timeout' => 10));
+	$response = wp_remote_get("http://placester.com/wp-admin/admin-ajax.php?action=get_themes_api", array('timeout' => 10));
 
-	foreach (json_decode($response['body']) as $key => $theme) {
-		// pls_dump($theme);
-	}
-
-/*	
+?>
 <form class="search-form filter-form" action="" method="get">
-	<!-- <p class="search-box">
-		<label class="screen-reader-text" for="theme-search-input">Search Installed Themes:</label>
-		<input type="text" id="theme-search-input" name="s" value="">
-		<input type="submit" name="" id="search-submit" class="button" value="Search Installed Themes">	<a id="filter-click" href="?filter=1">Feature Filter</a>
-	</p> -->
+	<!-- <div class="theme-search-wrapper">
+		<h3 class="theme-search-header">Search for themes:</h3>
+		<ul class="subsubsub">
+			<li class="theme-install-dashboard"><a href="" class="">Agency Themes</a> |</li>
+			<li class="theme-install-dashboard"><a href="" class="">Single Property</a></li>
+		</ul>	
+	</div> -->
 	<br class="clear">
 	<table id="availablethemes" cellspacing="0" cellpadding="0">
 		<tbody id="the-list" class="list:themes">
 			<tr>
-				<td class="available-theme top left">
+				<?php foreach (json_decode($response['body'], true) as $key => $theme): ?>
+					<?php //pls_dump($theme['price']) ?>
+					<td class="available-theme top left">
+						<?php if (isset($theme['price']) && is_array($theme['price']) && $theme['price'][0] == 'Premium'): ?>
+							<img class="premium-ribbon" src="<?php echo PL_IMG_URL ?>themes/premium-ribbon.png" alt="">
+						<?php endif ?>
+						<a target="_blank" href="<?php echo $theme['demo_link'][0] ?>" class="">
+							<?php echo $theme['thumbnail'] ?>
+						</a>
+						<h3><?php echo $theme['title'] ?> <a href="https://www.placester.com" title="Visit author homepage">The Placester Team</a></h3>
+						<p class="description"><?php echo $theme['excerpt'] ?></p>
+						<span class="action-links">
+							<a id="install_theme" target="_blank" href="<?php echo implode($theme['download_link'],'') ?>" class="" title="">Install</a>
+							| 
+							<a href="<?php echo $theme['demo_link'][0] ?>" target="_blank" title="Demo">Live Demo</a>
+						</span>
+						<!-- <p>Tags: blue, red, green, right-sidebar, fixed-width, custom-menu</p> -->
+					</td>
+				<?php endforeach ?>
+			</tr>
+		</tbody>
+	</table>		
+</form>
+
+<div style="display:none">
+	<div id="install_theme_overlay">
+		<p class="message">Already a ProTools Premium member? <a href="">Sign in</a></p>
+		<p><span id="theme_name">This theme</span> is only available to <a href="">ProTools Premium</a> members. Signing up for ProTools Premium gives you unlimited access to our theme gallery, an MLS Integration of your choice, and the option of hosting up to 5 websites with Placester. We offer a 30 day free trial. Get started now.</p>
+		<a href="https://placester.com/user/register/premium/">
+			<p class="large_green_button" id="for_themes">
+				See Plans & Pricing
+			</p>
+		</a>	
+	</div>
+</div>
+
+
+<?php /*
+
+<p class="search-box">
+		<label class="screen-reader-text" for="theme-search-input">Search Installed Themes:</label>
+		<input type="text" id="theme-search-input" name="s" value="">
+		<input type="submit" name="" id="search-submit" class="button" value="Search Installed Themes">	<a id="filter-click" href="?filter=1">Feature Filter</a>
+	</p>
+
+<td class="available-theme top left">
 					<a href="http://foundation.wpmulti.com/?preview=1&amp;template=chapman&amp;stylesheet=chapman&amp;preview_iframe=1&amp;TB_iframe=true&amp;width=640&amp;height=328" class="thickbox thickbox-preview screenshot">
 						<img src="http://foundation.wpmulti.com/wp-content/themes/chapman/screenshot.png" alt="">
 					</a>
@@ -29,13 +72,13 @@
 					<p>All of this theme’s files are located in <code>/themes/chapman</code>.</p>
 					<p>Tags: blue, red, green, right-sidebar, fixed-width, custom-menu</p>
 				</td>
-			</tr>
-		</tbody>
-	</table>		
-</form>
-*/
 
-?>
+
+*/ ?>
+
+
+
+<?php /* 
 
 <style type="text/css">
 	.support_wrapper {
@@ -64,3 +107,5 @@
 	<h1>Looking for Real Estate Themes?</h1>
 	<h3>Check them at the <a id="theme_gallery_placester" href="https://placester.com/themes/">theme gallery</a></h3>
 </div>
+
+*/ ?>

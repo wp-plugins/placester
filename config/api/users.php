@@ -28,7 +28,10 @@ $PL_API_USERS = array(
 			'provider' => array(
 				'id' => false,
 				'name' => false,
-				'website' => false
+				'website' => false,
+				'first_logo' => false,
+				'second_logo' => false,
+				'disclaimer_on' => array()
 			),
 			'user' => array(
 				'id' => false,
@@ -59,6 +62,7 @@ $PL_API_USERS = array(
 			'about' => array(),
 			'slogan' => array(),
 			'has_group' => array(),
+			'source' => 'wordpress',
 			'password'  => array('label' => 'Password','type' => 'password'),
 			'password_confirmation'  => array('label' => 'Confirm Password','type' => 'confirm_password'),
 			'location' => array(
