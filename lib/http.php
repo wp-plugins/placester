@@ -13,7 +13,7 @@ Class PL_HTTP {
 	 * @param string $method
 	 * @return array
 	 */
-	function send_request($url, $request, $method = 'GET', $allow_cache = true, $allow_empty_values = false) {
+	function send_request($url, $request, $method = 'GET', $allow_cache = true, $allow_empty_values = false, $force_return = false, $use_ecoding = true) {
 	    
 	    $request_string = '';
 	    foreach ($request as $key => $value) {
@@ -36,12 +36,19 @@ Class PL_HTTP {
 	        }
 	    }
 
+	    if (!$use_ecoding) {
+	    	$request_string = urldecode($request_string);
+	    }
+
 	    PL_Debug::add_msg('Endpoint Logged As: ' . $method . ' ' . $url . '?' . $request_string);
 
 		switch ($method) {
 			case 'POST':
 			case 'PUT':
 				$response = wp_remote_post($url, array('body' => $request_string, 'timeout' => self::$timeout, 'method' => $method));
+				if (!is_array($response)) {
+					$response = array();
+				}
 				return json_decode($response['body'], TRUE);
 				break;
 			
@@ -61,21 +68,22 @@ Class PL_HTTP {
 			default:
 				$signature = base64_encode(sha1($url . $request_string, true));
 	        	$transient_id = 'pl_' . $signature;
-	        	$transient = get_transient($transient_id);
+	        	$transient = get_site_transient($transient_id);
 	        	// pls_dump($url . '?' . $request_string);
 	        	if ($allow_cache && $transient) {
 					PL_Debug::add_msg('------- !!!USING CACHE!!! --------');    	    		
 					return $transient;
 	        	} else {
+	        		// pls_dump($url . '?' . $request_string);
 	            	$response = wp_remote_get($url . '?' . $request_string, array('timeout' => self::$timeout));
 					PL_Debug::add_msg('------- NO CACHE FOUND --------');    	    		
 	        		PL_Debug::add_msg($url . '?' . $request_string);    	
 
-
-					if (is_array($response) && isset($response['headers']) && $response['headers']['status'] == 200 ) {
+	        		// pls_dump($response);
+					if ( (is_array($response) && isset($response['headers']) && isset($response['headers']['status']) && $response['headers']['status'] == 200) || $force_return) {
 						if (!empty($response['body'])) {
 							$body = json_decode($response['body'], TRUE);
-							set_transient( $transient_id, $body , 3600 * 48 );
+							set_site_transient( $transient_id, $body , 3600 * 48 );
 							return $body;
 						} else {
 							return false;

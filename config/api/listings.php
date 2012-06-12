@@ -224,6 +224,16 @@ $PL_API_LISTINGS = array(
 						'method' => 'locations_for_options',
 						'params' => 'locality'
 					)
+				),
+				'neighborhood'  => array(
+					'label' => 'Neighborhood',
+					'type' => 'select',
+					'group' => 'location',
+					'bound' => array(
+						'class' => 'PL_Listing_Helper',
+						'method' => 'locations_for_options',
+						'params' => 'neighborhood'
+					)
 				)
 			),
 			// binds to keys / values of all attributes (cur + uncur)
@@ -379,9 +389,9 @@ $PL_API_LISTINGS = array(
 		),
 		'returns' => array(
 			'id' => false,
-			'property_type' => false,
-			'zoning_types' => false,
-			'purchase_types' => false,
+			'property_type' => array(),
+			'zoning_types' => array(),
+			'purchase_types' => array(),
 			'listing_types' => false,
 			'building_id' => false,
 			'cur_data' => array(
@@ -433,7 +443,8 @@ $PL_API_LISTINGS = array(
 			'tracker_url' => false,
 			'rets' => array(
 				'aname' => false,
-				'oname' => false
+				'oname' => false,
+				'mls_id' => false
 			)
 		)
 	),
@@ -496,7 +507,12 @@ $PL_API_LISTINGS = array(
 				'phone' => false
 			),
 			'images' => false,
-			'tracker_url' => false
+			'tracker_url' => false,
+			'rets' => array(
+			  'aname' => false,
+			  'oname' => false,
+			  'mls_id' => false
+			)
 		)
 	),
 	'create' => array(

@@ -27,7 +27,7 @@ Author URI: https://www.placester.com/
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define('PL_PLUGIN_VERSION','1.0.4');
+define('PL_PLUGIN_VERSION','1.0.5');
 
 define( 'PL_PARENT_DIR', dirname(__FILE__) );
 define( 'PL_PARENT_URL', trailingslashit(plugins_url()) . 'placester/'  );
@@ -74,6 +74,8 @@ include_once('config/api/listings.php');
 include_once('config/api/users.php');
 include_once('config/api/people.php');
 include_once('config/api/integration.php');
+include_once('config/third-party/google-places.php');
+include_once('config/api/wordpress.php');
 
 //lib
 include_once('lib/config.php');
@@ -93,6 +95,9 @@ include_once('models/user.php');
 include_once('models/people.php');
 include_once('models/themes.php');
 include_once('models/integration.php');
+include_once('models/google-places.php');
+include_once('models/wordpress.php');
+include_once('models/walkscore.php');
 
 //helpers
 include_once('helpers/listing.php');
@@ -108,10 +113,19 @@ include_once('helpers/people.php');
 include_once('helpers/logging.php');
 include_once('helpers/compliance.php');
 include_once('helpers/integrations.php');
+include_once('helpers/custom_attributes.php');
+include_once('helpers/settings.php');
+include_once('helpers/taxonomy.php');
+include_once('helpers/google-places.php');
+include_once('helpers/wordpress.php');
 
+//third-party scripts
+include_once('third-party/tax-meta-class/tax-meta-class.php');
+include_once('third-party/convex-hull/convex-hull.php');
+include_once('third-party/mixpanel/mixpanel.php');
 
 register_activation_hook( __FILE__, 'placester_activate' );
-register_deactivation_hook( __FILE__, 'placester_deactivate' );
+// register_deactivation_hook( __FILE__, 'placester_deactivate' );
 
 add_action( 'admin_menu', 'placester_admin_menu' );
 function placester_admin_menu() {
@@ -134,4 +148,10 @@ function placester_admin_menu() {
     add_submenu_page( 'placester', '', 'Settings', 'edit_pages', 'placester_settings', array('PL_Router','settings') );    
     add_submenu_page( 'placester', '', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );    
     add_submenu_page( 'placester', '', 'MLS Integration', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );    
+}
+
+function placester_activate () {
+    $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
+    $metrics->track('Activation');
+    PL_WordPress_Helper::report_url();
 }

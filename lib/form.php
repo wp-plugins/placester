@@ -2,6 +2,8 @@
 
 class PL_Form {
 	
+	static $args = array();
+
 	public static function generate_form($items, $args) {
 		extract(self::process_defaults($args), EXTR_SKIP);
 		$form = '';
@@ -105,7 +107,9 @@ class PL_Form {
 				$bundle = '';
 				foreach (self::prepare_custom_item($options, $method) as $key => $form_items) {
 					$bundle .= "<section class='form_group' id='".$key."'>";
-					$bundle .= "<h3>" . ucwords($key) . "</h3>";
+					if (self::$args['title']) {
+						$bundle .= "<h3>" . ucwords($key) . "</h3>";
+					}
 					if (is_array($form_items)) {
 						$bundle .= implode($form_items, '');	
 					} else {
@@ -195,7 +199,7 @@ class PL_Form {
 			$form_types = PL_Config::PL_API_CUST_ATTR('get');
 			$form_types = $form_types['args']['attr_type']['options'];
 			$attributes = array('label' => $option['name'], 'type' => $form_types[$option['attr_type']]);
-			$custom_items[$option['cat']][] = self::item($option['id'], $attributes, $method, 'metadata');
+			$custom_items[$option['cat']][] = self::item($option['key'], $attributes, $method, 'metadata');
 		}
 		return $custom_items;
 	}
@@ -214,6 +218,7 @@ class PL_Form {
 
 		/** Merge the arguments with the defaults. */
         $args = wp_parse_args( $args, $defaults );
+        self::$args = $args;
         return $args;
 	}
 

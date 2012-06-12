@@ -11,7 +11,6 @@ class PL_Pages {
 		add_action('admin_footer', array(__CLASS__,'force_rewrite_update'));
 	}
 
-
 	//return many page urls
 	function get () {
 		global $wpdb;
@@ -40,7 +39,18 @@ class PL_Pages {
 		$page_details['title'] = $api_listing['location']['address'];
 		$page_details['name'] = $api_listing['id'];
 		$page_details['content'] = serialize($api_listing);
-		$page_details['taxonomies'] = array('zip_code' => $api_listing['location']['postal']);
+		$page_details['taxonomies'] = array(
+										'zip' => $api_listing['location']['postal'], 
+										'city' => $api_listing['location']['locality'],
+										'state' => $api_listing['location']['region'],
+										'neighborhood' => $api_listing['location']['neighborhood'],
+										'street' => $api_listing['location']['address'],
+										'beds' => (string) $api_listing['cur_data']['beds'],
+										'baths' => (string) $api_listing['cur_data']['beds'],
+										'half-baths' => (string) $api_listing['cur_data']['half_baths'],
+										'mlsid' => (string) $api_listing['rets']['mls_id']
+									);
+		// pls_dump($page_details['taxonomies']);
 		return self::manage($page_details);
 	}
 
@@ -106,12 +116,25 @@ class PL_Pages {
     	return false;
 	}
 
-	function create_taxonomies() {
-			// register_taxonomy('zip_code', self::$property_post_type, array('hierarchical' => TRUE,'label' => __('Zip Codes'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('slug' => 'properties/zip', 'with_front' => false) ) );
-			register_post_type(self::$property_post_type, array('labels' => array('name' => __( 'Properties' ),'singular_name' => __( 'property' )),'public' => true,'has_archive' => true, 'rewrite' => array('slug' => 'properties', 'with_front' => false)));
-			// register_post_type('client', array('labels' => array('name' => __( 'client' ),'singular_name' => __( 'client' )),'public' => true,'has_archive' => true, 'rewrite' => array('slug' => 'client', 'with_front' => false)));
-			// register_post_type('search', array('labels' => array('name' => __( 'search' ),'singular_name' => __( 'search' )),'public' => true,'has_archive' => true, 'rewrite' => array('slug' => 'search', 'with_front' => false)));
+	function delete_by_name ($name) {
+		global $wpdb;
+    	$posts_table = $wpdb->prefix . 'posts';
+    	$results = $wpdb->get_results( "DELETE FROM $posts_table WHERE post_name = '".$name."' AND post_type = '" . self::$property_post_type . "'");
+    	if (empty($results)) {
+    		return true;
+    	}
+    	return false;	
 	}
+
+	function create_taxonomies() {
+		register_post_type(self::$property_post_type, array('labels' => array('name' => __( 'Properties' ),'singular_name' => __( 'property' )),'public' => true,'has_archive' => true, 'rewrite' => true, 'query_var' => true));
+
+		global $wp_rewrite;
+	    $property_structure = '/property/%state%/%city%/%zip%/%neighborhood%/%street%/%'.self::$property_post_type.'%';
+        $wp_rewrite->add_rewrite_tag("%property%", '([^/]+)', "property=");
+        $wp_rewrite->add_permastruct('property', $property_structure, false);
+	}
+
 
 	function force_rewrite_update () {
 		if ( PL_PLUGIN_VERSION ) {
@@ -120,6 +143,8 @@ class PL_Pages {
 				update_option('pl_plugin_version', PL_PLUGIN_VERSION);
 				global $wp_rewrite;
 				$wp_rewrite->flush_rules();
+				PL_HTTP::clear_cache();
+				self::delete_all();
 			}
 		}
 	}

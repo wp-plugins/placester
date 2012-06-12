@@ -1,8 +1,9 @@
 <?php extract(PL_Helper_User::whoami()); ?>
 <?php extract(PL_Page_Helper::get_types()); ?>
 <?php extract(PL_Helper_User::get_cached_items()); ?>
-<?php extract(PL_Helper_User::get_global_filters()); ?>
 <?php extract(PL_Helper_User::get_default_country()); ?>
+<?php extract(array('filters' => PL_Helper_User::get_global_filters())); ?>
+<?php extract(array('places_api_key' => PL_Option_Helper::get_google_places_key() ) ) ; ?>
 <?php extract(array('error_logging' => PL_Option_Helper::get_log_errors())); ?>
 <?php extract(array('block_address' => PL_Option_Helper::get_block_address())); ?>
 <?php $_POST = $filters; ?>
@@ -135,35 +136,103 @@
 			</div>
 			<p>Setting the default country will change the default option in the country selector everywhere in the plguin. This is most convenient when creating a website with listings in a specific country.</p>
 
-			<div class="<?php echo !empty($filters['location']) ? 'filters_active' : '' ?>">
+			<div id="global_filter_wrapper" class="<?php echo !empty($filters) ? 'filters_active' : '' ?>">
 				<div class="header-wrapper">
 					<h2>Global Listing Search Filters</h2>
-					<a class="button-secondary" id="save_global_filters" >Save Global Filters</a>
-					<?php if (!empty($filters['location'])): ?>
+					<a class="button-secondary" id="remove_global_filters" >Remove All Filters</a>
+					<?php if (!empty($filters)): ?>
 						<div class="global_filter_active">Global Filters are Active!</div>
 					<?php endif ?>
-					<div id="global_filter_message"></div>
+					<div id="global_filter_message_remove"></div>
 				</div>
 				<p>Global listing search filters limit all the search results returned to your website. This is helpful if you have listings of many different types or locations created but only want this website to display a subset of them. For example, to only show properties in Boston.</p>
+				<?php //pls_dump($filters) ?> 
+				<div class="global_filters tagchecklist">
+					<?php if (!empty($filters)): ?>
+						<p class="label">Active Filters:</p>	
+					<?php endif ?>
+					<form action="" id="active_filters">
+						<?php PL_Settings_Helper::display_global_filters(); ?>
+					</form>	
+				</div>
+				<div class="clear"></div>
 				<div class="search_filter_content">
-					<?php //pls_dump($filters) ?>
-					<?php 
-						PL_Form::generate_form(
-					 	 	PL_Config::bundler('PL_API_LISTINGS',
-					 	 	 	$keys = array('get', 'args'), 
-					 	 	 	$bundle = array( 
-					 	 	 		array('location' => array('address', 'locality', 'region', 'postal')),
-					 	 	 	)
-					 		),
-						 	array('method'=>'POST', 
-							 	'include_submit' => false, 
-							 	'wrap_form' => true, 
-							 	'echo_form' => true,
-							 	'title' => true
-						 	) 
-						);
-					 ?>
+					<div class="global_filter_col">
+						<?php PL_Listing_Helper::get_listing_attributes(); ?>	
+					</div>
+					<div class="global_filter_col form_item">
+						<form action="" id="gloal_filter_form">
+							<?php echo PL_Form::item('compound_type', PL_Config::PL_API_LISTINGS('create', 'args', 'compound_type'), 'POST'); ?>
+							<?php PL_Form::generate_form( PL_Config::bundler('PL_API_LISTINGS', array('create', 'args'), array('property_type-sublet','property_type-res_sale','property_type-res_rental','property_type-vac_rental','property_type-comm_sale','property_type-comm_rental')), array('method'=>'POST', 'include_submit' => false, 'wrap_form' => false, 'echo_form' => true) ); ?>
+							<?php PL_Form::generate_form( PL_Config::PL_API_LISTINGS('get', 'args'), array('method'=>'POST', 'include_submit' => false, 'wrap_form' => false, 'echo_form' => true, 'title' => false, 'id' => 'gloal_filter_form' ) ); ?>		
+						</form>
+					</div>
+					<div class="global_filter_col filter_button">
+						<a class="button-secondary" id="add-single-filter">Add Filter</a>	
+					</div>
+					<div class="global_filter_col" id="global_filter_message"></div>
 				</div>	
+			</div>
+
+			<div class="header-wrapper">
+				<h2>Google Places API Key</h2>
+				<div id="default_googe_places_message"></div>
+			</div>
+			<div class="clear"></div>
+			<p><strong>Add a Google Places API Key to enable lifestyle search for your clients!</strong> Here's how you can get a key. 1) Navigate to the <a href="https://code.google.com/apis/console/?pli=1">google api console</a>. 2) Login with your google account. 3) In the left menu, navigate to the services section. Scroll down to the Places Services and click the "on" switch. 4) Scroll back tot he top, and click on the "API Access" option on the left side of the page. 5) At the bottom of the page click "Create New Server Key". A pop up will appear 6) Click the create button in the pop up (you don't need to enter anything). 7) Copy the new api key. Labeled "API Key" and paste it into the form below and click save. Reach out at <a mailto="support@placester.com">support@placester.com</a> if you have any questions or problems and we'll be happy to help you. </p>
+			<div>
+				<label for="google_places_api">Google Places API Key</label>
+				<input type="text" id="google_places_api" value="<?php echo $places_api_key ?>">
+				<a href="#" id="google_places_api_button" class="button">Update</a>
+			</div>
+
+			<div class="header-wrapper">
+				<h2>Neighborhood Areas</h2>
+				<div class="ajax_message" id="neighborhood_messages"></div>
+			</div>
+			<div class="clear"></div>
+			<p>Use the map below to outline neighborhoods. Once you've outlined and saved a neighborhood you can allow your visitors to use it to search or associated it with a neighborhood page.</p>
+			<div class="polygon_wrapper">
+				<div class="show_neighborhood_areas">
+					<span>Show Created Neighborhoods:</span>
+					<?php echo PL_Taxonomy_Helper::taxonomies_as_checkboxes(); ?>
+					<a id="clear_created_neighborhoods"href="#">Hide All</a>
+				</div>
+				<div class="ajax_message" id="polygon_ajax_messages"></div>
+				<div class="clear"></div>
+				<div id="polygon_map"></div>
+				<div class="map_address">
+					<label for="map_address_input">Address</label>
+					<input type="text" id="map_address_input">
+					<a href="#" id="start_map_address_search" class="button">Search</a>
+				</div>
+				<div class="polygon_list">
+					<?php echo PL_Router::load_builder_partial('settings-polygon-create.php'); ?>
+					<h3>Neighborhoods</h3>
+					<div class="polygons" id="list_of_polygons">
+						<table id="polygon_listings_list" class="widefat post fixed placester_properties" cellspacing="0">
+						    <thead>
+						      <tr>
+						        <th><span>Name</span></th>
+						        <th><span>Type</span></th>
+						        <th><span>Neighborhood</span></th>
+						        <th><span></span></th>
+						        <th><span></span></th>
+						      </tr>
+						    </thead>
+						    <tbody></tbody>
+						    <tfoot>
+						      <tr>
+						        <th></th>
+						        <th></th>
+						        <th></th>
+						        <th></th>
+						        <th></th>
+						      </tr>
+						    </tfoot>
+						  </table>
+					</div>
+				</div>
 			</div>
 
 			<div class="header-wrapper">

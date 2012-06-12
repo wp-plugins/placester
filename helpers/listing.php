@@ -21,7 +21,7 @@ class PL_Listing_Helper {
 		}
 		//respect global filters
 		$global_filters = PL_Helper_User::get_global_filters();
-		$args = wp_parse_args($global_filters['filters'], $args);
+		$args = wp_parse_args($global_filters, $args);
 
 		//respect block address setting
 		if (PL_Option_Helper::get_block_address()) {
@@ -159,6 +159,7 @@ class PL_Listing_Helper {
 		echo json_encode($api_response);
 		if (isset($api_response['id'])) {
 			PL_HTTP::clear_cache();
+			self::details(array('id' => $api_response['id']));
 		}
 		die();
 	}	
@@ -173,6 +174,8 @@ class PL_Listing_Helper {
 		echo json_encode($api_response);
 		if (isset($api_response['id'])) {
 			PL_HTTP::clear_cache();
+			PL_Pages::delete_by_name($api_response['id']);
+			self::details(array('id' => $api_response['id']));
 		}
 		die();
 	}	
@@ -224,12 +227,14 @@ class PL_Listing_Helper {
 	}
 
 	public function locations_for_options($return_only) {
-		$options = array('false' => 'Any');
+		$options = array();
 		$response = PL_Listing::locations();
 		if ($return_only && isset($response[$return_only])) {
 			foreach ($response[$return_only] as $key => $value) {
 				$options[$value] = $value;
 			}
+			ksort($options);
+			$options = array_merge(array('false' => 'Any'), $options);
 			return $options;	
 		} else {
 			return array();	
@@ -270,6 +275,37 @@ class PL_Listing_Helper {
 		}
 		echo json_encode($options);
 		die();
+	}
+
+	public function get_listing_attributes() {
+		$options = array();
+		$attributes = PL_Config::bundler('PL_API_LISTINGS', array('get', 'args'), array('listing_types','property_type.sublet','property_type.res_sale','property_type.res_rental','property_type.vac_rental','property_type.comm_sale','property_type.comm_rental', 'zoning_types', 'purchase_types', array('location' => array('region', 'locality', 'postal', 'neighborhood'))));
+		foreach ($attributes as $key => $attribute) {
+			if ( isset($attribute['label']) ) {
+				$options['basic'][$key] = $attribute['label'];
+			} else {
+				foreach ($attribute as $k => $v) {
+					if (isset( $v['label'])) {
+						$options[$key][$k] = $v['label'];
+					}
+				}
+			}
+		}
+		$option_html = '';
+		foreach ($options as $group => $value) {
+			ob_start();
+			?>
+			<optgroup label="<?php echo ucwords($group) ?>">
+				<?php foreach ($value as $value => $label): ?>
+					<option value="<?php echo $value ?>"><?php echo $label ?></option>
+				<?php endforeach ?>
+			</optgroup>
+			<?php
+			$option_html .= ob_get_clean();
+		}
+
+		$option_html = '<select id="selected_global_filter">' . $option_html . '</select>';
+		echo $option_html;
 	}
 
 	public function convert_default_country() {
