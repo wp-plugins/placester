@@ -1,0 +1,58 @@
+/* Property Details Page */
+@import "mixins";
+article.property-details {
+    border-bottom: none !important;
+    h2 {
+        margin: 5px 0px;
+        font-size: 25px;
+        border-bottom: none !important;
+    }
+    span.listing_type {
+        color: #999;
+    }
+    .property-details-slideshow {
+        padding-top: 10px;
+    }
+    h3 {
+        margin: 40px 0 0px 0;
+        padding: 0;
+    }
+    .details-wrapper {
+      li {
+        list-style-type: none;
+      }
+    }
+    .map {
+        margin-top: 10px;
+        border: 1px solid #DBDBDB;
+        padding: 10px;
+    }
+    .property-image-gallery {
+        padding-left: 0px;
+        li {
+            list-style-type: none;
+            float: left;
+            img {
+                @include image-outline;
+                margin: 10px 10px 10px 0;
+             }
+        }
+        a {
+            &:hover {
+                background-color: inherit;
+            }
+        }
+    }
+    .property-bottom-nav {
+			margin: 10px 0px;
+			background: none;
+			a {
+			  background: none;
+        &:hover {
+          color: #aaa;
+          background: none;
+        }
+      }
+		}
+		
+}

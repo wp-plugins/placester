@@ -1,0 +1,40 @@
+/* Property Details Page */
+/* Mixins */
+article.property-details {
+  border-bottom: none !important; }
+  article.property-details h2 {
+    margin: 5px 0px;
+    font-size: 25px;
+    border-bottom: none !important; }
+  article.property-details span.listing_type {
+    color: #999; }
+  article.property-details .property-details-slideshow {
+    padding-top: 10px; }
+  article.property-details h3 {
+    margin: 40px 0 0px 0;
+    padding: 0; }
+  article.property-details .details-wrapper li {
+    list-style-type: none; }
+  article.property-details .map {
+    margin-top: 10px;
+    border: 1px solid #DBDBDB;
+    padding: 10px; }
+  article.property-details .property-image-gallery {
+    padding-left: 0px; }
+    article.property-details .property-image-gallery li {
+      list-style-type: none;
+      float: left; }
+      article.property-details .property-image-gallery li img {
+        border: 1px solid #DBDBDB;
+        padding: 10px;
+        margin: 10px 10px 10px 0; }
+    article.property-details .property-image-gallery a:hover {
+      background-color: inherit; }
+  article.property-details .property-bottom-nav {
+    margin: 10px 0px;
+    background: none; }
+    article.property-details .property-bottom-nav a {
+      background: none; }
+      article.property-details .property-bottom-nav a:hover {
+        color: #aaa;
+        background: none; }

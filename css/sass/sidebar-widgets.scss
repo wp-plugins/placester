@@ -1,0 +1,166 @@
+@import "mixins";
+aside {
+    margin-top: -15px;
+    font-size: 12px;
+    a {
+        color: grey;
+        &:hover {
+            color: #1982D1;
+        }
+    }
+	h3 {
+	    font-size: 18px;
+		padding: 0 0 10px 0;
+        color:#666;
+        border-bottom: 1px solid #DBDBDB;
+	}
+	.widget-pls-quick-search {
+        .chzn-container-single {
+            padding: 5px 0px;
+        }
+        .pls_search_form {
+            margin: 0px 10px;
+            float: left;
+            label {
+                margin-right: 10px;
+            }
+        }
+        .bedrooms {
+            label {
+                margin-right: 37px;
+            }
+        }
+        .bathrooms, .bedrooms, .half_baths  {
+            float: left;
+            select {
+                width: 75px;
+            }
+        }
+        .property_type {
+            label {
+                margin-right: 15px;
+            }
+            select {
+                width: 185px;
+            }
+        }
+        .listing_types {
+            label {
+                margin-right: 26px;
+            }
+            select {
+                width: 185px;
+            }
+        }
+        .zoning_types {
+            label {
+                margin-right: 24px;
+            }
+            select {
+                width: 185px;
+            }
+        }
+        .purchase_types {
+            label {
+                margin-right: 10px;
+            }
+            select {
+                width: 185px;
+            }
+        }
+        .available_on {
+            label {
+                margin-right: 15px;
+            }
+        }
+        .cities, .states {
+            label {
+                margin-right: 39px;
+            }
+        }
+        .zips {
+            label {
+                margin-right: 17px;
+            }
+            select {
+                width: 210px
+            }
+        }
+        .available_on, .cities, .states {
+            select {
+                width: 210px;
+            }
+        }
+        .min_price {
+            label {
+                margin-right: 17px;
+            }
+        }
+        .min_price, .max_price {
+            margin: 0px 5px;
+            select {
+                width: 75px;
+            }
+        }
+        input.pls_search_button {
+            float: right;
+            clear: both;
+            padding: 10px 15px;
+            margin-top: 10px;
+        }
+	}
+
+   	.widget-pls-agent {
+   	    img {
+            border: 1px solid #DBDBDB;
+            padding: 10px;
+            float: left;
+   	    }
+   	    h5, span {
+   	        margin: 0 0 10px 10px;
+   	    }
+   	    h5 {
+   	        float: left;
+            font-size: 20px;
+   	    }
+   	    span.email {
+   	        float: left;
+            font-size: 14px;
+   	    }
+   	    span.phone {
+            float: left;
+            font-size: 20px;
+   	    }
+   	}
+
+   	.pls-listing-get_listings_widget {
+   	    .listing-item {
+   	        border-bottom: 1px solid  #DBDBDB;
+   	    }
+   	    h4 {
+            font-size: 16px;
+            margin: 20px 0 0 0;
+   	    }
+   	    .details {
+            font-size: 14px;
+            margin-bottom: 10px;
+   	    }
+   	    .featured-image {
+   	      width: 301px;
+   	      height: 191px;
+   	      img {
+            border: 1px solid #DBDBDB;
+            padding: 10px;
+          }
+   	    }
+       a.learn-more {
+            margin: 10px 0;
+            float: right;
+            @include rounded-corners;
+            padding: 10px;
+        }
+        a.learn-more:hover {
+            color: white;
+        }
+   	}
+}

@@ -1,0 +1,46 @@
+/* Mixins */
+body {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #555; }
+  body a {
+    color: inherit;
+    text-decoration: none; }
+
+h1, h2, h3, h4, h5 {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #111; }
+
+.inner {
+  padding: 20px 10px;
+  float: left; }
+
+ul {
+  padding: 0 0 0 20px;
+  margin: 10px 0px; }
+
+#branding {
+  margin-top: 50px; }
+  #branding #logo {
+    float: left;
+    margin-right: 10px;
+    min-height: 50px; }
+  #branding h1 {
+    margin-bottom: 0px;
+    /* improper reset */
+    padding: 0px;
+    /* improper reset */
+    font-size: 30px; }
+    #branding h1 a {
+      color: #111;
+      text-decoration: none; }
+      #branding h1 a:hover {
+        color: #1982D1; }
+  #branding h2 {
+    margin-top: 0px;
+    /* improper reset */
+    margin-bottom: 0px;
+    /* improper reset */
+    font-size: 14px;
+    color: #7A7A7A;
+    font-weight: normal; }

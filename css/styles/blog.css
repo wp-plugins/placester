@@ -1,0 +1,173 @@
+/* General Blog */
+/* Mixins */
+#main_content h2 {
+  font-size: 30px;
+  margin: 0px;
+  padding: 0px; }
+
+article.post {
+  border-bottom: 1px solid #DBDBDB; }
+article h2 {
+  font-size: 30px;
+  margin: 0px;
+  padding: 0px; }
+article p, article ol {
+  margin: 25px 0;
+  line-height: 1.4;
+  font-size: 16px;
+  color: #666; }
+  article p.blog-meta, article ol.blog-meta {
+    font-size: 14px; }
+article header {
+  font-size: 12px;
+  color: #888; }
+  article header a:hover {
+    color: #1982D1; }
+  article header h3 {
+    font-size: 24px; }
+article a {
+  color: #2793E5;
+  text-decoration: none; }
+article h3 {
+  margin: 20px 0 0 0; }
+  article h3 a {
+    color: black; }
+    article h3 a:hover {
+      color: #1982D1;
+      background-color: inherit !important; }
+article .wp-caption a:hover, article .gallery-item a:hover, article .attachment a:hover {
+  background-color: inherit !important; }
+article .wp-caption .wp-caption-text, article .gallery-item .wp-caption-text, article .attachment .wp-caption-text {
+  font-size: 12px;
+  margin: 0 0 10px 0;
+  text-align: center; }
+article img {
+  margin: 20px 0px;
+  border: 1px solid #DBDBDB;
+  padding: 10px; }
+article .entry-meta {
+  clear: both; }
+  article .entry-meta a.more-link {
+    float: right; }
+article .outline {
+  border: 1px solid #DBDBDB; }
+article nav .prev {
+  float: left;
+  text-align: left; }
+article nav .next {
+  float: right;
+  text-align: right; }
+article nav div {
+  padding: 20px 0; }
+  article nav div a {
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    background-color: #EEE;
+    padding: 10px;
+    color: #5e5e5e; }
+    article nav div a:hover {
+      background-color: #5e5e5e;
+      color: white; }
+article footer {
+  color: #888;
+  font-size: 14px;
+  padding-bottom: 35px;
+  line-height: 1.2; }
+  article footer a {
+    color: #2793e5; }
+article .comment-list {
+  list-style: none;
+  margin: 10px 0 0 0;
+  width: 95%;
+  padding: 15px;
+  background: #F6F6F6;
+  border: 1px solid #DDD;
+  float: left;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px; }
+  article .comment-list p {
+    font-size: 10pt;
+    clear: both; }
+  article .comment-list li {
+    float: left;
+    margin: 0;
+    padding: 20px 0 0;
+    position: relative;
+    list-style-type: none;
+    width: inherit; }
+  article .comment-list .avatar {
+    border-radius: 3px;
+    -webkit-box-shadow: 0 1px 2px #ccc;
+    -moz-box-shadow: 0 1px 2px #ccc;
+    box-shadow: 0 1px 2px #ccc;
+    padding: 0;
+    float: left;
+    top: 0;
+    margin: 0 10px 10px 0; }
+  article .comment-list .comment .comment-meta, article .comment-list .comment .comment-author {
+    font-size: 12px; }
+    article .comment-list .comment .comment-meta .comment-edit-link, article .comment-list .comment .comment-author .comment-edit-link {
+      background: #EEE;
+      border-radius: 5px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      color: #666;
+      float: right;
+      font-size: 12px;
+      line-height: 1.5em;
+      font-weight: 300;
+      text-decoration: none;
+      padding: 0 8px; }
+article #respond {
+  width: 95%;
+  float: left;
+  clear: both; }
+  article #respond form {
+    float: left;
+    width: 100%;
+    margin-top: 10px;
+    padding: 15px;
+    background: #F6F6F6;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border: 1px solid #DDD; }
+  article #respond .logged-in-as {
+    margin: 5px inherit;
+    font-size: 12px; }
+  article #respond .comment-form-comment label {
+    margin-right: 20px; }
+  article #respond .form-allowed-tags {
+    display: none; }
+  article #respond .form-submit input {
+    padding: 10px 5px;
+    float: right; }
+article .size-full {
+  max-width: 97.5%;
+  width: auto; }
+article .aligncenter {
+  margin: inherit 0px;
+  width: auto;
+  clear: both;
+  display: block;
+  margin-left: auto;
+  margin-right: auto; }
+article .alignleft {
+  margin: 20px 20px 20px 0;
+  display: inline;
+  float: left; }
+article .alignright {
+  margin: 20px 0 20px 20px;
+  display: inline;
+  float: right; }
+
+.sticky {
+  margin: inherit; }
+
+.gallery-caption {
+  margin: inherit; }
+
+.bypostauthor {
+  margin: inherit; }
