@@ -15,12 +15,12 @@ $PL_API_LISTINGS = array(
 				'type' => 'select',
 				'options' => array(
 					'false' => 'Any',
-					'sublet' => 'Sublet',
-					'res_sale' => 'Residential Sale',
-					'vac_rental' => 'Vacation Rental',
-					'res_rental' => 'Residential Rental',
-					'comm_rental' => 'Commercial Rental',
-					'comm_sale' => 'Commercial Sale',
+					'Sublet' => 'Sublet',
+					'Residential Sale' => 'Residential Sale',
+					'Vacation Rental' => 'Vacation Rental',
+					'Residential Rental' => 'Residential Rental',
+					'Commercial Rental' => 'Commercial Rental',
+					'Commercial Sale' => 'Commercial Sale',
 				)
 			),
 			'property_type.sublet' => array(
@@ -28,12 +28,12 @@ $PL_API_LISTINGS = array(
 				'type' => 'select',
 				'options' => array(
 					'false' => 'Any',
-					'penthouse' => 'Penthouse',
-			        'apartment' => 'Apartment',
-			        'condo' => 'Condo',
-			        'townhouse' => 'Townhouse',
-			        'duplex' => 'Duplex',
-			        'fam_home' => 'Single Family Home'
+					'Penthouse' => 'Penthouse',
+			        'Apartment' => 'Apartment',
+			        'Condo' => 'Condo',
+			        'Townhouse' => 'Townhouse',
+			        'Duplex' => 'Duplex',
+			        'Single Family Home' => 'Single Family Home'
 				)
 			),
 			'property_type.res_sale' => array(
@@ -41,16 +41,16 @@ $PL_API_LISTINGS = array(
 				'type' => 'select',
 				'options' => array(
 					'false' => 'Any',
-					'penthouse' => 'Penthouse',
-			        'apartment' => 'Apartment',
-			        'condo' => 'Condo',
-			        'duplex' => 'Duplex',
-			        'fam_home' => 'Single Family Home',
-			        'multi_fam' => 'Multi Family Home',
-			        'coop' => 'Cooperative',
-			        'tic' => 'Tenants In Common',
-			        'manuf' =>  'Manufactured Home',
-			        'vacant' =>  'Vacant'
+					'Penthouse' => 'Penthouse',
+			        'Apartment' => 'Apartment',
+			        'Condo' => 'Condo',
+			        'Duplex' => 'Duplex',
+			        'Single Family Home' => 'Single Family Home',
+			        'Multi Family Home' => 'Multi Family Home',
+			        'Cooperative' => 'Cooperative',
+			        'Tenants In Common' => 'Tenants In Common',
+			        'Manufactured Home' =>  'Manufactured Home',
+			        'vaVacantcant' =>  'Vacant'
 				)
 			),
 			'property_type.vac_rental' => array(
@@ -58,17 +58,17 @@ $PL_API_LISTINGS = array(
 				'type' => 'select',
 				'options' => array(
 					'false' => 'Any',
-					'penthouse' => 'Penthouse',
-			        'apartment' => 'Apartment',
-			        'condo' => 'Condo',
-			        'townhouse' => 'Townhouse',
-			        'duplex' => 'Duplex',
-			        'fam_home' => 'Single Family Home',
-			        'multi_fam' => 'Multi Family Home',
-			        'coop' => 'Cooperative',
-			        'tic' => 'Tenants In Common',
-			        'manuf' =>  'Manufactured Home',
-			        'vacant' =>  'Vacant'	
+					'Penthouse' => 'Penthouse',
+			        'Apartment' => 'Apartment',
+			        'Condo' => 'Condo',
+			        'Townhouse' => 'Townhouse',
+			        'Duplex' => 'Duplex',
+			        'Single Family Home' => 'Single Family Home',
+			        'Multi Family Home' => 'Multi Family Home',
+			        'Cooperative' => 'Cooperative',
+			        'Tenants In Common' => 'Tenants In Common',
+			        'Manufactured Home' =>  'Manufactured Home',
+			        'Vacant' =>  'Vacant'	
 				)
 			),
 			'property_type.res_rental' => array(
@@ -76,12 +76,12 @@ $PL_API_LISTINGS = array(
 				'type' => 'select',
 				'options' => array(
 					'false' => 'Any',
-					'penthouse' => 'Penthouse',
-			        'apartment' => 'Apartment',
-			        'condo' => 'Condo',
-			        'townhouse' => 'Townhouse',
-			        'duplex' => 'Duplex',
-			        'fam_home' => 'Single Family Home',
+					'Penthouse' => 'Penthouse',
+			        'Apartment' => 'Apartment',
+			        'Condo' => 'Condo',
+			        'Townhouse' => 'Townhouse',
+			        'Duplex' => 'Duplex',
+			        'Single Family Home' => 'Single Family Home',
 				)
 			),
 			'property_type.comm_rental' => array(
@@ -234,7 +234,18 @@ $PL_API_LISTINGS = array(
 						'method' => 'locations_for_options',
 						'params' => 'neighborhood'
 					)
+				),
+				'county'  => array(
+					'label' => 'County',
+					'type' => 'select',
+					'group' => 'location',
+					'bound' => array(
+						'class' => 'PL_Listing_Helper',
+						'method' => 'locations_for_options',
+						'params' => 'county'
+					)
 				)
+				
 			),
 			// binds to keys / values of all attributes (cur + uncur)
 			'metadata' => array(
@@ -363,6 +374,8 @@ $PL_API_LISTINGS = array(
                 'deposit' => array(),
                 'ngb_pubsch' => array(),
 			),
+			'agency_only' => array('type' => 'checkbox', 'group' => 'advanced', 'label' => 'My Offices Listings'),
+			'non_import' => array('type' => 'checkbox',  'group' => 'advanced', 'label' => 'Non MLS Listigns'),
 			'custom' => array(
 				'type' => 'bundle',
 				'group' => '',
@@ -429,6 +442,7 @@ $PL_API_LISTINGS = array(
 				'region' => false,
 				'postal' => false,
 				'neighborhood' => false,
+				'county' => false,
 				'country' => false,
 				'coords' => array(
 					'latitude' => false,
@@ -496,6 +510,7 @@ $PL_API_LISTINGS = array(
 				'region' => false,
 				'postal' => false,
 				'neighborhood' => false,
+				'county' => false,
 				'country' => false,
 				'coords' => array(
 					'latitude' => false,
@@ -529,7 +544,7 @@ $PL_API_LISTINGS = array(
 					'false' => 'Not Set',
 					'res_sale' => 'Residential Sale',
 					'res_rental' => 'Residential Rental',
-					'vac_rental' => 'Vacation Rental',
+					'Vacation Rental' => 'Vacation Rental',
 					'park_rental' => 'Parking',
 					'comm_rental' => 'Commercial Rental',
 					'comm_sale' => 'Commercial Sale',
@@ -698,6 +713,7 @@ $PL_API_LISTINGS = array(
 				'postal' => array('type' => 'text','group' => 'location', 'label' => 'Zip Code'),
 				'unit'  => array('type' => 'text','group' => 'location', 'label' => 'Unit'),
 				'neighborhood'  => array('type' => 'text','group' => 'location', 'label' => 'Neighborhood'),
+				'county' => array('type' => 'text','group' => 'location', 'label' => 'County'),
 				'country'  => array(
 					'type' => 'select',
 					'group' => 'location',
@@ -871,7 +887,10 @@ $PL_API_LISTINGS = array(
 		'returns' => array(
 			'postal' => array(),
 			'region'  => array(),
-			'locality' => array()
+			'locality' => array(),
+			'neighborhood' => array(),
+			'county' => array(),
+			'neighborhood_polygons' => array()
 		)
 	)
 );

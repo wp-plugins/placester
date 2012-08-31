@@ -122,6 +122,10 @@ class PL_Membership {
                 wp_new_user_notification( $wordpress_user_id);
             }
 
+            if (get_option('pls_send_client_option')) {
+                wp_mail($lead_object['username'], 'Your new account on ' . site_url(), PL_Membership_Helper::parse_client_message($lead_object) );
+            }
+
             //login user if successfully sign up.
             wp_set_auth_cookie($wordpress_user_id, true, is_ssl());
         } else {
@@ -512,9 +516,9 @@ class PL_Membership {
         extract( $args, EXTR_SKIP );
         
         $is_lead = current_user_can( 'placester_lead' );
-        if ( !$is_lead ) {
-            return;
-        }
+        // if ( !$is_lead ) {
+        //     return;
+        // }
 
         // $add_link_attr = array('href' => "#{$property_id}",'id' => 'pl_add_favorite','class' => 'pl_prop_fav_link');
         // $remove_link_attr = array('href' => "#{$property_id}",'id' => 'pl_remove_favorite','class' => 'pl_prop_fav_link');
@@ -534,15 +538,19 @@ class PL_Membership {
         //     $remove_link_attr['style'] = "display:none;";
         // }
 
-        $is_favorite = self::is_favorite_property($property_id);
-        ob_start();
+        if ( is_user_logged_in() ) {
+            $is_favorite = self::is_favorite_property($property_id);
+        } else {
+            $is_favorite = '';
+        }
 
+        ob_start();
         ?>
             <div id="pl_add_remove_lead_favorites">
                 <?php if (is_user_logged_in()): ?>
                     <a href="<?php echo "#" . $property_id ?>" id="pl_add_favorite" class="pl_prop_fav_link" <?php echo $is_favorite ? "style='display:none;'" : "" ?> ><?php echo $add_text ?></a>
                 <?php else: ?>
-                    <a href="<?php echo self::get_client_area_url() ?>" target="_blank" id="pl_add_favorite" class="guest"><?php echo $add_text ?></a>
+                    <a id="pl_register_lead_favorites_link" href="#pl_lead_register_form"><?php echo $add_text ?></a>
                 <?php endif ?>
                 <a href="<?php echo "#" . $property_id ?>" id="pl_remove_favorite" class="pl_prop_fav_link" <?php echo !$is_favorite ? "style='display:none;'" : "" ?> ><?php echo $remove_text ?></a>
                 <img class="pl_spinner" src="<?php echo $spinner ?>" alt="ajax-spinner" style="display:none; margin-left: 5px;">
@@ -594,7 +602,7 @@ class PL_Membership {
         if ( ! is_user_logged_in() ) {
             $loginout_link = '<a class="pl_login_link" href="#pl_login_form">Log in</a>';
         } else {
-            $loginout_link = '<a href="' . esc_url( wp_logout_url($_SERVER['REQUEST_URI']) ) . '" id="pl_logout_link">Log out</a>';
+            $loginout_link = '<a href="' . esc_url( wp_logout_url(site_url()) ) . '" id="pl_logout_link">Log out</a>';
         }
         if ($anchor_tag) {
             $loginout_link = "<{$anchor_tag} class={$anchor_class}>" . $inside_pre_tag . $loginout_link . $inside_post_tag . "</{$anchor_tag}>";

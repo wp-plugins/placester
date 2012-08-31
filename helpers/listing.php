@@ -11,6 +11,7 @@ class PL_Listing_Helper {
 		add_action('wp_ajax_add_temp_image', array(__CLASS__, 'add_temp_image' ) );
 		add_action('wp_ajax_filter_options', array(__CLASS__, 'filter_options' ) );
 		add_action('wp_ajax_delete_listing', array(__CLASS__, 'delete_listing_ajax' ) );
+		add_action('the_content', array(__CLASS__, 'refresh_listing'), 1);
 	}
 	
 	public function results($args = array()) {
@@ -21,6 +22,13 @@ class PL_Listing_Helper {
 		}
 		//respect global filters
 		$global_filters = PL_Helper_User::get_global_filters();
+	    if (is_array($global_filters)) {
+	  		foreach ($global_filters as $attribute => $value) {
+	  			if (strpos($attribute, 'property_type') !== false ) {
+	  				$args['property_type'] = is_array($value) ? implode('', $value) : $value;
+	  			}
+	  		}
+	    }
 		$args = wp_parse_args($global_filters, $args);
 
 		//respect block address setting
@@ -126,7 +134,7 @@ class PL_Listing_Helper {
 		foreach ($api_response['listings'] as $key => $listing) {
 			$images = $listing['images'];
 			$listings[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
-			$listings[$key][] = '<a class="address" href="/wp-admin/admin.php?page=placester_property_add&id=' . $listing['id'] . '">' . $listing["location"]["address"] . ' ' . $listing["location"]["locality"] . ' ' . $listing["location"]["region"] . '</a><div class="row_actions"><a href="/wp-admin/admin.php?page=placester_property_add&id=' . $listing['id'] . '" >Edit</a><span>|</span><a href=' . PL_Page_Helper::get_url($listing['id']) . '>View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$listing['id'].'">Delete</a></div>';
+			$listings[$key][] = '<a class="address" href="'.ADMIN_MENU_URL.'?page=placester_property_add&id=' . $listing['id'] . '">' . $listing["location"]["address"] . ' ' . $listing["location"]["locality"] . ' ' . $listing["location"]["region"] . '</a><div class="row_actions"><a href="'.admin_url().'?page=placester_property_add&id=' . $listing['id'] . '" >Edit</a><span>|</span><a href=' . PL_Page_Helper::get_url($listing['id']) . '>View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$listing['id'].'">Delete</a></div>';
 			$listings[$key][] = $listing["location"]["postal"];
 			$listings[$key][] = implode($listing["zoning_types"], ', ') . ' ' . implode($listing["purchase_types"], ', ');
 			$listings[$key][] = implode($listing["listing_types"], ', ');
@@ -221,14 +229,17 @@ class PL_Listing_Helper {
 			echo json_encode(array('response' => true, 'message' => 'Listing successfully deleted. This page will reload momentarily.'));	
 			PL_HTTP::clear_cache();
 		} elseif ( isset($api_response['code']) && $api_response['code'] == 1800 ) {
-			echo json_encode(array('response' => false, 'message' => 'Cannot find listing. Try <a href="/wp-admin/admin.php?page=placester_settings">emptying your cache</a>.'));
+			echo json_encode(array('response' => false, 'message' => 'Cannot find listing. Try <a href="'.admin_url().'?page=placester_settings">emptying your cache</a>.'));
 		}
 		die();
 	}
 
-	public function locations_for_options($return_only) {
+	public function locations_for_options($return_only = false) {
 		$options = array();
 		$response = PL_Listing::locations();
+		if (!$return_only) {
+			return $response;
+		}
 		if ($return_only && isset($response[$return_only])) {
 			foreach ($response[$return_only] as $key => $value) {
 				$options[$value] = $value;
@@ -239,6 +250,25 @@ class PL_Listing_Helper {
 		} else {
 			return array();	
 		}
+	}
+
+	public function polygon_locations ($return_only = false) {
+		$response = array();
+		$polygons = PL_Option_Helper::get_polygons();
+		if ($return_only) {
+			foreach ($polygons as $polygon) {
+				if ($polygon['tax'] == $return_only) {
+					$response[] = $polygon['name'];
+				}
+			}
+			return $response;	
+		} else {
+			foreach ($polygons as $polygon) {
+				$response[] = $polygon['name'];
+			}
+			return $response;	
+		}
+		
 	}
 
 	public function pricing_min_options($type = 'min') {
@@ -279,7 +309,7 @@ class PL_Listing_Helper {
 
 	public function get_listing_attributes() {
 		$options = array();
-		$attributes = PL_Config::bundler('PL_API_LISTINGS', array('get', 'args'), array('listing_types','property_type.sublet','property_type.res_sale','property_type.res_rental','property_type.vac_rental','property_type.comm_sale','property_type.comm_rental', 'zoning_types', 'purchase_types', array('location' => array('region', 'locality', 'postal', 'neighborhood'))));
+		$attributes = PL_Config::bundler('PL_API_LISTINGS', array('get', 'args'), array('listing_types','property_type.sublet','property_type.res_sale','property_type.res_rental','property_type.vac_rental','property_type.comm_sale','property_type.comm_rental', 'zoning_types', 'purchase_types', 'agency_only', 'non_import', array('location' => array('region', 'locality', 'postal', 'neighborhood', 'county'))));
 		foreach ($attributes as $key => $attribute) {
 			if ( isset($attribute['label']) ) {
 				$options['basic'][$key] = $attribute['label'];
@@ -569,6 +599,25 @@ class PL_Listing_Helper {
 			"ZW" => "Zimbabwe (ZW)");
 	}
 
+	public static function refresh_listing($the_content) {
+
+		global $post;
+		if ($post->post_type !== 'property' ) {
+			return $the_content;
+		}
+
+		$listing_details = unserialize($the_content);
+
+		// Update listing data from the API
+		$args = array('listing_ids' => array($listing_details['id']), 'address_mode' => 'exact');
+		$response = PL_Listing::get($args);
+		// Should only be one listing returned, but loop just in case...
+		foreach($response['listings'] as $key => $listing) {
+			PL_Pages::manage_listing($listing);
+		}
+
+		return $the_content;
+	}
 
 //end of class
 }
