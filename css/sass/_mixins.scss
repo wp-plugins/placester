@@ -1,0 +1,31 @@
+/* Mixins */
+
+@mixin rounded-corners {	
+  $radius: 5px;
+
+  border-radius: $radius;
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+}
+
+@mixin blue-hover {
+	&:hover { 
+		color: #1982D1;
+	 }
+}
+
+@mixin image-outline {
+	border: 1px solid #DBDBDB;
+    padding: 10px;
+}
+
+@mixin grey-button {
+	@include rounded-corners;
+    background-color: #EEE;
+    padding: 10px;
+    color: #5e5e5e;
+    &:hover { 
+        background-color: #5e5e5e;
+        color: white;
+    }
+}

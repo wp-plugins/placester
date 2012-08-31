@@ -1,0 +1,158 @@
+/* search */
+.complex-search {
+	.pls_search_form {
+		float: left;
+		width: 290px;
+		height: 35px;
+		margin: 10px 20px 0 0;	
+		select {
+			margin-left: 10px;
+			width: 190px;
+		}
+		.chzn-container {
+			float: right;
+		}
+		input {
+			width: 280px;
+		}
+	}
+	#pls_search_form_submit_button {
+		float: right;
+		padding: 10px 30px;
+		margin: 10px 10px 0 0;
+	}
+}
+.sort_wrapper {
+	float: left;
+	margin-top: 0px;
+	label {
+		float: left;
+		margin: 12px 10px 0 0;
+	}
+	.sort_item {
+		margin-left: 10px;
+		float: right;
+	}
+	#sort-by {
+		width: 200px;
+	}	
+}
+#placester_listings_list {
+	
+}
+/* Main Content */
+#main_content {
+	div.listing-item {
+		padding: 0 0 30px 0;
+		.property-details {
+			padding: 0px;
+		}
+		header, footer {
+			p {
+				margin: 10px 0 10px 0;
+				color: #111;
+        font: {
+          size: 20px;
+          weight: 600;
+        }
+        a {
+          &:hover {
+            color: #1982D1;     
+          }
+        }
+			}
+			ul {
+				padding: 0px;
+				li {
+					float: left;
+					list-style-type: none;
+					padding-right: 5px;
+				}				
+			}
+
+		}
+		.entry-meta {
+			float: right;
+			a {
+				padding: 5px 10px;
+			}
+		}
+		.outline {
+			img {
+				@include image-outline;
+				padding: 5px;
+			}
+		}
+		.property-image-gallery{
+			padding-left: 0px;
+				li {
+					float: left;
+					padding: 5px;
+					margin-right: 10px;
+				}				
+		}
+		.details-list-txt {
+			ul {
+				padding-left: 0px;
+				li {
+					width: 290px;
+					overflow: hidden;
+					float: left;
+					margin-right: 10px;
+				}						
+			}
+		}
+		.property-bottom-nav {
+			padding: 10px 0px;
+		}
+	}
+}
+
+/* default get listings list */
+.listing-item {
+    header {
+        padding: 10px 0px;
+    }
+    .listing-thumbnail {
+        float: left;
+        width: 270px;
+   }
+    .basic-details {
+        width: 350px;
+        float: left;
+        h3 {
+            margin-top: 0px;
+            color: #333;
+            font-weight: normal;
+        }
+        p {
+            margin: 3px 0px;
+        }
+    }
+    .listing-description {
+      float: left;
+      padding-top: 5px;
+      margin: 0;
+      width: 350px;
+    }
+    .actions {
+        padding-right: 5px;
+        float: left;
+        margin-top: 10px;
+        a {
+            float: right;
+            @include rounded-corners;
+            padding: 10px;
+        }
+        a:hover {
+            color: #1982D1;
+        }
+
+    }
+
+}
+
+#custom section.form_group {
+	float: left;
+	clear:both;
+}
