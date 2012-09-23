@@ -2,27 +2,13 @@
 	float: left;
 }
 .rets_form form {
-	width: 400px
+	width: 650px
 }
-.rets_form form .pls_search_form {
-	float: left;
-	height: 30px;
-	width: 100%;
+
+.rets_form form.wizard-mls {
+	width: 750px !important;
 }
-.rets_form form .pls_search_form input {
-	float: right;
-	margin-right: 78px;
-}
-.rets_form form .pls_search_form label {
-	float: left;
-	width: 130px;
-	text-align: right;
-}
-.rets_form form #pls_search_form_submit_button {
-	float: right;
-	padding: 10px 15px;
-	margin: 10px 76px 0 0;
-}
+
 .rets_form form #message.error {
 	margin-right: 20px;
 }
@@ -116,4 +102,52 @@ p.large_green_button {
 .help_prompt .real_person h4 {
 	margin: 5px inherit;
 	font-weight: normal;
+}
+
+/* Added for Integrations Re-vamp... */
+.row {
+	zoom: 1;
+	margin: 15px 0;
+}
+
+.row .info {
+	float: left;
+	width: 170px;
+	padding: 20px 40px 0 16px;
+}
+
+.row .info h3 {
+	margin: 0 0 5px;
+	font-weight: bold;
+	font-size: 125%;
+	color: #303030;
+}
+
+.row .info p {
+	margin: 0 0 10px;
+	color: #575757;
+}
+
+.row .elements {
+	padding: 15px 0;
+	overflow: hidden;
+	zoom: 1;
+}
+
+.row::after {
+	content: "";
+	display: block;
+	clear: both;
+}
+
+.row input[type="submit"] {
+	float: right;
+}
+
+h3.invalid {
+	color: red !important;
+}
+
+input.invalid {
+	border: 1px solid red !important;
 }

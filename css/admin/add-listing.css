@@ -183,3 +183,8 @@ input#post_title, label#post_title {
 	margin: 10px 0 0 21px;
 	clear: both;	
 }
+.advanced_toggle {
+	float: right;
+	font-size: 16px;
+	padding: 10px;
+}
