@@ -53,12 +53,12 @@
 
 
 	$('#existing_placester_modal_api_key').live('change', function () {
-		var val = $(this).val();
-		if (val.length != 40) {
-			$('#api_key_validation').html('Invalid Placester API Entered. Not 40 Characters long.').show();
-		} else {
-			$('#api_key_validation').hide();
-		};
+		// var val = $(this).val();
+		// if (val.length != 40 || val.length != 96) {
+		// 	$('#api_key_validation').html('Invalid Placester API Entered. Not 40 Characters long A.').show();
+		// } else {
+		// 	$('#api_key_validation').hide();
+		// };
 	});
 
 	
@@ -89,14 +89,27 @@
 		}
 		$.post(ajaxurl, request, function(data, textStatus, xhr) {
 		  if (data && data.result) {
-			$('#block_address_messages').html(data.message);
-			$('#block_address_messages').removeClass();
-			$('#block_address_messages').addClass('green');
+			$('#listing_settings_message').html(data.message);
+			$('#listing_settings_message').removeClass();
+			$('#listing_settings_message').addClass('green');
 		  } else {
-		  	$('#block_address_messages').html(data.message);
-		  	$('#block_address_messages').removeClass();
-		  	$('#block_address_messages').addClass('red');
+		  	$('#listing_settings_message').html(data.message);
+		  	$('#listing_settings_message').removeClass();
+		  	$('#listing_settings_message').addClass('red');
 		  };
+		}, 'json');
+	});
+
+	$('#demo_data').live('click', function() {
+		var method = ( $(this).is(':checked') ? 'demo_data_on' : 'demo_data_off' );
+		var request = { action : method };
+
+		$.post(ajaxurl, request, function(data, textStatus, xhr) {
+		  if (data && data.message) {
+			$('#listing_settings_message').html(data.message);
+			$('#listing_settings_message').removeClass();
+			$('#listing_settings_message').addClass('green');
+		  }
 		}, 'json');
 	});
 

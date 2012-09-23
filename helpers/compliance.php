@@ -11,6 +11,15 @@ class PL_Compliance {
 			$response = array();
 // pls_dump($provider);
 
+			// massage $provider['disclaimer'] by replacing {brokerage_name} with the actual brokerage name.
+			if( $provider['disclaimer'] ) {
+				$company_name = $whoami['name'];
+				if( $company_name == '' || !$company_name ) {
+					$company_name = 'the publisher of this website';
+				}
+				$provider['disclaimer'] = str_replace( '{brokerage_name}', $company_name, $provider['disclaimer'] );
+			}
+
 			if ( $context == 'listings') {
 				$response['last_import'] = date_format(date_create($provider['last_import']), "jS F, Y g:i A.");
 				if (isset($provider['disclaimer_on']['listings']) && !empty($provider['disclaimer_on']['listings'])) {

@@ -1,43 +1,73 @@
 jQuery(document).ready(function($) {
 
-	$('#pls_search_form').live('submit', function(event) {
+	function validate_phone (number) {
+		// Check for blank input...
+		if (!number) { 
+			return false;
+		}
+
+		// All tests passed...
+		return true;
+	}
+
+	$('#pls_integration_form').live('submit', function(event) {
 		event.preventDefault();
+		submit_handler();	
+	});
+
+	function submit_handler (success_callback) {
 		$('#rets_form_message').removeClass('red');
 		$('#message.error').remove();
 
+		$.each($('#pls_integration_form .invalid'), function(i, elem) {
+			$(elem).removeClass('invalid');
+		});
+
 		$('#rets_form_message').html('Checking Account Status...');
 
+		// Check to see if phone number input exists--if it exists and has invalid input, act accordingly...
+		if ( $('#phone').length != 0 && !validate_phone($('#phone').val()) ) {
+			$('#phone').addClass('invalid');
+			$('#phone').closest('div .row').find('h3').first().addClass('invalid');
+
+			$('#rets_form_message').html('');
+			$('#pls_integration_form').prepend('<div id="message" class="error"><h3>Please enter a valid phone number</h3></div>');
+			return;
+		}
+
 		$.post(ajaxurl, {action: 'subscriptions'}, function(data, textStatus, xhr) {
-		  console.log(data);
+		  // console.log(data);
 		  if (data && data.plan && data.plan == 'pro') {
-		  	check_mls_credentials();
+		  	check_mls_credentials(success_callback);
 		  } else if (data && data.eligible_for_trial) {
-		  	console.log('prompt free trial');
-		  	prompt_free_trial('Start your 60 day free trial to complete the MLS integration', check_mls_credentials, display_cancel_message);
+		  	// console.log('prompt free trial');
+		  	var success_handler = function () { check_mls_credentials(success_callback); }
+		  	prompt_free_trial('Start your 15 day free trial to complete the MLS integration', success_handler, display_cancel_message);
 		  } else {
 		  	console.log('not eligible');
 		  };
-		},'json');		
-	});
+		},'json');	
+	}
 
-	function check_mls_credentials () {
+	function check_mls_credentials (success_callback) {
 		$('#rets_form_message').html('Checking RETS information...');
 		
 		var form_values = {action: 'create_integration'};
-		$.each($('#pls_search_form').serializeArray(), function(i, field) {
+		$.each($('#pls_integration_form').serializeArray(), function(i, field) {
     		form_values[field.name] = field.value;
         });
 
-        console.log(form_values);
+        // console.log(form_values);
 
 		$.post(ajaxurl, form_values, function(data, textStatus, xhr) {
-		  	console.log(data);
-		  	 var form = $('#pls_search_form');
+		  	// console.log(data);
+		  	var form = $('#pls_integration_form');
 			if (data && data.result) {
 				$('#rets_form_message').html(data.message);
-				setTimeout(function () {
-					window.location.href = window.location.href;
-				}, 700);
+				// setTimeout(function () {
+				// 	window.location.href = window.location.href;
+				// }, 700);
+				if (success_callback) { success_callback(); }
 			} else {
 				var item_messages = [];
 				for(var key in data['validations']) {
@@ -67,7 +97,46 @@ jQuery(document).ready(function($) {
 
 	function display_cancel_message () {
 		$('#rets_form_message').html('');
-		$('#pls_search_form').prepend('<div id="message" class="error"><h3>Sorry, this feature requires a premium subscription</h3><p>However, you can test the MLS integration feature for free by creating a website <a href="https://placester.com" target="_blank">placester.com</a></p></div>');
+		$('#pls_integration_form').prepend('<div id="message" class="error"><h3>Sorry, this feature requires a premium subscription</h3><p>However, you can test the MLS integration feature for free by creating a website <a href="https://placester.com" target="_blank">placester.com</a></p></div>');
 	}
 
+	var integration_buttons = {
+		1 : {
+			text: "Skip Integration Set Up",
+			click: function() {
+				 $(this).dialog( "close" );
+				 prompt_demo_data();
+			}
+		},
+		2 : {
+			text: "Submit",
+			id: 'submit_integration_button',
+			click: function() {
+				 submit_handler(modal_state.demo_data_launch);
+			}
+		}
+	}
+
+	$( "#integration_wizard" ).dialog({
+		autoOpen: false,
+		draggable: false,
+		modal: true,
+		title: '<h3>Set Up an MLS Integration for your Website</h3>',
+		width: 810,
+		minHeight: 500,
+		buttons: integration_buttons
+	});
 });
+
+function prompt_integration () {
+  jQuery(document).ready(function($) {
+  	$('#integration_wizard').dialog( "open" );
+  	// TODO: Add spinner/loading prompt...
+	$.post(ajaxurl, {action:"new_integration_view"}, function (result) {
+	  if (result) {
+		// console.log(result);
+		$('#integration_wizard').html(result);
+	  };
+	});
+  });
+}

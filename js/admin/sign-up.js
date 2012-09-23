@@ -18,7 +18,16 @@ $(document).ready(function($) {
 			text: "Confirm",
 			id: 'confirm_email_button',
 			click: function() {
-				 new_sign_up();
+				new_sign_up(modal_state.integration_launch);
+				
+			// FOR TESTING PURPOSES	(remove!!!)
+				// $.post(ajaxurl, {action: 'set_placester_api_key', api_key: ''}, function(response, textStatus, xhr) {
+				// 	// console.log(response);
+				// 	if (response['result']) {
+				// 		modal_state.integration_launch();
+				// 	}
+				// },'json');
+			// =========================
 			}
 		}
 	}

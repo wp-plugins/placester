@@ -11,8 +11,20 @@ class PL_Js_Helper {
 	}	
 
 	public function admin ($hook) {
-		$pages = array('placester_page_placester_properties', 'placester_page_placester_property_add', 'placester_page_placester_settings', 'placester_page_placester_support', 'placester_page_placester_theme_gallery', 'placester_page_placester_integrations',
-			'placester_page_placester_settings_polygons', 'placester_page_placester_settings_property_pages', 'placester_page_placester_settings_international', 'placester_page_placester_settings_neighborhood', 'placester_page_placester_settings_caching', 'placester_page_placester_settings_filtering', 'placester_page_placester_settings_client');
+		$pages = array('placester_page_placester_properties', 
+					   'placester_page_placester_property_add', 
+					   'placester_page_placester_settings', 
+					   'placester_page_placester_support', 
+					   'placester_page_placester_theme_gallery', 
+					   'placester_page_placester_integrations',
+					   'placester_page_placester_settings_polygons', 
+					   'placester_page_placester_settings_property_pages', 
+					   'placester_page_placester_settings_international', 
+					   'placester_page_placester_settings_neighborhood', 
+					   'placester_page_placester_settings_caching', 
+					   'placester_page_placester_settings_filtering', 
+					   'placester_page_placester_settings_client',
+					   'placester_page_placester_settings_template');
 		if (!in_array($hook, $pages)) { return; }
 
 		// hack to force jquery to load properly. Needs to be removed once there's time to 
@@ -25,6 +37,8 @@ class PL_Js_Helper {
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) .  'admin/global.js', array( 'jquery-ui'));
 		self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_URL) .  'admin/sign-up.js', array( 'jquery-ui'));
 		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui'));
+		self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery-ui'));
+		self::register_enqueue_if_not('demo-data', trailingslashit(PL_JS_URL) .  'admin/demo-data.js', array('jquery-ui'));
 		
 		
 		if ($hook == 'placester_page_placester_properties') {
@@ -42,9 +56,9 @@ class PL_Js_Helper {
 			self::register_enqueue_if_not('theme-gallery', trailingslashit(PL_JS_URL) .  'admin/theme-gallery.js', array( 'jquery'));			
 		}
 
-		if ($hook == 'placester_page_placester_integrations') {						
-			self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery'));			
-		}
+		// if ($hook == 'placester_page_placester_integrations') {						
+		// 	self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery'));			
+		// }
 
 
 		if ($hook == 'placester_page_placester_settings') {
@@ -80,7 +94,9 @@ class PL_Js_Helper {
 		if ($hook == 'placester_page_placester_settings_client') {
 			self::register_enqueue_if_not('settings-client', trailingslashit(PL_JS_URL) .  'admin/settings/client.js', array( 'jquery'));	
 		}
-		
+		if ($hook == 'placester_page_placester_settings_template') {
+			self::register_enqueue_if_not('settings-template', trailingslashit(PL_JS_URL) .  'admin/settings/template.js', array( 'jquery'));	
+		}
 	}
 
 	public function admin_menu_url () {
@@ -97,6 +113,7 @@ class PL_Js_Helper {
 		self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) .  'datatables/jquery.dataTables.js', array( 'jquery'));			
 		self::register_enqueue_if_not('leads', trailingslashit(PL_JS_PUB_URL) .  'leads.js', array( 'jquery'));			
 		self::register_enqueue_if_not('membership', trailingslashit(PL_JS_PUB_URL) .  'membership.js', array( 'jquery'));
+		self::register_enqueue_if_not('infobar', trailingslashit(PL_JS_PUB_URL) .  'infobar.js', array( 'jquery'));
 	}
 
 	private function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {

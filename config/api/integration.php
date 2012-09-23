@@ -10,9 +10,8 @@ $PL_API_INTEGRATION = array(
 		'args' => array(),
 		'returns' => array(
 			'id' => false,
+			'mls_name' => false,
 			'url' => false,
-			'username' => false, 
-			'ua_username' => false,
 			'updated_at' => false,
 			'created_at' => false,
 			'completed_at' => false,
@@ -25,15 +24,23 @@ $PL_API_INTEGRATION = array(
 			'type' => 'POST'
 		),
 		'args' => array(
-			'url' => array('type' => 'text', 'group' => 'basic', 'label' => 'RETS Url'),
-			'username'  => array('type' => 'text', 'group' => 'basic', 'label' => 'Username'), 
-			'password'  => array('type' => 'text', 'group' => 'basic', 'label' => 'Password'),
-			'ua_username' => array('type' => 'text', 'group' => 'basic', 'label' => 'User Agent Username'),
-			'ua_password' => array('type' => 'text', 'group' => 'basic', 'label' => 'User Agent Password'),
-			'feed_agent_id' => array('type' => 'text', 'group' => 'basic', 'label' => 'Agent Id')
+			'mls_id' => array('type' => 'text', 'group' => 'basic', 'label' => 'MLS Name'),
+			'office_name' => array('type' => 'text', 'group' => 'basic', 'label' => 'Office Name'),
+			'feed_agent_id' => array('type' => 'text', 'group' => 'basic', 'label' => 'Agent ID')
 		),
 		'returns' => array(
 			'id' => false
 		)
-	)
+	),
+	'mls_list' => array(
+		'request' => array(
+			'url' => 'https://placester.com/api/v2/integration/requests/mls',
+			'type' => 'GET'
+		),
+		'args' => array(),
+		'returns' => array(
+			// 'name' => false,
+			// 'id' => false
+		)
+	)	
 );

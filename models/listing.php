@@ -1,10 +1,24 @@
 <?php 
 
 class PL_Listing {
+
+	private static $demo_api_key = '3eb444f8869cb88bbc349586573aabbb84a316d7';
 	
+	private function api_key() {
+		// The default value to use--the user's own key...
+		$api_key = PL_Option_Helper::api_key();
+
+		// If the user chose to use demo data, make requests using API key that corresponds to the demo listing account...
+		if ( PL_Option_Helper::get_demo_data_flag() ) {
+			$api_key = self::$demo_api_key;
+		}
+
+		return $api_key;
+	}
+
 	public function get($args = array()) {
 		// merge incoming args with preset options, basically api key at this point.
-		$request = array_merge(array("api_key" => PL_Option_Helper::api_key()), PL_Validate::request($args, PL_Config::PL_API_LISTINGS('get', 'args')));
+		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, PL_Config::PL_API_LISTINGS('get', 'args')));
 		if ( defined('HOSTED_PLUGIN_KEY') ) {
 			$request['hosted_key'] = HOSTED_PLUGIN_KEY;
 		}
@@ -49,7 +63,7 @@ class PL_Listing {
 
 	public function details($args = array()) {
 		$config = PL_Config::PL_API_LISTINGS('details');
-		$request = array_merge(array("api_key" => PL_Option_Helper::api_key()), PL_Validate::request($args, $config['args']));
+		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));
 		if ( defined('HOSTED_PLUGIN_KEY') ) {
 			$request['hosted_key'] = HOSTED_PLUGIN_KEY;
 		}
@@ -62,20 +76,28 @@ class PL_Listing {
 
 	public function temp_image ($args = array(), $file_name, $file_mime_type, $file_tmpname) {
 		$config = PL_Config::PL_API_LISTINGS('temp_image');
-		$request = array_merge(array("api_key" => PL_Option_Helper::api_key()), PL_Validate::request($args, $config['args']));
+		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));
 		$response = PL_HTTP::send_request_multipart($config['request']['url'], $request, $file_name, $file_mime_type, $file_tmpname);
 		return $response;	
 	}
 
 	public function locations($args = array()) {
 		$config = PL_Config::PL_API_LISTINGS('get.locations');
+		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));
+		if ( defined('HOSTED_PLUGIN_KEY') ) {
+			$request['hosted_key'] = HOSTED_PLUGIN_KEY;
+		}
+		return PL_Validate::attributes(PL_HTTP::send_request($config['request']['url'], $request), $config['returns']);
+	}
+	public function types() {
+		$args = array( 'keys' => array( 'property_type') );
+		$config = PL_Config::PL_API_LISTINGS('get.types');
 		$request = array_merge(array("api_key" => PL_Option_Helper::api_key()), PL_Validate::request($args, $config['args']));
 		if ( defined('HOSTED_PLUGIN_KEY') ) {
 			$request['hosted_key'] = HOSTED_PLUGIN_KEY;
 		}
 		return PL_Validate::attributes(PL_HTTP::send_request($config['request']['url'], $request), $config['returns']);
 	}
-
 
 // end of class
 }

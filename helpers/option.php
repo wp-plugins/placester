@@ -130,5 +130,24 @@ class PL_Option_Helper {
 		return $response;
 	}
 
+	public function set_demo_data_flag ($desired_state = false) {
+		// If the desired state is true, demo data is turned on (opposite for false)
+		PL_Options::set('pls_demo_data_flag', $desired_state);
+	}
+
+	public function get_demo_data_flag () {
+		$response = PL_Options::get('pls_demo_data_flag');
+		return $response;
+	}
+
+	public function set_demo_data ($data) {
+		PL_Options::set('pls_demo_data', $data);
+	}
+
+	public function get_demo_data () {
+		$response = PL_Options::get('pls_demo_data');
+		return $response;		
+	}
+
 //end of class
 }

@@ -633,6 +633,7 @@ class PL_Membership {
             $args = array( 
                 'echo' => false,
                 'form_id' => 'pl_login_form',
+                'label_username' => 'Email'
             );
             /** Get the login form. */
             $login_form = wp_login_form( $args );

@@ -28,7 +28,8 @@ function prompt_free_trial (title, success_callback, cancel_callback) {
 					needed_fields += '<div class="prem_form"><label for="last_name">Last Name</label><input id="last_name" type="text" name="last_name" value=""></div>';
 				};
 				if (data.user.phone == '') {
-					needed_fields += '<div class="prem_form"><label for="user[phone]">Phone Name</label><input id="phone" type="text" name="phone" value=""></div>';
+					var entered_phone = ( $('#pls_integration_form #phone').length == 0 ) ? '' : $('#pls_integration_form #phone').val();
+					needed_fields += '<div class="prem_form"><label for="user[phone]">Phone Name</label><input id="phone" type="text" name="phone" value="' + entered_phone + '"></div>';
 				};
 				if (needed_fields != '') {
 					$("#premium_wizard").dialog('option', 'buttons', {"Save & Get Started": function () {check_info_for_prem_trial(this, success_callback, cancel_callback);}});
@@ -40,7 +41,7 @@ function prompt_free_trial (title, success_callback, cancel_callback) {
 					start_free_trial(success_callback);	
 				};
 			} else {
-				$(content_div).html('<div><p>There was an error. That sucks because we\'re excited to work together. Give us a ring at (800) 728-8391 or shoot us an email at <a mailto="support@placester.com">support@placester.com</a> and we\'ll get you set up.</p></div>');
+				$(content_div).html('<div><p>There was an error. That stinks because we\'re excited to work together. Give us a ring at (800) 728-8391 or shoot us an email at <a mailto="support@placester.com">support@placester.com</a> and we\'ll get you set up.</p></div>');
 			};
 		}, 'json');
 	});

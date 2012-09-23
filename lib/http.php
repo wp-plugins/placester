@@ -22,13 +22,31 @@ Class PL_HTTP {
 	                $request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[]=';
 	            }
 	            foreach ($value as $k => $v) {
-	            	if (is_array($v)) {
-	            		foreach ($v as $i => $j) {
-	            			$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . ']['.$i.']=' . urlencode($j);
-	            		}
-	            	} else {
-		            	$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . ']=' . urlencode($v);	
-	            	}
+					if (is_int($k)) {
+						if (is_array($v)) {
+							foreach ($v as $i => $j) {
+								if(is_int($i)) {
+									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[][]=' . urlencode($j);
+								} else {
+									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[]['.$i.']=' . urlencode($j);
+								}
+							}
+						} else {
+							$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[]=' . urlencode($v);	
+						}
+					} else {
+						if (is_array($v)) {
+							foreach ($v as $i => $j) {
+								if(is_int($i)) {
+									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . '][]=' . urlencode($j);
+								} else {
+									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . ']['.$i.']=' . urlencode($j);
+								}
+							}
+						} else {
+							$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . ']=' . urlencode($v);	
+						}
+					}					
 	            }
 	        } else {
 	        	$request_string .= (strlen($request_string) > 0 ? '&' : '') . 
@@ -77,6 +95,7 @@ Class PL_HTTP {
 					PL_Debug::add_msg('------- NO CACHE FOUND --------');    	    		
 	        		PL_Debug::add_msg($url . '?' . $request_string);    	
 
+	        		// error_log(serialize($response));
 	        		// pls_dump($response);
 					if ( (is_array($response) && isset($response['headers']) && isset($response['headers']['status']) && $response['headers']['status'] == 200) || $force_return) {
 						if (!empty($response['body'])) {

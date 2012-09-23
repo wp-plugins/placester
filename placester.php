@@ -4,7 +4,7 @@ Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
 Author: Placester.com, Matt Barba
-Version: 1.0.5
+Version: 1.0.6
 Author URI: https://www.placester.com/
 */
 
@@ -44,6 +44,9 @@ define( 'PL_VIEWS_CLIENT_URL', trailingslashit(PL_VIEWS_URL) . 'client/' );
 
 define( 'PL_VIEWS_PART_DIR', trailingslashit(PL_VIEWS_DIR) . 'partials/' );
 define( 'PL_VIEWS_PART_URL', trailingslashit(PL_VIEWS_URL) . 'partials/' );
+
+define( 'PL_VIEWS_SHORT_DIR', trailingslashit(PL_VIEWS_DIR) . 'shortcodes/' );
+define( 'PL_VIEWS_SHORT_URL', trailingslashit(PL_VIEWS_URL) . 'shortcodes/' );
 
 define( 'PL_JS_DIR', trailingslashit(PL_PARENT_DIR) . 'js/' );
 define( 'PL_JS_URL', trailingslashit(PL_PARENT_URL) . 'js/' );
@@ -93,6 +96,8 @@ include_once('lib/validation.php');
 include_once('lib/pages.php');
 include_once('lib/membership.php');
 include_once('lib/caching.php');
+include_once('lib/shortcodes.php');
+include_once('lib/demo_data.php');
 
 //models
 include_once('models/listing.php');
@@ -129,11 +134,34 @@ include_once('helpers/wordpress.php');
 include_once('helpers/education-com.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
+include_once('helpers/snippet.php');
 
 //third-party scripts
 include_once('third-party/tax-meta-class/tax-meta-class.php');
 include_once('third-party/convex-hull/convex-hull.php');
 include_once('third-party/mixpanel/mixpanel.php');
+
+
+// Register hook to load blueprint from plugin if no theme has yet to do so...
+add_action( 'after_setup_theme', 'load_blueprint_from_plugin', 18 );
+function load_blueprint_from_plugin() 
+{
+    if (!class_exists('Placester_Blueprint')) {
+        require_once('blueprint/blueprint.php');
+        new Placester_Blueprint('2.1', 'plugin');
+        add_action('init', 'blueprint_settings');
+        
+    }
+}
+
+function blueprint_settings() {
+    remove_theme_support( 'pls-default-css' );
+    remove_theme_support( 'pls-default-style' );
+    remove_theme_support( 'pls-default-960' );
+    remove_theme_support( 'pls-default-normalize' );
+    remove_theme_support( 'pls-js' );
+    remove_theme_support( 'pls-routing-util-templates' );
+}
 
 register_activation_hook( __FILE__, 'placester_activate' );
 // register_deactivation_hook( __FILE__, 'placester_deactivate' );

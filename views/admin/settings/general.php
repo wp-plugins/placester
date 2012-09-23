@@ -2,6 +2,7 @@
 <?php extract(array('places_api_key' => PL_Option_Helper::get_google_places_key() ) ) ; ?>
 <?php extract(array('error_logging' => PL_Option_Helper::get_log_errors())); ?>
 <?php extract(array('block_address' => PL_Option_Helper::get_block_address())); ?>
+<?php $demo_data_flag = PL_Option_Helper::get_demo_data_flag(); ?>
 
 	<div class="wrap">
 		<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
@@ -105,13 +106,17 @@
 
 			<div class="header-wrapper">
 				<h2>Listings Settings</h2>
-				<div class="ajax_message" id="block_address_messages"></div>
+				<div class="ajax_message" id="listing_settings_message"></div>
 			</div>
 			<div class="clear"></div>
 			<ul>
 				<li>
 					<input id="block_address" type="checkbox" name="block_address" <?php echo $block_address ? 'checked="checked"' : '' ?>>
 					<label for="block_address">Use <b>Exact Addresses</b> rather than block addresses. Using block addresses will switch over all the addresses in your website to the nearest block, rather than exact address.</label>
+				</li>
+				<li>
+					<input id="demo_data" type="checkbox" name="demo_data" <?php echo $demo_data_flag ? 'checked="checked"' : '' ?>>
+					<label for="demo_data">Use <b>Demo Data</b> for listings (note: this will hide any listings that you have created, or that are coming in from any MLS)</label>
 				</li>
 			</ul>
 

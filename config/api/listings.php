@@ -4,7 +4,7 @@ global $PL_API_LISTINGS;
 $PL_API_LISTINGS = array(
 	'get' => array(
 		'request' => array(
-			'url' => 'https://api.placester.com/v2/listings',
+			'url' => 'https://api.placester.com/v2.1/listings',
 			'type' => 'GET'
 		),
 		'args' => array(
@@ -544,7 +544,7 @@ $PL_API_LISTINGS = array(
 					'false' => 'Not Set',
 					'res_sale' => 'Residential Sale',
 					'res_rental' => 'Residential Rental',
-					'Vacation Rental' => 'Vacation Rental',
+					'vac_rental' => 'Vacation Rental',
 					'park_rental' => 'Parking',
 					'comm_rental' => 'Commercial Rental',
 					'comm_sale' => 'Commercial Sale',
@@ -892,5 +892,17 @@ $PL_API_LISTINGS = array(
 			'county' => array(),
 			'neighborhood_polygons' => array()
 		)
+	),
+	'get.types' => array(
+		'request' => array(
+			'url' => 'https://placester.com/api/v2.1/listings/aggregate/',
+			'type' => 'GET'
+		),
+		'args' => array(
+			'keys' => array(
+				'property_type'
+			)
+		),
+		'returns' => array()
 	)
 );

@@ -1,3 +1,14 @@
+var modal_state = {
+	integration_launch: function () {
+		jQuery('#signup_wizard').dialog("close");
+		prompt_integration();								
+	},
+	demo_data_launch: function () {
+		jQuery('#integration_wizard').dialog( "close" );
+		prompt_demo_data();
+	}	
+};
+
 function parse_validation (response) {
 	$ = jQuery; //we're in no conflict land. 
 	if (response && response['validations']) {
@@ -27,7 +38,8 @@ function parse_validation (response) {
 function check_api_key (api_key) {
 	$ = jQuery; //we're in no conflict land. 
 	$('#api_key_message').hide();
-	if (api_key.length == 40) {
+	console.log(api_key.length);
+	if (api_key.length == 40 || api_key.length == 96 ) {
 		var data = {action : "set_placester_api_key",api_key: api_key};
 		$('#api_key_message').removeClass('red');
 		$('#api_key_message').html('Checking....').show().addClass('green');
@@ -54,11 +66,12 @@ function check_api_key (api_key) {
 	}
 }
 
-function new_sign_up() {
+function new_sign_up(success_callback) {
 	$ = jQuery; //we're in no conflict land. 
 	var email = $('input#email').val();
 	$('#api_key_success').html('Checking...').show();
 	$('#api_key_validation').html('');
+
 	$.post(ajaxurl, {action: 'create_account', email: email}, function(data, textStatus, xhr) {
 		if (data) {	
 			console.log(data);
@@ -73,11 +86,11 @@ function new_sign_up() {
 				$.post(ajaxurl, {action: 'set_placester_api_key', api_key: data['api_key']}, function(response, textStatus, xhr) {
 					if (response['result']) {
 						$('#api_key_success').html(response['message']).show();
-						mixpanel.track("SignUp: API key installed");			
-						setTimeout(function () {
-							window.location.href=window.location.href;
-						}, 1000);
-					};
+						mixpanel.track("SignUp: API key installed");
+
+						// API key was successfully created AND set, ok to move-on to the integration dialog...
+						if (success_callback) { success_callback(); }
+					}
 				},'json');
 			};
 		};

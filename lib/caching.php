@@ -24,15 +24,18 @@ class PL_Cache {
 			self::invalidate();
 		}
 
-		add_action('wp_ajax_user_empty_cache', array(__CLASS__, 'clear' ) );
+		add_action('wp_ajax_user_empty_cache', array(__CLASS__, 'ajax_clear' ) );
 		add_action('switch_theme', array(__CLASS__, 'invalidate'));
+		// flush cache when posts are trashed or untrashed -pek
+		add_action('wp_trash_post', array(__CLASS__, 'invalidate'));
+		add_action('untrash_post', array(__CLASS__, 'invalidate'));
 
 	}
 
 	function get () {
 
-		// Just ignore caching for admins
-		if(is_admin() || is_admin_bar_showing()) {
+		// Just ignore caching for admins and regular folk too!
+		if(is_admin() || is_admin_bar_showing() || is_user_logged_in()) {
 			return false;
 		}
 
@@ -72,10 +75,20 @@ class PL_Cache {
 
 	public static function clear() {
 		global $wpdb;
+	    
 	    $placester_options = $wpdb->get_results('SELECT option_name FROM ' . $wpdb->prefix . 'options ' ."WHERE option_name LIKE '_transient_pl_%'");
 	    foreach ($placester_options as $option) {
 	        delete_option( $option->option_name );
 	    }
+	    
+	    $saved_searches = $wpdb->get_results('SELECT option_name FROM ' . $wpdb->prefix . 'options ' ."WHERE option_name LIKE 'pls_ss_%'");
+	    foreach ($saved_searches as $option) {
+	        delete_option( $option->option_name );
+	    }
+	}
+
+	public static function ajax_clear() {
+		self::clear();
 		echo json_encode(array('result' => true, 'message' => 'You\'ve successfully cleared your cache'));
 		die();
 	}

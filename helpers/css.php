@@ -18,7 +18,8 @@ class PL_Css_Helper {
 		//always load these
 		self::register_enqueue_if_not('sign-up-css', trailingslashit(PL_CSS_ADMIN_URL) .  'sign-up.css');		
 		self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');		
-		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');		
+		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
+		self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) .  'integration.css');		
 
 
 		if ($hook == 'placester_page_placester_properties') {
@@ -35,10 +36,6 @@ class PL_Css_Helper {
 
 		if ($hook == 'placester_page_placester_theme_gallery') {
 			self::register_enqueue_if_not('support', trailingslashit(PL_CSS_ADMIN_URL) .  'theme-gallery.css');			
-		}
-
-		if ($hook == 'placester_page_placester_integrations') {
-			self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) .  'integration.css');					
 		}
 
 		if ($hook == 'placester_page_placester_settings') {

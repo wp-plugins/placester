@@ -36,15 +36,38 @@
 							  'wrap_form' => false,
 							  'echo_form' => false
 						) ) ) ) ?>
+
+					<!-- Residential Sales -->
 					<?php PL_Router::load_builder_partial('admin-box.php',
-						 array('title' => 'Residential Sales Details',
-						 	'id' => 'res_sale_details_admin_ui',
+						 array('title' => 'Basic Residential Sales Details',
+						 	'id' => 'res_sale_details_admin_ui_basic',
 						 	'style' => '',
 						 	'content' => PL_Form::generate_form(
 						 	 	 PL_Config::bundler('PL_API_LISTINGS',
 						 	 	 	 $keys = array('create', 'args'), 
 						 	 	 	 $bundle = array( 
-						 	 	 	 	array('metadata' => array('beds', 'baths', 'half_baths','price', 'avail_on', 'sqft', 'lt_sz', 'lt_sz_unit', 'pk_spce','hoa_mand','hoa_fee','landr_own','style', 'ngb_trans', 'ngb_shop','ngb_swim','ngb_court','ngb_park','ngb_trails','ngb_stbles','ngb_golf', 'ngb_med', 'ngb_bike','ngb_cons','ngb_hgwy','ngb_mar','ngb_pvtsch','ngb_pubsch','ngb_uni','grnt_tops','air_cond','cent_ac','frnshed','cent_ht','frplce','hv_ceil','wlk_clst','hdwdflr','tle_flr','fm_lv_rm','lft_lyout','off_den','dng_rm','brkfst_nk','dshwsher','refrig','stve_ovn','stnstl_app','attic','basemnt','washer','dryer','lndry_in','lndry_gar','blc_deck_pt','yard','swm_pool','jacuzzi','sauna','cble_rdy','hghspd_net') 
+						 	 	 	 	array('metadata' => array('beds', 'baths', 'half_baths','price', 'avail_on', 'sqft') 
+						 	 	 	 ) 
+						 	 	 )
+						 	),
+						 	array('method'=>'POST', 
+							 	'include_submit' => false, 
+							 	'wrap_form' => false, 
+							 	'echo_form' => false,
+							 	'title' => true
+						 	) 
+						 ) . '<a id="res_sale" class="advanced_toggle show_advanced" >Show Advanced</a>'
+						  ) ) ?>
+
+					<?php PL_Router::load_builder_partial('admin-box.php',
+						 array('title' => 'Advanced Residential Sales Details',
+						 	'id' => 'res_sale_details_admin_ui_advanced',
+						 	'style' => '',
+						 	'content' => PL_Form::generate_form(
+						 	 	 PL_Config::bundler('PL_API_LISTINGS',
+						 	 	 	 $keys = array('create', 'args'), 
+						 	 	 	 $bundle = array( 
+						 	 	 	 	array('metadata' => array('lt_sz', 'lt_sz_unit', 'pk_spce','hoa_mand','hoa_fee','landr_own','style', 'ngb_trans', 'ngb_shop','ngb_swim','ngb_court','ngb_park','ngb_trails','ngb_stbles','ngb_golf', 'ngb_med', 'ngb_bike','ngb_cons','ngb_hgwy','ngb_mar','ngb_pvtsch','ngb_pubsch','ngb_uni','grnt_tops','air_cond','cent_ac','frnshed','cent_ht','frplce','hv_ceil','wlk_clst','hdwdflr','tle_flr','fm_lv_rm','lft_lyout','off_den','dng_rm','brkfst_nk','dshwsher','refrig','stve_ovn','stnstl_app','attic','basemnt','washer','dryer','lndry_in','lndry_gar','blc_deck_pt','yard','swm_pool','jacuzzi','sauna','cble_rdy','hghspd_net') 
 						 	 	 	 ) 
 						 	 	 )
 						 	),
@@ -55,15 +78,17 @@
 							 	'title' => true
 						 	) 
 						 ) ) ) ?>
+
+					<!-- Residential Rental -->
 					<?php PL_Router::load_builder_partial('admin-box.php',
-						 array('title' => 'Residential Rental Details',
-						 	'id' => 'res_rental_details_admin_ui',
+						 array('title' => 'Basic Residential Rental Details',
+						 	'id' => 'res_rental_details_admin_ui_basic',
 						 	'style' => 'display: none',
 						 	'content' => PL_Form::generate_form(
 						 	 	 PL_Config::bundler('PL_API_LISTINGS',
 						 	 	 	 $keys = array('create', 'args'), 
 						 	 	 	 $bundle = array( 
-						 	 	 	 	array('metadata' => array('beds', 'baths', 'half_baths','price', 'avail_on', 'sqft', 'lt_sz', 'lt_sz_unit', 'pk_spce', 'lse_type', 'lse_trms', 'deposit', 'pk_lease', 'ngb_trans', 'ngb_shop','ngb_swim','ngb_court','ngb_park','ngb_trails','ngb_stbles','ngb_golf', 'ngb_med', 'ngb_bike','ngb_cons','ngb_hgwy','ngb_mar','ngb_pvtsch','ngb_pubsch','ngb_uni','grnt_tops','air_cond','cent_ac','frnshed','cent_ht','frplce','hv_ceil','wlk_clst','hdwdflr','tle_flr','fm_lv_rm','lft_lyout','off_den','dng_rm','brkfst_nk','dshwsher','refrig','stve_ovn','stnstl_app','attic','basemnt','washer','dryer','lndry_in','lndry_gar','blc_deck_pt','yard','swm_pool','jacuzzi','sauna','cble_rdy','hghspd_net') 
+						 	 	 	 	array('metadata' => array('beds', 'baths', 'half_baths','price', 'avail_on', 'sqft') 
 						 	 	 	 ) 
 						 	 	 )
 						 	),
@@ -73,16 +98,17 @@
 							 	'echo_form' => false,
 							 	'title' => true
 						 	) 
-						 ) ) ) ?>
+						 ) . '<a id="res_rental" class="advanced_toggle show_advanced" >Show Advanced</a>'
+						 ) ) ?>
 					<?php PL_Router::load_builder_partial('admin-box.php',
-						 array('title' => 'Vacation Details',
-						 	'id' => 'vac_rental_details_admin_ui',
+						 array('title' => 'Advanced Residential Rental Details',
+						 	'id' => 'res_rental_details_admin_ui_advanced',
 						 	'style' => 'display: none',
 						 	'content' => PL_Form::generate_form(
 						 	 	 PL_Config::bundler('PL_API_LISTINGS',
 						 	 	 	 $keys = array('create', 'args'), 
 						 	 	 	 $bundle = array( 
-						 	 	 	 	array('metadata' => array('accoms','beds', 'baths', 'half_baths','price', 'avail_on', 'sqft','avail_info', 'lt_sz', 'lt_sz_unit', 'pk_spce', 'lse_type', 'lse_trms', 'deposit', 'pk_lease', 'ngb_trans', 'ngb_shop','ngb_swim','ngb_court','ngb_park','ngb_trails','ngb_stbles','ngb_golf', 'ngb_med', 'ngb_bike','ngb_cons','ngb_hgwy','ngb_mar','ngb_pvtsch','ngb_pubsch','ngb_uni','grnt_tops','air_cond','cent_ac','frnshed','cent_ht','frplce','hv_ceil','wlk_clst','hdwdflr','tle_flr','fm_lv_rm','lft_lyout','off_den','dng_rm','brkfst_nk','dshwsher','refrig','stve_ovn','stnstl_app','attic','basemnt','washer','dryer','lndry_in','lndry_gar','blc_deck_pt','yard','swm_pool','jacuzzi','sauna','cble_rdy','hghspd_net') 
+						 	 	 	 	array('metadata' => array('lt_sz_unit', 'pk_spce', 'lse_type', 'lse_trms', 'deposit', 'pk_lease', 'ngb_trans', 'ngb_shop','ngb_swim','ngb_court','ngb_park','ngb_trails','ngb_stbles','ngb_golf', 'ngb_med', 'ngb_bike','ngb_cons','ngb_hgwy','ngb_mar','ngb_pvtsch','ngb_pubsch','ngb_uni','grnt_tops','air_cond','cent_ac','frnshed','cent_ht','frplce','hv_ceil','wlk_clst','hdwdflr','tle_flr','fm_lv_rm','lft_lyout','off_den','dng_rm','brkfst_nk','dshwsher','refrig','stve_ovn','stnstl_app','attic','basemnt','washer','dryer','lndry_in','lndry_gar','blc_deck_pt','yard','swm_pool','jacuzzi','sauna','cble_rdy','hghspd_net', 'lt_sz') 
 						 	 	 	 ) 
 						 	 	 )
 						 	),
@@ -92,16 +118,19 @@
 							 	'echo_form' => false,
 							 	'title' => true
 						 	) 
-						 ) ) ) ?>
+						 ) . '<a id="res_rental" class="advanced_toggle show_advanced" >Show Advanced</a>'
+						 ) ) ?>
+
+					 <!-- Vacation Rentals -->
 					<?php PL_Router::load_builder_partial('admin-box.php',
-						 array('title' => 'Sublet Details',
-						 	'id' => 'sublet_details_admin_ui',
+						 array('title' => 'Basic Vacation Details',
+						 	'id' => 'vac_rental_details_admin_ui_basic',
 						 	'style' => 'display: none',
 						 	'content' => PL_Form::generate_form(
 						 	 	 PL_Config::bundler('PL_API_LISTINGS',
 						 	 	 	 $keys = array('create', 'args'), 
 						 	 	 	 $bundle = array( 
-						 	 	 	 	array('metadata' => array('beds', 'baths', 'half_baths','price', 'avail_on', 'sqft','cats','dogs','cond', 'lt_sz', 'lt_sz_unit', 'pk_spce', 'lse_type', 'lse_trms', 'deposit', 'pk_lease', 'ngb_trans', 'ngb_shop','ngb_swim','ngb_court','ngb_park','ngb_trails','ngb_stbles','ngb_golf', 'ngb_med', 'ngb_bike','ngb_cons','ngb_hgwy','ngb_mar','ngb_pvtsch','ngb_pubsch','ngb_uni','grnt_tops','air_cond','cent_ac','frnshed','cent_ht','frplce','hv_ceil','wlk_clst','hdwdflr','tle_flr','fm_lv_rm','lft_lyout','off_den','dng_rm','brkfst_nk','dshwsher','refrig','stve_ovn','stnstl_app','attic','basemnt','washer','dryer','lndry_in','lndry_gar','blc_deck_pt','yard','swm_pool','jacuzzi','sauna','cble_rdy','hghspd_net') 
+						 	 	 	 	array('metadata' => array('accoms','beds', 'baths', 'half_baths','price', 'avail_on', 'sqft', 'pk_spce') 
 						 	 	 	 ) 
 						 	 	 )
 						 	),
@@ -111,16 +140,18 @@
 							 	'echo_form' => false,
 							 	'title' => true
 						 	) 
-						 ) ) ) ?>
+						 ) . '<a id="vac_rental" class="advanced_toggle show_advanced" >Show Advanced</a>'
+						) ) ?>
+
 					<?php PL_Router::load_builder_partial('admin-box.php',
-						 array('title' => 'Commercial Rental Details',
-						 	'id' => 'comm_rental_details_admin_ui',
+						 array('title' => 'Advanced Vacation Details',
+						 	'id' => 'vac_rental_details_admin_ui_advanced',
 						 	'style' => 'display: none',
 						 	'content' => PL_Form::generate_form(
 						 	 	 PL_Config::bundler('PL_API_LISTINGS',
 						 	 	 	 $keys = array('create', 'args'), 
 						 	 	 	 $bundle = array( 
-						 	 	 	 	array('metadata' => array('prop_name', 'cons_stts', 'bld_suit', 'avail_on', 'sqft', 'lse_trms', 'lse_type', 'sublease', 'price', 'rate_unit', 'min_div', 'max_cont', 'bld_sz', 'lt_sz', 'lt_sz_unit', 'year_blt' ) 
+						 	 	 	 	array('metadata' => array('lt_sz', 'lt_sz_unit', 'avail_info', 'lse_type', 'lse_trms', 'deposit', 'pk_lease', 'ngb_trans', 'ngb_shop','ngb_swim','ngb_court','ngb_park','ngb_trails','ngb_stbles','ngb_golf', 'ngb_med', 'ngb_bike','ngb_cons','ngb_hgwy','ngb_mar','ngb_pvtsch','ngb_pubsch','ngb_uni','grnt_tops','air_cond','cent_ac','frnshed','cent_ht','frplce','hv_ceil','wlk_clst','hdwdflr','tle_flr','fm_lv_rm','lft_lyout','off_den','dng_rm','brkfst_nk','dshwsher','refrig','stve_ovn','stnstl_app','attic','basemnt','washer','dryer','lndry_in','lndry_gar','blc_deck_pt','yard','swm_pool','jacuzzi','sauna','cble_rdy','hghspd_net') 
 						 	 	 	 ) 
 						 	 	 )
 						 	),
@@ -131,15 +162,17 @@
 							 	'title' => true
 						 	) 
 						 ) ) ) ?>
+
+					<!-- Sublets -->
 					<?php PL_Router::load_builder_partial('admin-box.php',
-						 array('title' => 'Commercial Sales Details',
-						 	'id' => 'comm_sale_details_admin_ui',
+						 array('title' => 'Basic Sublet Details',
+						 	'id' => 'sublet_details_admin_ui_basic',
 						 	'style' => 'display: none',
 						 	'content' => PL_Form::generate_form(
 						 	 	 PL_Config::bundler('PL_API_LISTINGS',
 						 	 	 	 $keys = array('create', 'args'), 
 						 	 	 	 $bundle = array( 
-						 	 	 	 	array('metadata' => array('prop_name', 'cons_stts', 'sqft', 'price', 'pk_spce', 'min_div', 'max_cont', 'bld_sz', 'lt_sz', 'lt_sz_unit', 'year_blt') 
+						 	 	 	 	array('metadata' => array('beds', 'baths', 'half_baths','price', 'avail_on', 'sqft') 
 						 	 	 	 ) 
 						 	 	 )
 						 	),
@@ -149,16 +182,18 @@
 							 	'echo_form' => false,
 							 	'title' => true
 						 	) 
-						 ) ) ) ?>
+						 ) . '<a id="sublet" class="advanced_toggle show_advanced" >Show Advanced</a>' 
+					) ) ?>
+
 					<?php PL_Router::load_builder_partial('admin-box.php',
-						 array('title' => 'Parking Details',
-						 	'id' => 'park_rental_details_admin_ui',
+						 array('title' => 'Advanced Sublet Details',
+						 	'id' => 'sublet_details_admin_ui_advanced',
 						 	'style' => 'display: none',
 						 	'content' => PL_Form::generate_form(
 						 	 	 PL_Config::bundler('PL_API_LISTINGS',
 						 	 	 	 $keys = array('create', 'args'), 
 						 	 	 	 $bundle = array( 
-						 	 	 	 	array('metadata' => array('park_type', 'avail_on', 'price', 'lse_trms', 'lse_type', 'deposit', 'valet', 'guard','heat','carwsh') 
+						 	 	 	 	array('metadata' => array('cats','dogs','cond', 'lt_sz', 'lt_sz_unit', 'pk_spce', 'lse_type', 'lse_trms', 'deposit', 'pk_lease', 'ngb_trans', 'ngb_shop','ngb_swim','ngb_court','ngb_park','ngb_trails','ngb_stbles','ngb_golf', 'ngb_med', 'ngb_bike','ngb_cons','ngb_hgwy','ngb_mar','ngb_pvtsch','ngb_pubsch','ngb_uni','grnt_tops','air_cond','cent_ac','frnshed','cent_ht','frplce','hv_ceil','wlk_clst','hdwdflr','tle_flr','fm_lv_rm','lft_lyout','off_den','dng_rm','brkfst_nk','dshwsher','refrig','stve_ovn','stnstl_app','attic','basemnt','washer','dryer','lndry_in','lndry_gar','blc_deck_pt','yard','swm_pool','jacuzzi','sauna','cble_rdy','hghspd_net') 
 						 	 	 	 ) 
 						 	 	 )
 						 	),
@@ -169,6 +204,135 @@
 							 	'title' => true
 						 	) 
 						 ) ) ) ?>
+
+					<!-- Commercial Rentals -->
+					<?php PL_Router::load_builder_partial('admin-box.php',
+						 array('title' => 'Basic Commercial Rental Details',
+						 	'id' => 'comm_rental_details_admin_ui_basic',
+						 	'style' => 'display: none',
+						 	'content' => PL_Form::generate_form(
+						 	 	 PL_Config::bundler('PL_API_LISTINGS',
+						 	 	 	 $keys = array('create', 'args'), 
+						 	 	 	 $bundle = array( 
+						 	 	 	 	array('metadata' => array('prop_name', 'cons_stts', 'bld_suit', 'avail_on', 'sqft', 'price') 
+						 	 	 	 ) 
+						 	 	 )
+						 	),
+						 	array('method'=>'POST', 
+							 	'include_submit' => false, 
+							 	'wrap_form' => false, 
+							 	'echo_form' => false,
+							 	'title' => true
+						 	) 
+						 ) . '<a id="comm_rental" class="advanced_toggle show_advanced" >Show Advanced</a>' 
+						 ) ) ?>
+
+					<?php PL_Router::load_builder_partial('admin-box.php',
+						 array('title' => 'Advanced Commercial Rental Details',
+						 	'id' => 'comm_rental_details_admin_ui_advanced',
+						 	'style' => 'display: none',
+						 	'content' => PL_Form::generate_form(
+						 	 	 PL_Config::bundler('PL_API_LISTINGS',
+						 	 	 	 $keys = array('create', 'args'), 
+						 	 	 	 $bundle = array( 
+						 	 	 	 	array('metadata' => array('lse_trms', 'lse_type', 'sublease', 'rate_unit', 'min_div', 'max_cont', 'bld_sz', 'lt_sz', 'lt_sz_unit', 'year_blt' ) 
+						 	 	 	 ) 
+						 	 	 )
+						 	),
+						 	array('method'=>'POST', 
+							 	'include_submit' => false, 
+							 	'wrap_form' => false, 
+							 	'echo_form' => false,
+							 	'title' => true
+						 	) 
+						 ) ) ) ?>
+
+					 <!-- Commercial Sales -->
+					<?php PL_Router::load_builder_partial('admin-box.php',
+						 array('title' => 'Basic Commercial Sales Details',
+						 	'id' => 'comm_sale_details_admin_ui_basic',
+						 	'style' => 'display: none',
+						 	'content' => PL_Form::generate_form(
+						 	 	 PL_Config::bundler('PL_API_LISTINGS',
+						 	 	 	 $keys = array('create', 'args'), 
+						 	 	 	 $bundle = array( 
+						 	 	 	 	array('metadata' => array('prop_name', 'cons_stts', 'sqft', 'price', 'pk_spce', 'min_div', 'max_cont', 'bld_sz') 
+						 	 	 	 ) 
+						 	 	 )
+						 	),
+						 	array('method'=>'POST', 
+							 	'include_submit' => false, 
+							 	'wrap_form' => false, 
+							 	'echo_form' => false,
+							 	'title' => true
+						 	) 
+						 ) . '<a id="comm_sale" class="advanced_toggle show_advanced" >Show Advanced</a>'
+						 ) ) ?>
+
+					 <?php PL_Router::load_builder_partial('admin-box.php',
+						 array('title' => 'Advanced Commercial Sales Details',
+						 	'id' => 'comm_sale_details_admin_ui_advanced',
+						 	'style' => 'display: none',
+						 	'content' => PL_Form::generate_form(
+						 	 	 PL_Config::bundler('PL_API_LISTINGS',
+						 	 	 	 $keys = array('create', 'args'), 
+						 	 	 	 $bundle = array( 
+						 	 	 	 	array('metadata' => array('lt_sz', 'lt_sz_unit', 'year_blt') 
+						 	 	 	 ) 
+						 	 	 )
+						 	),
+						 	array('method'=>'POST', 
+							 	'include_submit' => false, 
+							 	'wrap_form' => false, 
+							 	'echo_form' => false,
+							 	'title' => true
+						 	) 
+						 )
+						 ) ) ?>
+
+					<!-- Parking -->
+					<?php PL_Router::load_builder_partial('admin-box.php',
+						 array('title' => 'Basic Parking Details',
+						 	'id' => 'park_rental_details_admin_ui_basic',
+						 	'style' => 'display: none',
+						 	'content' => PL_Form::generate_form(
+						 	 	 PL_Config::bundler('PL_API_LISTINGS',
+						 	 	 	 $keys = array('create', 'args'), 
+						 	 	 	 $bundle = array( 
+						 	 	 	 	array('metadata' => array('park_type', 'avail_on', 'price') 
+						 	 	 	 ) 
+						 	 	 )
+						 	),
+						 	array('method'=>'POST', 
+							 	'include_submit' => false, 
+							 	'wrap_form' => false, 
+							 	'echo_form' => false,
+							 	'title' => true
+						 	) 
+						 ) . '<a id="park_rental" class="advanced_toggle show_advanced" >Show Advanced</a>'
+						) ) ?>
+
+					<?php PL_Router::load_builder_partial('admin-box.php',
+						 array('title' => 'Advanced Parking Details',
+						 	'id' => 'park_rental_details_admin_ui_advanced',
+						 	'style' => 'display: none',
+						 	'content' => PL_Form::generate_form(
+						 	 	 PL_Config::bundler('PL_API_LISTINGS',
+						 	 	 	 $keys = array('create', 'args'), 
+						 	 	 	 $bundle = array( 
+						 	 	 	 	array('metadata' => array('lse_trms', 'lse_type', 'deposit', 'valet', 'guard','heat','carwsh') 
+						 	 	 	 ) 
+						 	 	 )
+						 	),
+						 	array('method'=>'POST', 
+							 	'include_submit' => false, 
+							 	'wrap_form' => false, 
+							 	'echo_form' => false,
+							 	'title' => true
+						 	) 
+						 ) ) ) ?>
+
+
 					<?php PL_Router::load_builder_partial('admin-box.php',
 						array('title' => 'Images',
 							 'content' => PL_Router::load_builder_partial(
