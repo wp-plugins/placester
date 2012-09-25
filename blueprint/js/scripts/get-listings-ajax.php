@@ -94,10 +94,13 @@
         }
 
         //datepicker
-        $("input#metadata-max_avail_on_picker, #metadata-min_avail_on_picker").datepicker({
+        if ($("input#metadata-max_avail_on_picker, #metadata-min_avail_on_picker").length !== 0) {
+            $("input#metadata-max_avail_on_picker, #metadata-min_avail_on_picker").datepicker({
                 showOtherMonths: true,
                 numberOfMonths: 2,
                 selectOtherMonths: true
-        });
+            });
+        }
+        
     });
 </script>

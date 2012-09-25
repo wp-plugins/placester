@@ -3,13 +3,21 @@
 class PL_Compliance {
 
 	function mls_message ($args) {
-		extract(wp_parse_args($args, array('context' => false, 'agent_name' => false, 'office_name' => false, 'office_phone' => false)));
+		extract(wp_parse_args($args, array('context' => false, 'agent_name' => false, 'office_name' => false, 'office_phone' => false, 'provider_id' => false)));
 		$whoami = PL_Helper_User::whoami();
+
+		//if this account has multiple providers. Accounts with just one appear in "provider"
+		//if the requester passes in a provider_id, try to match it, else, do nothing.
+		if ( $whoami['providers'] && $provider_id && isset($whoami['providers'][$provider_id] ) ) {
+			//if the provider id matches, just set it to "provider" since that's what the rest of the code uses.
+			//validate it too!
+			$whoami['provider'] = PL_Validate::attributes($whoami['providers'][$provider_id], PL_Config::PL_API_USERS('whoami', 'returns', 'provider'));
+		} 
+
 		// pls_dump($whoami);
 		if (!empty($whoami['provider']['disclaimer_on']) || !empty($whoami['provider']['office_on']) || !empty($whoami['provider']['agent_on'])) {
 			$provider = $whoami['provider'];
 			$response = array();
-// pls_dump($provider);
 
 			// massage $provider['disclaimer'] by replacing {brokerage_name} with the actual brokerage name.
 			if( $provider['disclaimer'] ) {

@@ -3,7 +3,7 @@ Contributors: Placester, Matt Barba
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
 Tested up to: 3.4.2
-Stable tag: 1.0.6
+Stable tag: 1.0.9
 
 Easily create and manage real estate sites powered by WordPress.
 

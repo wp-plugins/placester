@@ -193,7 +193,7 @@ class Placester_Blueprint {
         }
 
         /** Parent theme directory path and url */
-        define( 'PLS_DIR', trailingslashit( __DIR__ ) );
+        define( 'PLS_DIR', trailingslashit( dirname(__FILE__) ) );
         define( 'PLS_URL', trailingslashit( $blueprint_url ) . 'blueprint');
 
         /** Child theme directory path and url */

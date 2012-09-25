@@ -34,6 +34,7 @@ $PL_API_USERS = array(
 				'disclaimer_on' => array(),
 				'last_import' => false
 			),
+			'providers' => false,
 			'user' => array(
 				'id' => false,
 				'first_name' => false,
