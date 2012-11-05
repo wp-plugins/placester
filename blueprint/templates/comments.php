@@ -33,11 +33,9 @@ if ( post_password_required() || ( ! have_comments() && ! comments_open() && ! p
 				<?php if ( get_option( 'page_comments' ) ) : ?>
 
 					<div class="comments-nav">
-
-						<span class="page-numbers"><?php printf( 'Page %1$s of %2$s', ( get_query_var( 'cpage' ) ? absint( get_query_var( 'cpage' ) ) : 1 ), get_comment_pages_count() ); ?></span>
-
-						<?php previous_comments_link(); next_comments_link(); ?>
-
+            <div class="nav-previous"><?php previous_comments_link( '&larr; Older Comments' ); ?></div>
+            <div class="nav-next"><?php next_comments_link( 'Newer Comments &rarr;' ); ?></div>
+            <div style="clear:both"></div>
 					</div><!-- .comments-nav -->
 
 				<?php endif; ?>

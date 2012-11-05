@@ -155,9 +155,9 @@ class Tax_Meta_Class {
       $this->check_field_date();
       $this->check_field_time();
       // Enqueue Meta Box Style
-      wp_enqueue_style( 'tax-meta-clss', $plugin_path . '/css/tax-meta-class.css' );
+      wp_enqueue_style( 'tax-meta-clss', trailingslashit(PL_THIRD_PARTY_URL) . 'tax-meta-class/css/tax-meta-class.css' );
       // Enqueue Meta Box Scripts
-      wp_enqueue_script( 'tax-meta-clss', $plugin_path . '/js/tax-meta-clss.js', array( 'jquery' ), null, true );
+      wp_enqueue_script( 'tax-meta-clss', trailingslashit(PL_THIRD_PARTY_URL) . 'tax-meta-class/js/tax-meta-clss.js', array( 'jquery' ), null, true );
     
     }
     

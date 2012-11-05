@@ -11,7 +11,7 @@ class PLS_Taxonomy {
 
 	function get ($args = array()) {
 
-		$cache = new PL_Cache('nbh');
+		$cache = new PLS_Cache('nbh');
 		if ($result = $cache->get($args)) {
 			return $result;
 		}

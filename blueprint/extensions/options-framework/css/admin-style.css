@@ -261,8 +261,28 @@
   background-color: #f1f1f1;
   background-image: -moz-linear-gradient(center top, #f9f9f9, #ececec); }
 
+h3#optionsframework-submit-top span {
+  vertical-align: middle; }
 h3#optionsframework-submit-top .button-primary {
   margin-left: 25px; }
+
+#default_opts {
+  float: right; }
+  #default_opts span {
+    vertical-align: middle; }
+  #default_opts select {
+    margin: 0px;
+    height: auto;
+    font-size: 14px;
+    vertical-align: middle; }
+  #default_opts input {
+    margin: 0px; }
+
+#export_div #export_txt {
+  width: 300px;
+  margin-left: 3px; }
+#export_div a {
+  float: right; }
 
 .featured_listings_options .section-info {
   background-color: #f1f1f1;

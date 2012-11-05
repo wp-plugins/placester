@@ -6,6 +6,7 @@
 	z-index: 9999;
 	width: 100%;
 	background: #9E1616;
+	position: fixed;
 	/*behavior: url(//dhiodphkum9p1.cloudfront.net/assets/misc/PIE-9b1859b5f8f5e290b0b121fddfecef36.htc);*/
 	-moz-box-shadow: #000 0 1px 3px;
 	-webkit-box-shadow: black 0 1px 3px;
@@ -37,8 +38,13 @@
 	position: relative;
 	top: -1px;
   }
-</style>
 
+  #infobar-buffer {
+  	width: 100%;
+  	height: 50px;
+  }
+</style>
+<div id="infobar-buffer"></div>
 <div class="alert" id="infobar">
   <div class="msg">
     You are test-driving your site with demo data

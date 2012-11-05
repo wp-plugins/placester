@@ -157,5 +157,82 @@ jQuery(document).ready(function($) {
 		
 	});
 	$('.slideshow_type').trigger('change');
+
+
+	/*
+	 * Handles exporting and asynchronous importing of theme options files + loading of defaults
+	 */
+
+	$('#theme_option_file').live('change', function(event) {
+		event.preventDefault();
+
+		if (!confirm('Are you sure you want to overwrite your existing Theme Options?'))
+		{ return; }
+
+		//Retrieve the first (and only!) File from the FileList object
+	    var file = event.target.files[0]; 
+
+	    console.log(file);
+	    //return;
+
+	    if (file) {
+	      var r = new FileReader();
+	      r.onload = function(e) { 
+		     var contents = e.target.result;
+	         // alert( "Got the file.\n" 
+	         //      + "name: " + file.name + "\n"
+	         //      + "type: " + file.type + "\n"
+	         //      + "size: " + file.size + " bytes\n"
+	         //      + "starts with: " + contents.substr(1, 50)
+	         // );  
+
+	        var data = { action: 'import_theme_options', 
+	        			 options_raw: contents };
+	        console.log(data);
+
+			$.post(ajaxurl, data, function(response) {
+			  if (response) {
+			  	// console.log(response);
+			  }
+
+		      // Refresh theme options to reflect newly imported settings...
+		      location.reload()  
+			});
+	      }
+	      r.readAsText(file);
+	    } 
+	    else { 
+	      alert("Failed to load file");
+	    }
+	});
+
+	$('#btn_def_opts').live('click', function(event) {
+		event.preventDefault();
+
+		if (!confirm('Are you sure you want to overwrite your existing Theme Options?'))
+		{ return; }
+
+		var data = { action: 'import_default_options',
+					 name: $('#def_theme_opts option:selected').val() }
+		// console.log(data);
+
+		$.post(ajaxurl, data, function(response) {
+		  if (response) {
+		  	// console.log(response);
+		  }
+
+	      // Refresh theme options to reflect newly imported settings...
+	      window.location.reload(true);
+		});
+	});
+
+	$('#export_link').live('click', function() {
+		var filename = $('#export_txt').val();
+
+		if (filename) {
+			var new_href = $(this).attr('href') + '&filename=' + filename;
+			$(this).attr('href', new_href);
+		}
+	});
 		 		
 });	

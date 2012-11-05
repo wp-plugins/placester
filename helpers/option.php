@@ -140,14 +140,5 @@ class PL_Option_Helper {
 		return $response;
 	}
 
-	public function set_demo_data ($data) {
-		PL_Options::set('pls_demo_data', $data);
-	}
-
-	public function get_demo_data () {
-		$response = PL_Options::get('pls_demo_data');
-		return $response;		
-	}
-
 //end of class
 }

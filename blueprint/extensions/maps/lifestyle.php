@@ -6,7 +6,7 @@ class PLS_Map_Lifestyle extends PLS_Map {
 		$map_args = self::process_defaults($map_args);
 		self::make_markers($listings, $marker_args, $map_args);
 		extract($map_args, EXTR_SKIP);
-		wp_enqueue_script('google-maps', 'http://maps.googleapis.com/maps/api/js?sensor=false');
+		wp_enqueue_script('google-maps', 'http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false');
 		ob_start();
 		?>
 			<script type="text/javascript">				
@@ -19,16 +19,16 @@ class PLS_Map_Lifestyle extends PLS_Map {
 				var centers = [];
 				jQuery(function($) { 
 					google.maps.event.addDomListener(window, 'load', function() {
-						var latlng = new google.maps.LatLng(<?php echo $lat; ?>, <?php echo $lng; ?>);
-						var myOptions = { zoom: <?php echo $zoom; ?>, center: latlng, mapTypeId: google.maps.MapTypeId.ROADMAP};
-						<?php echo $map_js_var ?>.map = new google.maps.Map(document.getElementById("<?php echo $canvas_id ?>"), myOptions);
-						<?php foreach (self::$markers as $marker): ?>
-							<?php echo $marker; ?>
-						<?php endforeach ?>	
-						pls_center_map(<?php echo self::$map_js_var ?>);
+						// var latlng = new google.maps.LatLng(<?php echo $lat; ?>, <?php echo $lng; ?>);
+						// var myOptions = { zoom: <?php echo $zoom; ?>, center: latlng, mapTypeId: google.maps.MapTypeId.ROADMAP};
+						// <?php echo $map_js_var ?>.map = new google.maps.Map(document.getElementById("<?php echo $canvas_id ?>"), myOptions);
+						// <?php foreach (self::$markers as $marker): ?>
+						// 	<?php echo $marker; ?>
+						// <?php endforeach ?>	
+						// pls_center_map(<?php echo self::$map_js_var ?>);
 
-						var coords = [];
-						var request = {};
+						// var coords = [];
+						// var request = {};
 						// search_places();
 						
 						function search_places () {
@@ -68,14 +68,14 @@ class PLS_Map_Lifestyle extends PLS_Map {
 					      	return response;
 					      }
 					      
-					      $('#lifestyle_form_wrapper form, .location_select_wrapper').live('change', function(event) {
-					      	event.preventDefault();
-					      	pls_clear_markers(<?php echo self::$map_js_var ?>);
-					      	<?php foreach (self::$markers as $marker): ?>
-								<?php echo $marker; ?>
-							<?php endforeach ?>	
-					      	search_places();
-					      });
+					  //     $('#lifestyle_form_wrapper form, .location_select_wrapper').live('change', function(event) {
+					  //     	event.preventDefault();
+					  //     	pls_clear_markers(<?php echo self::$map_js_var ?>);
+					  //     	<?php foreach (self::$markers as $marker): ?>
+							// 	<?php echo $marker; ?>
+							// <?php endforeach ?>	
+					  //     	search_places();
+					  //     });
 					});
 				});	  
 			</script>

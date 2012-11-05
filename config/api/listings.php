@@ -50,7 +50,7 @@ $PL_API_LISTINGS = array(
 			        'Cooperative' => 'Cooperative',
 			        'Tenants In Common' => 'Tenants In Common',
 			        'Manufactured Home' =>  'Manufactured Home',
-			        'vaVacantcant' =>  'Vacant'
+			        'Vacant' =>  'Vacant'
 				)
 			),
 			'property_type.vac_rental' => array(
@@ -464,7 +464,7 @@ $PL_API_LISTINGS = array(
 	),
 	'details' => array(
 		'request' => array(
-			'url' => 'https://placester.com/api/v2/listings/',
+			'url' => 'https://placester.com/api/v2.1/listings/',
 			'type' => 'GET'
 		),
 		'args' => array(),
@@ -526,7 +526,10 @@ $PL_API_LISTINGS = array(
 			'rets' => array(
 			  'aname' => false,
 			  'oname' => false,
-			  'mls_id' => false
+			  'mls_id' => false,
+			  'alicense' => false,
+			  'aconame' => false,
+			  'oconame' => false
 			)
 		)
 	),
@@ -552,159 +555,34 @@ $PL_API_LISTINGS = array(
 				)
 			),
 			'property_type-sublet' => array(
-				'type' => 'select',
+				'type' => 'text',
 				'label' => 'Sublet Property Type',
-				'group' => 'Basic Details',
-				'options' => array(
-					'false' => 'Not Set',
-					'penthouse' => 'Penthouse',
-			        'apartment' => 'Apartment',
-			        'condo' => 'Condo',
-			        'townhouse' => 'Townhouse',
-			        'duplex' => 'Duplex',
-			        'fam_home' => 'Single Family Home'
-				)
+				'group' => 'Basic Details'
 			),
 			'property_type-res_sale' => array(
-				'type' => 'select',
+				'type' => 'text',
 				'label' => 'Residential Sale Property Type',
-				'group' => 'Basic Details',
-				'options' => array(
-					'false' => 'Not Set',
-					'penthouse' => 'Penthouse',
-			        'apartment' => 'Apartment',
-			        'condo' => 'Condo',
-			        'duplex' => 'Duplex',
-			        'fam_home' => 'Single Family Home',
-			        'multi_fam' => 'Multi Family Home',
-			        'coop' => 'Cooperative',
-			        'tic' => 'Tenants In Common',
-			        'manuf' =>  'Manufactured Home',
-			        'vacant' =>  'Vacant'
-				)
+				'group' => 'Basic Details'
 			),
 			'property_type-vac_rental' => array(
-				'type' => 'select',
+				'type' => 'text',
 				'label' => 'Vacation Property Type',
-				'group' => 'Basic Details',
-				'options' => array(
-					'false' => 'Not Set',
-					'penthouse' => 'Penthouse',
-			        'apartment' => 'Apartment',
-			        'condo' => 'Condo',
-			        'townhouse' => 'Townhouse',
-			        'duplex' => 'Duplex',
-			        'fam_home' => 'Single Family Home',
-			        'multi_fam' => 'Multi Family Home',
-			        'coop' => 'Cooperative',
-			        'tic' => 'Tenants In Common',
-			        'manuf' =>  'Manufactured Home',
-			        'vacant' =>  'Vacant'	
-				)
+				'group' => 'Basic Details'
 			),
 			'property_type-res_rental' => array(
-				'type' => 'select',
+				'type' => 'text',
 				'label' => 'Residential Rental Property Type',
-				'group' => 'Basic Details',
-				'options' => array(
-					'false' => 'Not Set',
-					'penthouse' => 'Penthouse',
-			        'apartment' => 'Apartment',
-			        'condo' => 'Condo',
-			        'townhouse' => 'Townhouse',
-			        'duplex' => 'Duplex',
-			        'fam_home' => 'Single Family Home',
-				)
+				'group' => 'Basic Details'				
 			),
 			'property_type-comm_rental' => array(
-				'type' => 'select',
+				'type' => 'text',
 				'label' => 'Commercial Rental Property Type',
-				'group' => 'Basic Details',
-				'options' => array(
-					'false' => 'Not Set',
-					// Office           
-			        'off_loft' => 'off_loft',
-			        'off_gen' => 'off_gen',
-			        'off_inst_gov' => 'off_inst_gov',
-			        'off_med' => 'off_med',
-			        'off_rd' => 'off_rd',
-			        // Industrial
-			        'ind_flex' => 'ind_flex',
-			        'ind_manuf' => 'ind_manuf',
-			        'ind_off_shw' => 'ind_off_shw',
-			        'ind_term_trans' => 'ind_term_trans',
-			        'ind_dist_warh' => 'ind_dist_warh',
-			        'ind_warh' => 'ind_warh',
-			        'ind_ref_str' => 'ind_ref_str',
-			        // Retail
-			        'ret_outlet' => 'ret_outlet',
-			        'ret_comm' => 'ret_comm',
-			        'ret_strip' => 'ret_strip',
-			        'ret_nghbr' => 'ret_nghbr',
-			        'ret_reg' => 'ret_reg',
-			        'ret_sup_reg' => 'ret_sup_reg',
-			        'ret_special' => 'ret_special',
-			        'ret_theme' => 'ret_theme',
-			        'ret_anchor' => 'ret_anchor',
-			        'ret_resta' => 'ret_resta',
-			        'ret_pad' => 'ret_pad',
-			        'ret_free_stnd' => 'ret_free_stnd',
-			        'ret_strt_ret' => 'ret_strt_ret',
-			        'ret_veh_rel' => 'ret_veh_rel',
-			        'ret_other' => 'ret_other',
-			        // Land
-			        'lan_indust' => 'lan_indust',
-			        'lan_office' => 'lan_office',
-			        'lan_resid' => 'lan_resid',
-			        'lan_ret' => 'lan_ret',
-			        'lan_ret_pad' => 'lan_ret_pad',
-			        'lan_comm' => 'lan_comm'
-				)
+				'group' => 'Basic Details'
 			),
 			'property_type-comm_sale' => array(
-				'type' => 'select',
+				'type' => 'text',
 				'label' => 'Commercial Sale Property Type',
-				'group' => 'Basic Details',
-				'options' => array(
-					'false' => 'Not Set',
-					// Office           
-			        'off_loft' => 'off_loft',
-			        'off_gen' => 'off_gen',
-			        'off_inst_gov' => 'off_inst_gov',
-			        'off_med' => 'off_med',
-			        'off_rd' => 'off_rd',
-			        // Industrial
-			        'ind_flex' => 'ind_flex',
-			        'ind_manuf' => 'ind_manuf',
-			        'ind_off_shw' => 'ind_off_shw',
-			        'ind_term_trans' => 'ind_term_trans',
-			        'ind_dist_warh' => 'ind_dist_warh',
-			        'ind_warh' => 'ind_warh',
-			        'ind_ref_str' => 'ind_ref_str',
-			        // Retail
-			        'ret_outlet' => 'ret_outlet',
-			        'ret_comm' => 'ret_comm',
-			        'ret_strip' => 'ret_strip',
-			        'ret_nghbr' => 'ret_nghbr',
-			        'ret_reg' => 'ret_reg',
-			        'ret_sup_reg' => 'ret_sup_reg',
-			        'ret_special' => 'ret_special',
-			        'ret_theme' => 'ret_theme',
-			        'ret_anchor' => 'ret_anchor',
-			        'ret_resta' => 'ret_resta',
-			        'ret_pad' => 'ret_pad',
-			        'ret_free_stnd' => 'ret_free_stnd',
-			        'ret_strt_ret' => 'ret_strt_ret',
-			        'ret_veh_rel' => 'ret_veh_rel',
-			        'ret_other' => 'ret_other',
-			        // Land
-			        'lan_indust' => 'lan_indust',
-			        'lan_office' => 'lan_office',
-			        'lan_resid' => 'lan_resid',
-			        'lan_ret' => 'lan_ret',
-			        'lan_ret_pad' => 'lan_ret_pad',
-			        'lan_comm' => 'lan_comm'
-				)
+				'group' => 'Basic Details'
 			),
 			'location' => array(
 				'address' => array('type' => 'text','group' => 'location', 'label' => 'Address'), 

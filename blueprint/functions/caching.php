@@ -1,6 +1,39 @@
 <?php 
 
-// Looking for PLS_Cache? It merged with PL_Cache in the plugin
+/**
+ * Internal caching class for the framework
+ * 
+ * Serves as a wrapper for the PL_Cache class from the Placester plugin (if available)
+ * 
+ */
+class PLS_Cache {
+	
+	const TTL_LOW  = 900; // 15 minutes
+	const TTL_HIGH = 172800; // 48 hours
+	
+	public $pl_cache_object = NULL;
+	
+	function __construct ($type = 'general') {
+		if( class_exists( 'PL_Cache' ) ) {
+			$this->pl_cache_object = new PL_Cache( $type );
+		}
+	}
+	
+	public function get() {
+		if( ! is_null( $this->pl_cache_object ) ) {
+			$args = func_get_args();
+			return $this->pl_cache_object->get($args);
+		}
+		
+		return false;
+	}
+	
+	public function save ( $result, $duration = 172800 ) {
+		if( ! is_null( $this->pl_cache_object ) ) {
+			$this->pl_cache_object->save( $result, $duration );
+		}
+	}
+}
 
 $pls_widget_cache = new PLS_Widget_Cache();
 /**
@@ -41,7 +74,7 @@ class PLS_Widget_Cache {
 		$params['widget_class'] = __CLASS__;
 		$params['cache_url'] = $_SERVER['REQUEST_URI']; // Cache per page
 
-		$cache = new PL_Cache('Widget');
+		$cache = new PLS_Cache('Widget');
 		if('GET' === $_SERVER['REQUEST_METHOD'] && WP_DEBUG !== true && $html = $cache->get($params)) {
 			// Cache hit. Return the html.
 			echo $html;
@@ -63,7 +96,7 @@ class PLS_Widget_Cache {
 			ob_start();
 			call_user_func_array($callback, $params);
 			$html = ob_get_clean();
-			$cache->save($html, PL_Cache::TTL_LOW);
+			$cache->save($html, PLS_Cache::TTL_LOW);
 			echo $html;
 
 		}

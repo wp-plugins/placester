@@ -13,7 +13,7 @@
 
     <?php pls_do_atomic( 'before_entry' ); ?>
     
-    <article class="grid_8 property-details" <?php post_class() ?> id="post-<?php the_ID(); ?>" itemscope itemtype="http://schema.org/Offer">
+    <article class="grid_8 alpha property-details" <?php post_class() ?> id="post-<?php the_ID(); ?>" itemscope itemtype="http://schema.org/Offer">
         <?php pls_do_atomic( 'open_entry' ); ?>
 
         <?php pls_do_atomic( 'before_entry_content' ); ?>
@@ -25,11 +25,6 @@
         <?php pls_do_atomic( 'after_entry_content' ); ?>
 
         <footer></footer>
-
-        <nav class="property-bottom-nav grid_8 alpha" >
-            <div class="prev"><?php previous_post_link( '&laquo; %link' ) ?></div>
-            <div class="next"><?php next_post_link( '%link &raquo;' ) ?></div>
-        </nav>
 
         <?php pls_do_atomic( 'close_entry' ); ?>
         

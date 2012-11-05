@@ -218,7 +218,13 @@ function optionsframework_page() {
 	</div>
     <div class="side-nav nav-tab-wrapper">
     	<ul>
-	    	<?php echo $return[1]; ?>		
+	    	<?php echo $return[1]; ?>
+
+	    	<li class="side-bar-nav-item">
+	    	  <?php $jquery_click_hook = "of-option-" . preg_replace('/[^a-zA-Z0-9._\-]/', '', strtolower('Import/Export') ); ?>
+	    		<a id="<?php echo esc_attr( $jquery_click_hook ) ?>-tab" class="nav-tab" title="<?php echo esc_attr( 'Import/Export' ) ?>" href="<?php echo esc_attr( '#'.$jquery_click_hook ) ?>"> 
+	    		  <?php echo esc_html( 'Import/Export' ); ?></a>
+	    	</li		
     	</ul>
     </div>
     
@@ -227,6 +233,8 @@ function optionsframework_page() {
 		<?php settings_fields('optionsframework'); ?>
 
 		<?php echo $return[0]; /* Settings */ ?>
+
+		<?php echo build_import_export(); ?>
         
         <div id="optionsframework-submit">
 			<input type="submit" class="button-primary" name="update" value="<?php echo 'Save Options'; ?>" />
@@ -267,12 +275,19 @@ function optionsframework_validate( $input ) {
 	}
 
 	/*
-	 * Udpdate Settings.
+	 * Update Settings.
+	 *
+	 * Build to handle updates from the main theme options page/form,
+	 * in addition to update/save requests from the theme customizer
+	 * API introduced in WordPress 3.4
 	 */
-	 
-	if ( isset( $_POST['update'] ) ) {
+
+	$customizer_update = ( isset( $_POST['action'] ) && ( $_POST['action'] == 'customize_save' ) );
+
+	if ( isset( $_POST['update'] ) || $customizer_update ) {
 		$clean = array();
 		$options = optionsframework_options();
+		
 		foreach ( $options as $option ) {
 
 			if ( ! isset( $option['id'] ) ) {
@@ -287,13 +302,13 @@ function optionsframework_validate( $input ) {
 
 			// Set checkbox to false if it wasn't sent in the $_POST
 			if ( 'checkbox' == $option['type'] && ! isset( $input[$id] ) ) {
-				$input[$id] = '0';
+				$input[$id] = '';
 			}
 
 			// Set each item in the multicheck to false if it wasn't sent in the $_POST
 			if ( 'multicheck' == $option['type'] && ! isset( $input[$id] ) ) {
 				foreach ( $option['options'] as $key => $value ) {
-					$input[$id][$key] = '0';
+					$input[$id][$key] = '';
 				}
 			}
 

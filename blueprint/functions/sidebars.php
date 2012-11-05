@@ -52,6 +52,17 @@ function pls_register_sidebars() {
 		'after_title' => '</h3>'
 	);
 
+// sidebar for single-listings page
+	$sidebars[] = array(
+		'id' => 'single-property',
+		'name' => 'Single Property Sidebar',
+		'description' => 'Widget area displayed on single property details page.',
+		'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+		'after_widget' => '</section>',
+		'before_title' => '<h3 class="widget-title">',
+		'after_title' => '</h3>'
+	);
+
 //    pls_dump($sidebar_support);
 
     // loop through and create sidebars

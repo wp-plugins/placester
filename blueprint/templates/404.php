@@ -23,7 +23,7 @@
 
         <code><?php echo home_url( esc_url( $_SERVER['REQUEST_URI'] ) ) ?></code>
 
-        <p>Please use the navigation bar to find what you were looking for. Otherwise, feel free to email to the site owner, <a href="mailto:<?php echo @pls_get_option('pls-company-email') ?>"><?php echo @pls_get_option('pls-company-email') ?></a>, with any questions.</p>
+        <p>Please use the navigation bar to find what you were looking for.</p>
 
       </section><!-- .entry-content -->
 

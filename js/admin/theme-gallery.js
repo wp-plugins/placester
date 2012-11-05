@@ -17,7 +17,7 @@ $(document).ready(function($) {
 					width: 700,
 				});
 				if (data && data.type == 'subscribe') {
-					prompt_free_trial('Start your 60 day free trial and begin the download', premium_theme_success, premium_theme_cancel);
+					prompt_free_trial('Start your 15 day free trial and begin the download', premium_theme_success, premium_theme_cancel);
 				} else {
 					window.location.href = adminurl + "?page=placester_theme_gallery&theme_url=" + encodeURIComponent(data.url);
 				};
@@ -38,7 +38,7 @@ $(document).ready(function($) {
 					width: 700,
 				});
 				if (data && data.type == 'subscribe') {
-					prompt_free_trial('Start your 60 day free trial and begin the download', premium_theme_success, premium_theme_cancel);
+					prompt_free_trial('Start your 15 day free trial and begin the download', premium_theme_success, premium_theme_cancel);
 				} else {
 					window.location.href = adminurl + "?page=placester_theme_gallery&theme_url=" + encodeURIComponent(data.url);
 				};

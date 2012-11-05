@@ -81,28 +81,27 @@ class Placester_Blueprint {
         /** Set the plugin error flag. */
         $placester_blueprint->has_plugin_error = $this->_has_plugin_error(); 
 
-        /** Define the famework constants. */
-        add_action( 'after_setup_theme', array( &$this, 'constants' ), 1 );
+		/** Define the famework constants. */
+		add_action( 'after_setup_theme', array( &$this, 'constants' ), 1 );
 
-        /** Load the framework's core functions. */
-        add_action( 'after_setup_theme', array( &$this, 'core' ), 2 );
+		/** Load the framework's core functions. */
+		add_action( 'after_setup_theme', array( &$this, 'core' ), 2 );
 
-        /** Initialize the framework's default actions and filters. */
-        add_action( 'after_setup_theme', array( &$this, 'default_filters' ), 3 );
+		/** Initialize the framework's default actions and filters. */
+		add_action( 'after_setup_theme', array( &$this, 'default_filters' ), 3 );
 
-        /** Add default theme support. */
-        add_action( 'after_setup_theme', array( &$this, 'default_theme_support' ), 4 );
+		/** Add default theme support. */
+		add_action( 'after_setup_theme', array( &$this, 'default_theme_support' ), 4 );
 
-        /** Language functions and translations setup. */
-        add_action( 'after_setup_theme', array( &$this, 'locale' ), 5 );
+		/** Language functions and translations setup. */
+		add_action( 'after_setup_theme', array( &$this, 'locale' ), 5 );
 
-        /** Load the framework components. */
-        add_action( 'after_setup_theme', array( &$this, 'components' ), 12 );
+		/** Load the framework components. */
+		add_action( 'after_setup_theme', array( &$this, 'components' ), 12 );
 
         /* Load the framework extensions. */
-        add_action( 'after_setup_theme', array( &$this, 'extensions' ), 13 );
-
-    }
+		add_action( 'after_setup_theme', array( &$this, 'extensions' ), 13 );
+	}
 
     private function _has_plugin_error() {
 
@@ -167,13 +166,14 @@ class Placester_Blueprint {
         }
     }
 
-    /**
-     * Defines the theme framework constants.
-     *
-     * @since 0.0.1
-     */
-    function constants() {
+	/**
+	 * Defines the theme framework constants.
+	 *
+	 * @since 0.0.1
+	 */
+	function constants() {
 
+        
         /** Placester Blueprint Version */
         define( 'PLS_VERSION', '0.0.1' );
 
@@ -199,7 +199,7 @@ class Placester_Blueprint {
         /** Child theme directory path and url */
         define( 'CHILD_DIR', get_stylesheet_directory() );
         define( 'CHILD_URL', get_stylesheet_directory_uri() );
-        
+
         /** Scripts directory path and url */
         define( 'PLS_JS_DIR', trailingslashit( PLS_DIR ) . 'js' );
         define( 'PLS_JS_URL', trailingslashit( PLS_URL ) . 'js' );
@@ -245,13 +245,13 @@ class Placester_Blueprint {
         define( 'PLS_WIDGETS_URL', trailingslashit( PLS_URL ) . 'widgets' );
         define( 'PLS_WIDGETS_DIR', trailingslashit( PLS_DIR ) . 'widgets' );
 
-    }
+	}
 
-    /**
-     * Adds default theme support.
-     *
-     * @since 0.0.1
-     */
+	/**
+	 * Adds default theme support.
+	 *
+	 * @since 0.0.1
+	 */
     function default_theme_support() {
 
         add_theme_support( 'post-thumbnails' );
@@ -263,24 +263,24 @@ class Placester_Blueprint {
         add_theme_support( 'pls-menus', array( 'primary', 'subsidiary' ) );
 
         /** Add theme support for sidebars */
-        add_theme_support( 'pls-sidebars', array( 'primary', 'listings-search', 'footer-widgets' ) );
+        add_theme_support( 'pls-sidebars', array( 'primary', 'listings-search', 'footer-widgets', 'single-property' ) );
 
         // Adds default styling out of the box
-        // add_theme_support( 'pls-default-normalize' );
-        // add_theme_support( 'pls-default-960' );
-        // add_theme_support( 'pls-default-style' );
-        // add_theme_support( 'pls-default-css' );
-        // add_theme_support( 'pls-js', array( 
-        //     'chosen' => array( 'script' => true, 'style' => true ), 
-        //     'floating' => array('script' => true, 'style' => true), 
-        //     'datatable' => array('script' => true, 'style' => true), 
-        //     'jquery-ui' => array('script' => true, 'style' => true), 
-        //     'spinner' => array( 'script' => true, 'style' => true ), 
-        //     'masonry' => array('script' => true, 'style' => false),
-        //     'jquery-tools' => array('script' => true, 'style' => false),
-        //     'form' => array('script' => true, 'style' => true),
-        //   ) 
-        // );
+        add_theme_support( 'pls-default-normalize' );
+        add_theme_support( 'pls-default-960' );
+        add_theme_support( 'pls-default-style' );
+        add_theme_support( 'pls-default-css' );
+        add_theme_support( 'pls-js', array( 
+            'chosen' => array( 'script' => true, 'style' => true ), 
+            'floating' => array('script' => true, 'style' => true), 
+            'datatable' => array('script' => true, 'style' => true), 
+            'jquery-ui' => array('script' => true, 'style' => true), 
+            'spinner' => array( 'script' => true, 'style' => true ), 
+            'masonry' => array('script' => true, 'style' => false),
+            'jquery-tools' => array('script' => true, 'style' => false),
+            'form' => array('script' => true, 'style' => true),
+          ) 
+        );
         add_theme_support( 'pls-theme-options' );
         add_theme_support( 'pls-image-util', array('fancybox') );
         add_theme_support( 'pls-slideshow', array( 'script', 'style' ) );
@@ -302,67 +302,67 @@ class Placester_Blueprint {
         add_theme_support( 'pls-color-options');
         add_theme_support( 'pls-user-options');
 
-                // Required for WordPress
-                add_theme_support( 'automatic-feed-links' );
+				// Required for WordPress
+				add_theme_support( 'automatic-feed-links' );
     }
 
-    /**
-     * Adds the default framework actions and filters.
-     *
-     * @since 0.0.1 
-     */
-    function default_filters() {
+	/**
+	 * Adds the default framework actions and filters.
+	 *
+	 * @since 0.0.1 
+	 */
+	function default_filters() {
 
-        /** Move the WordPress generator to a better priority. */
-        remove_action( 'wp_head', 'wp_generator' );
-        add_action( 'wp_head', 'wp_generator', 1 );
+		/** Move the WordPress generator to a better priority. */
+		remove_action( 'wp_head', 'wp_generator' );
+    add_action( 'wp_head', 'wp_generator', 1 );
 
         /** Remove plugin scripts. */
         define( 'PL_NO_SCRIPTS', 100 );
 
-        /** Make text widgets and term descriptions shortcode aware. */
-        add_filter( 'widget_text', 'do_shortcode' );
-        add_filter( 'term_description', 'do_shortcode' );
-    }
+		/** Make text widgets and term descriptions shortcode aware. */
+		add_filter( 'widget_text', 'do_shortcode' );
+		add_filter( 'term_description', 'do_shortcode' );
+	}
 
-    /**
-     * Handles the locale functions file and translations.
-     *
+	/**
+	 * Handles the locale functions file and translations.
+	 *
      * @uses load_theme_textdomain() Loads the theme's translated strings.
-     * @since 0.0.1
-     */
-    function locale() {
+	 * @since 0.0.1
+	 */
+	function locale() {
 
-        /** Load theme textdomain. Filterable  */
+		/** Load theme textdomain. Filterable  */
         load_theme_textdomain( pls_get_textdomain(), PLS_LANGUAGES_DIR );
 
-        /** Get the user's locale. */
+		/** Get the user's locale. */
         $locale = get_locale();
-    }
+	}
 
-    /**
-     * Loads the framework core files.
-     *
+	/**
+	 * Loads the framework core files.
+	 *
      * @uses trailingslashit() Appends a trailing slash.
-     * @since 0.0.1
-     */
-    function core() {
+	 * @since 0.0.1
+	 */
+	function core() {
         
         /** Load the core functions */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'core.php' );
 
         /** Load the html functions */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'html.php' );
-    }
+	}
 
-    /**
-     * Loads the framework component files.
-     *
+	/**
+	 * Loads the framework component files.
+	 *
      * @uses trailingslashit() Appends a trailing slash.
      * @uses require_if_theme_supports() Adds a feature only if theme supports it.
-     * @since 0.0.1
-     */
-    function components() {
+	 * @since 0.0.1
+	 */
+	function components() {
         
         /** Load the utility functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'util.php' );
@@ -389,16 +389,28 @@ class Placester_Blueprint {
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'notifications.php' );
 
         /** Load the notifications. */
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'options-manager.php' );
+
+        /** Load the notifications. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'caching.php' );
 
         /** Load the widgets. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'widgets.php' );
+
+        /** Load the scripts functions. */
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'saved_search.php' );
 
         /** Load the styles functions. */
         require_once( trailingslashit ( PLS_CSS_DIR ) . 'styles.php' );
 
         /** Load the scripts functions. */
         require_once( trailingslashit ( PLS_JS_DIR ) . 'scripts.php' );
+        
+        if( is_admin() ) { 
+	        /** Load TinyMCE buttons. */
+        	// some odd 'can't publish a post' issue for some installs
+	        // require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'tinymce_buttons.php' );
+        }
 
         /** Load the menus if supported. */
         require_if_theme_supports( 'pls-menus', trailingslashit ( PLS_FUNCTIONS_DIR ) . 'menus.php' );
@@ -417,18 +429,18 @@ class Placester_Blueprint {
 
         /** Create the listings and blog pages. */
         $this->create_pages();
-    }
+	}
 
-    /**
-     * Loads the framework extension files. Extensions are pieces of 
+	/**
+	 * Loads the framework extension files. Extensions are pieces of 
      * functionality that are conceptually sepparated by the framework core. 
      * Themes must add support with add_theme_support( 'extension-name' );
-     *
+	 *
      * @uses trailingslashit() Appends a trailing slash.
      * @uses require_if_theme_supports() Adds a feature only if theme supports it.
-     * @since 0.0.1
-     */
-    function extensions() {
+	 * @since 0.0.1
+	 */
+	function extensions() {
 
         /** Load the Routing Util extension if supported. */
         require_if_theme_supports( 'pls-routing-util', trailingslashit ( PLS_EXT_DIR ) . 'routing-util.php' );
@@ -458,7 +470,7 @@ class Placester_Blueprint {
 
                 /** Load fallbacks last. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'fallback.php' );
-    }
+	}
 
     /**
      * On activation, creates the blog and listings pages and assignes them 

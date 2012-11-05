@@ -17,30 +17,30 @@ class PLS_Route {
 	// file system.
 	function init()
 	{
-	  if (current_theme_supports('pls-routing-util-templates') )  {
-		// hooks into template_routing for auto wrapping header
-		// and footer.
-		 add_filter( 'template_include', array( __CLASS__, 'routing_logic' ) );
+		if (current_theme_supports('pls-routing-util-templates') )  {
+			// hooks into template_routing for auto wrapping header
+			// and footer.
+			 add_filter( 'template_include', array( __CLASS__, 'routing_logic' ) );
 
-		
-		// hook into each classification, so we can store the request locally. 
-		add_action( '404_template', array( __CLASS__, 'handle_404'  ));
-		add_action( 'search_template', array( __CLASS__, 'handle_search'  ));
-		add_action( 'home_template', array( __CLASS__, 'handle_home'  ));	
-		add_action( 'front_page_template', array( __CLASS__, 'handle_front_page'  ));	
-		add_action( 'paged_template', array( __CLASS__, 'handle_paged'  ));	
-		add_action( 'attachment_template', array( __CLASS__, 'handle_attachment'  ));	
-		add_action( 'taxonomy_template', array( __CLASS__, 'handle_taxonomy'  ));	
-		add_action( 'archive_template', array( __CLASS__, 'handle_archive'  ));	
-		add_action( 'date_template', array( __CLASS__, 'handle_date'  ));	
-		add_action( 'tag_template', array( __CLASS__, 'handle_tag'  ));	
-		add_action( 'author_template', array( __CLASS__, 'handle_author'  ));	
-		add_action( 'single_template', array( __CLASS__, 'handle_single'  ));	
-		add_action( 'page_template', array( __CLASS__, 'handle_page'  ));	
-		add_action( 'category_template', array( __CLASS__, 'handle_category'  ));	
-		add_action( 'comments_popup_template', array( __CLASS__, 'handle_popup_comments'  ));	
-		add_action( 'comments_template', array( __CLASS__, 'handle_comments'  ));
-	  }	
+			
+			// hook into each classification, so we can store the request locally. 
+			add_action( '404_template', array( __CLASS__, 'handle_404'  ));
+			add_action( 'search_template', array( __CLASS__, 'handle_search'  ));
+			add_action( 'home_template', array( __CLASS__, 'handle_home'  ));	
+			add_action( 'front_page_template', array( __CLASS__, 'handle_front_page'  ));	
+			add_action( 'paged_template', array( __CLASS__, 'handle_paged'  ));	
+			add_action( 'attachment_template', array( __CLASS__, 'handle_attachment'  ));	
+			add_action( 'taxonomy_template', array( __CLASS__, 'handle_taxonomy'  ));	
+			add_action( 'archive_template', array( __CLASS__, 'handle_archive'  ));	
+			add_action( 'date_template', array( __CLASS__, 'handle_date'  ));	
+			add_action( 'tag_template', array( __CLASS__, 'handle_tag'  ));	
+			add_action( 'author_template', array( __CLASS__, 'handle_author'  ));	
+			add_action( 'single_template', array( __CLASS__, 'handle_single'  ));	
+			add_action( 'page_template', array( __CLASS__, 'handle_page'  ));	
+			add_action( 'category_template', array( __CLASS__, 'handle_category'  ));	
+			add_action( 'comments_popup_template', array( __CLASS__, 'handle_popup_comments'  ));	
+			add_action( 'comments_template', array( __CLASS__, 'handle_comments'  ));
+		}
 	}
 
 	function routing_logic ($template)
@@ -92,7 +92,7 @@ class PLS_Route {
 
 			// Capture/cache rendered html unless we're in debug mode
 			if((WP_DEBUG !== true) && self::CACHE_PER_PAGE === $cache_type) {        
-				$cache = new PL_Cache('Template');
+				$cache = new PLS_Cache('Template');
 				$cache_args = array('template' => $located, 'uri' => $_SERVER[REQUEST_URI]);
 				if ($result = $cache->get($cache_args)) {
 					PLS_Debug::add_msg('[[Router cache hit!]] Returning rendered HTML for : ' . $located);
@@ -130,7 +130,7 @@ class PLS_Route {
 
 		// Cache template locations
 		if((WP_DEBUG !== true)) {	
-			$cache = new PL_Cache('Located Template');
+			$cache = new PLS_Cache('Located Template');
 			$cache_args = array('template_names' => $template_names);
 			if ($located = $cache->get($cache_args)) {
 				PLS_Debug::add_msg('[[Template location cache hit!]] Returning cached location : ' . $located);
@@ -154,6 +154,7 @@ class PLS_Route {
 		if((WP_DEBUG !== true)) {
 			$cache->save($located);	
 		}
+
 		return $located;
 	}
 
@@ -282,9 +283,7 @@ class PLS_Route {
 
 	// hooked to home + index
 	function handle_home() {
-
-		//check for index.php, same hook as home.
-		self::$request = array_merge(self::$request, array( 'home.php', 'index.php' ));		
+    self::$request = array_merge(self::$request, array( 'home.php', 'index.php' ));
 	}
 
 	// hooked to front-page.php
@@ -363,22 +362,26 @@ class PLS_Route {
 	// attachment pages, not sure what to do with this.
 	// needs some additional logic so blueprint can handle
 	// all the different template types
+	// modified to pass list of possible templates properly -pek
 	function handle_attachment() {
-		
 		global $posts;
-
+		$templates[] = array();
+				
 		$type = explode('/', $posts[0]->post_mime_type);
+		
 		if ( $template = get_query_template($type[0]) ) {
-			return $template;
-		} elseif ( $template = get_query_template($type[1]) ) {
-			return $template;
-		} elseif ( $template = get_query_template("$type[0]_$type[1]") ) {
-			return $template;
-    } else {
-      $template = 'attachment';
-    }
-    
-		self::$request =  array_merge(self::$request, (array) $template);
+			// return $template;
+			$templates[] = $template;
+		}
+		if ( $template = get_query_template($type[1]) ) {
+			// return $template;
+			$templates[] = $template;
+		}
+		if ( $template = get_query_template("$type[0]_$type[1]") ) {
+			// return $template;
+			$templates[] = $template;
+		}
+		return self::router($templates, true, null, null, self::CACHE_PER_PAGE);
 	}
 
 	// hooked to handle single templates

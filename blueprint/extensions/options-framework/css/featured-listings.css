@@ -131,3 +131,25 @@
 #datatable_search_results_next, #datatable_featured_listings_next {
 	float: right;
 }
+
+/* Metaboxes on FL post type */
+.pl_widget_block {
+	width: 400px;
+}
+
+#pl_static_listing_block input,
+#pl_static_listing_block select,
+.pl_widget_block input,
+.pl_widget_block select {
+	float: right;
+}
+#pl_static_listing_block section,
+.pl_widget_block section {
+	margin-bottom: 12px;
+}
+#pl_static_listing_block .form_group h3,
+.pl_widget_block .form_group h3 {
+	background-color: inherit;
+	background-image: none;
+	border-bottom: 0px;
+} 

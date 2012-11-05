@@ -4,6 +4,8 @@ $listing_data = $PLS_API_DEFAULT_LISTING['listings'][0];
 
 ob_start();
  ?>
+<article class="grid_8 alpha property-details" <?php post_class() ?> id="post-<?php the_ID(); ?>">
+
 <h2><?php echo $listing_data['location']['address'] . ' ' . $listing_data['location']['region'] . ' ' . $listing_data['location']['locality']; ?></h2>
 
 		<span class="listing_type"> <?php echo @$listing_data['zoning_types'][0] . ' ' . @$listing_data['purchase_types'][0] ?></span>
@@ -97,7 +99,7 @@ ob_start();
         </div>
     </div>
 	<?php PLS_Listing_Helper::get_compliance(array('context' => 'listings', 'agent_name' => $listing_data['rets']['aname'] , 'office_name' => $listing_data['rets']['oname'])); ?>
-	
+</article>
 <?php
-$html = ob_get_clean();
+$html = ob_get_clean(); 
 echo apply_filters('property_details_filter',$html, $listing_data);

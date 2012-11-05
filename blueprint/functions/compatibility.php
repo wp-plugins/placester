@@ -181,7 +181,7 @@ class PLS_Plugin_API {
         }
 
         if(WP_DEBUG !== true) {
-            $cache = new PL_Cache('Property URL');
+            $cache = new PLS_Cache('Property URL');
             if($url = $cache->get($id)) {
                 return $url;
             }
@@ -193,7 +193,7 @@ class PLS_Plugin_API {
         /** If no exceptions were detected, return the result. */
         if ( $return ) {
             if(WP_DEBUG !== true) {
-                $cache->save($return, PL_Cache::TTL_LOW);
+                $cache->save($return, PLS_Cache::TTL_LOW);
             }
             return $return;
         }
@@ -381,20 +381,16 @@ class PLS_Plugin_API {
                 'apartment' => 'Apartment',
                 'penthouse' => 'Penthouse',
                 'townhouse' => 'Townhouse',
-                // 'brownstone' => 'Brownstone',
-                'fam_home' => 'Single Family Home',
-                'multi_fam' => 'Multi Family Home',
-                // 'flat' => 'Flat',
-                // 'loft' => 'Loft',
-                // 'cottage' => 'Cottage',
-                // 'villa' => 'Villa',
-                // 'mansion' => 'Mansion',
-                // 'ranch' => 'Ranch',
-                // 'island' => 'Island',
-                // 'log_cabin' => 'Log Cabin',
-                // 'tent' => 'Tent',
-    				'duplex' => 'Duplex',
-    				'condo' => 'Condominium'
+                'brownstone' => 'Brownstone',
+                'Single Family Home' => 'Single Family Home',
+                'Multi Family Home' => 'Multi Family Home',
+                'flat' => 'Flat',
+                'loft' => 'Loft',
+                'cottage' => 'Cottage',
+                'mansion' => 'Mansion',
+                'ranch' => 'Ranch',
+				'duplex' => 'Duplex',
+				'condo' => 'Condominium'
             ), 
             'listing' => array(
                 // 'storage' => 'Storage',
@@ -422,6 +418,23 @@ class PLS_Plugin_API {
         return $supported_types[$type];
     }
 
+    /**
+     * Returns a list of property_types valid for current site for use in search dropdown.
+     * 
+     * @static
+     * @return array The property_type(s) used on current site
+     */
+    static function get_type_list() {
+        /** Test the function for any exceptions. */
+        $return = self::_try_for_exceptions( array('PL_Listing_Helper','types_for_options'));
+		
+        /** If no exceptions were detected, return the result. */
+        if ( $return ) 
+            return $return;
+
+        return false;
+    }
+    
     /**
      * Gets an object containing the list of cities, zip codes and states of 
      * the available properties.
@@ -537,7 +550,7 @@ class PLS_Plugin_API {
     static function get_listings_list( $args ) {
 
         if(WP_DEBUG !== true) {
-            $cache = new PL_Cache('Get Listings List');
+            $cache = new PLS_Cache('Get Listings List');
             if($return = $cache->get($args)) {
                 return $return;
             }
@@ -548,7 +561,7 @@ class PLS_Plugin_API {
         /** If no exceptions were detected, return the result. */
         if ( $return )  {
             if(WP_DEBUG !== true) {
-                $cache->save($return, PL_Cache::TTL_LOW);
+                $cache->save($return, PLS_Cache::TTL_LOW);
             }
             return $return;
         }
@@ -557,7 +570,7 @@ class PLS_Plugin_API {
 
     static function get_listings_details_list( $args ) {
         if(WP_DEBUG !== true) {
-            $cache = new PL_Cache('Listings Details List');
+            $cache = new PLS_Cache('Listings Details List');
             if($return = $cache->get($args)) {
                 return $return;
             }  
@@ -565,7 +578,7 @@ class PLS_Plugin_API {
         $return = self::_try_for_exceptions(array("PL_Listing_Helper", "many_details"), $args, true );
         if ( $return )  {
             if(WP_DEBUG !== true) {
-                $cache->save($return, PL_Cache::TTL_LOW);
+                $cache->save($return, PLS_Cache::TTL_LOW);
             }
             return $return;
         }

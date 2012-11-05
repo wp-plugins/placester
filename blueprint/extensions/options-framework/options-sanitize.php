@@ -2,13 +2,21 @@
 
 /* Text */
 
-add_filter( 'of_sanitize_text', 'sanitize_text_field' );
+function of_sanitize_text($input) {
+	global $allowedposttags;
+	$output = wp_kses( $input, $allowedposttags);
+	return $output;
+}
+
+add_filter( 'of_sanitize_text', 'of_sanitize_text' );
 
 /* Textarea */
 
+// updated to allow ">" in theme options > CSS
 function of_sanitize_textarea($input) {
-	global $allowedposttags;
-	$output = wp_kses( $input, $allowedposttags);
+	// global $allowedposttags;
+	// $output = wp_kses( $input, $allowedposttags);
+	$output = wp_kses_stripslashes($input);
 	return $output;
 }
 
@@ -36,7 +44,7 @@ function of_sanitize_checkbox( $input ) {
 	if ( $input ) {
 		$output = "1";
 	} else {
-		$output = "0";
+		$output = "";
 	}
 	return $output;
 }
@@ -48,7 +56,7 @@ function of_sanitize_multicheck( $input, $option ) {
 	$output = '';
 	if ( is_array( $input ) ) {
 		foreach( $option['options'] as $key => $value ) {
-			$output[$key] = "0";
+			$output[$key] = "";
 		}
 		foreach( $input as $key => $value ) {
 			if ( array_key_exists( $key, $option['options'] ) && $value ) {
@@ -107,6 +115,17 @@ function of_sanitize_enum( $input, $option ) {
 	return $output;
 }
 
+/* Background Gradient */
+// may be able to remove this (function orphaned?) because we're moving gradient under Background other options -pek
+function of_sanitize_bg_gradient( $input ) {
+	$output = wp_parse_args( $input, array(
+		'color' => ''
+	) );
+	$output['color'] = apply_filters( 'of_sanitize_hex', $output['color'] );
+	return $output;
+}
+add_filter( 'of_sanitize_bg_gradient', 'of_sanitize_bg_gradient' );
+
 /* Background */
 
 function of_sanitize_background( $input ) {
@@ -116,7 +135,8 @@ function of_sanitize_background( $input ) {
 		'image'  => '',
 		'repeat'  => 'repeat',
 		'position' => 'top center',
-		'attachment' => 'scroll'
+		'attachment' => 'scroll',
+		'gradation' => '0'
 	) );
 
 	$output['color'] = apply_filters( 'of_sanitize_hex', $output['color'] );
@@ -124,6 +144,8 @@ function of_sanitize_background( $input ) {
 	$output['repeat'] = apply_filters( 'of_background_repeat', $output['repeat'] );
 	$output['position'] = apply_filters( 'of_background_position', $output['position'] );
 	$output['attachment'] = apply_filters( 'of_background_attachment', $output['attachment'] );
+	$output['gradation'] = apply_filters( 'of_background_gradation', $output['gradation'] );
+
 
 	return $output;
 }
@@ -156,6 +178,14 @@ function of_sanitize_background_attachment( $value ) {
 }
 add_filter( 'of_background_attachment', 'of_sanitize_background_attachment' );
 
+function of_background_gradation( $value ) {
+	if( '1' != $value ) {
+		return '0';
+	}
+	// else
+	return '1';
+}
+add_filter( 'of_background_gradation', 'of_background_gradation' );
 
 /* Typography */
 
@@ -366,7 +396,7 @@ function of_recognized_font_faces() {
 		'times'     => 'Times New Roman',
 		'tahoma'    => 'Tahoma, Geneva',
 		'palatino'  => 'Palatino',
-		'helvetica' => 'Helvetica*'
+		'helvetica' => 'Helvetica'
 		);
 	return apply_filters( 'of_recognized_font_faces', $default );
 }

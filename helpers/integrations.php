@@ -34,7 +34,7 @@ class PL_Integration_Helper {
 	}
 
 	public function new_integration_view() {
-		echo PL_Router::load_builder_partial('integration-form.php', array('wizard' => true));
+		PL_Router::load_builder_partial('integration-form.php', array('wizard' => true));
 		die();
 	}
 

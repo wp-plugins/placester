@@ -5,12 +5,15 @@ jQuery(document).ready(function($) {
 		// console.log("in here...");
 	  	$.post(info.ajaxurl, {action: 'demo_data_off'}, function(response) {
             // Now that demo data has been turned off, reload the page to reflect the change...
-            location.reload(true);
+            //
+          	// Note that "parent" is used, in order to allow refreshing from inside iframes--this
+          	// still works when in the main window, as its parent property is self-referential.
+            window.parent.location.reload(true);
         },'json');
 	});
 
 	$('#infobar .msg .close').live('click', function() {
-		$('#infobar').css('display', 'none');
+		$('#infobar, #infobar-buffer').css('display', 'none');
 	});
 
 });

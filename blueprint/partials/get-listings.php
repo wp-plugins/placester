@@ -33,16 +33,15 @@ class PLS_Partial_Get_Listings {
      */
     function init ($args = '') {
 
-        $cache = new PL_Cache('list');
+        $cache = new PLS_Cache('list');
         if ($result = $cache->get($args)) {
-          return $result;
+          // return $result;
         }
 
         /** Define the default argument array. */
         $defaults = array(
             'width' => 100,
             'height' => 0,
-            'placeholder_img' => PLS_IMG_URL . "/null/listing-300x180.jpg",
             'context' => '',
             'context_var' => false,
             'featured_option_id' => false,
@@ -80,14 +79,20 @@ class PLS_Partial_Get_Listings {
             $listings_raw = $PLS_API_DEFAULT_LISTING;
         } else {
 
-            /** Get the listings list markup and javascript. */
-              if ($featured_option_id) {
-                $listings_raw = PLS_Listing_Helper::get_featured($featured_option_id);
-              } elseif ($neighborhood_polygons) {
-                $listings_raw = PLS_Plugin_API::get_polygon_listings( array('neighborhood_polygons' => $neighborhood_polygons ) );
-              } else {
-                $listings_raw = PLS_Plugin_API::get_listings_list($request_params);
-              }
+            $listings_raw = false;
+            
+            if ($featured_option_id) {
+              $listings_raw = PLS_Listing_Helper::get_featured($featured_option_id);
+            }
+
+            if ($neighborhood_polygons) {
+              $listings_raw = PLS_Plugin_API::get_polygon_listings( array('neighborhood_polygons' => $neighborhood_polygons ) );
+            }
+
+            if ($listings_raw === false || ( isset($listings_raw['listings']) && empty($listings_raw['listings']) ) ) {
+              $listings_raw = PLS_Plugin_API::get_listings_list($request_params);
+            }   
+
         }
       
         /** Define variable which will contain the html string with the listings. */
@@ -105,9 +110,13 @@ class PLS_Partial_Get_Listings {
         $listings_html = array();
 
         if(WP_DEBUG !== true) {
-          $listing_cache = new PL_Cache('Listing');
+          $listing_cache = new PLS_Cache('Listing');
         }
 
+        // filter listings before output
+        if( isset( $featured_listing_id ) ) {
+        	$listings_raw = apply_filters( $context . '_partial_get_listings', $listings_raw,  $featured_listing_id );
+        }
         foreach ( $listings_raw['listings'] as $listing_data ) {
             // pls_dump($listing_data);
             /**
@@ -131,7 +140,7 @@ class PLS_Partial_Get_Listings {
 
               /** Use the placeholder image if the property has no photo. */
               if ( !$listing_data['images'] ) {
-                  $listing_data['images'][0]['url'] = $placeholder_img;
+                  $listing_data['images'][0]['url'] = '';
                   $listing_data['images'][0]['order'] = 0;
               }
 
@@ -211,7 +220,7 @@ class PLS_Partial_Get_Listings {
         $listing_html = apply_filters( pls_get_merged_strings( array( 'pls_listing', $context ), '_', 'pre', false ), $listing_html, $listing_data, $request_params, $context_var );
 
         if(WP_DEBUG !== true) {
-          $listing_cache->save($listing_html, PL_Cache::TTL_LOW);
+          $listing_cache->save($listing_html, PLS_Cache::TTL_LOW);
         }
       }
       

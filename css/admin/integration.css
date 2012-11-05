@@ -71,7 +71,10 @@ div.c4 .label {
 }
 
 h3.get_started {
-	margin-top: 30px;
+	margin-top: 39px;
+	font-size: 18px;
+	font-weight: lighter;
+	font-family: "Helvetica Neue", "sans-serif";
 }
 p.import-message {
 	vertical-align: middle;
@@ -132,6 +135,10 @@ p.large_green_button {
 	padding: 15px 0;
 	overflow: hidden;
 	zoom: 1;
+}
+
+.row .elements p {
+	margin-top: 0px;
 }
 
 .row::after {

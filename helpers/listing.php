@@ -128,7 +128,8 @@ class PL_Listing_Helper {
 		$_POST['address_mode'] = 'exact';
 
 		// Sorting
-		$columns = array('images','location.address', 'location.locality', 'location.region', 'location.postal', 'zoning_types', 'purchase_types', 'listing_types', 'property_type', 'cur_data.beds', 'cur_data.baths', 'cur_data.price', 'cur_data.sqft', 'cur_data.avail_on');
+		// Controls the order of columns returned to the datatable
+		$columns = array('images','location.address', 'location.locality', 'location.region', 'location.postal', 'zoning_types', 'purchase_types', 'property_type', 'cur_data.beds', 'cur_data.baths', 'cur_data.price', 'cur_data.sqft', 'cur_data.avail_on');
 		$_POST['sort_by'] = $columns[$_POST['iSortCol_0']];
 		$_POST['sort_type'] = $_POST['sSortDir_0'];
 		
@@ -139,7 +140,50 @@ class PL_Listing_Helper {
 		// Pagination
 		$_POST['limit'] = $_POST['iDisplayLength'];
 		$_POST['offset'] = $_POST['iDisplayStart'];		
-		
+
+		// We need to check for and parse listing_types
+		$listing_type_string = $_POST['listing_types'][0];
+		if( !empty( $listing_type_string ) ) {
+      switch( $listing_type_string) {
+        case "Residential Sale":
+          $_POST['zoning_types'][] = 'residential';
+          $_POST['purchase_types'][] = 'sale';
+          // empty listing_types so it doesn't negate our search
+          $_POST['listing_types'] = false;
+          break;
+        case "Residential Rental":
+          $_POST['zoning_types'][] = 'residential';
+          $_POST['purchase_types'][] = 'rental';
+          $_POST['listing_types'] = false;
+          break;
+        case "Commercial Sale":
+          $_POST['zoning_types'][] = 'commercial';
+          $_POST['purchase_types'][] = 'sale';
+          $_POST['listing_types'] = false;
+          break;
+        case "Commercial Rental":
+          $_POST['zoning_types'][] = 'commercial';
+          $_POST['purchase_types'][] = 'rental';
+          $_POST['listing_types'] = false;
+          break;
+        case "Vacation Rental":
+          $_POST['listing_types'][] = 'vac_rental';
+          $_POST['zoning_types'] = false;
+          $_POST['purchase_types'] = false;
+          break;
+        case "Sublet":
+          $_POST['listing_types'][] = 'sublet';
+          $_POST['zoning_types'] = false;
+          $_POST['purchase_types'] = false;
+          break;
+        default:
+          // if we get here, we have a custom type to deal with
+          // let's leave listing_types alone for now
+          $_POST['zoning_types'] = false;
+          $_POST['purchase_types'] = false;
+      }
+		}
+
 		// Get listings from model
 		$api_response = PL_Listing::get($_POST);
 		
@@ -148,10 +192,9 @@ class PL_Listing_Helper {
 		foreach ($api_response['listings'] as $key => $listing) {
 			$images = $listing['images'];
 			$listings[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
-			$listings[$key][] = '<a class="address" href="'.ADMIN_MENU_URL.'?page=placester_property_add&id=' . $listing['id'] . '">' . $listing["location"]["address"] . ' ' . $listing["location"]["locality"] . ' ' . $listing["location"]["region"] . '</a><div class="row_actions"><a href="'.admin_url().'?page=placester_property_add&id=' . $listing['id'] . '" >Edit</a><span>|</span><a href=' . PL_Page_Helper::get_url($listing['id']) . '>View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$listing['id'].'">Delete</a></div>';
+			$listings[$key][] = '<a class="address" href="'.ADMIN_MENU_URL.'?page=placester_property_add&id=' . $listing['id'] . '">' . $listing["location"]["address"] . ' ' . $listing["location"]["locality"] . ' ' . $listing["location"]["region"] . '</a><div class="row_actions"><a href="'.ADMIN_MENU_URL.'?page=placester_property_add&id=' . $listing['id'] . '" >Edit</a><span>|</span><a href=' . PL_Page_Helper::get_url($listing['id']) . '>View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$listing['id'].'">Delete</a></div>';
 			$listings[$key][] = $listing["location"]["postal"];
 			$listings[$key][] = implode($listing["zoning_types"], ', ') . ' ' . implode($listing["purchase_types"], ', ');
-			$listings[$key][] = implode($listing["listing_types"], ', ');
 			$listings[$key][] = $listing["property_type"];
 			$listings[$key][] = $listing["cur_data"]["beds"];
 			$listings[$key][] = $listing["cur_data"]["baths"];
@@ -182,6 +225,9 @@ class PL_Listing_Helper {
 		if (isset($api_response['id'])) {
 			PL_HTTP::clear_cache();
 			self::details(array('id' => $api_response['id']));
+			
+			// If on, turn off demo data...
+			PL_Option_Helper::set_demo_data_flag(false);
 		}
 		die();
 	}	
@@ -304,26 +350,48 @@ class PL_Listing_Helper {
 		
 	}
 
+  /*
+    I think the pricing choices returned here are confusing.
+    Typically I would expect ranges to be in 1,000; 10,000; 100,000 increments.
+    This might be friendlier if we:
+    a. find the max-priced listing
+    b. set the range max to that max rounded up to the nearest $10,000
+    c. set the range min to the minimum rounded down to the nearest $100 (rentals will be affected, so not $1000)
+    d. the range array should be returned with 20 items (that's manageble) in some decent increment determined by the total price range.
+    e. also consider calculating two groups of prices -- find the min and max of lower range, min and max of higher range, and build array accordingly.
+    HOWEVER: That will all come later, as I'm just trying to solve the initial problem of the filter not working. -pek
+  */
 	public function pricing_min_options($type = 'min') {
 		$api_response = PL_Listing::get();
 		$prices = array();
 		foreach ($api_response['listings'] as $key => $listing) {
 			$prices[] = $listing['cur_data']['price'];
 		}
+		
 		sort($prices);
+		
 		if (is_array($prices) && !empty($prices)) {
-			$range = ($prices[0] - end($prices))/10;
+		  // difference between highest- and lowest-priced listing, divided into 20 levels
+			$range = round( ( end( $prices ) - $prices[0] ) / 20 );
+			
 			if ($type == 'max') {
 				$range = range($prices[0], end($prices), $range);
-				return $range;
+				// add the highest price as the last element
+				$range[] = end( $prices );
+				// should flip max price to show the highest value first
+				$range = array_reverse( $range );		
 			} else {
 				$range = range($prices[0], end($prices), $range);
-				array_pop($range);
-				return $range;
 			}
 		} else {
-			return array();
+		  $range = array();		  
 		}
+    // we need to return the array with keys == values for proper form creation
+    // (keys will be the option values, values will be the option's human-readable)
+    $range = array_combine( $range, $range );
+    // let's format the human-readable; do not use money_format() because its dependencies are not guaranteed
+    array_walk( $range, create_function( '&$value,$key', '$value = "$" . number_format($value,2);'));
+		return $range;
 	}
 
 	public function filter_options () {

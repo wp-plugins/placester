@@ -67,21 +67,50 @@ class PLS_Image {
         }
     }
 
-	static function load ( $old_image = '', $args = null )
-	{
+	static function load ( $old_image = '', $args = null) {
 		$new_image = false;
 
 		if (isset($args['fancybox']) && $args['fancybox']) {
 			unset($args['fancybox']);
 		}
 
-		// pls_dump($args);
+    $args = self::process_defaults($args);
 
-        $args = self::process_defaults($args);
-
-		// use standard default image
+    // use standard default image
 		if ( $old_image === '' || empty($old_image)) {
-			$old_image = PLS_IMG_URL . "/null/listing-1200x720.jpg";
+
+      if ( !empty($args['null_image']) ) {
+        $old_image = $args['null_image'];
+      } else {
+        $old_image = PLS_IMG_URL . "/null/listing-1200x720.jpg";
+      }
+
+		} else if ( $args['fancybox']['allow_dragonfly'] 
+					&& $args['allow_dragonfly'] 
+					&& $args['allow_resize'] 
+					&& $args['resize']['w'] 
+					&& $args['resize']['h'] 
+					&& get_theme_support('pls-dragonfly') ) {
+
+			extract(wp_parse_args(parse_url($old_image), array('query' => '') ));
+
+			//finds the extension, "jpeg" in this case
+			$pathinfo = pathinfo($path);
+			$ext = $pathinfo['extension'];
+			$host = 'd2frgvzmtkrf4d.cloudfront.net';
+			$size = $args['resize']['w'] . 'x' . $args['resize']['h'] . '#';
+			$action = 'thumb';
+			// $action = 'resize';
+			// $action = 'crop';
+
+			//corrects image path to remove starting "/" included in $path
+			$path = ltrim($path, '/');
+
+			$request_tabs_newlines = "f\t" . $path . "\np" . "\t". $action . "\t". $size . "\ne" . "\t" . $ext;
+			$request_clean = 'f' . $path . 'p' . $action . $size . 'e' . $ext;
+			$job = base64_encode($request_tabs_newlines);
+			$secret = substr(sha1($request_clean . PLACESTER_DF_SECRET), 0, 16);
+			$new_image = $scheme . '://' . $host . '/' . $secret . '/' . rtrim($job, '=') . '.' . $ext . '?' . $query;
 		}
 
 		if ( $args['fancybox'] || $args['as_html']) {
@@ -112,7 +141,7 @@ class PLS_Image {
 			ob_start();
 			// our basic fancybox html
 			?>
-				<a ref="#" rel="<?php echo @$html['rel']; ?>" class="<?php echo @$fancybox['trigger_class'] . ' ' .  @$html['classes']; ?>" href="<?php echo @$old_image; ?>" >
+				<a ref="#" rel="<?php echo @$html['rel']; ?>" class="<?php echo isset( $fancybox['trigger_class'] ) ? $fancybox['trigger_class'] : '' . ' ' . ( isset( $html['classes'] ) ? $html['classes'] : '' )  ?>" href="<?php echo @$old_image; ?>" >
 					<img alt="<?php echo @$html['alt']; ?>" title="<?php echo @$html['title'] ? $html['title'] : ''; ?>" class="<?php echo @$html['img_classes']; ?>" style="width: <?php echo @$resize['w']; ?>px; height: <?php echo @$resize['h']; ?>px; overflow: hidden;" src="<?php echo $new_image ? $new_image : $old_image; ?>" />
 				</a>
 			<?php
@@ -139,6 +168,7 @@ class PLS_Image {
 				'w' => false,
 				'h' => false
 				),
+			'allow_resize' => true,
 			'html' => array(
 				'ref' => '',
 				'rel' => 'gallery',
@@ -151,7 +181,9 @@ class PLS_Image {
 			'as_url' => true,
 			'fancybox' => array(
 			'trigger_class' => 'pls_use_fancy',
-			'classes' => false
+			'classes' => false,
+			'null_image' => false,
+			'allow_dragonfly' => true
 			),
 		);
 

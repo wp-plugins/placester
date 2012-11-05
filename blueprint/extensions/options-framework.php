@@ -11,12 +11,17 @@ PLS_Options_Framework::init();
 if ( ! function_exists( 'optionsframework_option_name' ) ) { 
 
     function optionsframework_option_name() {
-
-        /** Get the theme name from the stylesheet (lowercase and without spaces). */
-        $options_id = get_theme_data( get_stylesheet_directory() . '/style.css' );
+        // Get the theme name so we can display it up top
+        // wp_get_theme deprecated in wp34
+        if( function_exists( 'wp_get_theme' ) ) {
+          $options_id = wp_get_theme();
+        } else {
+          $options_id = get_theme_data( get_stylesheet_directory() . '/style.css' );
+        }
+	
         $options_id = $options_id['Name'];
         $options_id = preg_replace( "/\W/", "", strtolower( $options_id ) );
-
+        
         /** Filter the options unique identifier. */
         $options_id = apply_filters( 'pls_theme_options_menu_page', $options_id );
         
@@ -66,7 +71,7 @@ class PLS_Options_Cache implements ArrayAccess {
     }
 
     private function __construct() {
-        $this->cache = new PL_Cache("PLS Options");
+        $this->cache = new PLS_Cache("PLS Options");
         if($options = $this->cache->get(array('options' => true))) {
             $this->pls_options = $options;
             $this->dirty = false;
@@ -81,7 +86,7 @@ class PLS_Options_Cache implements ArrayAccess {
 
     public function shutdown() {
         if($this->dirty) {
-            $this->cache->save($this->pls_options, PL_Cache::TTL_LOW);
+            $this->cache->save($this->pls_options, PLS_Cache::TTL_LOW);
         }
     }
 

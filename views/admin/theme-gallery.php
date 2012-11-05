@@ -2,9 +2,22 @@
 <?php //pls_dump(wp_widget_rss_output('https://placester.com/themes/feed/')) ?>
 <?php  
 
-	$response = wp_remote_get("http://placester.com/wp-admin/admin-ajax.php?action=get_themes_api", array('timeout' => 10));
+	// $response = wp_remote_get("http://placester.com/wp-admin/admin-ajax.php?action=get_themes_api", array('timeout' => 10));
+	
+	// ob_start();
+	//   pls_dump($response);
+	// error_log(ob_get_clean());
 
+/*** Temporary solution to theme AJAX functionality not yet working on v3 of the corporate site ***/
 ?>
+
+<div class="theme_wrapper">
+	<h1>Looking for Placester Themes?</h1>
+	<h3>Take a look at our <a href="https://placester.com/portfolio/">Theme Portfolio</a></h3>
+	<h3>Give us a call at (800) 728-8391 if you have any questions!</h3>
+</div>
+
+<?php /*
 <form class="search-form filter-form" action="" method="get">
 	<!-- <div class="theme-search-wrapper">
 		<h3 class="theme-search-header">Search for themes:</h3>
@@ -41,8 +54,10 @@
 		</tbody>
 	</table>		
 </form>
+*/ ?>
 
-<?php echo PL_Router::load_builder_partial('free-trial.php'); ?>		
+<!-- Commenting out for now, this is already included by default in all Placester admin pages... -->
+<?php // echo PL_Router::load_builder_partial('free-trial.php'); ?>		
 
 
 <?php /*

@@ -63,6 +63,12 @@ class PLS_Slideshow {
      * @return void
      */
     static function slideshow( $args = '' ) {
+      // We should check for existence of plugin and not go forward if it is not here
+      if ( pls_has_plugin_error() ) {
+        // what will we return? should we return something gracefully indicating the plugin needs activated?
+        // for now, return empty string. Later could return an informational slide
+        return '';
+      }
 
         /** Define the default argument array. */
         $defaults = array(
@@ -93,7 +99,7 @@ class PLS_Slideshow {
             'data' => false,
         );
         $args = wp_parse_args( $args, $defaults );
-        $cache = new PL_Cache('slide');
+        $cache = new PLS_Cache('slide');
         if ($result = $cache->get($args)) {
           return $result;
         }
@@ -112,11 +118,10 @@ class PLS_Slideshow {
 
                 //if the dev allows user input, get a list of the stytles
                 if ($allow_user_slides && $user_slides_header_id) {
-                    $slides = pls_get_option($user_slides_header_id, array() );
+                    $slides = pls_get_option($user_slides_header_id, array());
                     self::$option_id  = $slides;
+
                     foreach ($slides as $index => $slide) {
-                      if (!empty($slide['image']) || !empty($slide['html'])) {
-                        // pls_dump($slide);
                         switch ($slide['type']) {
                             case 'listing':
                                 unset($slide['html'], $slide['image'], $slide['type'], $slide['link']);
@@ -158,8 +163,7 @@ class PLS_Slideshow {
                                     <?php 
                                 $data['captions'][] = trim( ob_get_clean() );
                                 break;
-                        } // end switch
-                      } // end conditional
+                        }
                     }
                 } else {
                     if ($featured_option_id) {
@@ -220,6 +224,9 @@ class PLS_Slideshow {
                 $extra_attr['title'] = "#caption-{$index}";
             }
 
+            //let's get a nice image - huh?
+            $slide_src = PLS_Image::load($slide_src, array('resize' => array('w' => 940, 'h' => 415), 'fancybox' => false, 'as_html' => false, 'allow_dragonfly' => false));
+
             /** Create the img element. */
             $slide = pls_h_img($slide_src, false, $extra_attr);
 
@@ -228,7 +235,8 @@ class PLS_Slideshow {
                 $slide = pls_h_a( $data['links'][$index], $slide, array('data-caption' => "#caption-{$index}") );
 
             $html['slides'] .= $slide;
-        }
+
+}
         /** Combine the html. */
         $html = pls_h_div(
             $html['slides'],
@@ -280,6 +288,7 @@ class PLS_Slideshow {
 						captionAnimation: '<?php echo $captionAnimation ?>',										// fade, slideOpen, none
 						captionAnimationSpeed: <?php echo $captionAnimationSpeed ?>, 						// if so how quickly should they animate in
 						bullets: <?php echo $bullets ? 'true' : 'false' ?>,			 // true or false to activate the bullet navigation
+						afterSlideChange: <?php echo !empty($afterSlideChange) ? $afterSlideChange : 'false' ?>,
 						// bulletThumbs: false,		 // thumbnails for the bullets
 						// bulletThumbLocation: '',		 // location from this file where thumbs will be
 						width: 620,
@@ -344,7 +353,7 @@ class PLS_Slideshow {
         // pls_dump(self::$listings_to_delete, self::$listings_to_save, self::$option_id);
         $config = get_option( 'optionsframework' );
         $options = get_option( $config['id'] );
-        if (isset($options[self::$option_id]) && is_array($options[self::$option_id]) ) {
+        if (!empty(self::$option_id) && isset($options[self::$option_id]) && is_array($options[self::$option_id]) ) {
             foreach ($options[self::$option_id] as $id => $address) {
                 if ( !in_array($id, self::$listings_to_save) ) {
                     unset($options[self::$option_id][$id]);

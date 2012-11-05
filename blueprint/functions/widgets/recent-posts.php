@@ -66,18 +66,17 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
         /** Start output buffering. */
         ob_start();
 
-
-        list($args, $instance) = self::process_defaults($args, $instance);
-        /** Extract the arguments into separate variables. */
+        $args = self::process_defaults($args, $instance);
 		extract( $args, EXTR_SKIP );
 
         /** If conversion to non-negative integer results in 0, set the number of posts to 5. */
 		if ( ! $number = absint( $instance['number'] ) )
  			$number = 5;
-
+		
         /** Get the posts. */
         $query = new WP_Query( array(
             'posts_per_page' => $number,
+            'cat' => $cat,
             'no_found_rows' => true,
             'post_status' => 'publish'
         ) );
@@ -96,13 +95,6 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
             /** Will hold the combined posts html. */
             $widget_body = '';
 
-            function custom_excerpt($length){
-              global $post;
-              $content = strip_tags($post->post_content);
-              preg_match('/^\s*+(?:\S++\s*+){1,'.$length.'}/', $content, $matches);
-              return $matches[0];
-            }
-            
             /** The loop. */
             while ( $query->have_posts() ) {
 
@@ -136,8 +128,6 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
                     pls_get_if_not_empty( $post_html['excerpt'] ) . 
                     pls_get_if_not_empty( $post_html['read_more'] ); 
 
-                global $post;
-
                 /** Wrap the post in an article element and filter its contents. */
                 $post_item = pls_h('article', array('class' => 'recent-post-single', 'itemscope' => '', 'itemtype' => "http://schema.org/BlogPosting"), apply_filters( 'pls_widget_recent_posts_post_inner', $post_item, $post_html, $instance, $widget_id ));
                  
@@ -145,7 +135,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
                 $widget_body .= apply_filters( 'pls_widget_recent_posts_post_outer', $post_item, $post_html, $instance, $widget_id );
 
             } /** while $query->have_posts() */ 
-
+            
             /** Wrap the widget body in a section element. */
             $widget_body = pls_h(
                 'section',
@@ -153,6 +143,11 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
                 /** Apply a filter on the combined list of posts. */
                 apply_filters( 'pls_widget_recent_posts_inner', $widget_body, $instance, $widget_id )
             );
+            
+            // Now we need to put the "read more" strip at the bottom, linking to the selected category page
+            // should come back and use pls_ methods
+			$category_link = get_category_link( $cat );
+			$widget_body .= "<section class='more_posts'><a href='" . esc_url( $category_link ) . "' title='View More News'>View More News</a></section>";
 
             /** Output and apply a filter on the whole widget. */
             echo apply_filters( 'pls_widget_recent_posts', $widget_title . $widget_body, $widget_title, $before_title, $after_title, $widget_body, $instance, $widget_id );
@@ -195,10 +190,10 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
         $instance['excerpt'] = ( isset( $new_instance['excerpt'] ) ? 1 : 0 );
         $instance['read_more'] = ( isset( $new_instance['read_more'] ) ? 1 : 0 );
         $instance['number'] = absint( $new_instance['number'] );
+        $instance['cat'] = ( isset($new_instance['cat'] ) ? $new_instance['cat'] : '' );
 
         /** Delete the widget cache. */ 
         $this->flush_widget_cache();
-  
 
 		return $instance;
 	}
@@ -219,10 +214,11 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
             'excerpt' => true,
             'read_more' => true,
             'number' => 5,
+            'cat' => ''
 		);
 
 		/** Merge the user-selected arguments with the defaults. */
-		$instance = wp_parse_args( (array) $instance, $defaults );
+		$instance = wp_parse_args( $instance, $defaults );
 
         /** Print the backend widget form. */
         echo pls_h_div(
@@ -256,9 +252,22 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
                     ' ' . 'Post Title', 
                     $this->get_field_id( 'post_title' ) 
                 ) 
-            ) . 
+            ) .
+            /** Print the Category dropdown */
+            pls_h_p(
+            	pls_h_label(
+            		"Category:\n" .
+					wp_dropdown_categories( array(
+											'name' => $this->get_field_name("cat"),
+											'selected' => $instance['cat'],
+											'hide_empty' => 0,
+											'echo' => 0
+											)
+										)
+				)
+			) .
             /** Print the Author checkbox */
-            pls_h_p( 
+			pls_h_p( 
                 pls_h_label( 
                     pls_h_checkbox( 
                         checked( $instance['author'], true, false ), 
@@ -362,12 +371,12 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
             'after_title' => '</h3>',
             'before_widget' => '<section id="pls-recent-posts-3" class="widget pls-recent-posts widget-pls-recent-posts" itemscope itemtype="http://schema.org/Blog">',
             'after_widget' => '</section>',
-            'widget_id' => ''
+            'widget_id' => '',
+            'cat' => ''
         );
 
         /** Merge the arguments with the defaults. */
-        $args = wp_parse_args( $args, $arg_defaults );
-
+        $args = wp_parse_args( $arg_defaults, $args );
 
         /** Define the default argument array. */
         $instance_defaults = array(
@@ -378,13 +387,16 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
             'phone' => true,
             'width' => 100,
             'height' => 75,
-            'widget_id' => ''
+            'widget_id' => '',
+            'cat' => ''
         );
 
         /** Merge the arguments with the defaults. */
         $instance = wp_parse_args( $instance, $instance_defaults );
 
+		// now consider args to be defacto defaults and instance to be cur settings
+		$final_settings = wp_parse_args( $instance, $args );
 
-        return array($args, $instance);
+		return $final_settings;
     }
 } // end of class

@@ -12,7 +12,7 @@
 
 		<section class="entry-content">
 
-			<p><?php 'Apologies, but no entries were found.'; ?></p>
+			<p>Apologies, but no entries were found.</p>
 
 		</section><!-- .entry-content -->
 

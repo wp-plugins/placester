@@ -1,16 +1,14 @@
 <?php 
 
 class PL_Listing {
-
-	private static $demo_api_key = '3eb444f8869cb88bbc349586573aabbb84a316d7';
 	
 	private function api_key() {
 		// The default value to use--the user's own key...
 		$api_key = PL_Option_Helper::api_key();
 
 		// If the user chose to use demo data, make requests using API key that corresponds to the demo listing account...
-		if ( PL_Option_Helper::get_demo_data_flag() ) {
-			$api_key = self::$demo_api_key;
+		if ( PL_Option_Helper::get_demo_data_flag() && defined('DEMO_API_KEY') ) {
+			$api_key = DEMO_API_KEY;
 		}
 
 		return $api_key;
@@ -66,6 +64,10 @@ class PL_Listing {
 		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));
 		if ( defined('HOSTED_PLUGIN_KEY') ) {
 			$request['hosted_key'] = HOSTED_PLUGIN_KEY;
+		}
+		// sometimes id is not defined
+		if( ! isset( $request['id'] ) ) {
+		  $request['id'] = '';
 		}
 		$details_url = trailingslashit($config['request']['url']) . $request['id'];
 		$response = PL_HTTP::send_request($details_url, $request, $config['request']['type']);

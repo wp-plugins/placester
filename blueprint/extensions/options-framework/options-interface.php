@@ -7,9 +7,14 @@
 function optionsframework_fields() {
 	global $allowedtags;
 	$optionsframework_settings = get_option('optionsframework');
-	
+
 	// Get the theme name so we can display it up top
-	$themename = get_theme_data(get_stylesheet_directory() . '/style.css');
+	// wp_get_theme deprecated in wp34
+	if( function_exists( 'wp_get_theme' ) ) {
+	  $themename = wp_get_theme();
+	} else {
+    $themename = get_theme_data( get_stylesheet_directory() . '/style.css' );
+  }
 	$themename = $themename['Name'];
 
 	// Gets the unique option id
@@ -257,7 +262,18 @@ function optionsframework_fields() {
 			$output .= '<input class="of-color of-typography of-typography-color" name="' . esc_attr( $option_name . '[' . $value['id'] . '][color]' ) . '" id="' . esc_attr( $value['id'] . '_color' ) . '" type="text" value="' . esc_attr( $typography_stored['color'] ) . '" />';
 
 		break;
-		
+
+		// BG Gradient -pek
+		case 'bg_gradient':
+			$bggradient = $val;
+			if( !isset( $bggradient['color'] ) ) {
+				$bggradient['color'] = '';
+			}
+			// Color (main color used for gradient manufacture)
+			$output .= '<div id="' . esc_attr( $value['id'] ) . '_color_picker" class="colorSelector"><div style="' . esc_attr( 'background-color:' . $bggradient['color'] ) . '"></div></div>';
+			$output .= '<input class="of-color of-background of-background-color" name="' . esc_attr( $option_name . '[' . $value['id'] . '][color]' ) . '" id="' . esc_attr( $value['id'] . '_color' ) . '" type="text" value="' . esc_attr( $bggradient['color'] ) . '" />';			
+			break;
+
 		// Background
 		case 'background':
 			// pls_dump($val);
@@ -279,8 +295,15 @@ function optionsframework_fields() {
 			if (!isset($background['color'])) {
 				$background['color'] = '';
 			}
+			// checking a new value, a checkbox, indicating desire to make gradation of color
+			if (!isset($background['gradation'])) {
+				$background['gradation'] = '';
+			}
 
 			// Background Color
+			// Background gradation
+			$output .= '<input type="checkbox" class="checkbox of-background of-background-gradation" name="' . esc_attr( $option_name . '[' . $value['id'] . '][gradation]' ) . '" id="' . esc_attr( $value['id'] . '_gradation' ) . '" value="1" ' . checked( $background['gradation'], 1, false) . '>Make gradation';
+			$output .= "<div style='clear:left;'></div>\n";
 			$output .= '<div id="' . esc_attr( $value['id'] ) . '_color_picker" class="colorSelector"><div style="' . esc_attr( 'background-color:' . $background['color'] ) . '"></div></div>';
 			$output .= '<input class="of-color of-background of-background-color" name="' . esc_attr( $option_name . '[' . $value['id'] . '][color]' ) . '" id="' . esc_attr( $value['id'] . '_color' ) . '" type="text" value="' . esc_attr( $background['color'] ) . '" />';
 
@@ -507,8 +530,31 @@ function optionsframework_fields() {
 			$jquery_click_hook = preg_replace('/[^a-zA-Z0-9._\-]/', '', strtolower($value['name']) );
 			$jquery_click_hook = "of-option-" . $jquery_click_hook;
 			$menu .= '<li class="side-bar-nav-item"><a id="'.  esc_attr( $jquery_click_hook ) . '-tab" class="nav-tab" title="' . esc_attr( $value['name'] ) . '" href="' . esc_attr( '#'.  $jquery_click_hook ) . '">' . esc_html( $value['name'] ) . '</a></li>';
-			$output .= '<div class="group" id="' . esc_attr( $jquery_click_hook ) . '">';
-			$output .= '<h3 id="optionsframework-submit-top" >' . esc_html( $value['name'] ) . '<input type="submit" class="top-button button-primary" name="update" value="'. 'Save Options'  . '" /></h3>' . "\n";
+			
+			ob_start(); 
+			?>
+
+			<div class="group" id="<?php echo esc_attr( $jquery_click_hook ) ?>">
+				<h3 id="optionsframework-submit-top" >
+					<!-- Build default dropdown... -->
+					<div id="default_opts">
+					  <span>Use default settings: </span>
+					  <select id="def_theme_opts">
+					  <?php foreach (PLS_Options_Manager::$def_theme_opts_list as $name) : ?>
+					  	<option value="<?php echo $name?>"><?php echo $name; ?></option>
+					  <?php endforeach; ?>
+					  </select>
+					  <input type="button" id="btn_def_opts" class="top-button button-primary" value="Load" style="margin: 0px" />
+					</div>
+
+					<div>
+						<span><?php echo esc_html( $value['name'] ) ?></span>
+						<input type="submit" class="top-button button-primary" name="update" value="Save Options" />
+					</div>	
+				</h3>
+
+			<?php
+			$output .= ob_get_clean();
 			break;
 		}
 
@@ -530,8 +576,65 @@ function optionsframework_fields() {
     return array($output,$menu);
 }
 
+
 function pls_generate_featured_listings_ui ($value, $val, $option_name, $iterator = false, $for_slideshow = false) {
 	return PLS_Featured_Listing_Option::init( array( 'value' => $value, 'val' => $val, 'option_name' => $option_name, 'iterator' => $iterator, 'for_slideshow' => $for_slideshow) );
 	//return PLS_Featured_Listing_Option::load( array( 'value' => $value, 'val' => $val, 'option_name' => $option_name, 'iterator' => $iterator, 'for_slideshow' => $for_slideshow) );
 }
 
+
+function build_import_export() {
+	$jquery_click_hook = "of-option-" . preg_replace('/[^a-zA-Z0-9._\-]/', '', strtolower('Import/Export') );
+
+	ob_start();
+	?>
+		<div class="group" id="<?php echo esc_attr( $jquery_click_hook ) ?>">
+			<h3 id="optionsframework-submit-top" >
+				<!-- Build default dropdown... -->
+				<div id="default_opts">
+				  <span>Use default settings: </span>
+				  <select id="def_theme_opts">
+				  <?php foreach (PLS_Options_Manager::$def_theme_opts_list as $name) : ?>
+				  	<option value="<?php echo $name?>"><?php echo $name; ?></option>
+				  <?php endforeach; ?>
+				  </select>
+				  <input type="button" id="btn_def_opts" class="top-button button-primary" value="Load" style="margin: 0px" />
+				</div>
+
+				<div>
+					<span><?php echo esc_html( 'Import/Export' ); ?></span>
+					<input type="submit" class="top-button button-primary" name="update" value="Save Options" />
+				</div>	
+			</h3>
+
+			<!-- Export current -->
+			<div id="export_opts" class="section section-text">
+			  <h4 class="heading">Export Current Theme Options</h4>
+			  <div class="option">
+			    <div id="export_div" class="controls">
+			      <?php $url = admin_url('admin.php?page=pls-theme-options&export=true'); ?>
+			  	  <label for="export_txt">Save As: </label>
+			  	  <input type="text" id="export_txt" />
+			   	  <a id="export_link" class="upload-button button" href="<?php echo $url ?>">Export</a>
+			   	  <br />
+			    </div>
+			    <!-- <div class="explain"></div> -->
+			    <div class="clear"></div>
+			  </div>
+			</div>
+
+			<!-- Import existing -->
+			<div id="import_opts" class="section section-text">
+			  <h4 class="heading">Import Existing Theme Options</h4>
+			  <div class="option">
+			    <div class="controls">
+			      <input type="file" name="theme_option_file" id="theme_option_file" />
+			      <br />
+			    </div>
+			    <div class="clear"></div>
+			  </div>
+			</div>
+		</div>	
+	<?php
+	return ob_get_clean();
+}

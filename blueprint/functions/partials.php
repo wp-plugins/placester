@@ -49,7 +49,7 @@ class PLS_Partials {
     // wrapper for get cities api request
     static function get_cities( $args ) {
         if(WP_DEBUG !== true) {
-            $cache = new PL_Cache('Listings Search Form');
+            $cache = new PLS_Cache('Listings Search Form');
             if($form = $cache->get($args)) {
                 return $form;
             }
@@ -76,7 +76,6 @@ class PLS_Partials {
 
     // wrapper for property details page content
     static function custom_property_details_html_filter ($content) {
-//        pls_dump($content);
         echo PLS_Partials_Property_Details::init($content);
     } 
 }

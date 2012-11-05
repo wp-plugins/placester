@@ -74,11 +74,10 @@ class PL_Taxonomy_Helper {
 	function polygon_listings ($polygon, $additional_params = array()) {
 		$request = '';
 		foreach ($polygon as $key => $point) {
-			$request .= 'polygon['.$key. '][0]=' . $point['lat'] .'&';
-			$request .= 'polygon['.$key .'][1]=' . $point['lng'] .'&';
+			$request .= 'polygon['.$key. '][lat]=' . $point['lat'] .'&';
+			$request .= 'polygon['.$key .'][lng]=' . $point['lng'] .'&';
 		}
 		$request = wp_parse_args($request, $additional_params);
-		
 		return PL_Listing_Helper::results($request);
 	}
 

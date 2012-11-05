@@ -1,9 +1,9 @@
 <div id="<?php echo $shortcode ?>_ref" class="shortcode_ref">	
   <h3><u>Usage</u></h3>
-	<?php if ($shortcode == 'searchform'): ?>
+	<?php if ($shortcode == 'search_form'): ?>
 	  <p>
-		You can insert your "activated" Search Form snippet by using the [searchform] shortcode in a page or a post. 
-		This control is intended to be used alongside the [listings] shortcode (defined below) to display the search 
+		You can insert your "activated" Search Form snippet by using the [search_form] shortcode in a page or a post. 
+		This control is intended to be used alongside the [search_listings] shortcode (defined below) to display the search 
 		form's results.
 	  </p>
 	  <p>
@@ -14,15 +14,15 @@
   	    [<?php echo $subcode ?>], &nbsp;
       <?php endforeach ?>
 
-	<?php elseif ($shortcode == 'listings'): ?>
+	<?php elseif ($shortcode == 'search_listings'): ?>
 	  <p>
-		You can insert your "activated" Listings snippet by using the [searchform] shortcode in a page or a post.
-		The listings view is intended to be used alongside the [searchform] shortcode defined above as a container
+		You can insert your "activated" Listings snippet by using the [search_form] shortcode in a page or a post.
+		The listings view is intended to be used alongside the [search_form] shortcode defined above as a container
 		for the results of the search, with the snippet representing how an <i>individual</i> listing that matches
 		the search criteria will be displayed.
 	  </p>
 	  <p>
-		<b>NOTE:</b> The snippet that will be used by [listings] is the one that you last clicked "Activate" while 
+		<b>NOTE:</b> The snippet that will be used by [search_listings] is the one that you last clicked "Activate" while 
 		viewing or editing.
 	  </p>
 	  <p>
@@ -46,6 +46,18 @@
 	  <?php foreach (PL_Shortcodes::$subcodes['listing'] as $subcode): ?>
   	    [<?php echo $subcode ?>], &nbsp;
       <?php endforeach ?>
+      <?php elseif ($shortcode == 'featured_listings'): ?>
+      <p>
+		You can insert your Featured Listings snippet by using the [featured_listings id="<em>listingid</em>"] shortcode in a page or a post.
+		The shortcode require an ID parameter of the featured listing ID number published in your
+		Featured Listings post type control on the left side of the admin panel.
+	  </p>
+      <?php elseif ($shortcode == 'static_listings'): ?>
+      <p>
+		You can insert your Static Listings snippet by using the [static_listings id="<em>listingid</em>"] shortcode in a page or a post.
+		The shortcode require an ID parameter of the static listing ID number published in your
+		Featured Listings post type control on the left side of the admin panel.
+	  </p>
 	<?php else: ?>
 	    Doc not found...
 	<?php endif ?>

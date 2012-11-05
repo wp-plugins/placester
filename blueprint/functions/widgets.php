@@ -26,7 +26,10 @@ function pls_register_widgets() {
 	require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/office.php' );
 
 	/** Load the Placester Contact widget. */
-	require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/contact.php' );
+	if( ! pls_has_plugin_error() ) {
+	  require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/contact.php' );
+    register_widget( 'Placester_Contact_Widget' );
+	}
 
 	/** Load the Placester Recent Posts widget. */
 	require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/recent-posts.php' );
@@ -43,5 +46,4 @@ function pls_register_widgets() {
 	register_widget( 'PLS_Widget_Recent_Posts' );
 	register_widget( 'PLS_Quick_Search_Widget' );
 	register_widget( 'PLS_Widget_Listings' );
-	register_widget( 'Placester_Contact_Widget' );
 }

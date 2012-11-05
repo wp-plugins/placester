@@ -14,13 +14,16 @@
 
 <div class="ajax_message" id="rets_form_message"></div>
 
-<div class="rets_form">
+<div class="rets_form" <?php if ( isset($no_form) && $no_form ) { echo 'id="pls_integration_form"'; } ?>>
+
+<?php if (!isset($no_form)): ?>
   <form id="pls_integration_form" <?php if ( isset($wizard) && $wizard ) { echo 'class="wizard-mls"'; } ?>>
+<?php endif; ?>
 
   	<div class="row">
 	  <div class="info">
-		<h3>MLS Name</h3>
-		<p>Pick which MLS provides your RETS data.</p>
+		<h3>MLS Provider</h3>
+		<p>Pick which MLS provides your listing data.</p>
 	  </div>
 	  <div class="elements">
 	  	<p>
@@ -43,7 +46,7 @@
 	<div class="row">
 	  <div class="info">
 	    <h3>Office Name</h3>
-	    <p>Name of your office on the RETS server.</p>
+	    <p>The name of your office or brokerage.</p>
 	  </div>
 	  <div class="elements">
 	    <input id="office_name" name="office_name" size="30" type="text" />
@@ -53,7 +56,7 @@
 	<div class="row">
 	  <div class="info">
 	    <h3>Agent ID</h3>
-	    <p>Your Agent ID on the RETS server.</p>
+	    <p>Unique ID used to login to your MLS.</p>
 	  </div>
 	  <div class="elements">
 	    <input id="feed_agent_id" name="feed_agent_id" size="30" type="text" />
@@ -64,7 +67,7 @@
 	<div class="row">
 	  <div class="info">
 	    <h3>Phone Number</h3>
-		<p>Your phone number will help us provide prompt support to get your integration setup.</p>
+		<p>This will help us provide prompt support to get your integration setup.</p>
 	  </div>
 	  <div class="elements">
 		<input id="phone" name="phone" type="text">
@@ -78,5 +81,8 @@
     </div>
   <?php endif; ?>
 
+<?php if (!isset($no_form)): ?>
    </form>
+<?php endif; ?>
+
  </div>

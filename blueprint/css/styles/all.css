@@ -190,7 +190,6 @@ p {
   text-shadow: 0 1px 1px #999999; }
 
 img, embed, iframe {
-  background: white;
   padding: 5px;
   border: 1px solid #999999; }
 
@@ -457,9 +456,9 @@ body.page-template-page-template-client-php #client-details {
       padding-right: 10px; }
 
 #fancybox-wrap {
-  width: 290px !important; }
+  width: 290px; }
   #fancybox-wrap #fancybox-content {
-    width: 270px !important; }
+    width: 270px; }
     #fancybox-wrap #fancybox-content label {
       width: 200px; }
     #fancybox-wrap #fancybox-content h2 {
@@ -573,6 +572,22 @@ nav ul li {
 
 .header-membership a {
   padding: 0 10px; }
+
+.polygon_text_area {
+  font-size: 14px;
+  text-shadow: white 1px 1px 2px;
+  position: absolute;
+  text-align: center;
+  font-weight: bold; }
+
+.map_filter_area {
+  background-color: white;
+  border: 1px solid gray;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  width: 180px;
+  height: 150px; }
 
 /* */
 /* Variables */
@@ -718,7 +733,7 @@ header nav {
 
 form, fieldset, .placester_listings_list_length {
   float: left; }
-  form label, form input, form textarea, form .chzn-container, form select, fieldset label, fieldset input, fieldset textarea, fieldset .chzn-container, fieldset select, .placester_listings_list_length label, .placester_listings_list_length input, .placester_listings_list_length textarea, .placester_listings_list_length .chzn-container, .placester_listings_list_length select, form .info {
+  form label, form input, form textarea, form .chzn-container, form select, fieldset label, fieldset input, fieldset textarea, fieldset .chzn-container, fieldset select, .placester_listings_list_length label, .placester_listings_list_length input, .placester_listings_list_length textarea, .placester_listings_list_length .chzn-container, .placester_listings_list_length select {
     float: left; }
   form label, form p, fieldset label, fieldset p, .placester_listings_list_length label, .placester_listings_list_length p {
     width: 100%;
@@ -1022,36 +1037,6 @@ body.single-property article #slideshow ul.property-image-gallery {
     #respond .form-submit input {
       float: right; }
 
-
-.bypostauthor {
-  margin: inherit; }
-
-.map_wrapper .loading_overlay {
-  background-color: #FFF;
-  opacity: 0.4; }
-  .map_wrapper .loading_overlay div {
-    margin: 100px auto;
-    font-weight: bold;
-    font-size: 16px;
-    width: 150px;
-    text-align: center; }
-.map_wrapper .empty_overlay {
-  background-color: #FFF;
-  opacity: 0.4; }
-.map_wrapper .lifestyle_form_wrapper {
-  margin-top: 10px; }
-  .map_wrapper .lifestyle_form_wrapper .location_wrapper {
-    float: left; }
-    .map_wrapper .lifestyle_form_wrapper .location_wrapper .location_select_wrapper {
-      float: left;
-      margin-right: 10px; }
-    .map_wrapper .lifestyle_form_wrapper .location_wrapper .location_select {
-      float: left;
-      margin-right: 10px; }
-  .map_wrapper .lifestyle_form_wrapper .checkbox_wrapper {
-    float: left;
-    margin-top: 10px; }
-    .map_wrapper .lifestyle_form_wrapper .checkbox_wrapper .lifestyle_checkbox_item {
-      float: left;
-      width: 180px;
-      margin-right: 10px; }
+article.post nav {
+  padding: 0;
+  margin-bottom: 20px; }

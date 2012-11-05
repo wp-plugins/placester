@@ -5,6 +5,7 @@
 		<div class="filter-wrapper">
 			<h3>Search Filters</h3>
 			<p>Use the filters below to find the listings you'd like to feature</p>
+			<form></form>
 			<?php PLS_Featured_Listing_Option::get_filters(); ?>
 		</div>
 

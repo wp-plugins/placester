@@ -86,7 +86,7 @@ p
 
 // Media
 img, embed, iframe
-  background: $media-background
+  // background: $media-background
   padding: $media-padding
   border: $media-border-size solid $media-border-color
 
@@ -349,9 +349,9 @@ body.page-template-page-template-client-php
 
 // Fancybox
 #fancybox-wrap
-  width: 290px !important
+  width: 290px
   #fancybox-content
-    width: 270px !important
+    width: 270px
     label
       width: 200px
     h2
@@ -426,6 +426,19 @@ nav
   a
     padding: 0 10px
 
+.polygon_text_area
+  font-size: 14px
+  text-shadow: white 1px 1px 2px
+  position: absolute
+  text-align: center
+  font-weight: bold
+
+.map_filter_area 
+  background-color: white
+  border: 1px solid #808080
+  @include rounded-corners
+  width: 180px
+  height: 150px
 
 @import "header"
 @import "nav"

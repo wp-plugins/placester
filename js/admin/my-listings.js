@@ -61,8 +61,7 @@ $(document).ready(function($) {
                 { sWidth: '300px' },    //address
                 { sWidth: '70px' },     //zip
                 { sWidth: '100px' },     //type
-                { sWidth: '70px' },     //listing
-                { sWidth: '90px' },     //property
+                { sWidth: '100px' },     //property
                 { sWidth: '60px' },     //beds
                 { sWidth: '60px' },     //baths
                 { sWidth: '70px' },     //price
@@ -141,7 +140,12 @@ $(document).ready(function($) {
     // parses search form and adds parameters to aoData
     function my_listings_search_params (aoData) {
         $.each($('#pls_admin_my_listings:visible').serializeArray(), function(i, field) {
+          if( field.name == 'zoning_types' || field.name == 'listing_types' || field.name == 'purchase_types' ) {
+            // API expects these to be arrays
+            aoData.push({"name" : field.name + "[]", "value" : field.value});
+          } else {
             aoData.push({"name" : field.name, "value" : field.value});
+          }
         });
         return aoData;
     }

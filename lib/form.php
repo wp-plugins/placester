@@ -68,7 +68,7 @@ class PL_Form {
 			?>
 				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
-					<textarea id="<?php echo $id ?>" rows="2" cols="20"><?php echo $value ?></textarea>
+					<textarea id="<?php echo $id ?>" name="<?php echo $name ?>" rows="2" cols="20"><?php echo $value ?></textarea>
 				</section>
 			<?php
 		} elseif ($type == 'select') {

@@ -10,7 +10,7 @@ class Placester_Contact_Widget extends WP_Widget {
   //Front end contact form
   function form($instance){
     //Defaults
-    $instance = wp_parse_args( (array) $instance, array('title'=>'', 'button' => 'Submit', 'modern' => 0) );
+    $instance = wp_parse_args( (array) $instance, array('title'=>'', 'button' => 'Submit', 'modern' => 0, 'departments' => '') );
 
     $title = htmlspecialchars($instance['title']);
 
@@ -18,12 +18,17 @@ class Placester_Contact_Widget extends WP_Widget {
 
     $modern_checked = isset($instance['modern']) && $instance['modern'] == 1 ? 'checked' : '';
     $show_property_checked = isset($instance['show_property']) && $instance['show_property'] == 1 ? 'checked' : '';
+    $show_subject_checked = isset($instance['subject']) && $instance['subject'] == 1 ? 'checked' : '';
+    $show_phone_checked = isset( $instance['phone_number'] ) && $instance['phone_number'] == 1 ? 'checked' : '';
 
     // Output the options
     echo '<p><label for="' . $this->get_field_name('title') . '"> Title: </label><input class="widefat" type="text" id="' . $this->get_field_id('title') . '" name="' . $this->get_field_name('title') . '" value="' . $title . '" /></p>';
     echo '<p><label for="' . $this->get_field_name('button') . '"> Submit button label: </label><input class="widefat" type="text" id="' . $this->get_field_id('button') . '" name="' . $this->get_field_name('button') . '" value="' . $button . '" /></p>';
     echo '<p><input class="checkbox" type="checkbox" id="' . $this->get_field_id('modern') . '" name="' . $this->get_field_name('modern') . '"' . $modern_checked . ' style="margin-right: 5px;"/><label for="' . $this->get_field_id('modern') . '"> Use placeholders instead of labels</label></p>';
     echo '<p><input class="checkbox" type="checkbox" id="' . $this->get_field_id('show_property') . '" name="' . $this->get_field_name('show_property') . '"' . $show_property_checked . ' style="margin-right: 5px;"/><label for="' . $this->get_field_id('show_property') . '"> Display property address on the form when viewing a property page</label></p>';
+    echo '<p><input class="checkbox" type="checkbox" id="' . $this->get_field_id('subject') . '" name="' . $this->get_field_name('subject') . '"' . $show_subject_checked . ' style="margin-right: 5px;"/><label for="' . $this->get_field_id('subject') . '">Show the subject field in the contact form</label></p>';
+    echo '<p><input class="checkbox" type="checkbox" id="' . $this->get_field_id('phone_number') . '" name="' . $this->get_field_name('phone_number') . '"' . $show_phone_checked . ' style="margin-right: 5px;"/><label for="' . $this->get_field_id('phone_number') . '">Show phone number field in the contact form</label></p>';
+    echo '<p><label for="' . $this->get_field_name('departments') . '">Departments (separated by commas): </label><input class="widefat" type="text" id="' . $this->get_field_id('departments') . '" name="' . $this->get_field_name('departments') . '" value="' . $departments . '" /></p>';
 
     ?>
 
@@ -37,6 +42,9 @@ class Placester_Contact_Widget extends WP_Widget {
     $instance['button'] = strip_tags(stripslashes($new_instance['button']));
     $instance['modern'] = isset($new_instance['modern']) ? 1 : 0;
     $instance['show_property'] = isset($new_instance['show_property']) ? 1 : 0;
+    $instance['subject'] = isset($new_instance['subject']) ? 1 : 0;
+    $instance['phone_number'] = isset($new_instance['phone_number']) ? 1 : 0;
+    $instance['departments'] = strip_tags(stripslashes($new_instance['departments']));
     return $instance;
   }
 
@@ -74,13 +82,24 @@ class Placester_Contact_Widget extends WP_Widget {
         
         $title = apply_filters('widget_title', empty($instance['title']) ? '&nbsp;' : $instance['title']);
         $submit_value = apply_filters('button', empty($instance['button']) ? 'Send' : $instance['button']);
+        
         $email_label = apply_filters('email_label', !isset($instance['email_label']) ? 'Email Address (required)' : $instance['email_label']);
         $email_value = apply_filters('email_value', !isset($instance['email_value']) ? 'Email Address' : $instance['email_value']);
+        
         $phone_label = apply_filters('phone_label', !isset($instance['phone_label']) ? 'Phone Number (required)' : $instance['phone_label']);
         $phone_value = apply_filters('phone_value', !isset($instance['phone_value']) ? 'Phone Number' : $instance['phone_value']);
+
+        $subject_label = apply_filters('subject_label', !isset($instance['subject_label']) ? 'Subject' : $instance['subject_label']);
+        $subject_value = apply_filters('subject_value', !isset($instance['subject_value']) ? 'Subject' : $instance['subject_value']);
+
+        $departments_label = apply_filters('departments_label', !isset($instance['departments_label']) ? 'Department' : $instance['departments_label']);
+        $departments_value = apply_filters('departments_value', !isset($instance['departments_value']) ? 'Department' : $instance['departments_value']);
+        
         $name_label = apply_filters('name_label', !isset($instance['name_label']) ? 'Name (required)' : $instance['name_label']);
         $name_value = apply_filters('name_value', !isset($instance['name_value']) ? 'Name' : $instance['name_value']);
+        
         $question_label = apply_filters('question_label', !isset($instance['question_label']) ? 'Any questions for us?' : $instance['question_label']);
+        
         $container_class = apply_filters('container_class', empty($instance['container_class']) ? '' : $instance['container_class']);
         $inner_class = apply_filters('inner_class', empty($instance['inner_class']) ? '' : $instance['inner_class']);
         $inner_containers = apply_filters('inner_containers', empty($instance['inner_containers']) ? '' : $instance['inner_containers']);
@@ -90,11 +109,14 @@ class Placester_Contact_Widget extends WP_Widget {
         $email_confirmation = apply_filters('email_confirmation', empty($instance['email_confirmation']) ? false : $instance['email_confirmation']);
         $send_to_email = apply_filters('send_to_email', !isset($instance['send_to_email']) ? '' : $instance['send_to_email']);
 
+        $cc_value = apply_filters('cc_value', !isset($instance['cc_value']) ? '' : $instance['cc_value']);
+        $bcc_value = apply_filters('bcc_value', !isset($instance['bcc_value']) ? '' : $instance['bcc_value']);
+
         $modern = ( isset($instance['modern']) && !empty($instance['modern']) ) ? 1 : 0;
         $show_property = ( isset($instance['show_property']) && !empty($instance['show_property']) ) ? 1 : 0;        
         $template_url = get_template_directory_uri();
 
-        echo '<section class="side-ctnr placester_contact ' . $container_class . '">' . "\n";
+        echo '<section class="side-ctnr placester_contact ' . $container_class . ' widget">' . "\n";
         if ( $title ) {
           echo '<h3>' . $title . '</h3>';
         } 
@@ -114,9 +136,27 @@ class Placester_Contact_Widget extends WP_Widget {
                     <label class="required" for="email"><?php echo $email_label; ?></label><input class="required" id="email" placeholder="<?php echo $email_value ?>" type="email" name="email" tabindex="<?php echo $sidebar_pos; ?>2" />
                     <?php echo empty($instance['inner_containers']) ? '' : '</div>'; ?>
 
-                    <?php if(isset($instance['phone_number'])) { ?>
+                    <?php if(!empty($instance['phone_number'])) { ?>
                       <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
                       <label class="required" for="phone"><?php echo $phone_label; ?></label><input class="required" id="phone" placeholder="<?php echo $phone_value ?>" type="text" name="phone" tabindex="<?php echo $sidebar_pos; ?>3" />
+                      <?php echo empty($instance['inner_containers']) ? '' : '</div>'; ?>
+                    <?php } ?>
+
+                    <?php if(!empty($instance['subject'])) { ?>
+                      <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
+                      <label class="required" for="subject"><?php echo $subject_label; ?></label><input class="required" id="subject" placeholder="<?php echo $subject_value ?>" type="text" name="subject" tabindex="<?php echo $sidebar_pos; ?>4" />
+                      <?php echo empty($instance['inner_containers']) ? '' : '</div>'; ?>
+                    <?php } ?>
+
+                    <?php if( !empty($instance['departments']) ) { ?>
+                      <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
+                      <label class="required" for="department"><?php echo $departments_label; ?></label>
+                      <?php $departments = explode( ',', $instance['departments']) ?>
+                      <select id="department" placeholder="<?php echo $departments_value ?>" name="department" tabindex="<?php echo $sidebar_pos; ?>5" >
+                        <?php foreach ($departments as $department): ?>
+                          <option value="<?php echo $department ?>"><?php echo $department ?></option>
+                        <?php endforeach ?>
+                      </select>
                       <?php echo empty($instance['inner_containers']) ? '' : '</div>'; ?>
                     <?php } ?>
 
@@ -129,14 +169,18 @@ class Placester_Contact_Widget extends WP_Widget {
                     <?php endif; ?>
 
                     <?php echo empty($instance['textarea_container']) ? '' : '<div class="' . $instance['textarea_container'] .'">'; ?>
-                    <label for="question"><?php echo $question_label; ?></label><textarea rows="5" name="question" placeholder="<?php echo $question_label; ?>" tabindex="<?php echo $sidebar_pos; ?>4"></textarea>
+                    <label for="question"><?php echo $question_label; ?></label><textarea rows="5" name="question" placeholder="<?php echo $question_label; ?>" tabindex="<?php echo $sidebar_pos; ?>6"></textarea>
                     <?php echo empty($instance['textarea_container']) ? '' : '</div>'; ?>
 
                     <input type="hidden" name="id" value="<?php if(isset($data['id'])) { echo $data['id']; } ?>">
                     <input type="hidden" name="fullAddress" value="<?php echo @self::_get_full_address($data);  ?>">
                     <input type="hidden" name="email_confirmation" value="<?php echo $email_confirmation;  ?>">
                     <input type="hidden" name="send_to_email" value="<?php echo $send_to_email;  ?>">
+                    <input type="hidden" name="cc_value" value="<?php echo @$cc_value;  ?>">
+                    <input type="hidden" name="bcc_value" value="<?php echo @$bcc_value;  ?>">
+                    
                   <?php } else { ?>
+                    
                     <input class="required" placeholder="<?php echo $email_label; ?>" type="email" name="email" tabindex="<?php echo $sidebar_pos; ?>1" />
                     <input class="required" placeholder="<?php echo $name_label; ?>" type="text" name="name" tabindex="<?php echo $sidebar_pos; ?>2" />
 
@@ -153,6 +197,8 @@ class Placester_Contact_Widget extends WP_Widget {
                     <input type="hidden" name="fullAddress" value="<?php echo @self::_get_full_address($data);  ?>">
                     <input type="hidden" name="email_confirmation" value="<?php echo $email_confirmation;  ?>">
                     <input type="hidden" name="send_to_email" value="<?php echo @$send_to_email;  ?>">
+                    <input type="hidden" name="cc_value" value="<?php echo @$cc_value;  ?>">
+                    <input type="hidden" name="bcc_value" value="<?php echo @$bcc_value;  ?>">
                   <?php } ?>
                     <input type="submit" value="<?php echo $submit_value; ?>" class="<?php echo $button_class; ?>" tabindex="<?php echo $sidebar_pos; ?>4" />
                   </form>
@@ -229,7 +275,7 @@ function ajax_placester_contact() {
         $message .= "Email Address: " . trim($_POST['email']) . " \n";
       }
 
-      // Check to make sure that the last name field is not empty
+      // Check to make sure that the phone number field is not empty
       if (isset($_POST['phone'])) {
         if( trim($_POST['phone']) == '' || trim($_POST['phone']) == 'Phone Number' ) {
           $error .= "Your phone number is required<br/>";
@@ -237,12 +283,31 @@ function ajax_placester_contact() {
           $message .= "Phone Number: " . trim($_POST['phone']) . " \n";
         }
       }
+
+      // Check the subject field
+      if( trim($_POST['subject']) == '' ) {
+        $message = "They did not include a subject \n\n ";
+        $subject = '';
+      } else {
+        $message .= "Subjects: " . trim($_POST['subject']) . " \n";
+        $subject = ': ' . trim($_POST['subject']);
+      }
+
+      // Check the departments field
+      if( trim($_POST['department']) == '' ) {
+        $message = "They didn't select a department \n\n ";
+      } else {
+        $message .= "Requested Departments: " . trim($_POST['department']) . " \n";
+      }      
+
       // Check the question field
       if( trim($_POST['question']) == '' ) {
-        $question = "They had no questions at this time \n\n ";
+        $message = "They had no questions at this time \n\n ";
       } else {
         $message .= "Questions: " . trim($_POST['question']) . " \n";
       }
+
+
 
       if( empty($_POST['id']) ) {
         $message .= "Listing ID: No specific listing \n";
@@ -276,10 +341,18 @@ function ajax_placester_contact() {
         $email = $_POST['send_to_email'];
       }
 
+      $headers = array();
+      if ( !empty($_POST['cc_value']) ) {
+        $headers[] = 'Cc: '.$_POST['cc_value'];
+      }
+      if ( !empty($_POST['bcc_value']) ) {
+        $headers[] = 'Bcc: '.$_POST['bcc_value'];
+      }
+
       if (trim($_POST['email_confirmation']) == true) {
-        wp_mail($email, 'Email confirmation was sent to ' . $_POST['email'] . ' from ' . home_url(), $message);
+        wp_mail($email, 'Email confirmation was sent to ' . $_POST['email'] . ' from ' . home_url(), $message, $headers);
       } elseif ($email) {
-        $placester_Mail = wp_mail($email, 'Prospective client from ' . home_url(), $message);
+        $placester_Mail = wp_mail($email, 'Prospective client from ' . home_url(), $message, $headers);
       }
       
       $name = $_POST['name'];
@@ -292,7 +365,7 @@ function ajax_placester_contact() {
           include(get_template_directory() . '/custom/contact-form-email.php');
           $message_to_submitter = ob_get_clean();
               
-        wp_mail( $_POST['email'], 'Form Submitted', $message_to_submitter );
+        wp_mail( $_POST['email'], 'Form Submitted' . $subject, $message_to_submitter );
       }
     
       echo "sent";

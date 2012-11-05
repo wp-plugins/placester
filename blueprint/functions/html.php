@@ -65,6 +65,7 @@ function pls_h( $tag ) {
     return "<{$tag}>{$content}</{$closing}>";
 }
 
+
 /**
  * Creates an anchor html tag with given parameters.
  * 

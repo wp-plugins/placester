@@ -145,6 +145,10 @@ input#post_title, label#post_title {
 .has-right-sidebar #post-body-content {
 	margin-right: 320px;	
 }
+input#property_type-res_sale, input#property_type-vac_rental, input#property_type-res_rental, input#property_type-comm_rental, input#property_type-comm_sale {
+	font-size: 20px;
+	width: 300px;
+}
 .property_type-res_sale, .property_type-vac_rental, .property_type-res_rental, .property_type-comm_rental, .property_type-comm_sale {
 	display:none;
 }

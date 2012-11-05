@@ -9,15 +9,18 @@
 			<ul>
 			<?php if ($for_slideshow == 1): ?>
 				<?php unset( $params['val']['image'], $params['val']['link'], $params['val']['html'], $params['val']['type'] ) ?>
+				
 				<?php if (isset($params['val'][0])): ?>
 					<?php unset($params['val'][0]) ?>
 				<?php endif ?>
+				
 				<?php foreach ($params['val'] as $id => $address): ?>
 				<li>
 					<div id="pls-featured-text" ref="<?php echo $id ?>"><?php echo $address ?></div>
-					<input type="hidden" name="<?php echo $params['option_name'] . '[' . $params['value']['id'] . '][' . $id . ']' ?>=" value="<?php echo $address ?>">
+					<input type="hidden" name="<?php echo $params['option_name'] . '[' . $params['value']['id'] . ']['.$params['iterator'].'][' . $id . ']' ?>=" value="<?php echo $address ?>">
 				</li>
 				<?php endforeach ?>
+
 			<?php else: ?>
 				<?php foreach ($params['val'] as $id => $address): ?>
 				<li>

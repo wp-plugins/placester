@@ -117,8 +117,7 @@ jQuery(document).ready(function($) {
     		
             var option_name = $(listings_container).attr('id');
             var iterator = $(listings_container).attr('rel') || false;
-            console.log('here');
-            console.log(iterator);
+
             if (iterator) {
                 var option_id = $(listings_container).attr('ref') + '][' + iterator;
             } else {
@@ -128,8 +127,8 @@ jQuery(document).ready(function($) {
             var rows = $(this).find('td');
     		var address = $(rows[0]).html();
     		var id = $(rows[1]).find('a').attr('ref');
-
-            if (address) {
+            
+            if (address && address != 'Sorry, no listings match your search. Please try another.') {
                 featured_listings += '<li>';
                 featured_listings += '<div id="pls-featured-text">' + address + '</div>';
                 featured_listings += '<input type="hidden" name="' + option_name + '[' + option_id + '][' + id + ']=" value="' + address + '">';

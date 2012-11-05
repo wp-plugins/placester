@@ -7,7 +7,8 @@ class PL_Js_Helper {
 	public function init() {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin' ));
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend' ));
-		add_action('admin_head',array(__CLASS__, 'admin_menu_url'));
+		add_action('admin_head', array(__CLASS__, 'admin_menu_url'));
+		add_action('customize_controls_enqueue_scripts', array(__CLASS__, 'customizer'));
 	}	
 
 	public function admin ($hook) {
@@ -111,12 +112,25 @@ class PL_Js_Helper {
 
 	public function frontend() {
 		self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) .  'datatables/jquery.dataTables.js', array( 'jquery'));			
-		self::register_enqueue_if_not('leads', trailingslashit(PL_JS_PUB_URL) .  'leads.js', array( 'jquery'));			
+		self::register_enqueue_if_not('leads', trailingslashit(PL_JS_PUB_URL) .  'leads.js', array( 'jquery'));
 		self::register_enqueue_if_not('membership', trailingslashit(PL_JS_PUB_URL) .  'membership.js', array( 'jquery'));
 		self::register_enqueue_if_not('infobar', trailingslashit(PL_JS_PUB_URL) .  'infobar.js', array( 'jquery'));
 	}
 
-	private function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {
+	public function customizer() {
+		self::register_enqueue_if_not('customizer', trailingslashit(PL_JS_PUB_URL) . 'customizer.js', array('jquery'));
+		if ( PL_Customizer_Helper::is_onboarding() ) {
+			self::register_enqueue_if_not('onboard', trailingslashit(PL_JS_PUB_URL) . 'onboard.js', array('jquery'));
+		}
+
+		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
+		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) .  'admin/global.js', array( 'jquery-ui'));
+		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui'));
+		self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery-ui'));
+
+	}
+
+	public static function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {
 		if (!wp_script_is($name, 'registered')) {
 			wp_register_script($name, $path, $dependencies, $version, $in_footer);		
 		}

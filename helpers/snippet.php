@@ -8,8 +8,7 @@ class PL_Snippet_Helper {
 
 	public static $allowable_tags = "<a><p><script><div><span><section><label><br><h1><h2><h3><h4><h5><h6><scr'+'ipt><style>";
 
-	// Static?  Why or why not?
-	public function init() 
+	public static function init() 
 	{
 		add_action( 'wp_ajax_get_snippet_body', array(__CLASS__, 'get_snippet_body_ajax' ) );
 		add_action( 'wp_ajax_activate_snippet', array(__CLASS__, 'activate_snippet_ajax') );
@@ -17,8 +16,7 @@ class PL_Snippet_Helper {
 		add_action( 'wp_ajax_toggle_prop_details', array(__CLASS__, 'toggle_prop_details_enabled') );
 	}	
 
-	// Static?  Why or why not?
-	public function get_snippet_body_ajax() 
+	public static function get_snippet_body_ajax() 
 	{
 		if ($_POST['shortcode'] && $_POST['snippet'] && $_POST['type']) {
 			$snippet_body = html_entity_decode(PL_Router::load_snippet($_POST['shortcode'], $_POST['snippet'], $_POST['type']), ENT_QUOTES);
@@ -31,7 +29,7 @@ class PL_Snippet_Helper {
 		die();
 	}
 
-	public function activate_snippet_ajax() 
+	public static function activate_snippet_ajax() 
 	{
 		if ($_POST['shortcode'] && $_POST['snippet']) {
 			$shortcode_DB_key = ('pls_' . $_POST['shortcode']);
@@ -50,7 +48,7 @@ class PL_Snippet_Helper {
 		die();
 	}
 
-	public function save_custom_snippet_ajax() 
+	public static function save_custom_snippet_ajax() 
 	{
 		if ($_POST['shortcode'] && $_POST['snippet'] && $_POST['snippet_body']) 
 		{
@@ -81,7 +79,7 @@ class PL_Snippet_Helper {
 		die();
 	}
 
-	public function toggle_prop_details_enabled() 
+	public static function toggle_prop_details_enabled() 
 	{
 		$DB_key = PL_Shortcodes::$prop_details_enabled_key;
 		$val = get_option( $DB_key, '');
@@ -106,7 +104,7 @@ class PL_Snippet_Helper {
 		die();
 	}
 
-	public function delete_snippet_ajax() 
+	public static function delete_snippet_ajax() 
 	{
 		// TODO...
 		die();

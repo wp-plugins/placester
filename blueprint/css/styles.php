@@ -11,9 +11,8 @@ if ( !defined( 'PLS_LOAD_STYLES' ) || ( defined( 'PLS_LOAD_STYLES' ) && ( PLS_LO
      *
      * @since 0.0.1
      */
-    add_action( 'template_redirect', 'pls_styles' );
+    add_action( 'wp_enqueue_scripts', 'pls_styles' );
     function pls_styles() {
-
         // wp_enqueue_style( 'pls-default', '/css/style.css' . get_bloginfo( 'stylesheet_url' ) );
 				
 				// Required by WordPress

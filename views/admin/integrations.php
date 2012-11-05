@@ -77,36 +77,15 @@
 				<h2>Link your Website to your local MLS</h2>
 			</div>
 			<div class="clear"></div>
-			<p>The Real Estate Website Builder plugin can pull listings from your local MLS using a widely supported format called RETS. Once activated, the plugin will automatically update your website with listings as they are added, edited, and removed. All regulatory and compliance concerns will be handled automatically so long as you are using a theme built for the real estate website builder plugin (see <a href="https://placester.com/wordpress-themes/">here</a> for a complete list). Please note that MLS integrations require a <a href="https://placester.com/pricing/">Premium Subscription</a> to Placester which is $45 there is a 60 day, no-credit card free trial available to make sure you are happy with the service.  Fill out the form below to get started.</p>
+			<p>The Real Estate Website Builder plugin can pull listings from your local MLS using a widely supported format called RETS. Once activated, the plugin will automatically update your website with listings as they are added, edited, and removed. All regulatory and compliance concerns will be handled automatically so long as you are using a theme built for the real estate website builder plugin (see <a href="https://placester.com/wordpress-themes/">here</a> for a complete list).</p>
+			<p>Please note that MLS integrations require a <a href="https://placester.com/subscription/">Premium Subscription</a> to Placester which is $45 there is a 15 day, no-credit card free trial available to make sure you are happy with the service.  Fill out the form below to get started.</p>
 			<div class="clear"></div>
-			<h3 class="get_started">Fill out the form to get started</h3>
+			<!-- <h3 class="get_started">Fill out the form to get started</h3> -->
 			
-		<?php if ( PL_Option_Helper::api_key() ): ?>
+		  <?php if ( PL_Option_Helper::api_key() ): ?>
 			<?php PL_Router::load_builder_partial('integration-form.php', array('submit' => true)); ?>
-		<?php endif; ?>
-
-			<!-- 
-			<div class="help_prompt">
-				<h3>What to expect after submitting the form:</h3>
-				<ul>
-					<li>A call from your personal support rep introducing themselves</li>
-					<li>If Placester has already integrated with your MLS, you can expect listings in 1-2 days</li>
-					<li>If Placester hasn't yet integrated with your MLS, you can expect listings in 5-7 business days</li>
-					<li>Your personal support rep will guide you through the entire process.</li>
-				</ul>
-				<h3>Need Help?</h3>
-				<ul>
-					<li>Not sure where to get this information?</li>
-					<li>Having trouble submitting the form?</li>
-					<li>Have questions about how MLS integrations work?</li>
-				</ul>
-				<div class="real_person">
-					<h3>Talk to a real person.</h3>
-					<h4>Call us at 1 (800) 728-8391</h4>
-					<h4>Email us at  <a mailto="support@placester.com"> support@pplacester.com</a></h4>
-				</div>
-			</div>
-			 -->	
+		  <?php endif; ?>
+	
 			<div class="clear"></div>	
 		<?php endif ?>
 		<?php // echo PL_Router::load_builder_partial('free-trial.php'); ?>		

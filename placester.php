@@ -4,7 +4,7 @@ Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
 Author: Placester.com
-Version: 1.0.9
+Version: 1.1.0
 Author URI: https://www.placester.com/
 */
 
@@ -72,9 +72,14 @@ define( 'PL_CSS_ADMIN_URL', trailingslashit(PL_CSS_URL) . 'admin/' );
 define( 'PL_CSS_CLIENT_DIR', trailingslashit(PL_CSS_DIR) . 'client/' );
 define( 'PL_CSS_CLIENT_URL', trailingslashit(PL_CSS_URL) . 'client/' );
 
+define( 'PL_THIRD_PARTY_DIR', trailingslashit(PL_PARENT_DIR) . 'third-party/' );
+define( 'PL_THIRD_PARTY_URL', trailingslashit(PL_PARENT_URL) . 'third-party/' );
+
 define('ADMIN_URL', trailingslashit( admin_url() ) );
 define('ADMIN_MENU_URL', trailingslashit( ADMIN_URL ) . 'admin.php' );
 
+// Demo Account API Key
+define('DEMO_API_KEY', '3eb444f8869cb88bbc349586573aabbb84a316d7');
 
 //config
 include_once('config/toggle_form_sections.php');
@@ -85,6 +90,8 @@ include_once('config/api/people.php');
 include_once('config/api/integration.php');
 include_once('config/third-party/google-places.php');
 include_once('config/api/wordpress.php');
+include_once('config/customizer/onboard_settings.php');
+include_once('config/customizer/theme_choices.php');
 
 //lib
 include_once('lib/config.php');
@@ -96,8 +103,18 @@ include_once('lib/validation.php');
 include_once('lib/pages.php');
 include_once('lib/membership.php');
 include_once('lib/caching.php');
-include_once('lib/shortcodes.php');
+// include_once('lib/shortcodes.php');
+include_once('lib/widgets.php');
+//add_action('init', 'dxshortcodes');
+//function dxshortcodes() {
+include_once('lib/shortcode_wrapper.php');
+include_once('lib/component_entities.php');
+include_once('lib/shortcodes-new.php');
+	
+include_once('lib/featured_listings_post_type.php');
 include_once('lib/demo_data.php');
+include_once('lib/customizer.php');
+include_once('lib/customizer_entities.php');
 
 //models
 include_once('models/listing.php');
@@ -135,6 +152,9 @@ include_once('helpers/education-com.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
 include_once('helpers/snippet.php');
+include_once('helpers/template.php');
+include_once('helpers/customizer.php');
+
 
 //third-party scripts
 include_once('third-party/tax-meta-class/tax-meta-class.php');
@@ -200,4 +220,31 @@ function placester_activate () {
     $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
     $metrics->track('Activation');
     PL_WordPress_Helper::report_url();
+}
+
+add_action( 'wp_head', 'placester_info_bar' );
+function placester_info_bar() {
+    if ( PL_Option_Helper::get_demo_data_flag() ) {
+        PL_Router::load_builder_partial('infobar.php');
+    }
+}
+
+add_action('wp_enqueue_scripts', 'iframe_load_notify');
+function iframe_load_notify () {
+  ob_start();
+    ?>
+    <script type="text/javascript">
+        window.onload = function () {  
+            if ( (top.location != self.location) && top.customizer_global ) {
+                top.customizer_global.previewLoaded();
+
+                // Check for onboarding wizard, throw appropriate event..
+                if ( top.wizard_global ) {
+                    top.wizard_global.previewLoaded();
+                }
+            }
+        }
+    </script>
+    <?php
+  echo ob_get_clean();
 }

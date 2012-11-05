@@ -21,8 +21,13 @@
             <section class="main-post-section" itemscope itemtype="http://schema.org/BlogPosting">
 
               <header>
-
-                  <h3 itemprop="name"><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php printf( 'Permalink to %1$s', the_title_attribute( 'echo=false' ) ) ?>" itemprop="url"><?php the_title(); ?></a></h3>
+                  <?php
+                  $current_title = the_title( '', '', false );
+                  if( empty( $current_title ) ) {
+                    $current_title = 'No Title';
+                  }
+                  ?>
+                  <h3 itemprop="name"><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php printf( 'Permalink to %1$s', the_title_attribute( 'echo=false' ) ) ?>" itemprop="url"><?php echo $current_title; ?></a></h3>
                   <p class="p5"><time datetime="<?php the_time('Y-m-d')?>" itemprop="datePublished"><?php the_time('F jS, Y') ?></time>
                   <span class="author" itemprop="author"><?php printf( 'by %1$s', get_the_author()) ?></span></p>
 

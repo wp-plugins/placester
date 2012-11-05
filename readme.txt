@@ -1,9 +1,9 @@
 === Plugin Name ===
-Contributors: Placester, Matt Barba
+Contributors: Placester
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
 Tested up to: 3.4.2
-Stable tag: 1.0.9
+Stable tag: 1.1.0
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -25,10 +25,9 @@ From the creators of http://placester.com: Create your fully functional real est
 
 * Fully functional demo: [Columbus Theme](http://columbus.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=columbus)
 * Single property demo: [Bluestone Theme](http://bluestone.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=bluestone)
-* Foundation is a blank theme ready for designers to make it beautiful: [Foundation Theme](http://foundation.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=foundation)
 
 This is the only plugin you need to create a powerful WordPress powered real estate website. Watch our quick demo about how to get started:
-http://www.youtube.com/watch?v=WZBha9cU0IM
+http://www.youtube.com/watch?v=a6sJi4iXObU&feature=plcp
 
 
 Check out premium themes available to hosted users:
@@ -38,7 +37,7 @@ Check out premium themes available to hosted users:
 [Slate Theme](http://slate.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=slate)
 
 
-Find the latest themes and theme updates at [Placester.com/themes](https://placester.com/themes/)
+Find the latest themes and theme updates at [Placester.com/portfolio/](https://placester.com/portfolio/)
 
 
 **Highlights:**

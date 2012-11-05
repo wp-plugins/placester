@@ -245,7 +245,7 @@ class PLS_Format {
 	}
 
   function translate_property_type($listing) {
-    
+
     if (isset($listing['property_type']) && ($listing['property_type'] != null) && !empty($listing['property_type'])) {
 
       if ( $listing['property_type'] == "fam_home") {
@@ -254,11 +254,12 @@ class PLS_Format {
         $property_type = 'Multi Family Home';
       } else {
 
-        if (strpos($listing['property_type'], ' ')) { 
+        if ( is_array($listing['property_type']) ) { 
           $property_type = ucwords(implode($listing['property_type'], '')); 
         } else { 
           $property_type = ucfirst($listing['property_type']); 
         }
+
       }
     return $property_type;
     }
@@ -283,13 +284,13 @@ class PLS_Format {
 			}
 		}
 		if (is_array($listing_data['uncur_data'])) {
+		  $amenities['uncur'] = array();
 			foreach ($listing_data['uncur_data'] as $uncur_amenity => $uncur_value) {
 			    if (empty($uncur_value)) { continue; }
 				if (in_array($uncur_amenity, $amenities_to_remove)) { continue; }
 				$amenities['uncur'][$uncur_amenity] = $uncur_value;
-			}		
+			}
 		}
-			
 		return $amenities;
 	}
 
@@ -301,12 +302,14 @@ class PLS_Format {
       'per_ngt' => 'per night'
     );
 
-    $translate_this = $listing['cur_data']['lse_trms'];
+    $translate_this = $listing['cur_data']['price_unit'];
 
+    $translated = '';
     if ($translate_this != null) {
 		  foreach ($lease_terms as $key => $value) {
         if ($key == $translate_this) {
           $translated = $value;
+          return $translated;
         }
 			}
 		  return $translated;
@@ -551,7 +554,7 @@ class PLS_Format {
 		if (isset($pls_custom_amenity_dictionary) && !empty($pls_custom_amenity_dictionary)) {
 			$local_dictionary = wp_parse_args($pls_custom_amenity_dictionary, $local_dictionary);
 		}
-		
+
 		foreach ($amenities as $key => $value) {
 			if ($value == '1') {
 				$value = 'Yes';
