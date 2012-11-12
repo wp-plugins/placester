@@ -97,6 +97,8 @@ class PLS_Slideshow {
             'user_slides_header_id' => false,
             'listings' => 'limit=5&sort_by=price',
             'data' => false,
+            'post_id' => false,
+            'post_meta_key' => false
         );
         $args = wp_parse_args( $args, $defaults );
         $cache = new PLS_Cache('slide');
@@ -170,6 +172,9 @@ class PLS_Slideshow {
                         self::$option_id = $featured_option_id;
                         $api_response = PLS_Listing_Helper::get_featured($featured_option_id);
                     } 
+                    if( $post_id && $post_meta_key ) {
+                    	$api_response = PLS_Listing_Helper::get_featured_from_post( $post_id, $post_meta_key );
+                    }
 
                     if (empty($api_response['listings'])) {
                         $api_response = PLS_Plugin_API::get_property_list($listings);    

@@ -464,7 +464,7 @@ $PL_API_LISTINGS = array(
 	),
 	'details' => array(
 		'request' => array(
-			'url' => 'https://placester.com/api/v2.1/listings/',
+			'url' => 'https://api.placester.com/v2.1/listings/',
 			'type' => 'GET'
 		),
 		'args' => array(),
@@ -726,7 +726,7 @@ $PL_API_LISTINGS = array(
 	),
 	'temp_image' => array(
 		'request' => array(
-			'url' => 'https://placester.com/api/v2/listings/media/temp/image',
+			'url' => 'https://api.placester.com/v2/listings/media/temp/image',
 			'type' => 'POST'
 		),
 		'args' => array(
@@ -754,7 +754,7 @@ $PL_API_LISTINGS = array(
 	),
 	'get.locations' => array(
 		'request' => array(
-			'url' => 'https://placester.com/api/v2/listings/locations/',
+			'url' => 'https://api.placester.com/v2/listings/locations/',
 			'type' => 'GET'
 		),
 		'args' => array(
@@ -773,7 +773,7 @@ $PL_API_LISTINGS = array(
 	),
 	'get.types' => array(
 		'request' => array(
-			'url' => 'https://placester.com/api/v2.1/listings/aggregate/',
+			'url' => 'https://api.placester.com/v2.1/listings/aggregate/',
 			'type' => 'GET'
 		),
 		'args' => array(

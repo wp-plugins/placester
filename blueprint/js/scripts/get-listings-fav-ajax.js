@@ -20,7 +20,7 @@ jQuery(document).ready(function($) {
                         for (var current_marker in markers) {
                           markers[current_marker].setMap(null);
                         }
-                        if (typeof window['google'] != 'undefined') {
+                        if (typeof window['google'] != 'undefined' && typeof pls_google_map != 'undefined' ) {
                           markers = [];
                           var bounds = new google.maps.LatLngBounds();
                           for (var listing in ajax_response['aaData']) {

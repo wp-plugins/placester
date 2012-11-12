@@ -4,7 +4,7 @@ global $PL_API_PEOPLE;
 $PL_API_PEOPLE = array(
 	'create' => array(
 		'request' => array(
-			'url' => 'https://placester.com/api/v2/people',
+			'url' => 'https://api.placester.com/v2/people',
 			'type' => 'POST'
 		),
 		'args' => array(
@@ -31,7 +31,7 @@ $PL_API_PEOPLE = array(
 	),
 	'details' => array(
 		'request' => array(
-			'url' => 'https://placester.com/api/v2/people/',
+			'url' => 'https://api.placester.com/v2/people/',
 			'type' => 'GET',
 			'cache' => false
 		),

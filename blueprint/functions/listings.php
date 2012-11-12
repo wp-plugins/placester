@@ -36,6 +36,20 @@ class PLS_Listing_Helper {
 		}
 		
 	}
+	
+	function get_featured_from_post( $post_id, $option_name ) {
+		$meta_values = get_post_meta( $post_id, $option_name );
+	
+		// test passed meta data
+		if (!empty( $meta_values ) && isset( $meta_values[0]['featured-listings-type'] )) {
+			$option_ids = $meta_values[0]['featured-listings-type'];
+			$property_ids = array_keys($option_ids);
+			$api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => $property_ids));
+			return $api_response;
+		} else {
+			return array('listings' => array());
+		}
+	}
 
 	function get_compliance ($args) {
 		$message = PLS_Plugin_API::mls_message($args);

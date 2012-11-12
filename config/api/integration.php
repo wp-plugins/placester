@@ -4,7 +4,7 @@ global $PL_API_INTEGRATION;
 $PL_API_INTEGRATION = array(
 	'get' => array(
 		'request' => array(
-			'url' => 'https://placester.com/api/v2/integration/requests',
+			'url' => 'https://api.placester.com/v2/integration/requests',
 			'type' => 'GET'
 		),
 		'args' => array(),
@@ -20,7 +20,7 @@ $PL_API_INTEGRATION = array(
 	),	
 	'create' => array(
 		'request' => array(
-			'url' => 'https://placester.com/api/v2/integration/requests',
+			'url' => 'https://api.placester.com/v2/integration/requests',
 			'type' => 'POST'
 		),
 		'args' => array(
@@ -34,7 +34,7 @@ $PL_API_INTEGRATION = array(
 	),
 	'mls_list' => array(
 		'request' => array(
-			'url' => 'https://placester.com/api/v2/integration/requests/mls',
+			'url' => 'https://api.placester.com/v2/integration/requests/mls',
 			'type' => 'GET'
 		),
 		'args' => array(),

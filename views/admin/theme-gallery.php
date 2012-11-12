@@ -13,7 +13,7 @@
 
 <div class="theme_wrapper">
 	<h1>Looking for Placester Themes?</h1>
-	<h3>Take a look at our <a href="https://placester.com/portfolio/">Theme Portfolio</a></h3>
+	<h3>Take a look at our <a href="https://placester.com/themes/">Theme Portfolio</a></h3>
 	<h3>Give us a call at (800) 728-8391 if you have any questions!</h3>
 </div>
 

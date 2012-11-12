@@ -42,6 +42,11 @@ Status_Window.prototype.init = function () {
 
 }
 
+// TODO: complete this later
+Status_Window.prototype.neightborhood_init = function () {}
+Status_Window.prototype.lifestyle_init = function () {}
+Status_Window.prototype.lifestyle_polygon_init = function () {}
+
 //default initialization states
 Status_Window.prototype.listings_init = function () {
 	var that = this;
