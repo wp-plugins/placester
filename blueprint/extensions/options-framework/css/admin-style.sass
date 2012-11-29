@@ -131,8 +131,8 @@
     min-width: 125px
     width: 125px
   .controls
-    input, select, textarea
-      margin-bottom: 10px
+    input[type="text"], select, textarea
+      margin-bottom: 5px
       width: 100%
   .section-radio label, .section-multicheck label
     float: left
@@ -218,24 +218,39 @@
       width: 140px
     .explain
       max-width: 74%
-  .controls input
-    &.upload
-      width: 80%
-    &.upload_button
-      float: right
-      width: 45px
-      border-color: #BBBBBB
-      cursor: pointer
-      height: 16px
-      &:hover
-        border-color: #666666
-        color: #000
+  .controls 
+    #custom_type
+      float: left
+    .item_row
+      float: left
+      width: 100%
+      label
+        float: left
+        font:
+          weight: 600
+          family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",sans-serif
+        width: 18%
+        padding-top: 6px
+      input[type="text"]
+        float: left
+        width: 50%
+      input[type="button"]
+        float: left
+        margin-left: 20px
+        width: 45px
+        border-color: #BBBBBB
+        cursor: pointer
+        height: 16px
+        &:hover
+          border-color: #666666
+          color: #000
+      textarea
+        height: 50px
   .screenshot
     float: left
-    margin-left: 1px
     position: relative
     width: 344px
-    margin-top: 3px
+    margin: 3px 0 0 18%
     img
       background: #FAFAFA
       border-color: #ccc #eee #eee #ccc
@@ -362,28 +377,50 @@ hr
       width: 100% !important
       .featured_slideshow_options
         .featured_slide
-          width: 358px
-          margin: 0 0 10px 10px
+          width: 100%
+          margin: 0 0 10px 0
           float: left
           background-color: #F1F1F1
           padding: 10px
           border: 1px solid #DFDFDF
+          -webkit-box-sizing: border-box
+          -moz-box-sizing: border-box
+          box-sizing: border-box
+          .featured-listings-wrapper
+            width: 80%
           .featured_slide_header
+            float: left
             h2 
               float: left
             .slideshow_type
               float: left
               width: 300px !important
-              margin: 9px 0 0 0px
-              font-size: 16px
+              margin: 9px 0 0 20px
+              font-size: 15px
           p
             margin: 0px
             float: left
-            padding: 15px 0 !important
-            font-size: 14px
+            padding: 5px 0 13px !important
+            font:
+              size: 13px
+              style: italic
+          #listing_type
+            .head
+              width: 145px
+              float: right
+              margin: -35px 0 0 20px
+.featured-listings-wrapper
+  float: left
+  .featured-listings
+    ol
+      li
+        font:
+          size: 14px
+          weight: 600
+
+.section-featured_listing
+  .featured-listings-wrapper
+    width: 100%
 
 
-          
-          .item_row
-            float: left
-        // 
+// 

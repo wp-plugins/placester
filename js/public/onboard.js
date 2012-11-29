@@ -114,10 +114,6 @@ var wizard_global = {
  * Onboarding global functions
  */
 
-function onMainLoad () {
-
-}
-
 function loadState (state) {
   var tooltip = jQuery('#tooltip');
 

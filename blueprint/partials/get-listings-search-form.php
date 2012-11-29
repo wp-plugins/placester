@@ -344,9 +344,9 @@ class PLS_Partials_Listing_Search_Form {
                 '8000' => '$8,000',
           );
 
-            $user_price_start_rental = '';
-            $user_price_end_rental = '';
-            $user_price_inc_rental = '';
+            $user_price_start_rental = pls_get_option('pls-option-rental-price-min');
+            $user_price_end_rental = pls_get_option('pls-option-rental-price-max');
+            $user_price_inc_rental = pls_get_option('pls-option-rental-price-inc');
 
             if (is_numeric($user_price_start_rental) && is_numeric($user_price_end_rental) && is_numeric($user_price_inc_rental)) {
                 $range = range($user_price_start_rental, $user_price_end_rental, $user_price_inc_rental);    
@@ -691,7 +691,7 @@ class PLS_Partials_Listing_Search_Form {
         /** Add the maximum price select element. */
         if ($max_price_rental == 1) {
         	$selected_max_price = isset( $_POST['metadata']['max_price']  ) ? wp_kses_post( $_POST['metadata']['max_price'] ) : false;
-        	
+        
             $form_html['max_price_rental'] = pls_h(
                 'select',
                 array( 'name' => 'metadata[max_price]' ) + $form_opt_attr['max_price'],

@@ -17,7 +17,7 @@ class PL_Option_Helper {
 		if (get_option('placester_api_key') == $new_api_key) {
 			return array('result' => false,'message' => 'You\'re already using that Placester API Key.');
 		}
-		$response = PL_User::whoami(array('api_key' => $new_api_key));
+		$response = PL_User::whoami(array(), $new_api_key);
 		if ($response && isset($response['user'])) {
 			$option_result = PL_Options::set('placester_api_key', $new_api_key);
 			if ($option_result) {

@@ -10,7 +10,7 @@ class PLS_Quick_Search_Widget extends WP_Widget {
         $widget_options = array( 'classname' => 'pls-quick-search','description' => 'Displays search filters for bedrooms, bathrooms, city, state, zip, minimum price, and maximum price');
 
         /* Create the widget. */
-        parent::__construct( "pls-quick-search", 'Placester: Listings Quick Search', $widget_options );        
+        parent::__construct( "pls-quick-search", 'Placester: Listings Quick Search', $widget_options );
     }
 
     function widget($args, $instance) {
@@ -29,9 +29,13 @@ class PLS_Quick_Search_Widget extends WP_Widget {
 
         $search_form_filter_string .= '&class=pls_quick_search';
 
-           echo $before_widget;
-            echo "<h3>" . $title . "</h3>";
-            echo PLS_Partials::get_listings_search_form($search_form_filter_string);
+        if (get_theme_support('pls-quick-search-neighborhood-polygon')) {
+          $search_form_filter_string .= '&neighborhood_polygons=1';
+        }
+
+        echo $before_widget;
+        echo "<h3>" . $title . "</h3>";
+        echo PLS_Partials::get_listings_search_form($search_form_filter_string);
         echo "<section class='clear'></section>";
         echo "</section>";
         echo $after_widget;

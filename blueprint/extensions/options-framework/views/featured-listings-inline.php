@@ -6,7 +6,7 @@
 	
 	<div class="featured-listings" id="<?php echo $params['option_name'] ?>" ref="<?php echo $params['value']['id'] ?>" <?php echo isset($params['iterator']) ? 'rel="' . $params["iterator"] . '"' : ''; ?> <?php echo ($params['for_slideshow'] == 1) ? 'data-max="1"' : ''; ?> >
 		<?php if ( is_array($params['val']) ): ?>
-			<ul>
+			<ol>
 			<?php if ($for_slideshow == 1): ?>
 				<?php unset( $params['val']['image'], $params['val']['link'], $params['val']['html'], $params['val']['type'] ) ?>
 				
@@ -29,7 +29,7 @@
 				</li>
 				<?php endforeach ?>
 			<?php endif ?>
-			</ul>	
+			</ol>	
 		<?php else: ?>
 			<p>You haven't set any featured listings yet. Currently, a random selection of listings are being displayed until you pick some. If you previously picked listings, and now they are missing, it's because you (or your MLS), has marked them inactive, sold, rented, or they've been deleted.</p>
 		<?php endif ?>

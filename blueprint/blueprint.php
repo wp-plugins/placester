@@ -262,9 +262,6 @@ class Placester_Blueprint {
         /** Add theme support for menus */
         add_theme_support( 'pls-menus', array( 'primary', 'subsidiary' ) );
 
-        /** Add theme support for sidebars */
-        add_theme_support( 'pls-sidebars', array( 'primary', 'listings-search', 'footer-widgets', 'single-property' ) );
-
         // Adds default styling out of the box
         add_theme_support( 'pls-default-normalize' );
         add_theme_support( 'pls-default-960' );
@@ -302,8 +299,16 @@ class Placester_Blueprint {
         add_theme_support( 'pls-color-options');
         add_theme_support( 'pls-user-options');
 
-				// Required for WordPress
-				add_theme_support( 'automatic-feed-links' );
+        // Required for WordPress
+        add_theme_support( 'automatic-feed-links' );
+        
+        /** Add theme support for sidebars - this doesn't turn all sidebars on. */
+        add_theme_support( 'pls-sidebars', array( 'primary', 'listings-search', 'footer-widgets', 'single-property', 'rental-search', 'sales-search', 'blog-index', 'single-post', 'neighborhoods', 'single-neighborhood', 'contact' ) );
+        
+        // Add Default Sidebars
+        add_theme_support( 'pls-main-sidebar' );
+        add_theme_support( 'pls-listings-search-sidebar' );
+        add_theme_support( 'pls-single-property-sidebar' );
     }
 
 	/**
@@ -468,8 +473,14 @@ class Placester_Blueprint {
         /** Load the Maps Util extension if supported. */
         require_if_theme_supports( 'pls-membership', trailingslashit ( PLS_EXT_DIR ) . 'membership.php' );
 
-                /** Load fallbacks last. */
+        /** Load fallbacks last. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'fallback.php' );
+        
+        /** Load the Shuffle Bricks extension if requested. */
+        if ( current_theme_supports( 'pls-shuffle-bricks' ) ) {
+            require_if_theme_supports( 'pls-shuffle-bricks', trailingslashit( PLS_EXT_DIR ) . 'shuffle-bricks.php' );
+        }
+        
 	}
 
     /**

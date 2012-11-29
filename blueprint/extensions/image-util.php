@@ -85,12 +85,7 @@ class PLS_Image {
         $old_image = PLS_IMG_URL . "/null/listing-1200x720.jpg";
       }
 
-		} else if ( $args['fancybox']['allow_dragonfly'] 
-					&& $args['allow_dragonfly'] 
-					&& $args['allow_resize'] 
-					&& $args['resize']['w'] 
-					&& $args['resize']['h'] 
-					&& get_theme_support('pls-dragonfly') ) {
+		} else if ( $args['allow_resize'] && $args['resize']['w'] && $args['resize']['h'] && get_theme_support('pls-dragonfly') ) {
 
 			extract(wp_parse_args(parse_url($old_image), array('query' => '') ));
 

@@ -1,7 +1,7 @@
 <?php
 
 /*****************************************************/
-/* Initializer the Heavily Modified Theme Customizer */
+/* Initialize the Heavily Modified Theme Customizer */
 /*****************************************************/
 
 PL_Customizer_Helper::init();
@@ -19,7 +19,7 @@ class PL_Customizer_Helper
 
 	public static function is_onboarding() 
 	{
-		return ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' );
+		return ( defined('HOSTED_PLUGIN_KEY') && isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' );
 	}
 
 	public static function themedemo_admin() 
@@ -33,21 +33,39 @@ class PL_Customizer_Helper
 		// A simple check to ensure function was called properly...
 		if ( !isset($wp_customize) ) { return; }
 
-		// This is a global function, as PHP does not allow nested class declaration...
-		define_custom_controls();
+		// Check to see if the current active theme is present in the list of those supported by our customizer..
+		global $PL_CUSTOMIZER_THEME_LIST;
+		$theme_supported = in_array( get_stylesheet(), $PL_CUSTOMIZER_THEME_LIST );
 
-		// Load the customizer with necessary flags...
-		PL_Customizer::register_components( $wp_customize, self::is_onboarding() );
+		// Check to see if the plugin is running on the hosted environment...
+		$on_hosted = defined('HOSTED_PLUGIN_KEY');
 
-		// Prevent default control from being created
-		remove_action( 'customize_register', array(  $wp_customize, 'register_controls' ) );
+		// error_log('On Hosted: ' . $on_hosted);
+		// error_log('Current theme supported: ' . $theme_supported);
 
-		// No infobar in theme previews...
-		remove_action( 'wp_head', 'placester_info_bar' );
+		if ( $on_hosted || $theme_supported ) {
+			// This is a global function, as PHP does not allow nested class declaration...
+			define_custom_controls();
 
-		// Register function to inject script to make postMessage settings work properly
-		if ( $wp_customize->is_preview() && ! is_admin() ) { 
-			add_action( 'wp_footer', array(__CLASS__, 'inject_postMessage_hooks'), 21); 
+			// If NOT in hosted environment (but theme is supported), do not render the 'Theme Selection' pane...
+			$excluded_opts = null;
+			if ( !$on_hosted ) {
+				$excluded_opts = array( 'Theme Selection', 'theme-select' );
+			}
+
+			// Load the customizer with necessary flags...
+			PL_Customizer::register_components( $wp_customize, $excluded_opts );
+
+			// Prevent default control from being created
+			remove_action( 'customize_register', array(  $wp_customize, 'register_controls' ) );
+
+			// No infobar in theme previews...
+			remove_action( 'wp_head', 'placester_info_bar' );
+
+			// Register function to inject script to make postMessage settings work properly
+			if ( $wp_customize->is_preview() && ! is_admin() ) { 
+				add_action( 'wp_footer', array(__CLASS__, 'inject_postMessage_hooks'), 21); 
+			}
 		}
 	}
 

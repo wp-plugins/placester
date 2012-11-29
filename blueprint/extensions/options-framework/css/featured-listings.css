@@ -85,8 +85,8 @@
 
 /* inline */
 .featured-listings-wrapper .head {
-	width: 100%;	
-	float: left;
+/*  width: 100%;*/
+/*  float: left;*/
 	clear: both;
 }
 .featured-listings-wrapper .head h4 {

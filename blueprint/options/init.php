@@ -38,18 +38,23 @@ PLS_Style::add(array(
 				"id" => "pls-site-favicon",
 				"type" => "upload"));
 
-		PLS_Style::add(array( 
-				"name" => "Slideshow Listings",
-				"desc" => "",
-				"id" => "slideshow-featured-listings",
-				"type" => "featured_listing"));
-
-		PLS_Style::add(array( 
-				"name" => "Featured Listings",
-				"desc" => "Select your featured listings here that will display in your sidebar listings widget as well as on the home page's featured list.",
-				"id" => "custom-featured-listings",
-				"type" => "featured_listing"));
-
+		/**
+		  * Load only when the plugin is active
+		 */
+		if( function_exists( 'placester_activate' ) ) {
+			PLS_Style::add(array( 
+					"name" => "Slideshow Listings",
+					"desc" => "",
+					"id" => "slideshow-featured-listings",
+					"type" => "featured_listing"));
+	
+			PLS_Style::add(array( 
+					"name" => "Featured Listings",
+					"desc" => "Select your featured listings here that will display in your sidebar listings widget as well as on the home page's featured list.",
+					"id" => "custom-featured-listings",
+					"type" => "featured_listing"));
+		}
+		
 		PLS_Style::add(array( 
 				"name" => "Google Analytics Tracking Code",
 				"desc" => "Add your google analytics tracking ID code here. It looks something like this: UA-XXXXXXX-X",

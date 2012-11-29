@@ -139,6 +139,7 @@ class PLS_Map {
 
 		// ob_start();
 		wp_enqueue_script('map-object', trailingslashit(PLS_JS_URL) . 'scripts/map.js');
+		wp_enqueue_script('poi-object', trailingslashit(PLS_JS_URL) . 'scripts/poi.js');
 		wp_enqueue_script('status-object', trailingslashit(PLS_JS_URL) . 'scripts/status.js');
 		wp_enqueue_script('neighborhood', trailingslashit(PLS_JS_URL) . 'scripts/neighborhood.js');
 		wp_enqueue_script('lifestyle', trailingslashit(PLS_JS_URL) . 'scripts/lifestyle.js');

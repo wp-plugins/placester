@@ -436,7 +436,7 @@ function optionsframework_fields() {
 									<?php echo optionsframework_medialibrary_uploader( $value['id'], $val[$i]['image'], null, '',0, "image", $i ); ?>		
 								</div>
 								<div class="item_row">
-									<label for="">Click to Link</label>
+									<label for="">Click-to Link</label>
 									<input type="text" value="<?php echo $val[$i]['link'] ?>" name="<?php echo esc_attr( $option_name . '[' . $value['id'] . '][' . $i . '][link]') ?>">
 								</div>
 								<div class="item_row">

@@ -31,12 +31,13 @@ SearchLoader.prototype.init = function() {
 	this.map = false;
 	this.list = false;
 	this.filter = false;
-
+	this.poi = false;
+	
 	//some type checking to make sure we handle defaults correctly
-	this.init_params();			
+	this.init_params();
 	
 	//just out of kindness for new devs
-	if ( this.params.map || this.params.filter || this.params.list) {
+	if ( this.params.map || this.params.filter || this.params.list || this.params.poi ) {
 		this.create_objects();
 		this.init_objects();
 		this.listings.init();
@@ -46,13 +47,14 @@ SearchLoader.prototype.init = function() {
 }
 
 SearchLoader.prototype.create_objects = function() {
-	this.listings_params = {};	
+	this.listings_params = {};
 
 	if (this.params.map) {
 		this.map = new Map();
 		this.listings_params.map = this.map;
 		this.filter_params.map = this.map;
 		this.list_params.map = this.map;
+		this.poi_params.map = this.map;
 	}
 	if (this.params.filter) {
 		this.filter = new Filters();
@@ -60,25 +62,31 @@ SearchLoader.prototype.create_objects = function() {
 		this.list_params.filter = this.filter;
 		this.map_params.filter = this.filter;
 	}
-		
 	if (this.params.list) {
 		this.list = new List();
 		this.listings_params.list = this.list;
 		this.filter_params.list = this.list;
 		this.map_params.list = this.list;
 	}
-		
+	if (this.params.poi) {
+		this.poi = new POI();
+		this.map_params.poi = this.poi;
+	}
+
 	this.listings = new Listings (this.listings_params);
 
 
 	if (this.params.map) 
 		this.map_params.listings = this.listings;
-	
+
 	if (this.params.filter)
 		this.filter_params.listings = this.listings;
-		
+
 	if (this.params.list)
 		this.list_params.listings = this.listings;
+
+	if (this.params.poi)
+		this.poi_params.listings = this.listings;
 
 }
 
@@ -94,16 +102,21 @@ SearchLoader.prototype.init_objects = function() {
 			};
 			this.params.map.neighborhood = new Neighborhood (neighborhood_params);
 		}
-		this.map.init( this.map_params );	
+		this.map.init( this.map_params );
 	};
 
 	if ( this.params.filter ) {
-		this.filter.init( this.filter_params );		
+		this.filter.init( this.filter_params );
 	};
 
-	if ( this.params.list ) {	
-		this.list.init( this.list_params );	
+	if ( this.params.list ) {
+		this.list.init( this.list_params );
 	};
+
+	if ( this.params.poi ) {
+		this.poi.init( this.poi_params );
+	};
+
 }
 
 SearchLoader.prototype.init_params = function( ) {
@@ -139,6 +152,16 @@ SearchLoader.prototype.init_params = function( ) {
 
 		if (that.params.filter instanceof Object)
 			return that.params.filter;
+
+		return {};	
+	}();
+
+	this.poi_params = function () {
+		if (that.params.poi && typeof Filters !== 'function')
+			return false;
+
+		if (that.params.poi instanceof Object)
+			return that.params.poi;
 
 		return {};	
 	}();

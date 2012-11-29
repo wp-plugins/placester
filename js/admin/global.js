@@ -38,32 +38,29 @@ function parse_validation (response) {
 function check_api_key (api_key) {
 	$ = jQuery; //we're in no conflict land. 
 	$('#api_key_message').hide();
-	console.log(api_key.length);
-	if (api_key.length == 40 || api_key.length == 96 ) {
-		var data = {action : "set_placester_api_key",api_key: api_key};
-		$('#api_key_message').removeClass('red');
-		$('#api_key_message').html('Checking....').show().addClass('green');
-		$.ajax({
-			url: ajaxurl, //wordpress thing
-			type: "POST",
-			data: data,
-			dataType: "json",
-			success: function (response) {
-				if (response && response['message']) {
-					if (response['result']) {
-						$('#api_key_message').html(response['message']).show().removeClass('red').addClass('green');			
-						setTimeout(function () {
-							window.location.href=window.location.href;
-						}, 1000);
-					} else {
-						$('#api_key_message').html(response['message']).show().removeClass('green').addClass('red');			
-					};
-				};		
-			}
-		});
-	} else {
-		$('#api_key_message').html('Invalid Placester API Entered. Not 40 Characters long.').show().removeClass('green').addClass('red');
-	}
+
+	var data = {action : "set_placester_api_key",api_key: api_key};
+	$('#api_key_message').removeClass('red');
+	$('#api_key_message').html('Checking....').show().addClass('green');
+	
+	$.ajax({
+		url: ajaxurl, //wordpress thing
+		type: "POST",
+		data: data,
+		dataType: "json",
+		success: function (response) {
+			if (response && response.message) {
+				if (response.result) {
+					$('#api_key_message').html(response.message).show().removeClass('red').addClass('green');			
+					setTimeout(function () {
+						window.location.href = window.location.href;
+					}, 1000);
+				} else {
+					$('#api_key_message').html(response.message).show().removeClass('green').addClass('red');			
+				};
+			};		
+		}
+	});
 }
 
 function new_sign_up(success_callback) {

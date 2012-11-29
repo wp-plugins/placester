@@ -286,37 +286,35 @@ function ajax_placester_contact() {
 
       // Check the subject field
       if( trim($_POST['subject']) == '' ) {
-        $message = "They did not include a subject \n\n ";
+        // $message .= "They did not include a subject \n\n ";
         $subject = '';
       } else {
-        $message .= "Subjects: " . trim($_POST['subject']) . " \n";
+        $message .= "Subject: " . trim($_POST['subject']) . " \n";
         $subject = ': ' . trim($_POST['subject']);
       }
 
       // Check the departments field
       if( trim($_POST['department']) == '' ) {
-        $message = "They didn't select a department \n\n ";
+        // $message .= "They didn't select a department \n\n ";
       } else {
         $message .= "Requested Departments: " . trim($_POST['department']) . " \n";
       }      
 
       // Check the question field
       if( trim($_POST['question']) == '' ) {
-        $message = "They had no questions at this time \n\n ";
+        $message .= "They left no comment nor question. \n\n ";
       } else {
         $message .= "Questions: " . trim($_POST['question']) . " \n";
       }
 
-
-
       if( empty($_POST['id']) ) {
-        $message .= "Listing ID: No specific listing \n";
+        // $message .= "Listing ID: No specific listing \n";
       } else {
         $message .= "Listing ID: " . trim($_POST['id']) . " \n";
       }
 
       if( trim($_POST['fullAddress']) == '' ) {
-        $message .= "Listing Address: No specific listing \n";
+        // $message .= "Listing Address: No specific listing \n";
       } else {
         $message .= "Listing Address: " . $_POST['fullAddress'] . " \n";
       }
@@ -358,7 +356,6 @@ function ajax_placester_contact() {
       $name = $_POST['name'];
       PLS_Membership::create_person(array('metadata' => array('name' => $name, 'email' => $_POST['email'] ) )) ;
 
-
       if (trim($_POST['email_confirmation']) == true) {
 
         ob_start();
@@ -367,7 +364,7 @@ function ajax_placester_contact() {
               
         wp_mail( $_POST['email'], 'Form Submitted' . $subject, $message_to_submitter );
       }
-    
+
       echo "sent";
     } else {
       echo $error;

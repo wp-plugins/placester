@@ -1,4 +1,4 @@
-<?php if (is_user_logged_in()): ?>
+<?php if (is_user_logged_in()  && class_exists( 'Placester_Contact_Widget' ) ): ?>
 	<?php extract(PLS_Plugin_API::get_person_details()); ?>
 	<?php //pls_dump(PLS_Plugin_API::get_person_details()); ?>
 

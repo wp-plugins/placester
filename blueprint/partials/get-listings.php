@@ -66,7 +66,7 @@ class PLS_Partial_Get_Listings {
         if ( $height ) 
             $height = absint( $height );
 
-        $request_params = wp_parse_args($request_params, array('limit' => $limit, 'sort_type' => $sort_type));
+        $request_params = wp_parse_args($args, array('limit' => $limit, 'sort_type' => $sort_type));
 
         /** Filter the request parameters. */
         $request_params = apply_filters( pls_get_merged_strings( array( 'pls_listings_request', $context ), '_', 'pre', false ), $request_params, $context_var );

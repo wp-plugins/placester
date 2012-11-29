@@ -96,10 +96,10 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         ),
 
         array( 
-            "name" => "Custom CSS",
-            "desc" => "Enter custom css styles here. Will override any theme styles as well as any theme options you've already set.",
-            "id" => "pls-custom-css",
-            "type" => "textarea"
+            'name' => 'Custom CSS',
+            'desc' => 'Enter custom css styles here. Will override any theme styles as well as any theme options you\'ve already set.',
+            'id' => 'pls-custom-css',
+            'type' => 'textarea'
         ),  
 
         // array(

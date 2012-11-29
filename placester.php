@@ -4,7 +4,7 @@ Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
 Author: Placester.com
-Version: 1.1.1
+Version: 1.1.2
 Author URI: https://www.placester.com/
 */
 
@@ -79,7 +79,7 @@ define('ADMIN_URL', trailingslashit( admin_url() ) );
 define('ADMIN_MENU_URL', trailingslashit( ADMIN_URL ) . 'admin.php' );
 
 // Demo Account API Key
-define('DEMO_API_KEY', '3eb444f8869cb88bbc349586573aabbb84a316d7');
+define('DEMO_API_KEY', '7e63514ebfad7608bbe7b4469ab470ecef4dc651099ae06fc1df6807717f0deacd38809e3c314ca09c085125f773a4c7');
 
 //config
 include_once('config/toggle_form_sections.php');
@@ -201,11 +201,20 @@ function placester_admin_menu() {
 
     add_submenu_page( 'placester', '','Listings', 'edit_pages', 'placester_properties', array('PL_Router','my_listings'));
     add_submenu_page( 'placester', '', 'Add Listing', 'edit_pages', 'placester_property_add', array('PL_Router','add_listings') );    
-    if ( !is_multisite() || !is_network_admin() ) {
+    
+    // If the site using the plugin is on our hosted network, don't show the theme gallery...
+    if ( !defined('HOSTED_PLUGIN_KEY') ) {
     	add_submenu_page( 'placester', '', 'Theme Gallery', 'edit_pages', 'placester_theme_gallery', array('PL_Router','theme_gallery') );    	
     }
+    
     global $settings_subpages;
-    $settings_subpages = array('Settings' => '','Client Settings' => '_client' ,'Caching Settings' => '_caching', 'Global Property Filtering' => '_filtering', 'Polygon Controls' => '_polygons', 'Property Pages' => '_property_pages', 'Template Controls' => '_template', 'International Settings' => '_international' );
+    $settings_subpages = array('Settings' => '',
+                               'Client Settings' => '_client',
+                               'Global Property Filtering' => '_filtering', 
+                               'Polygon Controls' => '_polygons', 
+                               'Property Pages' => '_property_pages', 
+                               'Template Controls' => '_template', 
+                               'International Settings' => '_international' );
     foreach ($settings_subpages as $name => $page_url) {
         add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    
     }
@@ -229,22 +238,4 @@ function placester_info_bar() {
     }
 }
 
-add_action('wp_enqueue_scripts', 'iframe_load_notify');
-function iframe_load_notify () {
-  ob_start();
-    ?>
-    <script type="text/javascript">
-        window.onload = function () {  
-            if ( (top.location != self.location) && top.customizer_global ) {
-                top.customizer_global.previewLoaded();
-
-                // Check for onboarding wizard, throw appropriate event..
-                if ( top.wizard_global ) {
-                    top.wizard_global.previewLoaded();
-                }
-            }
-        }
-    </script>
-    <?php
-  echo ob_get_clean();
-}
+?>

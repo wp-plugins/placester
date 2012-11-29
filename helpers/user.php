@@ -4,21 +4,21 @@ PL_Helper_User::init();
 class PL_Helper_User {
 	
 	public function init() {
-		add_action('sign-up-action', array(__CLASS__, 'set_admin_email' ) );
-		add_action('wp_ajax_set_placester_api_key', array(__CLASS__, 'set_placester_api_key' ) );
-		add_action('wp_ajax_existing_api_key_view', array(__CLASS__, 'existing_api_key_view' ) );
-		add_action('wp_ajax_new_api_key_view', array(__CLASS__, 'new_api_key_view' ) );
-		add_action('wp_ajax_create_account', array(__CLASS__, 'create_account' ) );
-		add_action('wp_ajax_user_save_global_filters', array(__CLASS__, 'set_global_filters' ) );
-		add_action('wp_ajax_user_remove_all_global_filters', array(__CLASS__, 'remove_all_global_filters' ) );
-		add_action('wp_ajax_ajax_log_errors', array(__CLASS__, 'ajax_log_errors' ) );
-		add_action('wp_ajax_ajax_block_address', array(__CLASS__, 'ajax_block_address' ) );
-		add_action('wp_ajax_ajax_default_address', array(__CLASS__, 'set_default_country' ) );
-		add_action('wp_ajax_whoami', array(__CLASS__, 'ajax_whoami' ) );
-		add_action('wp_ajax_subscriptions', array(__CLASS__, 'ajax_subscriptions' ) );
-		add_action('wp_ajax_start_subscription_trial', array(__CLASS__, 'start_subscription_trial' ) );
-		add_action('wp_ajax_update_user', array(__CLASS__, 'ajax_update_user' ) );
-		add_action('wp_ajax_update_google_places', array(__CLASS__, 'update_google_places' ) );
+		add_action( 'sign-up-action', array(__CLASS__, 'set_admin_email' ) );
+		add_action( 'wp_ajax_set_placester_api_key', array(__CLASS__, 'set_placester_api_key' ) );
+		add_action( 'wp_ajax_existing_api_key_view', array(__CLASS__, 'existing_api_key_view' ) );
+		add_action( 'wp_ajax_new_api_key_view', array(__CLASS__, 'new_api_key_view' ) );
+		add_action( 'wp_ajax_create_account', array(__CLASS__, 'create_account' ) );
+		add_action( 'wp_ajax_user_save_global_filters', array(__CLASS__, 'set_global_filters' ) );
+		add_action( 'wp_ajax_user_remove_all_global_filters', array(__CLASS__, 'remove_all_global_filters' ) );
+		add_action( 'wp_ajax_ajax_log_errors', array(__CLASS__, 'ajax_log_errors' ) );
+		add_action( 'wp_ajax_ajax_block_address', array(__CLASS__, 'ajax_block_address' ) );
+		add_action( 'wp_ajax_ajax_default_address', array(__CLASS__, 'set_default_country' ) );
+		add_action( 'wp_ajax_whoami', array(__CLASS__, 'ajax_whoami' ) );
+		add_action( 'wp_ajax_subscriptions', array(__CLASS__, 'ajax_subscriptions' ) );
+		add_action( 'wp_ajax_start_subscription_trial', array(__CLASS__, 'start_subscription_trial' ) );
+		add_action( 'wp_ajax_update_user', array(__CLASS__, 'ajax_update_user' ) );
+		add_action( 'wp_ajax_update_google_places', array(__CLASS__, 'update_google_places' ) );
 	}
 
 	public static function set_admin_email (){

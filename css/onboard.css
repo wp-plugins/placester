@@ -267,17 +267,6 @@ overflow:hidden;
 #confirm a { height:50px; width:50px; background:url(../images/onboard_icons.png) -47px -500px; }
 
 section#pane {
-
-  /* IE 5.5+ support #BB000000 is ~70% opacity on black */
-  filter:progid:DXImageTransform.Microsoft.gradient(
-    startColorstr=#ffffff, endColorstr=#ffffff
-  );
-
-  /* IE 8 support */
-  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(
-    startColorstr=#ffffff, endColorstr=#ffffff
-  )";	
-		
 	display: none;	
 	width: 520px;
 	height: 100%;
@@ -286,20 +275,32 @@ section#pane {
 	-webkit-box-shadow: 3px -3px 3px rgba(0,0,0,0.3);
 	box-shadow: 3px -3px 3px rgba(0,0,0,0.3s);
 	margin-left: 56px;
-	overflow: auto;
+	
+	/*overflow: auto;*/
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    /* black for browsers which cannot support rgba */
+	background-color: #fff;
+
+    /* 70% opacity for supported browsers */
+    background-color: rgba(255, 255, 255, 0.96);
+
+	/* IE 5.5+ support #BB000000 is ~70% opacity on black */
+ 	/*filter:progid:DXImageTransform.Microsoft.gradient(
+    	startColorstr=#ffffff, endColorstr=#ffffff
+ 	);*/
+
+  	/* IE 8 support */
+  	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(
+      startColorstr=#ffffff, endColorstr=#ffffff
+  	)";
 }
 
 section#pane .control-container {
 	display: none;
 	padding: 20px 30px;
-	min-height: 100%;
 	width: 460px;
-
-	/* black for browsers which cannot support rgba */
-	background-color: #fff;
-
-    /* 70% opacity for supported browsers */
-    background-color: rgba(255, 255, 255, 0.96);
 }
 
 div#switcher {

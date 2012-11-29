@@ -176,10 +176,13 @@ function optionsframework_load_scripts() {
 	wp_enqueue_script('jquery-ui-dialog');
 	wp_enqueue_script('color-picker', OPTIONS_FRAMEWORK_DIRECTORY.'js/colorpicker.js', array('jquery'));
 	wp_enqueue_script('options-custom', OPTIONS_FRAMEWORK_DIRECTORY.'js/options-custom.js', array('jquery'));
-	wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
-
-	wp_register_script( 'datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array( 'jquery'), NULL, true );
-    wp_enqueue_script( 'datatable' );
+	
+	if( function_exists( 'placester_activate') ) {
+		wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
+	
+		wp_register_script( 'datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array( 'jquery'), NULL, true );
+	    wp_enqueue_script( 'datatable' );
+	}
 }
 
 function of_admin_head() {
@@ -224,7 +227,7 @@ function optionsframework_page() {
 	    	  <?php $jquery_click_hook = "of-option-" . preg_replace('/[^a-zA-Z0-9._\-]/', '', strtolower('Import/Export') ); ?>
 	    		<a id="<?php echo esc_attr( $jquery_click_hook ) ?>-tab" class="nav-tab" title="<?php echo esc_attr( 'Import/Export' ) ?>" href="<?php echo esc_attr( '#'.$jquery_click_hook ) ?>"> 
 	    		  <?php echo esc_html( 'Import/Export' ); ?></a>
-	    	</li		
+	    	</li>		
     	</ul>
     </div>
     

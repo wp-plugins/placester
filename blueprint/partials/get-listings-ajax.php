@@ -48,7 +48,15 @@ class PLS_Partials_Get_Listings_Ajax {
     }
 
     function load($args = array()) {
-      $sort_type = pls_get_option( 'listings_default_sort_type' );
+
+      if (isset($args['sort_type'])) {
+        $sort_type = $args['sort_type'];
+      }
+      $sort_type_theme_option = pls_get_option( 'listings_default_sort_type' );
+      if (!empty($sort_type_theme_option)) {
+        $sort_type = $sort_type_theme_option;
+      }
+      
       if( empty( $sort_type ) ) {
         $sort_type = 'image';
       }
@@ -84,7 +92,7 @@ class PLS_Partials_Get_Listings_Ajax {
         $sort_by_options = array('images' => 'Images','location.address' => 'Address', 'location.locality' => 'City', 'location.region' => 'State', 'location.postal' => 'Zip', 'zoning_types' => 'Zoning', 'purchase_types' => 'Purchase Type', 'listing_types' => 'Listing Type', 'property_type' => 'Property Type', 'cur_data.beds' => 'Beds', 'cur_data.baths' => 'Baths', 'cur_data.price' => 'Price', 'cur_data.sqft' => 'Square Feet', 'cur_data.avail_on' => 'Date Available');
         $sort_type_options = array('desc' => 'Descending','asc' => 'Ascending');
 
-        // /** Filter the "Sort by"  and sort tyep options. */
+        // /** Filter the "Sort by"  and sort type options. */
         $sort_by_options = apply_filters("pls_listings_list_ajax_sort_by_options", $sort_by_options);
         $sort_type_options = apply_filters("pls_listings_list_ajax_sort_type_options", $sort_type_options);
 

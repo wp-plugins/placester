@@ -126,8 +126,8 @@
   #optionsframework .section-color .controls {
     min-width: 125px;
     width: 125px; }
-  #optionsframework .controls input, #optionsframework .controls select, #optionsframework .controls textarea {
-    margin-bottom: 10px;
+  #optionsframework .controls input[type="text"], #optionsframework .controls select, #optionsframework .controls textarea {
+    margin-bottom: 5px;
     width: 100%; }
   #optionsframework .section-radio label, #optionsframework .section-multicheck label {
     float: left;
@@ -208,23 +208,37 @@
       width: 140px; }
   #optionsframework .mini .explain {
     max-width: 74%; }
-  #optionsframework .controls input.upload {
-    width: 80%; }
-  #optionsframework .controls input.upload_button {
-    float: right;
-    width: 45px;
-    border-color: #bbbbbb;
-    cursor: pointer;
-    height: 16px; }
-    #optionsframework .controls input.upload_button:hover {
-      border-color: #666666;
-      color: black; }
+  #optionsframework .controls #custom_type {
+    float: left; }
+  #optionsframework .controls .item_row {
+    float: left;
+    width: 100%; }
+    #optionsframework .controls .item_row label {
+      float: left;
+      font-weight: 600;
+      font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
+      width: 18%;
+      padding-top: 6px; }
+    #optionsframework .controls .item_row input[type="text"] {
+      float: left;
+      width: 50%; }
+    #optionsframework .controls .item_row input[type="button"] {
+      float: left;
+      margin-left: 20px;
+      width: 45px;
+      border-color: #bbbbbb;
+      cursor: pointer;
+      height: 16px; }
+      #optionsframework .controls .item_row input[type="button"]:hover {
+        border-color: #666666;
+        color: black; }
+    #optionsframework .controls .item_row textarea {
+      height: 50px; }
   #optionsframework .screenshot {
     float: left;
-    margin-left: 1px;
     position: relative;
     width: 344px;
-    margin-top: 3px; }
+    margin: 3px 0 0 18%; }
     #optionsframework .screenshot img {
       background: #fafafa;
       border-color: #cccccc #eeeeee #eeeeee #cccccc;
@@ -337,23 +351,42 @@ hr {
 .section-slideshow .option .controls {
   width: 100% !important; }
   .section-slideshow .option .controls .featured_slideshow_options .featured_slide {
-    width: 358px;
-    margin: 0 0 10px 10px;
+    width: 100%;
+    margin: 0 0 10px 0;
     float: left;
     background-color: #f1f1f1;
     padding: 10px;
-    border: 1px solid #dfdfdf; }
-    .section-slideshow .option .controls .featured_slideshow_options .featured_slide .featured_slide_header h2 {
+    border: 1px solid #dfdfdf;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; }
+    .section-slideshow .option .controls .featured_slideshow_options .featured_slide .featured-listings-wrapper {
+      width: 80%; }
+    .section-slideshow .option .controls .featured_slideshow_options .featured_slide .featured_slide_header {
       float: left; }
-    .section-slideshow .option .controls .featured_slideshow_options .featured_slide .featured_slide_header .slideshow_type {
-      float: left;
-      width: 300px !important;
-      margin: 9px 0 0 0px;
-      font-size: 16px; }
+      .section-slideshow .option .controls .featured_slideshow_options .featured_slide .featured_slide_header h2 {
+        float: left; }
+      .section-slideshow .option .controls .featured_slideshow_options .featured_slide .featured_slide_header .slideshow_type {
+        float: left;
+        width: 300px !important;
+        margin: 9px 0 0 20px;
+        font-size: 15px; }
     .section-slideshow .option .controls .featured_slideshow_options .featured_slide p {
       margin: 0px;
       float: left;
-      padding: 15px 0 !important;
-      font-size: 14px; }
-    .section-slideshow .option .controls .featured_slideshow_options .featured_slide .item_row {
-      float: left; }
+      padding: 5px 0 13px !important;
+      font-size: 13px;
+      font-style: italic; }
+    .section-slideshow .option .controls .featured_slideshow_options .featured_slide #listing_type .head {
+      width: 145px;
+      float: right;
+      margin: -35px 0 0 20px; }
+
+.featured-listings-wrapper {
+  float: left; }
+  .featured-listings-wrapper .featured-listings ol li {
+    font-size: 14px;
+    font-weight: 600; }
+
+.section-featured_listing .featured-listings-wrapper {
+  width: 100%; }

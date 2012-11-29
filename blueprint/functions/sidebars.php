@@ -30,40 +30,129 @@ function pls_register_sidebars() {
     if ( ! is_array( $sidebar_support[0] ) )
         return;
 
-	/** Set up the primary sidebar arguments. */
-	$sidebars[] = array(
-		'id' => 'primary',
-		'name' =>  'Main Sidebar',
-		'description' => 'The main (primary) widget area, most often used as a sidebar.',
-		'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
-		'after_widget' => '</section>',
-		'before_title' => '<h3 class="widget-title">',
-		'after_title' => '</h3>'
-	);
+  /** Set up the default sidebar arguments. */
+  if ( get_theme_support( 'pls-main-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'primary',
+        'name' =>  'Default Sidebar',
+        'description' => 'The main (primary) widget area, most often used as a sidebar on pages that do not have a custom sidebar.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
 
-/** Set up the primary sidebar arguments. */
-	$sidebars[] = array(
-		'id' => 'listings-search',
-		'name' => 'Listings Search Sidebar',
-		'description' => 'The main (primary) widget area, most often used as a sidebar.',
-		'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
-		'after_widget' => '</section>',
-		'before_title' => '<h3 class="widget-title">',
-		'after_title' => '</h3>'
-	);
+  if ( get_theme_support( 'pls-listings-search-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'listings-search',
+        'name' => 'Listings Search Sidebar',
+        'description' => 'The main (primary) widget area, most often used as a sidebar.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
 
-// sidebar for single-listings page
-	$sidebars[] = array(
-		'id' => 'single-property',
-		'name' => 'Single Property Sidebar',
-		'description' => 'Widget area displayed on single property details page.',
-		'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
-		'after_widget' => '</section>',
-		'before_title' => '<h3 class="widget-title">',
-		'after_title' => '</h3>'
-	);
+  if ( get_theme_support( 'pls-single-property-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'single-property',
+        'name' => 'Single Property Sidebar',
+        'description' => 'Widget area displayed on single property details page.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
 
-//    pls_dump($sidebar_support);
+  /** Set up other sidebar arguments to be available on request. */
+  if ( get_theme_support( 'pls-rental-search-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'rental-search',
+        'name' => 'Rental Search Sidebar',
+        'description' => 'Widget area displayed on Rental Search page.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
+
+  if ( get_theme_support( 'pls-sales-search-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'sales-search',
+        'name' => 'Sales Search Sidebar',
+        'description' => 'Widget area displayed on Sales Search page.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
+
+  if ( get_theme_support( 'pls-contact-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'contact',
+        'name' => 'Contact Page Sidebar',
+        'description' => 'Widget area displayed on Contact page.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
+
+  if ( get_theme_support( 'pls-blog-index-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'blog-index',
+        'name' => 'Blog Index Sidebar',
+        'description' => 'Widget area displayed on Blog Index page.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
+
+  if ( get_theme_support( 'pls-single-post-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'single-post',
+        'name' => 'Single Blog Post Sidebar',
+        'description' => 'Widget area displayed on single blog post page.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
+
+  if ( get_theme_support( 'pls-neighborhoods-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'neighborhoods',
+        'name' => 'Neighborhoods Page Sidebar',
+        'description' => 'Widget area displayed on Neighborhoods Index page.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
+
+  if ( get_theme_support( 'pls-single-neighborhood-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'single-neighborhood',
+        'name' => 'Single Neighborhood Sidebar',
+        'description' => 'Widget area displayed on single neighborhood details page.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
+
+   // pls_dump($sidebar_support);
 
     // loop through and create sidebars
     foreach ($sidebars as $sidebar) {

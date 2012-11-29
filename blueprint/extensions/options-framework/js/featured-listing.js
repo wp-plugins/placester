@@ -22,15 +22,15 @@ jQuery(document).ready(function($) {
         $('#save-featured-listings').attr('class', calling_button_id);
         $('#save-featured-listings').attr('rel', $(this).attr('rel'));
 
-        var listings_container = $(this).closest('.featured-listings-wrapper').find('div.featured-listings ul li');
+        var listings_container = $(this).closest('.featured-listings-wrapper').find('div.featured-listings ol li');
         featured_datatable.fnClearTable();
         $(listings_container).each(function(event) {
-            console.log(this);
+            // console.log(this);
             var address = $(this).children('div#pls-featured-text').html();
             var listing_id = $(this).children('div#pls-featured-text').attr('ref');
             featured_datatable.fnAddData( [address, '<a id="pls_remove_option_listing" href="#" ref="' + listing_id + '">Remove</a>']);
         });
-        console.log(listings_container);
+        // console.log(listings_container);
 
 	});
 
@@ -89,9 +89,9 @@ jQuery(document).ready(function($) {
     });
 
     $('#save-featured-listings').live('click', function(event) {
-    	event.preventDefault();
+        event.preventDefault();
         var iterator = $(this).attr('rel') || false;
-    	save_options( iterator );
+        save_options( iterator );
     });
 
 
@@ -103,40 +103,63 @@ jQuery(document).ready(function($) {
     }
 
     function save_options ( iterator ) {
-    	var listings_container;
+        var listings_container;
         var featured_listings = '';
-        featured_listings += '<ul>';
-        console.log(iterator);
+        
         if ( iterator ) {
-            var calling_id = 'button#' + $('#save-featured-listings').attr('class') + '[rel="' + iterator + '"]';    
+            var calling_id = 'button#' + $('#save-featured-listings').attr('class') + '[rel="' + iterator + '"]';
         } else {
-            var calling_id = 'button#' + $('#save-featured-listings').attr('class');    
+            var calling_id = 'button#' + $('#save-featured-listings').attr('class');
         }
+
         listings_container = $(calling_id).closest('.featured-listings-wrapper').find('div.featured-listings').get(0);
-    	$('#datatable_featured_listings tr').each(function(event) {
-    		
-            var option_name = $(listings_container).attr('id');
-            var iterator = $(listings_container).attr('rel') || false;
+        
+        // console.log(listings_container);
 
-            if (iterator) {
-                var option_id = $(listings_container).attr('ref') + '][' + iterator;
-            } else {
-                var option_id = $(listings_container).attr('ref');    
-            }
-            
-            var rows = $(this).find('td');
-    		var address = $(rows[0]).html();
-    		var id = $(rows[1]).find('a').attr('ref');
-            
-            if (address && address != 'Sorry, no listings match your search. Please try another.') {
-                featured_listings += '<li>';
-                featured_listings += '<div id="pls-featured-text">' + address + '</div>';
-                featured_listings += '<input type="hidden" name="' + option_name + '[' + option_id + '][' + id + ']=" value="' + address + '">';
-                featured_listings += '</li>';
-            }
+        var rows = $("#datatable_featured_listings").dataTable().fnGetData();
+        
+        if (rows.length < 0) {
+          $('#featured-listing-wrapper').dialog('close');
+          return false;
+        }
+        
+        featured_listings += '<ol>';
+        
+        // console.log(listings_container);
+          // Iterate though all rows
+          $(rows).each(function(event) {
+          
+              var option_name = $(listings_container).attr('id');
+              var iterator = $(listings_container).attr('rel') || false;
 
-    	});
-        featured_listings += '</ul>';
+              if (iterator) {
+                  var option_id = $(listings_container).attr('ref') + '][' + iterator;
+              } else {
+                  var option_id = $(listings_container).attr('ref');
+              }
+              // console.log(option_id);
+
+              // Set Address
+              var address = this[0];
+              // console.log(address);
+
+              // Set Ref #
+              ref_id = this[1];
+              locationStart = ref_id.indexOf(' ref="');
+              locationEnd = ref_id.indexOf('">');
+              var id = ref_id.substring(locationStart + 6, locationEnd );
+              // console.log(id);
+              
+              if (address && address != 'Sorry, no listings match your search. Please try another.') {
+                  featured_listings += '<li>';
+                  featured_listings += '<div id="pls-featured-text">' + address + '</div>';
+                  featured_listings += '<input type="hidden" name="' + option_name + '[' + option_id + '][' + id + ']=" value="' + address + '">';
+                  featured_listings += '</li>';
+              }
+
+        });
+
+        featured_listings += '</ol>';
         
         $(listings_container).html(featured_listings);
         $('#featured-listing-wrapper').dialog('close');

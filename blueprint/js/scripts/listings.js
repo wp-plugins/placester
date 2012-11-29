@@ -2,6 +2,7 @@ function Listings ( params ) {
 	this.map = params.map || false;
 	this.list = params.list || false;
 	this.filter = params.filter || false;
+	this.poi = params.poi || false;
 	this.hook = params.hook || 'pls_listings_ajax';
 	this.sSource = params.sSource || info.ajaxurl;
 	this.aoData = params.aoData || [];
@@ -33,7 +34,6 @@ Listings.prototype.init = function () {
 
 	if (this.list) {
 		this.list.listeners();
-
 
 		jQuery.address.change(function(event) {
 			if (!that.is_new_serch) {
@@ -176,6 +176,10 @@ Listings.prototype.get = function ( success ) {
 
 			if ( that.list )
 				that.list.update( ajax_response );
+
+			if (that.poi )
+				that.poi.update();
+			
 
 			that.active_filters = [];
 	    }

@@ -45,7 +45,7 @@ class PL_Customizer
 		return $args;
 	}
 
-	public function register_components( $wp_customize ) 
+	public function register_components( $wp_customize, $excluded = null ) 
 	{
 		$theme_opts_key = $wp_customize->get_stylesheet();
 	    $last_section_id = '';
@@ -55,6 +55,11 @@ class PL_Customizer
 
 	    foreach ($options as $opt) 
 	    {
+	    	// Skip over excluded options...
+	    	if ( $excluded && $opt['name'] && in_array($opt['name'], $excluded) ) {
+	    		continue;
+	    	}
+
 	    	// Take care of defining some common vars used many of the cases below...
 	    	if ( isset($opt['id']) ) {
 	    		$setting_id = "{$theme_opts_key}[{$opt['id']}]";

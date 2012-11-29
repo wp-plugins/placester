@@ -135,9 +135,6 @@ class PL_Router {
 	public function settings_neighborhood() {
 		self:: router('settings/neighborhood.php', array(), false);
 	}
-	public function settings_caching() {
-		self:: router('settings/caching.php', array(), false);
-	}
 	public function settings_filtering() {
 		self:: router('settings/filtering.php', array(), false);
 	}

@@ -75,7 +75,7 @@
 
 #pls_integration_form select {
 	margin-bottom: 18px;
-	height: 30px;
+	height: 36px;
 	width: 100%;
 }
 
@@ -158,7 +158,7 @@ textarea.invalid {
    -moz-opacity:0.3;    /* Mozilla extension */
    -khtml-opacity:0.3;  /* Safari/Conqueror extension */
    opacity:0.3; /* CSS3 */
-   background-color: lightgrey;
+/*   background-color: lightgrey;*/
    margin-left: 56px;
 }
 

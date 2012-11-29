@@ -4,7 +4,7 @@
 (function($){
 
     $.fn.errorTooltip = function(tooltip_name, config_or_action) {
-        console.log(this);
+        // console.log(this);
         var config = {
             text: 'An error has occurred',
             type: 'error',
@@ -63,16 +63,17 @@ jQuery(document).ready(function($) {
         jQuery(this).errorTooltip('email_error', 'remove');
     });  
 
-	jQuery('.side-ctnr.placester_contact form').submit(function(e) {
+	jQuery('.side-ctnr.placester_contact form').submit(function(event) {
 
         var error_found = false;
 
         $this = jQuery(this);
-        e.preventDefault();
+        
+        event.preventDefault ? event.preventDefault() : event.returnValue = false;
 
         // widget.find('.placester_loading').show();
 
-		var str = jQuery(this).serialize();
+        var str = jQuery(this).serialize();
         
         var clear_form = function(form) {
             form.find('input[type="text"], input[type="email"], textarea').val('');
