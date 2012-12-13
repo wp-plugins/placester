@@ -92,12 +92,11 @@ SearchLoader.prototype.create_objects = function() {
 
 
 SearchLoader.prototype.init_objects = function() {
-
 	if ( this.params.map) {
 		if ( this.params.map.type === 'neighborhood' ) {
 			var neighborhood_params = {map: this.map};
-			if (this.params.neighborhood instanceof Object ) {
-				neighborhood_params = this.params.neighborhood;
+			if (this.params.map.neighborhood instanceof Object ) {
+				neighborhood_params = this.params.map.neighborhood;
 				neighborhood_params.map = this.map;
 			};
 			this.params.map.neighborhood = new Neighborhood (neighborhood_params);

@@ -146,9 +146,9 @@ textarea.invalid {
 	margin: 5px 0 !important;
 }
 .ui-widget-overlay {
-	opacity: 0.1 !important;
-	-moz-opacity: 0.1 !important;
-	filter:alpha(opacity=0.1);
+	opacity: 0.6 !important;
+	-moz-opacity: 0.6 !important;
+	filter:alpha(opacity=0.6);
 }
 
 /* Preview load indicator */

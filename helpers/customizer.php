@@ -59,14 +59,21 @@ class PL_Customizer_Helper
 			// Prevent default control from being created
 			remove_action( 'customize_register', array(  $wp_customize, 'register_controls' ) );
 
-			// No infobar in theme previews...
-			remove_action( 'wp_head', 'placester_info_bar' );
-
 			// Register function to inject script to make postMessage settings work properly
 			if ( $wp_customize->is_preview() && ! is_admin() ) { 
 				add_action( 'wp_footer', array(__CLASS__, 'inject_postMessage_hooks'), 21); 
 			}
 		}
+		else {
+			// If the user is neither on hosted, nor using a placester theme, make sure NOT to register
+			// the accompanying scripts and stylesheets...
+			remove_action( 'customize_controls_enqueue_scripts', array( PL_Js_Helper, 'customizer') );
+			remove_action( 'customize_controls_enqueue_scripts', array( PL_Css_Helper, 'customizer' ) );
+			remove_action( 'customize_controls_print_footer_scripts', array(__CLASS__, 'load_partials') );
+		}
+
+		// No infobar in theme previews, regardless of which customizer is used...
+		remove_action( 'wp_head', 'placester_info_bar' );
 	}
 
 	public static function inject_postMessage_hooks() 

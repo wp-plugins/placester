@@ -410,7 +410,7 @@ jQuery(document).ready(function($) {
   * Handle custom controls...
   */	
 
-  	// --- Blog Post ---
+  	/* --- Blog Post --- */
 
 	function toggleInvalid (item, invalid) {
         if (invalid) {
@@ -468,7 +468,7 @@ jQuery(document).ready(function($) {
   	});
 
 	
-	// --- Create a Listing ---
+	/* --- Create a Listing --- */
 
   	$('#submit_listing').on('click', function (event) {
 		// $('#loading_overlay').show();
@@ -529,10 +529,20 @@ jQuery(document).ready(function($) {
     });
 
 
-	// -- Custom CSS --
+	/* -- Custom CSS -- */
 
-	// Hide the theme customizer control that actually connects to theme option...
-	$('#customize-control-pls-custom-css_ctrl').hide();
+	function initCustomCSS () {
+		var ctrl = $('#customize-control-pls-custom-css_ctrl'); 
+
+		// Hide the theme customizer control that actually connects to theme option...
+		ctrl.hide();
+
+		// Copy the initial custom css to the viewable "Edit Custom CSS" textarea...
+		var css = ctrl.find('textarea').val();
+		$('#custom_css').val(css);
+	}
+	// Call on initial customizer load...
+	initCustomCSS();
 
 	function updateCustomCSS (css) {
 		var custom_css = $('#customize-control-pls-custom-css_ctrl textarea');
@@ -561,6 +571,9 @@ jQuery(document).ready(function($) {
 
 		// Just in case...
 		$('#color_message.error').hide();
+
+		// Check for "none"...
+		if ($(this).val() == 'none') { return; }	
 
 		// Let the user know there's work being done...
 		setPreviewLoading();

@@ -6,7 +6,12 @@ jQuery(document).ready(function($) {
     init_featured_picker();
 
     var dialogWidth = 850;
-    $('#featured-listing-wrapper').dialog({autoOpen: false,width: dialogWidth,position: [($(window).width() / 2) - (dialogWidth / 2), 50]});
+    $('#featured-listing-wrapper').dialog({
+      autoOpen: false,
+      width: dialogWidth,
+      title: "Featured Listings Picker",
+      position: [($(window).width() / 2) - (dialogWidth / 2), 50]
+    });
 	
     $('.featured-listings').live('click', function(event) {
 		event.preventDefault();

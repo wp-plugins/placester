@@ -116,7 +116,9 @@ Map.prototype.init = function ( params ) {
 		if (this.status_window) {
 			this.status_window.init();
 			this.status_window.add_control_container();
-			this.status_window.on_load();	
+			if( this.status_window.on_load !== false) {
+				this.status_window.on_load();	
+			}
 		}
 	}
 

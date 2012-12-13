@@ -47,8 +47,7 @@ class PLS_Partials_Get_Listings_Ajax {
       self::get(array('property_ids' => $favorite_ids, 'allow_id_empty' => true));
     }
 
-    function load($args = array()) {
-
+    function load($args = array()) {		
       if (isset($args['sort_type'])) {
         $sort_type = $args['sort_type'];
       }

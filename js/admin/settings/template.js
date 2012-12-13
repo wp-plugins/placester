@@ -199,12 +199,12 @@ jQuery(document).ready(function($) {
     snip.css('display', 'none');
   });
 
-  $('.area_snippet').live('click', function() {
-    if ( $(this).find('.text_snippet').attr('disabled') == 'disabled' )
-    {
-      alert('You need to create a custom version of this shortcode in order start editing');
-    }
-  });
+  // $('.area_snippet').live('click', function() {
+  //   if ( $(this).find('.text_snippet').attr('disabled') == 'disabled' )
+  //   {
+  //     alert('You need to create a custom version of this shortcode in order to start editing');
+  //   }
+  // });
 
   $('.enabled_check').live('change', function() {
     var data = {

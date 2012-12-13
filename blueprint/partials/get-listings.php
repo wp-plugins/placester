@@ -123,6 +123,11 @@ class PLS_Partial_Get_Listings {
              * Curate the listing_data.
              */
 
+             // ignore featured listings without images
+             if ( !empty($args['featured_option_id']) && empty($listing_data['images']) ) {
+               continue;
+             }
+             
             /** Overwrite the placester url with the local url. */
             // $listing_data->url = PLS_Plugin_API::get_property_url( $listing_data->id );
 

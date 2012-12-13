@@ -30,20 +30,25 @@ class PLS_Listing_Helper {
 		if (!empty( $option_ids ) ) {
 			$property_ids = array_keys($option_ids);
 			$api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => $property_ids));
+      // remove listings without images
+      foreach ($api_response['listings'] as $key => $listing) {
+          if ( empty($listing['images']) ) {
+            unset($api_response['listings'][$key]);
+          }
+      }
 			return $api_response;	
 		} else {
 			return array('listings' => array());
 		}
-		
 	}
 	
-	function get_featured_from_post( $post_id, $option_name ) {
-		$meta_values = get_post_meta( $post_id, $option_name );
-	
-		// test passed meta data
-		if (!empty( $meta_values ) && isset( $meta_values[0]['featured-listings-type'] )) {
-			$option_ids = $meta_values[0]['featured-listings-type'];
-			$property_ids = array_keys($option_ids);
+	// pass property IDs array
+	function get_featured_from_post ( $post_id, $post_meta_key ) {
+		$property_data = get_post_meta( $post_id, $post_meta_key );
+		$property_ids = empty( $property_data ) ? array() : @unserialize( $property_data[0] );
+		$property_ids = empty( $property_ids ) ? array() : $property_ids['featured-listings-type'];
+		
+		if (! empty( $property_ids ) ) {
 			$api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => $property_ids));
 			return $api_response;
 		} else {

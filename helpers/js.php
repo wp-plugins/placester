@@ -5,13 +5,39 @@ PL_Js_Helper::init();
 class PL_Js_Helper {
 
 	public function init() {
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin' ));
-		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend' ));
-		add_action('admin_head', array(__CLASS__, 'admin_menu_url'));
-		add_action('customize_controls_enqueue_scripts', array(__CLASS__, 'customizer'));
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin') );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend') );
+		add_action( 'admin_head', array(__CLASS__, 'admin_menu_url') );
+		add_action( 'customize_controls_enqueue_scripts', array(__CLASS__, 'customizer') );
 	}	
 
 	public function admin ($hook) {
+		// Inject premium themes logic into the themes admin page when visiting from any site on the hosted env...
+		if ($hook == 'themes.php' && defined('HOSTED_PLUGIN_KEY')) {
+			self::register_enqueue_if_not('premium', trailingslashit(PL_JS_URL) . 'admin/premium.js', array('jquery'));
+			self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
+			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui'));
+			
+			// Print global JS var containing premium theme list...
+			global $PL_CUSTOMIZER_THEMES;
+			ob_start();
+			?> 
+			  <script type="text/javascript"> 
+			    var pl_premThemes = [];
+			    <?php foreach ( $PL_CUSTOMIZER_THEMES['Premium'] as $name => $template ): ?>
+			      pl_premThemes.push("<?php echo $template; ?>");
+			    <?php endforeach; ?>
+			  </script>
+			<?php
+			echo ob_get_clean();
+
+			// Need this for trial activation...
+			PL_Router::load_builder_partial('free-trial.php');
+
+			return;
+		} 
+
+		// Handle plugin admin pages...
 		$pages = array('placester_page_placester_properties', 
 					   'placester_page_placester_property_add', 
 					   'placester_page_placester_settings', 
@@ -36,11 +62,18 @@ class PL_Js_Helper {
 		
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) .  'admin/global.js', array( 'jquery-ui'));
-		self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_URL) .  'admin/sign-up.js', array( 'jquery-ui'));
-		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui'));
-		self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery-ui'));
-		self::register_enqueue_if_not('demo-data', trailingslashit(PL_JS_URL) .  'admin/demo-data.js', array('jquery-ui'));
 		
+		// ob_start();
+		// pls_dump(PL_User::subscriptions());
+		// error_log(ob_get_clean());
+
+		// $sub = PL_User::subscriptions();
+		// if ( empty($sub['plan']) && $sub['eligible_for_trial'] ) {
+			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_URL) .  'admin/sign-up.js', array( 'jquery-ui'));
+			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui'));
+			self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery-ui'));
+			self::register_enqueue_if_not('demo-data', trailingslashit(PL_JS_URL) .  'admin/demo-data.js', array('jquery-ui'));
+		// }
 		
 		if ($hook == 'placester_page_placester_properties') {
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) .  'datatables/jquery.dataTables.js', array( 'jquery'));			
@@ -117,7 +150,7 @@ class PL_Js_Helper {
 		self::register_enqueue_if_not('membership', trailingslashit(PL_JS_PUB_URL) .  'membership.js', array( 'jquery'));
 		self::register_enqueue_if_not('general', trailingslashit(PL_JS_PUB_URL) .  'general.js', array( 'jquery'));
 		
-		if ( PL_Option_Helper::get_demo_data_flag() ) {
+		if ( PL_Option_Helper::get_demo_data_flag() && current_user_can('manage_options') ) {
 			self::register_enqueue_if_not('infobar', trailingslashit(PL_JS_PUB_URL) .  'infobar.js', array( 'jquery'));
 		}			
 	}

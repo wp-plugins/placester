@@ -3,8 +3,6 @@
 class PL_Snippet_Template {
 	
 	public static function prepare_template( $args ) {
-		PL_Js_Helper::register_enqueue_if_not('settings-template', trailingslashit(PL_JS_URL) .  'admin/settings/template.js', array( 'jquery'));
-		
 		$defaults = array(
 			'codes' => array(),
 			'p_codes' => array()

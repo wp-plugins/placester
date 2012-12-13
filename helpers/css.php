@@ -6,11 +6,17 @@ class PL_Css_Helper {
 	
 	function init () {		
 		// add_action( 'admin_init', array( __CLASS__, 'admin' ));
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin' ));
-		add_action('customize_controls_enqueue_scripts', array(__CLASS__, 'customizer'));
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin' ) );
+		add_action( 'customize_controls_enqueue_scripts', array( __CLASS__, 'customizer' ) );
 	}
 
 	function admin ($hook) {
+		// Inject premium themes logic into the themes admin page when visiting from any site on the hosted env...
+		if ($hook == 'themes.php' && defined('HOSTED_PLUGIN_KEY')) {		
+			self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');
+			self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
+		}
+
 		$pages = array('placester_page_placester_properties', 
 					   'placester_page_placester_property_add', 
 					   'placester_page_placester_settings', 
@@ -87,11 +93,8 @@ class PL_Css_Helper {
 
 	function customizer() {
 		self::register_enqueue_if_not('customizer-css', trailingslashit(PL_CSS_URL) . 'customizer.css');
-		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
-		self::register_enqueue_if_not('colorpicker', trailingslashit(PL_JS_URL) .  'lib/colorpicker/css/colorpicker.css');
-
-		// wp_dequeue_style( 'customize-controls' );
 		self::register_enqueue_if_not('onboard-css', trailingslashit(PL_CSS_URL) . 'onboard.css');
+		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 	}
 
 	private function register_enqueue_if_not($name, $path, $dependencies = array()) {

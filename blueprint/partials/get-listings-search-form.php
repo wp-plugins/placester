@@ -645,13 +645,22 @@ class PLS_Partials_Listing_Search_Form {
 
         /** Add the county select element. */
         if ($neighborhood_polygons == 1) {
-        	$selected_polygons = isset( $_POST['neighborhood_polygons']  ) ? wp_kses_post( $_POST['neighborhood_polygons'] ) : false;
-        	
-            $form_html['neighborhood_polygons'] = pls_h(
-                'select',
-                array( 'name' => 'neighborhood_polygons' ) + $form_opt_attr['neighborhood_polygons'],
-                pls_h_options( $form_options['neighborhood_polygons'], $selected_polygons, true )
-            );
+            if ( !empty($selected_polygons) ) {
+                $selected_polygons = isset( $_POST['neighborhood_polygons']  ) ? wp_kses_post( $_POST['neighborhood_polygons'] ) : false;
+                $form_html['neighborhood_polygons'] = pls_h(
+                    'select',
+                    array( 'name' => 'neighborhood_polygons' ) + $form_opt_attr['neighborhood_polygons'],
+                    pls_h_options( $form_options['neighborhood_polygons'], $selected_polygons, true )
+                );
+            } else {
+                // default to MLS data for neighborhoods if no polygons are set
+                $selected_polygons = isset( $_POST['location']['neighborhood']  ) ? wp_kses_post( $_POST['location']['neighborhood'] ) : false;
+                $form_html['neighborhood_polygons'] = pls_h(
+                    'select',
+                    array( 'name' => 'location[neighborhood]' ) + $form_opt_attr['neighborhood'],
+                    pls_h_options( $form_options['neighborhood'], $selected_neighborhood, true )
+                );
+            }
         }
 
         /** Add the minimum price select element. */
@@ -660,8 +669,8 @@ class PLS_Partials_Listing_Search_Form {
         	
             $form_html['min_price'] = pls_h(
                 'select',
-                array( 'name' => 'metadata[min_price]' ) + $form_opt_attr['min_price'],
-                pls_h_options( $form_options['min_price'], $selected_min_price )
+                array( 'name' => 'location[neighborhood]' ) + $form_opt_attr['neighborhood'],
+                pls_h_options( $form_options['neighborhood'], $selected_neighborhood, true )
             );
         }
         

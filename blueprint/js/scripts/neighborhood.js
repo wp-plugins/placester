@@ -34,7 +34,7 @@ function Neighborhood ( params ) {
 Neighborhood.prototype.init = function () {
 	var that = this;	
 	var filters = {};
-
+	
 	if (this.slug) {
 		//if slug, only get that one
 		filters.action = 'get_polygons_by_slug';

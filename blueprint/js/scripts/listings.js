@@ -145,22 +145,25 @@ Listings.prototype.get = function ( success ) {
 	var hash = that.generate_search_hash()
 	var current_hash = jQuery.address.value();
 
-	//the hash has never been set, and it's not empty, or its different from the previous hash. Go look it up.
-	if (current_hash !== '/' && ( that.search_hash === hash || that.search_hash === false || that.from_back_button) ) {
-		that.active_filters.push( { "name": "saved_search_lookup", "value" : current_hash } );	
-		that.search_hash = current_hash;
-
-		//if there are filters active, set them too
-		if (that.filter) {
-			that.filter.set_values( current_hash );
-		}
-
-	} else {
-		that.active_filters.push( { "name": "saved_search_lookup", "value" : '/' + hash } );	
-		jQuery.address.value(hash);
-		that.search_hash = '/' + hash;
-	}
+	// Don't display in preview screens, nor in widget pages
+	if( window.location.href.indexOf( 'post_type=pl_general_widget' ) === -1 ) {
+		//the hash has never been set, and it's not empty, or its different from the previous hash. Go look it up.
+		if (current_hash !== '/' && ( that.search_hash === hash || that.search_hash === false || that.from_back_button) ) {
+			that.active_filters.push( { "name": "saved_search_lookup", "value" : current_hash } );	
+			that.search_hash = current_hash;
 	
+			//if there are filters active, set them too
+			if (that.filter) {
+				that.filter.set_values( current_hash );
+			}
+	
+		} else {
+			that.active_filters.push( { "name": "saved_search_lookup", "value" : '/' + hash } );	
+			jQuery.address.value(hash);
+			that.search_hash = '/' + hash;
+		}
+	}
+		
 	jQuery.ajax({
 	    "dataType" : 'json',
 	    "type" : "POST",

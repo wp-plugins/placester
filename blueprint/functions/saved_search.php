@@ -55,4 +55,12 @@ class PLS_Saved_Search {
 		return $key;
 	}
 
+	// Clear all saved searches stored in the DB...
+	function clear () {
+		$saved_searches = $wpdb->get_results('SELECT option_name FROM ' . $wpdb->prefix . 'options ' ."WHERE option_name LIKE 'pls_ss_%'");
+	    foreach ($saved_searches as $option) {
+	        delete_option( $option->option_name );
+	    }
+	}
+
 }

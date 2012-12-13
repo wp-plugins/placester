@@ -296,7 +296,8 @@ function define_custom_controls()
    		public function render() {
    			?>
    			  <div id="color_scheme">
-   			  	<?php $preset_colors = array('Default' => 'default',
+   			  	<?php $preset_colors = array('---' => 'none',
+   			  								 'Default' => 'default',
    			  								 'Forest Green' => '#569E28',
    			  								 'Navy Blue' => '#000080',
    			  								 'Maroon' => '#AD0707',
