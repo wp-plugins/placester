@@ -45,8 +45,19 @@ class PLS_Listing_Helper {
 	// pass property IDs array
 	function get_featured_from_post ( $post_id, $post_meta_key ) {
 		$property_data = get_post_meta( $post_id, $post_meta_key );
-		$property_ids = empty( $property_data ) ? array() : @unserialize( $property_data[0] );
-		$property_ids = empty( $property_ids ) ? array() : $property_ids['featured-listings-type'];
+		
+		// Data comes in different forms
+		$property_ids = empty( $property_data ) ? array() : @json_decode( $property_data[0], true );
+		
+		if( empty( $property_ids ) && is_array( $property_data ) && isset( $property_data[0]['featured-listings-type'] ) ) {
+			$listings_array = $property_data[0]['featured-listings-type'];
+			if( is_array( $listings_array ) ) {
+				$property_ids = array_keys( $listings_array );
+			}
+			// $property_ids = implode(',', $property_ids );
+		} else if( is_array( $property_ids ) ) {
+			$property_ids = array_keys( $property_ids );
+		} 
 		
 		if (! empty( $property_ids ) ) {
 			$api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => $property_ids));

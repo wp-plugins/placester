@@ -9,8 +9,8 @@ $(document).ready(function($) {
 		//of jquerys issues finding "."
 		active_filter = active_filter.replace(".","-");
 		// console.log(active_filter);
-		$('#gloal_filter_form').find('.currently_active_filter').removeClass('currently_active_filter').hide();
-		$('#gloal_filter_form').find('section.' + active_filter).show().addClass('currently_active_filter');
+		$('#global_filter_form').find('.currently_active_filter').removeClass('currently_active_filter').hide();
+		$('#global_filter_form').find('section.' + active_filter).show().addClass('currently_active_filter');
 	}
 
 	$('#add-single-filter').bind('click', function () {

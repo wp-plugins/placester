@@ -3,6 +3,7 @@ $blue: #0c60a7
 $red: #eb0e0e
 $green: #6E9910
 $gray: #f0f0f0
+$dark-gray: #333
 
 @mixin box-sizing
   box-sizing: border-box
@@ -142,11 +143,15 @@ $gray: #f0f0f0
 
 
 #featured-listing-wrapper
-  #save-featured-listings
-    float: right
-    margin-bottom: -40px
+  #featured-button-group-wrapper
+    padding-top: 10px
+    clear: both
+    #save-featured-listings
+      float: right
+      margin-bottom: -40px
   .filter-wrapper
     float: left
+    width: 720px
   h3
     margin: 0
     width: 100%
@@ -181,7 +186,7 @@ $gray: #f0f0f0
       width: 400px
       font-size: 16px
 
-#save-featured-listings
+#save-featured-listings, #cancel-featured-listings
   @include green-btn
 #options-filters
   .button
@@ -211,14 +216,21 @@ $gray: #f0f0f0
 .dataTables_wrapper
   position: relative
 
+#featured-listing-wrapper
+  .datatable-wrapper
+    .paginate_disabled_previous, .paginate_disabled_next
+      cursor: default
+      color: $dark-gray
+
 .dataTables_processing
   position: absolute
   width: 255px
   height: 244px
-  padding: 50px 0 0 150px
-  font-size: 16px
+  padding: 70px 0 0 150px
+  font-size: 24px
   font-weight: bold
-  background-color: lightgrey
+  color: white
+  background-color: black
   opacity: 0.3
   filter: alpha(opacity = 30)
 
@@ -258,6 +270,8 @@ $gray: #f0f0f0
 
 .dataTables_paginate a
   cursor: pointer
+
+ 
 
 #datatable_search_results_next, #datatable_featured_listings_next
   float: right

@@ -135,9 +135,9 @@
     	
     <div class="clr"></div>
   <!-- </div> -->
-		<!-- 
+		 
 			<input type="submit" name="submit" value="Search Now!" id="search-button"> 
-		-->
+		
 </section>
 <div class="search_results">
   <span id="pls_num_results"></span> listing match your search

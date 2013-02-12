@@ -20,10 +20,10 @@ function pls_get_textdomain() {
 
     global $placester_blueprint;
 
-    if ( empty( $placester_blueprint->textdomain ) )
-        $placester_blueprint->textdomain = sanitize_key( apply_filters( 'pls_textdomain', get_template() ) );
+    if ( empty( $placester_blueprint['textdomain'] ) )
+        $placester_blueprint['textdomain'] = sanitize_key( apply_filters( 'pls_textdomain', get_template() ) );
 
-    return $placester_blueprint->textdomain;
+    return $placester_blueprint['textdomain'];
 }
 
 /**
@@ -36,10 +36,10 @@ function pls_get_prefix() {
 
     global $placester_blueprint;
 
-    if ( empty( $placester_blueprint->prefix ) )
-        $placester_blueprint->prefix = apply_filters( 'pls_prefix', get_template() );
+    if ( empty( $placester_blueprint['prefix'] ) )
+        $placester_blueprint['prefix'] = apply_filters( 'pls_prefix', get_template() );
 
-    return $placester_blueprint->prefix;
+    return $placester_blueprint['prefix'];
 }
 
 /**
@@ -113,24 +113,32 @@ function pls_apply_atomic( $tag = '', $value = '' ) {
 }
 
 /**
- * Verifies if the there is a problem with retrieving data from the plugin. 
+ * Verifies if there is a problem with retrieving data from the plugin when used as 
+ * a getter (i.e., no valid param is passed) and sets that value, otherwise.
  *
- * Altough this information ca be determined by accessing the $placester_blueprint 
- * global directly, this method is prefered due to its upgragrade compatibility.
+ * Although this information can be determined and set by accessing the $placester_blueprint 
+ * global directly, this method is preferred due to its upgrade compatibility.
  * 
+ * @param string $val used to set the value of the plugin error, while passing in 'clear' 
+ * removes any error that is currently set.
  * @global object $placester_blueprint The global Placester Blueprint object.
  * @returns mixed Returns false if there is no problem, 'no_api_key',
  * 'no_plugin', or 'timeout' if there is.
  * @since 0.0.1
  */
-function pls_has_plugin_error() {
+function pls_has_plugin_error( $val = null ) {
 
     global $placester_blueprint;
 
-    if ( isset( $placester_blueprint->has_plugin_error ) ) 
-        return $placester_blueprint->has_plugin_error;
-
-    return false;
+    // If a new value is passed, set it (and return nothing)...
+    if ( !empty($val) ) {
+        $placester_blueprint['has_plugin_error'] = ($val !== 'clear') ? $val : false;
+    }
+    // Get and return the existing value...
+    else {
+        $retVal = isset($placester_blueprint['has_plugin_error']) ? $placester_blueprint['has_plugin_error'] : false;
+        return $retVal;
+    }
 }
 
 /**

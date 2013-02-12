@@ -8,7 +8,7 @@ function Status_Window ( params ) {
 	this.listings = params.listings || alert('You must attach a listings object to your status object');
 	this.map = this.listings.map || alert('You need to attach a map to the listings object if you want the status object actually work');
 	this.filter_position = params.fitler_position || google.maps.ControlPosition.RIGHT_TOP;
-	this.class = params.class || 'map_filter_area';
+	this.className = params['class'] || 'map_filter_area';
 	this.dom_id = params.dom_id || 'map_filter_area';
 
 	//functions representing states
@@ -294,7 +294,7 @@ Status_Window.prototype.add_control_container = function ( append ) {
 	var that = this;
 	var controlDiv = document.createElement('div');
 	controlDiv.id = this.dom_id + append;
-	controlDiv.className = this.class;
+	controlDiv.className = this.className;
 	controlDiv.style.marginTop = '9px';
 	controlDiv.style.marginRight = '7px'; 
 	controlDiv.style.padding = '5px';

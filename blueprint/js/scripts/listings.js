@@ -98,7 +98,6 @@ Listings.prototype.get = function ( success ) {
 	//allows the dev to pass in one or many property ids
 	if (this.property_ids) {
 		that.active_filters.push( { "name": "property_ids", "value" :  this.property_ids} );	
-		console.log(that.active_filters)	
 	}
 
 	//get pagination and sorting information
@@ -146,7 +145,9 @@ Listings.prototype.get = function ( success ) {
 	var current_hash = jQuery.address.value();
 
 	// Don't display in preview screens, nor in widget pages
-	if( window.location.href.indexOf( 'post_type=pl_general_widget' ) === -1 ) {
+	if( window.location.href.indexOf( 'post_type=pl_general_widget' ) === -1 && 
+			window.location.href.indexOf( 'post.php?post=' ) === -1 &&
+			window.location.href.indexOf( '/pl_general_widget/' ) === -1) {
 		//the hash has never been set, and it's not empty, or its different from the previous hash. Go look it up.
 		if (current_hash !== '/' && ( that.search_hash === hash || that.search_hash === false || that.from_back_button) ) {
 			that.active_filters.push( { "name": "saved_search_lookup", "value" : current_hash } );	

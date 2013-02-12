@@ -20,7 +20,7 @@ jQuery(document).ready(function($) {
             password: password,
             confirm: confirm,
             name: name,
-            phone: phone,
+            phone: phone
         };
 
         $.post(info.ajaxurl, data, function(response) {
@@ -81,7 +81,7 @@ jQuery(document).ready(function($) {
         data = {
             action: 'pl_login',
             username: username,
-            password: password,
+            password: password
         };
 
         var success = false;

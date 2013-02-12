@@ -8,15 +8,15 @@ class PLS_Partials_Property_Details {
 
 	    if($post->post_type == 'property') {
 
-	         $html = '';
-            
-	         $listing_data = PL_Listing_Helper::get_listing_in_loop();
+	        $html = '';
+          
+          $listing_data = PL_Listing_Helper::get_listing_in_loop();
           
 	        $listing_data['location']['full_address'] = $listing_data['location']['address'] . ' ' . $listing_data['location']['locality'] . ' ' . $listing_data['location']['region'];
-
+          
 	        ob_start();
 	        ?>
-	        
+          
 					<h2 itemprop="name" itemscope itemtype="http://schema.org/PostalAddress">
 					  <span itemprop="streetAdress"><?php echo $listing_data['location']['address']; ?></span> <span itemprop="addressLocality"><?php echo $listing_data['location']['locality']; ?></span>, <span itemprop="addressRegion"><?php echo $listing_data['location']['region']; ?></span>
 					</h2>
@@ -140,12 +140,42 @@ class PLS_Partials_Property_Details {
 				        <?php //endforeach ?>		
 		        	<?php //endif ?>
 	            </div>
- 		     	<?php PLS_Listing_Helper::get_compliance(array('context' => 'listings', 'agent_name' => @$listing_data['rets']['aname'] , 'office_name' => @$listing_data['rets']['oname'])); ?>
+              
+              <?php PLS_Listing_Helper::get_compliance(array('context' => 'listings', 'agent_name' => @$listing_data['rets']['aname'] , 'office_name' => @$listing_data['rets']['oname'])); ?>
 
-			<?php
-	        $html = ob_get_clean();
-	        return apply_filters('property_details_filter',$html, $listing_data);
-	    } 
-	    return $content;
-	}
+      <?php
+          $html = ob_get_clean();
+
+          // Enable Lead Capture
+          $lead_capture_enable = pls_get_option('pd-lc-enable');
+          if ($lead_capture_enable == 1) {
+              ob_start();
+                ?>
+                <!-- Lead Capture Shortcode -->
+                <div style="display:none;" href="#" id="property-details-lead-capture">
+                  <?php 
+                    do_shortcode('[lead_capture_template 
+                        lead_capture_cookie="true" 
+                        name_required="true" 
+                        question_required="false" 
+                        width="440"]'); 
+                  ?>
+                </div>
+                <?php
+              $lead_capture_block = ob_get_clean();
+        }
+        $html = apply_filters('property_details_filter',$html, $listing_data);
+
+        // Add lead capture block to HTML
+        if (isset($lead_capture_block)) {
+          $html = $lead_capture_block . $html;
+        }
+        
+        return $html; 
+        
+
+      }
+      
+      return $content;
+  }
 }

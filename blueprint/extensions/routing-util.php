@@ -128,16 +128,6 @@ class PLS_Route {
 	{
 		$located = '';
 
-		// Cache template locations
-		if((WP_DEBUG !== true)) {	
-			$cache = new PLS_Cache('Located Template');
-			$cache_args = array('template_names' => $template_names);
-			if ($located = $cache->get($cache_args)) {
-				PLS_Debug::add_msg('[[Template location cache hit!]] Returning cached location : ' . $located);
-				return $located;
-			}
-		}
-
 		foreach ( (array) $template_names as $template_name ) {
 			if ( !$template_name )
 				continue;
@@ -148,11 +138,6 @@ class PLS_Route {
 				$located = PLS_TPL_DIR . '/' . $template_name;
 				break;
 			}
-		}
-
-		// Cache template locations	
-		if((WP_DEBUG !== true)) {
-			$cache->save($located);	
 		}
 
 		return $located;

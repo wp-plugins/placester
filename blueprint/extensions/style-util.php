@@ -17,25 +17,14 @@ class PLS_Style {
         // the needed css for these options.
         add_filter('wp_head', array(__CLASS__, 'create_css') );		
         
-        // bunddles all the options to the class so they can 
-        // have styles generated for them. 
+        // bundles all the options to the class so they can 
+        // have styles generated for theme. 
         self::get_options();
 
     }
 
     static function get_options()
     {
-        // Cache options
-        if((WP_DEBUG !== true)) {
-            $cache = new PLS_Cache('Theme PLS Options');
-            $cache_args = array();
-            if ($options = $cache->get($cache_args)) {
-                PLS_Debug::add_msg('[[Theme options cache hit!]] Returning cached options');
-                self::$styles = array_merge(self::$styles, $options);
-                return;
-            }
-        }
-
         // Cache options
         if((WP_DEBUG !== true)) {
             $cache = new PLS_Cache('Theme PLS Options');
@@ -65,7 +54,6 @@ class PLS_Style {
         if((WP_DEBUG !== true)) {
             $cache->save(self::$styles);
         }
-
     }
 
     public static function add ($options = false)
@@ -114,9 +102,12 @@ class PLS_Style {
 						//if we have a style, then let's try to generate a stlye.
 						$styles .= self::handle_style($option['style'], $option['id'], $option['default'], $option['type'], $option['important']);
 
-					} elseif (!empty($id)) {
+          // } elseif (!empty($id)) {
+            // $id doesn't exist... not sure how this was meant to be executed. 
+            // you can't check for ID because all options require IDs
+            
 						//try to use the id as the style... saves time for power devs.
-						$styles .= self::handle_style($option['id'], $option['id'], $option['default'], $option['type'], $option['important']);
+            // $styles .= self::handle_style($option['style'], $option['id'], $option['default'], $option['type'], $option['important']);
 
 					} else {
 					}

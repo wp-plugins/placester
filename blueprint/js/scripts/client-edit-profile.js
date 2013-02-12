@@ -19,7 +19,7 @@ jQuery(document).ready(function($) {
 						text: "Update Contact Info",
 						click: function() {
 							 update_contact_info();
-						},
+						}
 					}
 			}
 		});
@@ -32,14 +32,11 @@ jQuery(document).ready(function($) {
         });
 		data['action'] = 'pls_update_client_profile';
 
-		console.log(data);
-
 		$.post(info.ajaxurl, data, function(data, textStatus, xhr) {
 		  if (data && data.id) {
 		  	$('#edit_profile_message').html('You successfully updated your profile.');
 		  	setTimeout(function () {
 		  		window.location.href=window.location.href;
-		  		console.log('asdfads');
 		  	}, 700);
 		  	
 		  };

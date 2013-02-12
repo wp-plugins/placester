@@ -82,7 +82,7 @@ class PL_Listing {
 		return $response;	
 	}
 
-	public function temp_image ($args = array(), $file_name, $file_mime_type, $file_tmpname) {
+	public function temp_image($args = array(), $file_name, $file_mime_type, $file_tmpname) {
 		$config = PL_Config::PL_API_LISTINGS('temp_image');
 		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));
 		$response = PL_HTTP::send_request_multipart($config['request']['url'], $request, $file_name, $file_mime_type, $file_tmpname);
@@ -97,9 +97,8 @@ class PL_Listing {
 		}
 		return PL_Validate::attributes(PL_HTTP::send_request($config['request']['url'], $request), $config['returns']);
 	}
-	public function types() {
-		$args = array( 'keys' => array( 'property_type') );
-		$config = PL_Config::PL_API_LISTINGS('get.types');
+	public function aggregates($args = array()) {
+		$config = PL_Config::PL_API_LISTINGS('get.aggregate');
 		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));
 		if ( defined('HOSTED_PLUGIN_KEY') ) {
 			$request['hosted_key'] = HOSTED_PLUGIN_KEY;

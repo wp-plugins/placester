@@ -15,8 +15,13 @@ class PL_Css_Helper {
 		if ($hook == 'themes.php' && defined('HOSTED_PLUGIN_KEY')) {		
 			self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');
 			self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
+			// self::register_enqueue_if_not('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
 		}
-
+		
+		if( $hook == 'post-new.php' || $hook == 'post.php' || ( $hook == 'edit.php' && isset( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) ) {
+			self::register_enqueue_if_not('post-screens', trailingslashit(PL_CSS_ADMIN_URL) .  '/post-screens.css');
+		}
+		
 		$pages = array('placester_page_placester_properties', 
 					   'placester_page_placester_property_add', 
 					   'placester_page_placester_settings', 
@@ -29,12 +34,12 @@ class PL_Css_Helper {
 		 			   'placester_page_placester_settings_neighborhood', 
 		 			   'placester_page_placester_settings_filtering', 
 		 			   'placester_page_placester_settings_template', 
-		 			   'placester_page_placester_settings_client');
+		 			   'placester_page_placester_settings_client',
+					   'edit.php');
 
 		if (!in_array($hook, $pages)) { return; }
 
 		//always load these
-		self::register_enqueue_if_not('sign-up-css', trailingslashit(PL_CSS_ADMIN_URL) .  'sign-up.css');		
 		self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');		
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 		self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) .  'integration.css');		
@@ -89,12 +94,17 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  '/settings/all.css');					
 			self::register_enqueue_if_not('settings-filtering', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/filtering.css');					
 		}
+
 	}
 
 	function customizer() {
 		self::register_enqueue_if_not('customizer-css', trailingslashit(PL_CSS_URL) . 'customizer.css');
 		self::register_enqueue_if_not('onboard-css', trailingslashit(PL_CSS_URL) . 'onboard.css');
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
+
+		if ( PL_Bootup::is_theme_switched() ) {
+			self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');
+	    }
 	}
 
 	private function register_enqueue_if_not($name, $path, $dependencies = array()) {

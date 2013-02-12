@@ -13,46 +13,63 @@ Class PL_HTTP {
 	 * @param string $method
 	 * @return array
 	 */
-	function send_request($url, $request, $method = 'GET', $allow_cache = true, $allow_empty_values = false, $force_return = false, $use_ecoding = true) {
-	    
-	    $request_string = '';
-	    foreach ($request as $key => $value) {
+
+	public static function add_amp($str) {
+		return ( strlen($str) > 0 ? '&' : '' );
+	}
+
+	public static function build_request($request, $allow_empty_values = false) {
+		// What is returned...
+		$str = '';
+
+		// ob_start();
+		// 	pls_dump($request);
+		// error_log(ob_get_clean());
+
+		foreach ($request as $key => $value) {
+			/* Value is an array... */
 	        if (is_array($value)) {
-	            if (empty($value) && $allow_empty_values ) {
-	                $request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[]=';
+	        	/* Value-array has is empty... */
+	            if ( empty($value) && $allow_empty_values ) {
+	                $str .= self::add_amp($str) . urlencode($key) . '[]=';
 	            }
+
+	            /* Value-array HAS values... */
 	            foreach ($value as $k => $v) {
-					if (is_int($k)) {
-						if (is_array($v)) {
-							foreach ($v as $i => $j) {
-								if(is_int($i)) {
-									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[][]=' . urlencode($j);
-								} else {
-									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[]['.$i.']=' . urlencode($j);
-								}
-							}
-						} else {
-							$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[]=' . urlencode($v);	
+	            	// Check if key is an int, set $k_show accordingly...
+	            	$k_show = ( is_int($k) ? '' : $k );
+
+	            	/* $v is an array */
+					if (is_array($v)) {
+						// Different logic for single & multi-value cases...
+						$multi = ( count($v) > 1 && count($v) != 0 );
+
+						foreach ($v as $i => $j) {
+							$i_show = ( is_int($i) ? '' : $i );
+							$dim2 = ( $multi || !empty($i_show) ? '[' . $i_show . ']' : '' );
+
+							$str .= self::add_amp($str) . urlencode($key) . '[' . $k_show . ']' . $dim2 . '=' . urlencode($j);
 						}
-					} else {
-						if (is_array($v)) {
-							foreach ($v as $i => $j) {
-								if(is_int($i)) {
-									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . '][]=' . urlencode($j);
-								} else {
-									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . ']['.$i.']=' . urlencode($j);
-								}
-							}
-						} else {
-							$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . ']=' . urlencode($v);	
-						}
+					} 
+					/* $v is NOT an array... */
+					else {
+						$str .= self::add_amp($str) . urlencode($key) . '[' . $k_show . ']=' . urlencode($v);	
 					}					
 	            }
-	        } else {
-	        	$request_string .= (strlen($request_string) > 0 ? '&' : '') . 
-	                $key . '=' . urlencode($value);
+	        } 
+	        /* Value is NOT an array... (i.e., is a scalar) */
+	        else {
+                $str .= self::add_amp($str) . urlencode($key) . '=' . urlencode($value);
 	        }
 	    }
+
+	    return $str;
+	}
+
+
+	public static function send_request($url, $request, $method = 'GET', $allow_cache = true, $allow_empty_values = false, $force_return = false, $use_ecoding = true) {
+
+	    $request_string = self::build_request($request, $allow_empty_values);
 
 	    if (!$use_ecoding) {
 	    	$request_string = urldecode($request_string);
@@ -64,8 +81,8 @@ Class PL_HTTP {
 			case 'POST':
 			case 'PUT':
 				$response = wp_remote_post($url, array('body' => $request_string, 'timeout' => self::$timeout, 'method' => $method));
-				if (!is_array($response)) {
-					$response = array();
+				if ( !is_array($response) || !isset($response['body']) ) {
+					$response = array('body' => '');
 				}
 				return json_decode($response['body'], TRUE);
 				break;
@@ -91,12 +108,14 @@ Class PL_HTTP {
 				} else {
 	        		// pls_dump($url . '?' . $request_string);
 	        		// error_log($url . '?' . $request_string);
+	            	
 	            	$response = wp_remote_get($url . '?' . $request_string, array('timeout' => self::$timeout));
 					PL_Debug::add_msg('------- NO CACHE FOUND --------');    	    		
 	        		PL_Debug::add_msg($url . '?' . $request_string);    	
 
 	        		// error_log(serialize($response));
 	        		// pls_dump($response);
+					
 					if ( (is_array($response) && isset($response['headers']) && isset($response['headers']['status']) && $response['headers']['status'] == 200) || $force_return) {
 						if (!empty($response['body'])) {
 							$body = json_decode($response['body'], TRUE);
@@ -126,7 +145,7 @@ Class PL_HTTP {
 	 * @param string $file_tmpname
 	 * @return array
 	 */
-	function send_request_multipart($url, $request, $file_name, $file_mime_type, $file_tmpname) {
+	public static function send_request_multipart($url, $request, $file_name, $file_mime_type, $file_tmpname) {
 		unset($request['action']);
 		// pls_dump($url, $request, $file_name, $file_mime_type, $file_tmpname);
 
@@ -134,7 +153,6 @@ Class PL_HTTP {
 		$file_location = trailingslashit($wp_upload_dir['path']) . $file_name;
 		// pls_dump($file_location);
 		move_uploaded_file($file_tmpname, $file_location);
-
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -159,21 +177,22 @@ Class PL_HTTP {
 	    $o = json_decode($response, true);
 	    return $o;
 
-	    if (!isset($o['code'])){
-	    	return false;	
-	    } else if ($o['code'] == '201') {
-	    	return false;
-	    } else if ($o['code'] == '300') {
-	    	return false;
-	    } else {
-	    	return false;
-	    }
+	    /** TODO: This code is never called...clean it up! **/
+	    // if (!isset($o['code'])){
+	    // 	return false;	
+	    // } else if ($o['code'] == '201') {
+	    // 	return false;
+	    // } else if ($o['code'] == '300') {
+	    // 	return false;
+	    // } else {
+	    // 	return false;
+	    // }
 
-	    return $o; 
+	    // return $o; 
 
 	}
 
-	function clear_cache() {
+	public static function clear_cache() {
 	    PL_Cache::clear();
 	}
 }

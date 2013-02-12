@@ -74,7 +74,14 @@ class PLS_Format {
 
 	// formats the given number based on the supplied options. 
 	static public function number ( $number, $options = '') {
-		
+
+    if ($number == "0") {
+
+    } elseif ($number == '') {
+      error_log("hello!");
+      return '';
+    }
+    
 		$formatted_number = false;
 
 		/** Define the default argument array. */
@@ -98,7 +105,7 @@ class PLS_Format {
 		
 		//insert $ sign.
 		if ($options['add_currency_sign']) {
-			$formatted_number = '$' . $formatted_number;	
+			$formatted_number =  pls_get_currency_symbol() . $formatted_number;	
 		}
 		
 		return $formatted_number;
@@ -244,20 +251,43 @@ class PLS_Format {
 		return $new_phone;
 	}
 
+  function translate_region($region) {
+    
+    // apply correct case to region to match library
+    $region = ucwords($region);
+    
+    $region_library = array('AL'=>"Alabama",'AK'=>"Alaska",'AZ'=>"Arizona",'AR'=>"Arkansas",'CA'=>"California",'CO'=>"Colorado",'CT'=>"Connecticut",'DE'=>"Delaware",'FL'=>"Florida",'GA'=>"Georgia",'HI'=>"Hawaii",'ID'=>"Idaho",'IL'=>"Illinois", 'IN'=>"Indiana", 'IA'=>"Iowa",  'KS'=>"Kansas",'KY'=>"Kentucky",'LA'=>"Louisiana",'ME'=>"Maine",'MD'=>"Maryland", 'MA'=>"Massachusetts",'MI'=>"Michigan",'MN'=>"Minnesota",'MS'=>"Mississippi",'MO'=>"Missouri",'MT'=>"Montana",'NE'=>"Nebraska",'NV'=>"Nevada",'NH'=>"New Hampshire",'NJ'=>"New Jersey",'NM'=>"New Mexico",'NY'=>"New York",'NC'=>"North Carolina",'ND'=>"North Dakota",'OH'=>"Ohio",'OK'=>"Oklahoma", 'OR'=>"Oregon",'PA'=>"Pennsylvania",'RI'=>"Rhode Island",'SC'=>"South Carolina",'SD'=>"South Dakota",'TN'=>"Tennessee",'TX'=>"Texas",'UT'=>"Utah",'VT'=>"Vermont",'VA'=>"Virginia",'WA'=>"Washington",'DC'=>"Washington D.C.",'WV'=>"West Virginia",'WI'=>"Wisconsin",'WY'=>"Wyoming");
+    
+    // If correct 2 letter abbreviation is set, leave it
+    if (isset($region_library[$region]) && !empty($region_library[$region])) {
+      return $region;
+    }
+    
+    // Find state name
+    foreach ($region_library as $abbrev => $name) {
+      if ($region == $name) {
+        return $abbrev;
+      }
+    }
+    
+    // if the region doesn't match ones of our states, just return it
+    return $region;
+  }
+
   function translate_property_type($listing) {
 
-    if (isset($listing['property_type']) && ($listing['property_type'] != null) && !empty($listing['property_type'])) {
+    if (isset($listing['cur_data']['prop_type']) && ($listing['cur_data']['prop_type'] != null) && !empty($listing['cur_data']['prop_type'])) {
 
-      if ( $listing['property_type'] == "fam_home") {
+      if ( $listing['cur_data']['prop_type'] == "fam_home") {
         $property_type = 'Single Family Home';
-      } elseif ( $listing['property_type'] == "multi_fam") {
+      } elseif ( $listing['cur_data']['prop_type'] == "multi_fam") {
         $property_type = 'Multi Family Home';
       } else {
 
-        if ( is_array($listing['property_type']) ) { 
-          $property_type = ucwords(implode($listing['property_type'], '')); 
+        if ( is_array($listing['cur_data']['prop_type']) ) { 
+          $property_type = ucwords(implode($listing['cur_data']['prop_type'], '')); 
         } else { 
-          $property_type = ucfirst($listing['property_type']); 
+          $property_type = ucfirst($listing['cur_data']['prop_type']); 
         }
 
       }
@@ -294,7 +324,7 @@ class PLS_Format {
 		return $amenities;
 	}
 
-  function translate_lease_terms ($listing) {
+  function translate_lease_terms ($listing, $term = 'price_unit') {
     $lease_terms = array(
       'per_yr' => 'per year',
       'per_wk' => 'per week',
@@ -302,7 +332,7 @@ class PLS_Format {
       'per_ngt' => 'per night'
     );
 
-    $translate_this = $listing['cur_data']['price_unit'];
+    $translate_this = $listing['cur_data'][$term];
 
     $translated = '';
     if ($translate_this != null) {
@@ -543,9 +573,33 @@ class PLS_Format {
         "pk_lease" => "Parking Lease",
         "lease_type" => "Lease Type",
         "master_bath" => "Master Bath",
-        "area" => "Area"
-			);
-		
+        "area" => "Area",
+        "prop_type" => "Property Type",
+        "prop_name" => "Property Name",
+        "bld_sz" => "Building Size",
+        "max_cont" => "Maximum Contiguous",
+        "min_div" => "Minimum Divisible",
+      );
+
+    $local_values_dictionary = array(
+      "per_ngt" => "per night",
+      "per_mnt" => "per month",
+      "per_yr" => "per year",
+      "per_wk" => "per week",
+      "exstng" => "existing",
+      "und_prop" => "under construction / proposed",
+      "fl_srv" => "full service",
+      "ind_grs" => "industrial gross",
+      "mod_grs" => "modified gross",
+      "mod_net" => "industrial net",
+      "na" => "n/a",
+      "Atch_gar" => "attached garage",
+      "amt_mnt" => "amount/month",
+      "amt_yr" => "amount/year",
+      "sqft_mnt" => "sqft/month",
+      "sqft_yr" => "sqft/year",
+    );
+    
 		$api_dictionary = PLS_Plugin_API::get_translations();
 		$local_dictionary = array_merge($local_dictionary, $api_dictionary);
 
@@ -554,13 +608,18 @@ class PLS_Format {
 		if (isset($pls_custom_amenity_dictionary) && !empty($pls_custom_amenity_dictionary)) {
 			$local_dictionary = wp_parse_args($pls_custom_amenity_dictionary, $local_dictionary);
 		}
-
+    
 		foreach ($amenities as $key => $value) {
+      
+      // if exists in local dictionary, translate value first
+      $value = isset($local_values_dictionary[trim($value)]) ? $local_values_dictionary[trim($value)] : $value;
+      
 			if ($value == '1') {
 				$value = 'Yes';
 			} elseif ($value == '0') {
 				$value = 'No';
-			}		
+      }
+
 			if (isset($local_dictionary[$key])) {
 				if ($key == 'style') {
 					$style_values = array("bungal"=> "Bungalow",
@@ -590,6 +649,7 @@ class PLS_Format {
 				$amenities[$local_dictionary[$key]] = ucwords($value);
 			}
 		}
+		
 		return $amenities;
 	}
 

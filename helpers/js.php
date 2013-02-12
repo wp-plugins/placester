@@ -9,7 +9,7 @@ class PL_Js_Helper {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend') );
 		add_action( 'admin_head', array(__CLASS__, 'admin_menu_url') );
 		add_action( 'customize_controls_enqueue_scripts', array(__CLASS__, 'customizer') );
-	}	
+	}
 
 	public function admin ($hook) {
 		// Inject premium themes logic into the themes admin page when visiting from any site on the hosted env...
@@ -34,6 +34,12 @@ class PL_Js_Helper {
 			// Need this for trial activation...
 			PL_Router::load_builder_partial('free-trial.php');
 
+			// Launch dialog after theme is switched...
+			if ( PL_Bootup::is_theme_switched() ) {
+	    		self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) .  'admin/theme-switch.js', array( 'jquery-ui'));  
+	    	}
+
+	    	// Don't load any other scripts...
 			return;
 		} 
 
@@ -166,6 +172,9 @@ class PL_Js_Helper {
 		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui'));
 		self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery-ui'));
 
+	    if ( PL_Bootup::is_theme_switched() ) {
+	    	self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) .  'admin/theme-switch.js', array( 'jquery-ui'));  
+	    }
 	}
 
 	public static function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {

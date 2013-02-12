@@ -1,135 +1,91 @@
 /**
- * Placester's errorTooltip plugin
+ * Form Validation used from jquerytools.org
+ * 
  */
-(function($){
-
-    $.fn.errorTooltip = function(tooltip_name, config_or_action) {
-        // console.log(this);
-        var config = {
-            text: 'An error has occurred',
-            type: 'error',
-            css_class: 'error_tooltip'
-        };
-        
-        var selector = '.' + tooltip_name,
-            target;
-
-        if(config_or_action === "remove") {
-            jQuery(selector).remove();
-        }
-        else if(config_or_action === "fade") {
-            jQuery(selector).fadeOut('slow', function() {
-                jQuery(this).remove();
-            });
-        }
-        else if(config_or_action instanceof Object) {
-            jQuery.extend(config, config_or_action);
-            if(jQuery(selector).size() === 0) {
-                jQuery('body').append('<div class="placester_tooltip ' +  tooltip_name + ' ' + config_or_action.css_class + '">' + config_or_action.text + '<div class="tooltip_arrow_border"></div><div class="tooltip_arrow"></div></div>');
-                target = jQuery(selector);
-                target.css({display: 'block', position: 'absolute'});
-                target.css({
-                    top: this.offset().top - 15,
-                    left: this.offset().left,
-                    opacity: 0.6,
-                    'z-index': 1500
-                }).animate({top: this.offset().top - (target.height() + 20), opacity: 1}, 500);
-            }
-
-            jQuery(selector).bind('mouseover', function() {
-                jQuery(this).errorTooltip(tooltip_name, 'remove');
-            });
-        }
-
-        return this;
-    };
-
-})(jQuery);
 
 jQuery(document).ready(function($) {
 
-   var widget = jQuery('.side-ctnr.placester_contact');
+    var widget = jQuery('.side-ctnr.placester_contact');
 
-    var valid_email = function (email) {
-        // Email regex courtesy http://fightingforalostcause.net/misc/2006/compare-email-regex.php
-        return (email !== "" && email.match(/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i));
+    var clear_form = function(form) {
+        form.find('input[type="text"], input[type="email"], input[type="phone"], textarea').val('');
     };
-
-    jQuery('input[name=name]', widget).bind('click', function() {
-        jQuery(this).errorTooltip('name_error', 'remove');
+    
+    // Validating on mousedown to beat Chrome to validation
+    $('.side-ctnr.placester_contact form input[type="submit"]').on('mousedown', function() {
+      
+        var this_form = $(this).parent('.side-ctnr.placester_contact form');
+        
+        // get fields that are required from form and execture validator()
+        var inputs = $(this_form).find("input[required], textarea[required]").validator({
+            messageClass: 'contact-form-validator-error', 
+            offset: [10,0],
+            message: "<div><span></span></div>",
+            position: 'top center'
+          });
+        
+        // check required field's validity
+        inputs.data("validator").checkValidity();
+        
     });
 
-    jQuery('input[name=email]', widget).bind('click', function() {
-        jQuery(this).errorTooltip('email_error', 'remove');
-    });  
-
-	jQuery('.side-ctnr.placester_contact form').submit(function(event) {
-
-        var error_found = false;
-
-        $this = jQuery(this);
-        
-        event.preventDefault ? event.preventDefault() : event.returnValue = false;
-
-        // widget.find('.placester_loading').show();
-
-        var str = jQuery(this).serialize();
-        
-        var clear_form = function(form) {
-            form.find('input[type="text"], input[type="email"], textarea').val('');
-        };
-
-        // Clear out existing tooltips
-        jQuery("input[name=name]", this).errorTooltip('name_error', 'remove');
-        jQuery("input[name=email]", this).errorTooltip('email_error', 'remove');
-        $this.find('input[type=submit]').errorTooltip('submit_success', 'remove');
-        $this.find('input[type=submit]').errorTooltip('submit_error', 'remove');
-
-        // Validate the name field
-        if(jQuery('input[name=name]', this).val() === "") {
-            jQuery("input[name=name]", this).errorTooltip('name_error', {text: "Please enter your name"});
-            error_found = true;
-        }
-
-        // Validate the email address field
-        var email_value = jQuery("input[name=email]", this).val();
-        if(!valid_email(email_value)) {
-            jQuery("input[name=email]", this).errorTooltip('email_error', {text: "Please enter a valid email address"});
-            error_found = true;
-        }
-
-        if(!error_found) {
-            jQuery(this).find('input[type=submit').errorTooltip('submit_error', 'remove');
-
-            jQuery.ajax({
-                type: 'POST',
-                url: info.ajaxurl,
-                data: 'action=placester_contact&' + str,
-                success: function(msg) {
-                    if(msg === 'sent') {
-                        // widget.find('.placester_loading').fadeOut('fast');
-                        $this.find('input[type=submit]').errorTooltip('submit_success', {text: "Thank you for the email. We\'ll get back to you shortly."});
-                        setTimeout(function() {
-                            $this.errorTooltip('submit_success', 'fade');
-                        }, 10000);
-                        clear_form($this);
-                    }
-                    else {
-                        $this.find('input[type=submit]').errorTooltip('submit_error', {text: "An error occurred. Please try again."});
-                        setTimeout(function() {
-                            $this.errorTooltip('submit_error', 'fade');
-                        }, 10000);
-                        clear_form($this);
-
-                    //     widget.find('.placester_loading').hide();
-                    //     widget.find('.msg')
-                    //     .html(msg)
-                    //     .removeClass('success')
-                    //     .addClass('error')
-                    //     .fadeIn('slow');
-                    }
-                }
-            });
-        }
-	});
+    // Submit
+    $('.side-ctnr.placester_contact form').submit(function(event) {
+      
+      $this = jQuery(this);
+      var str = jQuery(this).serialize();
+      
+      // Check for invalid fields. This is needed because autofill will allow the form to submit
+      if ($('.invalid', this).length) {
+        return false;
+      };
+      
+      // Show loading
+      widget.find('.pls-contact-form-loading').show();
+      
+      event.preventDefault ? event.preventDefault() : event.returnValue = false;
+      
+      // Set Cookie
+      jQuery.cookies.set('lead_capture_visitor', 1); // no expiration set
+      
+      // If we get this far, send the contact form along!
+      jQuery.ajax({
+          type: 'POST',
+          url: info.ajaxurl,
+          data: 'action=placester_contact&' + str,
+          success: function(msg) {
+              if(msg === 'sent') { // Success!
+                  // hide spinner
+                  widget.find('.pls-contact-form-loading').fadeOut('fast');
+                  
+                  // Add success treatments to all contact forms on page, not just 'this' one
+                  $('.side-ctnr.placester_contact form').addClass('form_submitted');
+                  $('.side-ctnr.placester_contact form').find('input[type="submit"]').val('Sent!');
+                  clear_form($('.side-ctnr.placester_contact form'));
+                  // remove all form errors and slide up the form
+                  $('.contact-form-validator-error').remove();
+                  $('.side-ctnr.placester_contact form').slideUp();
+                  
+                  // Show success message
+                  setTimeout(function() {
+                    $(".placester_contact .success").show('fast');
+                    // mark contact form as submitted so lead capture's force-back functionality doesn't fire
+                    $(".placester_contact input[name='form_submitted']").val(1);
+                  },500);
+                  
+                  // if is in dialog box (lead capture), close it
+                  if ($('.side-ctnr.placester_contact form').parents('.ui-dialog').length > 0) {
+                    setTimeout(function() {
+                      $('#property-details-lead-capture').dialog("close");
+                    },2000);
+                  }
+                  
+              } else { // Unsuccessful!
+                  // hide spinner
+                  widget.find('.pls-contact-form-loading').hide();
+              }
+          }
+      });
+    });
+    
 });

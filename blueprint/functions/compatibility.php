@@ -78,9 +78,8 @@ class PLS_Plugin_API {
             $return = call_user_func_array( $function_name, $parameters );
         } catch ( Exception $e ) {
             /** Assumes an exception with a private message is a timeout. */
-            if ( ! isset( $e->message ) ) {
-                global $placester_blueprint;
-                $placester_blueprint->has_plugin_error = 'timeout';
+            if ( !isset( $e->message ) ) {
+                pls_has_plugin_error('timeout');
             }
             return false;
         }

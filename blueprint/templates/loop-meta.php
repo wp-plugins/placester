@@ -44,7 +44,7 @@
 
 	<?php elseif ( is_date() ) : ?>
 
-        <h2><?php 'Blog archives by date'; ?></h2>
+        <h2>Blog archives by date</h2>
 
 	<?php elseif ( function_exists( 'is_post_type_archive' ) && is_post_type_archive() ) : ?>
 

@@ -8,10 +8,11 @@
 		<li>4. Paste it in the box below</li>
 	</ul>
 	<div>
-		<div id="api_key_message"></div>
 		<div id="api_key_form">
-			<label for="api_key">Placester.com API Key</label>
-			<input type="text" name="api_key" class="existing_placester_modal_api_key" id="existing_placester_modal_api_key" />
+      <div id="api_key_message"></div>
+      <label for="api_key">Placester.com API Key</label>
+      <input type="text" name="api_key" class="existing_placester_modal_api_key" id="existing_placester_modal_api_key" placeholder="Enter API Key" />
+      <div id="api-key-message-icon"></div>
 		</div>
 	</div>
 

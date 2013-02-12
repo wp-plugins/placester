@@ -98,6 +98,11 @@ jQuery(document).ready(function($) {
         var iterator = $(this).attr('rel') || false;
         save_options( iterator );
     });
+    
+    $('#cancel-featured-listings').live('click', function(event) {
+    	event.preventDefault();
+    	jQuery('#featured-listing-wrapper').dialog('close');
+    });
 
 
     function options_filters (aoData) {

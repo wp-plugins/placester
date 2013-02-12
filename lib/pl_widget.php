@@ -81,6 +81,5 @@ class PL_Widget extends WP_Widget {
 	
 	private function get_field_by_key( $key ) {
 		
-	
 	}
 }

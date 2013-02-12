@@ -1,6 +1,5 @@
 <div style="display:none">
 	<div id="featured-listing-wrapper">
-		<button id="save-featured-listings">Save</button>
 		<!-- filters wrapper -->
 		<div class="filter-wrapper">
 			<h3>Search Filters</h3>
@@ -11,7 +10,7 @@
 
 		<!-- datatable wrapper -->
 		<div class="datatable-wrapper">
-
+			<hr />
 			<!-- Search Results -->
 			<div id="search-results" class="results">
 				<h3>Search Results</h3>
@@ -27,6 +26,9 @@
 			</div>
 
 		</div>
-		
+		<div id="featured-button-group-wrapper">
+			<button id="save-featured-listings">Save</button>
+			<button id="cancel-featured-listings">Cancel</button>
+		</div>
 	</div>
 </div>

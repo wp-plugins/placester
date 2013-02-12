@@ -34,9 +34,15 @@ class PLS_Saved_Search {
 
 	function check ($search_id) {
 		
+		$cache = new PL_Cache('ss');
+        if ($result = $cache->get($search_id)) {
+          return $result;
+        }
+
 		$key = self::generate_key( $search_id );
 		
 		if ( $result = get_option($key, false) ) {
+			$cache->save($result);  
 			return $result;	
 		} else {
 			self::save($search_id, $_POST);
@@ -44,9 +50,15 @@ class PLS_Saved_Search {
 		}
 	}
 
-	function save ($search_id, $value) {
+	function save ($search_id, $value, $new = true) {
 		$key = self::generate_key( $search_id );
-		update_option($key, $value);
+		if ( $new ) {
+			// Setting 'no' ensures these option-entries are NOT autoloaded on every request...
+			add_option($key, $value, '', 'no');
+		}
+		else {
+			update_option($key, $value);
+		}
 	}
 
 	function generate_key ( $search_id ) {

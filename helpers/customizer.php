@@ -124,13 +124,15 @@ class PL_Customizer_Helper
 	}
 
 	public static function load_custom_styles() {
-		if ( isset($_POST['template']) && isset($_POST['color']) )  {
+		if ( isset($_POST['color']) )  {
 		  	// This needs to be defined (ref'd by the template file we're about to load...)
 		  	$color = $_POST['color'];
 
-		  	ob_start();
-				include(trailingslashit(PL_PARENT_DIR) . 'config/customizer/theme-skins/' . $_POST['template'] . '.php');
-			$styles = ob_get_clean();			
+		  	$curr_theme = wp_get_theme()->Template;
+		  	$skin_path = ( trailingslashit(PL_THEME_SKIN_DIR) . trailingslashit($curr_theme) . "{$color}.css" );
+
+		  	// Read in CSS file contents as a sting...
+		  	$styles = file_get_contents($skin_path);
 
 			echo json_encode( array( 'styles' => $styles ) );
 		}

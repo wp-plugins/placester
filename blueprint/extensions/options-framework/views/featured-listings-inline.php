@@ -5,6 +5,7 @@
 	</div>
 	
 	<div class="featured-listings" id="<?php echo $params['option_name'] ?>" ref="<?php echo $params['value']['id'] ?>" <?php echo isset($params['iterator']) ? 'rel="' . $params["iterator"] . '"' : ''; ?> <?php echo ($params['for_slideshow'] == 1) ? 'data-max="1"' : ''; ?> >
+		<?php do_action( 'pl_featured_listings_inner_top' ); ?>
 		<?php if ( is_array($params['val']) ): ?>
 			<ol>
 			<?php if ($for_slideshow == 1): ?>

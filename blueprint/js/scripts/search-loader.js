@@ -18,8 +18,8 @@ SearchLoader.prototype.add_param = function( new_params ) {
             this.params[property] = new_params[property];
         }
     }
-    console.log('HERHEHR')
-   console.log(this.params);
+    // console.log('HERHEHR')
+   // console.log(this.params);
 	
 };
 

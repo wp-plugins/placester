@@ -12,6 +12,21 @@ if ( is_admin() ) {
 	$of_page= 'toplevel_page_pls-theme-options';
 	add_action( "admin_print_styles-" . $of_page, 'optionsframework_mlu_css', 0 );
 	add_action( "admin_print_scripts-" . $of_page, 'optionsframework_mlu_js', 0 );	
+	
+	if( defined( 'PLS_WPORG_THEME' ) ) {
+		add_action( 'admin_enqueue_scripts', 'of_upload_js_scripts' );
+	}
+}
+
+/**
+ * Register working upload for WPORG theme
+ */
+function of_upload_js_scripts( $hook ) {
+	wp_register_script( 'of-medialibrary-uploader', OPTIONS_FRAMEWORK_DIRECTORY .'js/of-medialibrary-uploader.js', array( 'jquery', 'thickbox' ) );
+	wp_enqueue_script( 'of-medialibrary-uploader' );
+	wp_enqueue_script( 'media-upload' );
+	wp_enqueue_script( 'thickbox' );
+	wp_enqueue_style( 'thickbox' );
 }
 
 /**

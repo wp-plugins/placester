@@ -11,10 +11,10 @@
 	padding: 10px;
 	float: left;
 }
-#gloal_filter_form .pls_search_form {
+#global_filter_form .pls_search_form {
 	display: none;
 }
-#gloal_filter_form .pls_search_form label {
+#global_filter_form .pls_search_form label {
 	display: none;
 }
 .search_filter_content {

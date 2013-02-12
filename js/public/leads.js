@@ -11,7 +11,7 @@ jQuery(document).ready(function($) {
 
             data = {
                 action: 'add_favorite_property',
-                property_id: property_id.substr(1),
+                property_id: property_id.substr(1)
             };
             var that = this;
             $.post(info.ajaxurl, data, function(response) {

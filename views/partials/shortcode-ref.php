@@ -58,6 +58,34 @@
 		The shortcode require an ID parameter of the static listing ID number published in your
 		Featured Listings post type control on the left side of the admin panel.
 	  </p>
+	   <?php elseif ($shortcode == 'listing_slideshow'): ?>
+      <p>
+		You can create a slideshow for your Featured Listings by using the 
+		[listing_slideshow post_id="<em>slideshowid</em>"] shortcode. 
+		You can use the following shortcodes inside of your Slideshow template snippet 
+		definition and include slideshow caption component, such as:
+		<?php foreach (PL_Shortcodes::$subcodes['listing_slideshow'] as $subcode): ?>
+  	    [<?php echo $subcode ?>], &nbsp;
+        <?php endforeach ?>
+	  </p>
+	   <?php elseif ($shortcode == 'pl_neighborhood'): ?>
+      <p>
+		You can add a neighborhood area via the [pl_neighborhood] shortcode. 
+		The neighborhood could list an area with polygons for a given region, such as:
+	  </p> 
+		<ul>
+			<li>Neighborhood</li>
+			<li>City</li>
+			<li>Zip code</li>
+			<li>State</li>
+		</ul>
+	  <p>
+	  You can use the following subshortcodes to create the template snippet with the
+	  Neighborhood details:
+	  <?php foreach (PL_Shortcodes::$subcodes['neighborhood'] as $subcode): ?>
+  	    [<?php echo $subcode ?>], &nbsp;
+      <?php endforeach ?>
+	  </p>
 	<?php else: ?>
 	    Doc not found...
 	<?php endif ?>

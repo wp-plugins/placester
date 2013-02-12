@@ -19,31 +19,41 @@ class PL_Listing_Helper {
 		} elseif (empty($args)) {
 			$args = $_GET;
 		}
+
+		// Print out args...
+		// ob_start();
+		// echo "SEARCH FILTERS \n";
+		// var_dump($args);
+
 		//respect global filters
 		$global_filters = PL_Helper_User::get_global_filters();
+		// echo "GLOBAL \n";
+		// var_dump($global_filters);
 
 	    if (is_array($global_filters)) {
 	  		foreach ($global_filters as $attribute => $value) {
-	  			//special handling for property type, comes in as property_type-{type} since it differs on listing_type
+	  			// Special handling for property type, comes in as property_type-{type} since it differs on listing_type
 	  			if (strpos($attribute, 'property_type') !== false ) {
 	  				$args['property_type'] = is_array($value) ? implode('', $value) : $value;
-	  			} else if ( is_array($value) ) {
-	  				//this whole thing basically tranverses down the arrays for global filters
+	  			} 
+	  			else if ( is_array($value) ) {
+	  				//this whole thing basically traverses down the arrays for global filters
 	  				foreach ($value as $k => $v) {
-	  					if ( is_array($v) ) {
-	  						//forgive me.
-	  						foreach ($v as $y => $z) {
-	  							$args[$attribute][$k][$y] = $z;	
-	  						}
-	  					} else {
-	  						$args[$attribute][$k] = $v;	
-	  					}
+	  				  // Check to see if this value is already set
+	  				  if ( empty($args[$attribute][$k]) ) {
+	  					$args[$attribute][$k] = $v;
+		  			  }	  
 	  				}
-	  			} else {
+	  			} 
+	  			else {
 	  				$args[$attribute] = $value;
 	  			}
 	  		}
 	    }
+
+	    // echo "MERGED \n";
+	    // var_dump($args);
+	    // error_log(ob_get_clean());
 
 		//respect block address setting
 		if (PL_Option_Helper::get_block_address()) {
@@ -51,6 +61,11 @@ class PL_Listing_Helper {
 		} else {
 			$args['address_mode'] = 'polygon';
 		}
+
+		/* TODO: Deal with sold status... */
+		// if ( isset($args['sold_status']) ) {
+		// 	$args['sold_status'] = false;
+		// }
 
 		$listings = PL_Listing::get($args);	
 		foreach ($listings['listings'] as $key => $listing) {
@@ -297,7 +312,7 @@ class PL_Listing_Helper {
 	// helper sets keys to values
 	public function types_for_options() {
 		$options = array();
-		$response = PL_Listing::types(array('keys' => array('property_type')));
+		$response = PL_Listing::aggregates(array('keys' => array('property_type')));
 		if(!$response) {
 			return array();
 		}
@@ -310,13 +325,34 @@ class PL_Listing_Helper {
 		return $options;	
 	}
 	
-	public function locations_for_options($return_only = false) {
+	public function locations_for_options($return_only = false, $allow_globals = true) {
 		$options = array();
-		$response = PL_Listing::locations();
+		$response = null;
 		
+		// If global filters related to location are set, incorporate those and use aggregates API...
+		$global_filters = PL_Helper_User::get_global_filters();
+		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['location']) ) {
+			// TODO: Move these to a global var or constant...
+			$global_filters['keys'] = array( 'location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county' );
+			$response = PL_Listing::aggregates($global_filters);
+		
+			// Remove "location." from key names to conform to data standard expected by caller(s)...
+			$alt = array();
+			foreach ( $response as $key => $value ) {
+				$new_key = str_replace('location.', '', $key);
+				$alt[$new_key] = $value;
+			}
+			$response = $alt;
+		}
+		else {
+			$response = PL_Listing::locations();
+		}
+
 		if (!$return_only) {
 			return $response;
 		}
+
+		// Handle special case of 'return_only' being set to true...
 		if ($return_only && isset($response[$return_only])) {
 			foreach ($response[$return_only] as $key => $value) {
 				$options[$value] = $value;
@@ -362,6 +398,7 @@ class PL_Listing_Helper {
     HOWEVER: That will all come later, as I'm just trying to solve the initial problem of the filter not working. -pek
   */
 	public function pricing_min_options($type = 'min') {
+
 		$api_response = PL_Listing::get();
 		$prices = array();
 		foreach ($api_response['listings'] as $key => $listing) {
@@ -384,13 +421,15 @@ class PL_Listing_Helper {
 				$range = range($prices[0], end($prices), $range);
 			}
 		} else {
-		  $range = array();		  
+		  $range = array('');		  
 		}
-    // we need to return the array with keys == values for proper form creation
-    // (keys will be the option values, values will be the option's human-readable)
-    $range = array_combine( $range, $range );
-    // let's format the human-readable; do not use money_format() because its dependencies are not guaranteed
-    array_walk( $range, create_function( '&$value,$key', '$value = "$" . number_format($value,2);'));
+	    // we need to return the array with keys == values for proper form creation
+	    // (keys will be the option values, values will be the option's human-readable)
+	    if( ! empty( $range ) && $range[0] !== '' ) {
+	    	$range = array_combine( $range, $range );
+	    	// let's format the human-readable; do not use money_format() because its dependencies are not guaranteed
+	    	array_walk( $range, create_function( '&$value,$key', '$value = "$" . number_format($value,2);'));
+	    }
 		return $range;
 	}
 
@@ -706,18 +745,15 @@ class PL_Listing_Helper {
         if ($transient = $cache->get($post)) {
             return $transient;
         }
-		$serialized_listing_data = get_post_meta($post->ID, 'listing_data', true);
-		$listing_data = unserialize($serialized_listing_data);
 
-		if (!$listing_data) {
-		  	// Update listing data from the API
-			$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
-			$response = PL_Listing::get($args);
-			if ( !empty($response['listings']) ) {
-				$listing_data = $response['listings'][0];
-			}
+        // Listing data is not present in the cache, so get it from the API...
+        $listing_data = null;
+		$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
+		$response = PL_Listing::get($args);
+		if ( !empty($response['listings']) ) {
+			$listing_data = $response['listings'][0];
 		}
-
+		
 		$cache->save($listing_data);
 		return $listing_data;		
 	}

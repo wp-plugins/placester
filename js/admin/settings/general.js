@@ -13,13 +13,15 @@
   			$('#existing_placester_dialog').dialog('option', 'title', '	<h2>Welcome to the RE Website Builder Set Up Wizard</h2>');
 			$('#existing_placester_dialog').dialog('option', 'buttons', {
 				1:{
-					text: "Cancel", 
+					text: "Cancel",
+					class: "gray-btn",
 					click: function (){
 						$(this).dialog("close")
 					}
 				},
 				2:{
-					text:"Confirm Email",
+					text: "Confirm Email",
+					class: "green-btn right-btn",
 					click: function () {
 						new_sign_up();
 					}
@@ -38,15 +40,20 @@
 		width: 700,
 		title: "<h2>Use an existing Placester account</h2>",
 		buttons: {
-				"Close": function() {
-					$( this ).dialog( "close" );
+				1: {
+				  text: "Close",
+				  class: "gray-btn",
+				  click: function() {
+					  $( this ).dialog( "close" );
+				  }
 				},
-				"Switch API Keys": {
+				2: {
+				  text: "Switch API Keys",
 					id: "switch_placester_api_key",
-					text: "Switch API Keys",
+					class: "green-btn right-btn",
 					click: function() {
 						 check_api_key($("#existing_placester_modal_api_key").val());
-					},
+					}
 				}
 			}
 	});

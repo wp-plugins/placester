@@ -30,7 +30,7 @@
 
   #infobar .close {
 	float: right;
-	background: url(//dhiodphkum9p1.cloudfront.net/assets/x_white_icon-3e7a5fc1c59ef0c299a83c184378cca5.png) no-repeat;
+	background: url(wp-content/plugins/placester/images/icons/x_white_icon.png) no-repeat;
 	height: 17px;
 	width: 14px;
 	cursor: pointer;

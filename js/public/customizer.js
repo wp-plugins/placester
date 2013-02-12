@@ -298,7 +298,7 @@ jQuery(document).ready(function($) {
 		  } 
 		  else if (response && response.eligible_for_trial) {
 		  	// console.log('prompt free trial');
-		  	prompt_free_trial('Start your 15 day free trial to activate a Premium theme', success_callback, failure_callback);
+		  	prompt_free_trial('Start your 15 day Free Trial to Activate a Premium Theme', success_callback, failure_callback);
 		  } 
 		  else {
 		  	failure_callback();
@@ -560,7 +560,7 @@ jQuery(document).ready(function($) {
 
 	$('#color_select').on('change', function (event) {
 		// Check for wp JS object (we need this to update styling) and for current theme support--exit if either are false...
-		var supportedThemeList = ['columbus','ventura'];
+		var supportedThemeList = ['columbus','ventura','tampa','highland','manchester','bluestone','slate','ontario','charlotte','toronto','parkcity'];
 		if (!_wpCustomizeSettings || supportedThemeList.indexOf(_wpCustomizeSettings.theme.stylesheet) == -1 ) {
 			var errMsg = $('#color_message.error');
 			errMsg.html('<h3>Sorry, this feature is currently not available for this theme</h3>');
@@ -587,7 +587,6 @@ jQuery(document).ready(function($) {
 		// Construct request to fetch styles...
 		var data = {
     	  	action: 'load_custom_styles',
-	        template: _wpCustomizeSettings.theme.stylesheet,
 	        color: $(this).val()
 	    };
 

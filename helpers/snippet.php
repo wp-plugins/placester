@@ -6,7 +6,7 @@ PL_Snippet_Helper::init();
 
 class PL_Snippet_Helper {
 
-	public static $allowable_tags = "<a><p><script><div><span><section><label><br><h1><h2><h3><h4><h5><h6><scr'+'ipt><style>";
+	public static $allowable_tags = "<a><p><script><div><span><section><label><br><h1><h2><h3><h4><h5><h6><scr'+'ipt><style><article><ul><ol><li><strong><em><button><aside><blockquote><footer><header><form><nav><input><textarea><select>";
 
 	public static function init() 
 	{
@@ -131,7 +131,7 @@ class PL_Snippet_Helper {
 		foreach ($snip_arr as $snippet) {
 			$snippet_type_map[$snippet] = 'custom'; 
 		}
-
+		
 		return $snippet_type_map;
 	}
 

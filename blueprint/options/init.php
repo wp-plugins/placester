@@ -27,6 +27,13 @@ PLS_Style::add(array(
 			"type" => "text"));
 
 	PLS_Style::add(array(
+        "name" => "Currency Symbol",
+        "desc" => "The symbol displayed next to prices in search forms, search results, and property details pages",
+        "id" => "pls-currency-symbol",
+        "std" => "$",
+        "type" => "text"));
+
+	PLS_Style::add(array(
 			"name" => "Site Logo",
 			"desc" => "Upload your logo here. It will appear in the header and will override the title you've provided above.",
 			"id" => "pls-site-logo",

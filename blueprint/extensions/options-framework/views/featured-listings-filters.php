@@ -5,8 +5,8 @@
 			<input type="text" name="location[address]">
 		</div>
 		<div class="featured-listing-form-city option">
-			<label>City</label>
-			<select name="location[locality]">
+			<label for="featured-listing-city-filter">City</label>
+			<select id="featured-listing-city-filter" name="location[locality]">
 				<?php $cities = PLS_Plugin_API::get_location_list('locality');
 					foreach ($cities as $key => $v) {
 						echo '<option value="' . $key . '">' . $v . '</option>';
@@ -16,8 +16,8 @@
 		</div>
 
 		<div class="featured-listing-form-zip option">
-			<label>Zip Code</label>
-			<select name="location[postal]">
+			<label for="featured-listing-zip-filter">Zip Code</label>
+			<select id="featured-listing-zip-filter" name="location[postal]">
 				<?php $zip = PLS_Plugin_API::get_location_list('postal');
 					foreach ($zip as $key => $v) {
 						echo '<option value="' . $key . '">' . $v . '</option>';
@@ -27,13 +27,13 @@
 		</div>
 
 		<div class="featured-listing-form-beds option">
-			<label>Beds</label>
-			<input type="text" name="metadata[beds]">
+			<label for="featured-listing-beds-filter">Beds</label>
+			<input id="featured-listing-beds-filter" type="text" name="metadata[beds]">
 		</div>
 
 		<div class="featured-listing-form-beds option">
-			<label>Rent/Sale</label>
-			<select name="purchase_types[]">
+			<label for="featured-listing-rent-filter">Rent/Sale</label>
+			<select id="featured-listing-rent-filter" name="purchase_types[]">
 				<?php
 					echo '<option value="false">Any</option>';
 					echo '<option value="rental">Rent</option>';
@@ -43,23 +43,23 @@
 		</div>
 
 		<div class="featured-listing-form-min-price option">
-			<label>Min Price</label>
-			<input type="text" name="metadata[min_price]">
+			<label for="featured-listing-min-price-filter">Min Price</label>
+			<input id="featured-listing-min-price-filter" type="text" name="metadata[min_price]">
 		</div>
 
 		<div class="featured-listing-form-max-price option">
-			<label>Max Price</label>
-			<input type="text" name="metadata[max_price]">
+			<label for="featured-listing-max-price-filter">Max Price</label>
+			<input id="featured-listing-max-price-filter" type="text" name="metadata[max_price]">
 		</div>
 
 		<div class="featured-listing-form-max-price option checkboxes">
-			<label>Non-MLS Listings</label>
-			<input type="checkbox" name="non_import">
+			<label for="featured-listing-non-mls-filter">Non-MLS Listings</label>
+			<input id="featured-listing-non-mls-filter" type="checkbox" name="non_import">
 		</div>
 
 		<div class="featured-listing-form-max-price option checkboxes">
-			<label>My Offices's Listings</label>
-			<input type="checkbox" name="agency_only">
+			<label for="featured-listing-my-offices-filter">My Offices's Listings</label>
+			<input id="featured-listing-my-offices-filter" type="checkbox" name="agency_only">
 		</div>
 
 	</div>

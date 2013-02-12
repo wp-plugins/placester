@@ -32,7 +32,7 @@ if ( ! function_exists( 'optionsframework_option_name' ) ) {
     }
 }
 
-function pls_get_option ($option, $default = '') {
+function pls_get_option ($option, $default = '', $no_empty = false) {
     static $pls_options = null;
     if(null === $pls_options) {
         $pls_options = PLS_Options_Cache::instance();
@@ -40,10 +40,15 @@ function pls_get_option ($option, $default = '') {
 
     if ($option !== '') {
         if(isset($pls_options[$option])) {
+
+            if ( $no_empty && empty($options[$name]) ) {
+                return $default;
+            }
+            
             return $pls_options[$option];
         }
         else {
-            $value = of_get_option($option, $default);
+            $value = of_get_option($option, $default, $no_empty);
             $pls_options[$option] = $value;
             return $value;
         }
@@ -142,10 +147,11 @@ class PLS_Options_Framework {
     static function setup() {
 
         /** Replace the admin submenu with a page. */
-        remove_action( 'admin_menu', 'optionsframework_add_page' );
-
-        add_action( 'admin_menu', array( __CLASS__, 'add_page' ) );
-
+    	if( ! defined( 'PLS_WPORG_THEME' ) ) {
+	        remove_action( 'admin_menu', 'optionsframework_add_page' );
+	
+	        add_action( 'admin_menu', array( __CLASS__, 'add_page' ) );
+    	}
         /** 
          * This action hook has been been added by hacking the 
          * options-framework.php file. 
@@ -196,11 +202,16 @@ class PLS_Options_Framework {
         /** Add filtering for the name of options page. */
         $page_name = apply_filters( 'pls_admin_bar_menu_page', 'Theme Options' );
 
+        $theme_options_url = admin_url( 'admin.php?page=pls-theme-options' );
+        if( defined( 'PLS_WPORG_THEME' ) ) {
+        	$theme_options_url = admin_url( 'themes.php?page=options-framework' );
+        }
+        
 				// Commented out for WordPress theme submission
         $wp_admin_bar->add_menu( array(
             'id' => 'of_theme_options',
             'title' => $page_name,
-            'href' => admin_url( 'admin.php?page=pls-theme-options' )
+            'href' => $theme_options_url
         ));
     }
 

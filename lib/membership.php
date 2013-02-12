@@ -415,7 +415,7 @@ class PL_Membership {
                     break;
                 
                 default:
-                    $error_messages .= self::create_error_message('There was an errror, try again soon.');
+                    $error_messages .= self::create_error_message('There was an error, try again soon.');
                     break;
             }
         }

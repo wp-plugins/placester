@@ -31,14 +31,15 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
         wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
 
         // declare the URL to the file that handles the AJAX request (wp-admin/admin-ajax.php)
-        wp_localize_script( 'jquery', 'info', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+//         wp_localize_script( 'jquery', 'info', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+		add_action( 'wp_print_scripts', 'pls_print_info_var' );
         
         /**
          *  If the plugin is inactive, register the script that deals with adding 
          *  notification about needing the plugin. Localize the notification 
          *  message. Accompanied by plugin-nags.css.
          */
-        wp_register_script( 'listings-object', trailingslashit( PLS_JS_URL ) . 'scripts/listings.js' , array( 'jquery' ), NULL, true );
+        wp_register_script( 'listings-object', trailingslashit( PLS_JS_URL ) . 'scripts/listings.js' , array( 'jquery' ), '1.0.1', true );
         wp_enqueue_script('listings-object');
 
         wp_register_script( 'get-listings-fav-ajax', trailingslashit( PLS_JS_URL ) . 'scripts/get-listings-fav-ajax.js' , array( 'jquery' ), NULL, true );
@@ -156,6 +157,7 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
                       // wp_enqueue_script( 'jquery-ui-dialog' );
                     }
                 }
+
                 if ( in_array( 'style', $js[0]['jquery-ui'] ) ) {
                     wp_enqueue_style( 'jquery-ui' );
                 }
@@ -166,13 +168,13 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
             /** Register the script and style. */
             wp_register_script( 'tabs', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/tabs.js' , array( 'jquery'), NULL, true );
             wp_register_script( 'rangeinput', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/rangeinput.js' , array( 'jquery'), NULL, true );
-            wp_register_script( 'tooltip', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/tooltip.js' , array( 'jquery'), NULL, true );
+            wp_register_script( 'validator', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/validator.js' , array( 'jquery'), NULL, true );
             /** Enqueue scrip and styles only if supported. */
             if ( is_array( $js[0]['jquery-tools'] ) ) {
                 if ( in_array( 'script', $js[0]['jquery-tools'] ) ) {
                     wp_enqueue_script( 'tabs' );
                     wp_enqueue_script( 'rangeinput' );
-                    wp_enqueue_script( 'tooltip' );
+                    wp_enqueue_script( 'validator' );
                 }
             }
         }
@@ -188,6 +190,34 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
                 }
             }
         }
+        
+        /**
+         * The "Cookies" script.
+         * Deal with it only theme support has been added.
+         * {@link: http://code.google.com/p/cookies/wiki/License}
+         */
+        if ( array_key_exists( 'cookies', $js[0] ) ) {
+            /** Register the script and style. */
+            wp_register_script( 'cookies', trailingslashit( PLS_JS_URL ) . 'libs/cookies/cookies.jquery.js' , array( 'jquery' ), NULL, false );
+            /** Enqueue scrip and styles only if supported. */
+            if ( is_array( $js[0]['cookies'] ) ) {
+                if ( in_array( 'script', $js[0]['cookies'] ) ) {
+                  wp_enqueue_script( 'cookies' );
+                }
+            }
+        }
+
+        if ( array_key_exists( 'lead-capture', $js[0] ) ) {
+            /** Register the script and style. */
+            wp_register_script( 'lead-capture', trailingslashit( PLS_JS_URL ) . 'scripts/lead-capture.js' , array( 'jquery' ), NULL, true );
+            /** Enqueue scrip and styles only if supported. */
+            if ( is_array( $js[0]['lead-capture'] ) ) {
+                if ( in_array( 'script', $js[0]['lead-capture'] ) ) {
+                  wp_enqueue_script( 'lead-capture' );
+                }
+            }
+        }
+        
     }
 
 
@@ -201,5 +231,16 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
     function pls_print_header_scripts() {    
         /** Load Google CDN jQuery and its fallback before everything else */
         wp_enqueue_script( 'jquery' );
+    }
+    
+    function pls_print_info_var( ) {
+    	ob_start();
+    	?>
+    	<script type="text/javascript">//<![CDATA[
+			var info = {"ajaxurl": "<?php echo admin_url( 'admin-ajax.php' ); ?>"};
+    	//]]>
+    	</script>
+    	<?php 
+    	echo ob_get_clean();
     }
 }

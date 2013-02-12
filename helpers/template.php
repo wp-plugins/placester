@@ -5,16 +5,18 @@ class PL_Snippet_Template {
 	public static function prepare_template( $args ) {
 		$defaults = array(
 			'codes' => array(),
-			'p_codes' => array()
+			'p_codes' => array(),
+			'select_name' => '',
+			'value' => ''
 		);
 		
 		$args = wp_parse_args($args, $defaults);
 		
 		// could be improved, pass arr or extract here - future will tell
-		PL_Snippet_Template::create_template( $args['codes'], $args['p_codes'] );
+		PL_Snippet_Template::create_template( $args['codes'], $args['p_codes'], $args['select_name'], $args['value'] );
 	}
 	
-	public static function create_template( $codes, $p_codes ) {
+	public static function create_template( $codes, $p_codes, $select_name = '', $value = '' ) {
 		extract(PL_Page_Helper::get_types()); ?>
 
 		<style type="text/css">
@@ -60,16 +62,15 @@ class PL_Snippet_Template {
 		    font-weight: normal;
 		  }
 		</style>
+		<?php do_action( 'pl_template_extra_styles' ); ?>
 		
 		<?php 
 		    /*** Load initial data... ***/
 		
 		    $pl_snippet_list = array();
-		
 		    foreach ( $codes as $code ) {
 		      $pl_snippet_list[$code] = PL_Snippet_Helper::get_shortcode_snippet_list($code);
 		    }
-		
 		    $pl_active_snippets = PL_Snippet_Helper::get_active_snippet_map();
 		    $pl_snippet_types = array('default' => 'Default', 'custom' => 'Custom'); // Order matters, here...
 		
@@ -104,12 +105,16 @@ class PL_Snippet_Template {
 		        </div>
 			  	  <section id="shortcode_ref"> 
 		    			<label for="snippet_list">Available Implementations:</label>	
-		    			<select class="snippet_list">
+		    			<select id="cpt_template" class="snippet_list" <?php if( ! empty( $select_name ) ) { echo 'name="'. $select_name . '"'; } ?>>
 		            <?php foreach ($pl_snippet_types as $curr_type => $title_type): ?>
 		              <optgroup label="<?php echo $title_type?>">
 		    				    <?php foreach ($pl_snippet_list[$code] as $snippet => $type): ?>
 		                  <?php if ($type != $curr_type) { continue; } ?>
-		    					    <option id="<?php echo $snippet ?>" value="<?php echo $snippet ?>" class="<?php echo $type ?>" <?php echo $pl_active_snippets[$code] == $snippet ? 'selected' : '' ?>>
+		                  			<?php if( empty( $value ) ): ?>
+		    					   		<option id="<?php echo $snippet ?>" value="<?php echo $snippet ?>" class="<?php echo $type ?>" <?php echo $pl_active_snippets[$code] == $snippet ? 'selected' : '' ?>>
+		    					    <?php else: ?>
+		    					    	<option id="<?php echo $snippet ?>" value="<?php echo $snippet ?>" class="<?php echo $type ?>" <?php echo $value == $snippet ? 'selected' : '' ?>>
+		    					    <?php endif; ?>
 		                    <?php echo $snippet ?>
 		                  </option>
 		    				    <?php endforeach ?>	

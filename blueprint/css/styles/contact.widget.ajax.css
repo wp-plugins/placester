@@ -1,89 +1,100 @@
-.side-ctnr.placester_contact label {
+.contact-form-validator-error {
+  z-index: 999999; }
+  .contact-form-validator-error span {
+    border: 5px solid;
+    border-color: #eed3d7 transparent transparent transparent;
+    bottom: -10px;
+    left: 5px;
     display: block;
-    margin-bottom: 5px;
-    font-size: 13px;
-}
-.side-ctnr.placester_contact input[type="text"], .side-ctnr.placester_contact input[type="email"], .side-ctnr.placester_contact textarea, .side-ctnr.placester_contact .info {
-    width: 200px;
-    margin-bottom: 10px;
-}
+    height: 0;
+    width: 0;
+    position: absolute; }
+  .contact-form-validator-error p {
+    float: left;
+    margin: 0;
+    padding: 6px;
+    color: #b94a48;
+    background: #f2dede;
+    border: 1px solid #eed3d7;
+    font-size: 12px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px; }
 
-.side-ctnr.placester_contact .info {
-  font-size: 80%;
-}
-
+.side-ctnr.placester_contact label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 13px; }
+.side-ctnr.placester_contact input[type="text"], .side-ctnr.placester_contact input[type="email"] {
+  width: 200px;
+  margin-bottom: 10px; }
 .side-ctnr.placester_contact textarea {
-    width: 250px;
-}
+  width: 250px;
+  margin-bottom: 10px; }
+.side-ctnr.placester_contact .info {
+  width: 200px;
+  margin-bottom: 10px;
+  font-size: 80%; }
+.side-ctnr.placester_contact .pls-contact-form-loading {
+  float: right;
+  margin: 0;
+  width: 50px;
+  height: 50px; }
+  .side-ctnr.placester_contact .pls-contact-form-loading #medium-spinner {
+    float: right; }
+.side-ctnr.placester_contact .success {
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 13px;
+  float: left;
+  padding: 7px 10px;
+  display: none;
+  color: #468847;
+  border-color: #d6e9c6;
+  background: #dff0d8; }
+.side-ctnr.placester_contact .error {
+  color: #de4826;
+  border-color: #de4826; }
+.side-ctnr.placester_contact .invalid {
+  box-shadow: 0 0 1px 1px red; }
 
-.side-ctnr.placester_contact .placester_loading {
-    float: left;
-    margin: 0 0 0 120px;
-    width: 32px;
-    height: 32px;
-    border-radius: 5px;
-	display: none;
-}
-.side-ctnr.placester_contact .msg { 
-    display: none;
-    font-size: 13px;
-    line-height: 20px;
-    padding: 5px 10px;
-    border: 1px solid #000;
-    border-left: 0;
-    border-right: 0;
-    margin-bottom: 10px;
-    float: left;
-    width: 250px;
- }
- .side-ctnr.placester_contact .success { 
-    color: green;
-    border-color: green;
- }
- .side-ctnr.placester_contact .error { 
-    color: #DE4826;
-    border-color: #DE4826;
- }
+.ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] {
+  padding: 0 !important;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box; }
+  .ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] .ui-widget-header {
+    background: transparent;
+    border: none; }
+    .ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] .ui-widget-header > a.ui-dialog-titlebar-close {
+      margin: 34px 20px 0 0;
+      z-index: 99999;
+      top: 40% !important;
+      background: transparent url(../../js/libs/jquery-ui/css/smoothness/images/ui-icons_222222_256x240.png) no-repeat !important;
+      background-position: -96px -128px !important;
+      border: none !important;
+      padding: 0; }
+      .ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] .ui-widget-header > a.ui-dialog-titlebar-close .ui-icon {
+        display: none; }
+  .ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] .lead-capture-wrapper {
+    float: left; }
+  .ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] .lc-contact-form .placester_contact h3 {
+    display: block; }
+  .ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] .lc-contact-form .placester_contact .success {
+    text-align: left; }
 
-.placester_tooltip {
-    display:none;
+#property-details-lead-capture {
+  padding: 0 !important;
+  overflow: hidden; }
 
-    background: #777;
-    border: 1px solid #333;
-    color:#eee;
-    font-size:12px;
-    min-height:2em;
-    line-height: 1.2em;
-    max-width:300px;
-    padding: 1em .5em 0 .5em;
-
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-
-    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.80);
-    -moz-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.80);
-    -webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.80);
-}
-
-.placester_tooltip .tooltip_arrow_border {
-  border-color: #333 transparent transparent transparent;
-  border-style: solid;
-  border-width: 10px;
-  height:0;
-  width:0;
-  position:absolute;
-  bottom:-20px;
-  left:30px;
-}
-
-.placester_tooltip .tooltip_arrow {
-  border-color: #777 transparent transparent transparent;
-  border-style: solid;
-  border-width: 10px;
-  height:0;
-  width:0;
-  position:absolute;
-  bottom:-19px;
-  left:30px;
-}
+.property-details-lead-capture.ui-widget-content {
+  border: none !important;
+  background: none !important; }

@@ -113,11 +113,15 @@
         font-size: 12px;
         font-family: Arial; }
 
-#featured-listing-wrapper #save-featured-listings {
-  float: right;
-  margin-bottom: -40px; }
+#featured-listing-wrapper #featured-button-group-wrapper {
+  padding-top: 10px;
+  clear: both; }
+  #featured-listing-wrapper #featured-button-group-wrapper #save-featured-listings {
+    float: right;
+    margin-bottom: -40px; }
 #featured-listing-wrapper .filter-wrapper {
-  float: left; }
+  float: left;
+  width: 720px; }
 #featured-listing-wrapper h3 {
   margin: 0;
   width: 100%; }
@@ -151,7 +155,7 @@
     width: 400px;
     font-size: 16px; }
 
-#save-featured-listings {
+#save-featured-listings, #cancel-featured-listings {
   color: white;
   background: #86b229;
   background: -moz-linear-gradient(top, #a0cc42 0%, #86b229 50%, #6e9910);
@@ -213,14 +217,19 @@
 .dataTables_wrapper {
   position: relative; }
 
+#featured-listing-wrapper .datatable-wrapper .paginate_disabled_previous, #featured-listing-wrapper .datatable-wrapper .paginate_disabled_next {
+  cursor: default;
+  color: #333333; }
+
 .dataTables_processing {
   position: absolute;
   width: 255px;
   height: 244px;
-  padding: 50px 0 0 150px;
-  font-size: 16px;
+  padding: 70px 0 0 150px;
+  font-size: 24px;
   font-weight: bold;
-  background-color: lightgrey;
+  color: white;
+  background-color: black;
   opacity: 0.3;
   filter: alpha(opacity=30); }
 

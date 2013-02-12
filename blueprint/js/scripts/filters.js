@@ -7,15 +7,15 @@ Filters.prototype.init = function ( params ) {
 	this.map = params.map || false;
 	this.listings = params.listings || false;
 	this.custom_update_callback = params.custom_update_callback || false;
-	this.class = params.class || '.pls_search_form_listings';
+	this.className = params['class'] || '.pls_search_form_listings';
 	
 	if (params.listener) {
 		this.listener = {};
-		this.listener.elements = params.listener.elements || this.class + ', #sort_by, #sort_dir'
+		this.listener.elements = params.listener.elements || this.className + ', #sort_by, #sort_dir'
 		this.listener.events = params.listener.events || 'change submit';	
 	} else {
 		this.listener = {};
-		this.listener.elements = this.class + ', #sort_by, #sort_dir'
+		this.listener.elements = this.className + ', #sort_by, #sort_dir'
 		this.listener.events = 'change submit';	
 	}
 }

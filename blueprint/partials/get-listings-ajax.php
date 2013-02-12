@@ -74,18 +74,20 @@ class PLS_Partials_Get_Listings_Ajax {
             'table_id' => 'placester_listings_list',
             'show_sort' => true,
             'map_js_var' => 'pls_google_map',
-            'search_class' => 'pls_search_form_listings'
+            'search_class' => 'pls_search_form_listings',
+        	'query_limit' => pls_get_option( 'listings_default_list_limit' )
         );
 
         /** Extract the arguments after they merged with the defaults. */
         $args = wp_parse_args( $args, $defaults );
         extract( $args, EXTR_SKIP );
 
-        // Now we need to inject a 'limit' parameter into the search_query to honor theme options limited search returns
-        $query_limit = (int) pls_get_option( 'listings_default_list_limit' );
+        // Now we need to pass the 'limit' parameter from defaults into the search_query to honor theme options limited search returns
+        $query_limit = (int) $query_limit;
         if( !$query_limit || $query_limit > 50 ) {
           $query_limit = 50; // upper limit for API anyway
         }
+        
         $search_query['limit'] = $query_limit;
         
         $sort_by_options = array('images' => 'Images','location.address' => 'Address', 'location.locality' => 'City', 'location.region' => 'State', 'location.postal' => 'Zip', 'zoning_types' => 'Zoning', 'purchase_types' => 'Purchase Type', 'listing_types' => 'Listing Type', 'property_type' => 'Property Type', 'cur_data.beds' => 'Beds', 'cur_data.baths' => 'Baths', 'cur_data.price' => 'Price', 'cur_data.sqft' => 'Square Feet', 'cur_data.avail_on' => 'Date Available');
@@ -184,7 +186,7 @@ class PLS_Partials_Get_Listings_Ajax {
             $_POST['sEcho'] = $sEcho;
           }
         }
-
+        
 		    // Pagination
         // If length is not set for number of listings to return, set it to our Theme Options default
         if( !$_POST['iDisplayLength'] ) {
@@ -332,6 +334,9 @@ class PLS_Partials_Get_Listings_Ajax {
         }
 
         // Required for datatables.js to function properly.
+        $response['sFirst'] = 'Previous';
+        $response['sPrevious'] = 'Next';
+        
         $response['sEcho'] = @$_POST['sEcho'];
         $response['aaData'] = $listings;
         $response['iTotalRecords'] = $api_response['total'];

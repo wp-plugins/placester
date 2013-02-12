@@ -152,6 +152,42 @@ function pls_register_sidebars() {
       );
   }
 
+  if ( get_theme_support( 'pls-testimonials-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'testimonials',
+        'name' => 'Testimonials Page Sidebar',
+        'description' => 'Widget area displayed on Testimonials Index page.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
+
+  if ( get_theme_support( 'pls-agents-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'agents',
+        'name' => 'Agents Page Sidebar',
+        'description' => 'Widget area displayed on Agents Index page.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
+
+  if ( get_theme_support( 'pls-services-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'services',
+        'name' => 'Services Page Sidebar',
+        'description' => 'Widget area displayed on Services Index page.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
+
    // pls_dump($sidebar_support);
 
     // loop through and create sidebars

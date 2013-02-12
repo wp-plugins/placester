@@ -4,7 +4,7 @@ class PL_Form {
 	
 	static $args = array();
 
-	public static function generate_form($items, $args) {
+	public static function generate_form($items, $args, $section_prefix = '') {
 		extract(self::process_defaults($args), EXTR_SKIP);
 		$cache = new PL_Cache('form');
 		if ($result = $cache->get($items, $args)) {
@@ -20,23 +20,27 @@ class PL_Form {
 		$form_group = array();
 		foreach ($items as $key => $attributes) {
 			if ( isset($attributes['type']) && isset($attributes['group']) ) {
-			 	$form_group[$attributes['group']][] = self::item($key, $attributes, $method);
+			 	$form_group[$attributes['group']][] = self::item($key, $attributes, $method, false, $section_prefix);
 			 } elseif ( !isset($attributes['type']) && is_array($attributes) ) {
 				foreach ($attributes as $child_item => $attribute) {
 					if ( isset($attribute['group']) ) {
-						$form_group[$attribute['group']][] = self::item($child_item, $attribute, $method, $key);	
+						$form_group[$attribute['group']][] = self::item($child_item, $attribute, $method, $key, $section_prefix);	
 					}
 				}
 			}
 		}	
+		$section_index = 1;
+		$section_count = count( $form_group );
 		foreach ($form_group as $group => $elements) {
 			if (empty($group)) { $section_id = 'custom'; } else {$section_id = $group; }
+			$form = apply_filters( 'pl_form_section_before', $form, $section_index, $section_count );
 			$form .= "<section class='form_group' id='".str_replace(" ","_",$section_id)."'>";
 			if (!empty($group)) {
 				$form .= $title ? "<h3>" . ucwords($group) . "</h3>" : '';
 			}
 			$form .= implode($elements, '');
 			$form .= "</section>";
+			$form = apply_filters( 'pl_form_section_after', $form, $section_index, $section_count );
 		}
 		$form .= '<section class="clear"></section>';
 		if ($include_submit) {
@@ -54,26 +58,28 @@ class PL_Form {
 		
 	}
 
-	public static function item($item, $attributes, $method, $parent = false) {
+	public static function item($item, $attributes, $method, $parent = false, $section_prefix = '') {
 		extract(self::prepare_item($item, $attributes, $method, $parent), EXTR_SKIP);
 		ob_start();
 		if ($type == 'checkbox') {
 			?>
-				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>">
+				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
 					<input id="<?php echo $id ?>" type="<?php echo $type ?>" name="<?php echo $name ?>" value="true" <?php echo $value ? 'checked' : '' ?>/>
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 				</section>
 			<?php	
 		} elseif ($type == 'textarea') {
+			$rows = ! empty( $attributes['rows'] ) ? $attributes['rows'] : 2;
+			$cols = ! empty( $attributes['cols'] ) ? $attributes['cols'] : 20;
 			?>
-				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>">
+				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
-					<textarea id="<?php echo $id ?>" name="<?php echo $name ?>" rows="2" cols="20"><?php echo $value ?></textarea>
+					<textarea id="<?php echo $id ?>" name="<?php echo $name ?>" rows="<?php echo $rows; ?>" cols="<?php echo $cols; ?>"><?php echo $value ?></textarea>
 				</section>
 			<?php
 		} elseif ($type == 'select') {
 			?>
-				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>" >
+				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>" >
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<select name="<?php echo $name ?>" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
 						<?php foreach ($options as $key => $text): ?>
@@ -84,7 +90,7 @@ class PL_Form {
 			<?php	
 		} elseif ($type == 'multiselect') {
 			?>
-				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>" >
+				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>" >
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<select name="<?php echo $name ?>[]" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
 						<?php foreach ($options as $key => $text): ?>
@@ -95,21 +101,21 @@ class PL_Form {
 			<?php	
 		} elseif( $type == 'text' ) {
 			?>
-				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>">
+				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<input id="<?php echo $id ?>" type="<?php echo $type ?>" name="<?php echo $name ?>" value="<?php echo $value ?>" />
 				</section>
 			<?php
 		} elseif ( $type == 'date') {
 			?>
-				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>">
+				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<input id="<?php echo $id ?>_picker" class="trigger_datepicker" type="text" name="<?php echo $name ?>" <?php echo !empty($value) ? 'value="'.$value.'"' : ''; ?> />
 				</section>
 			<?php
 		} elseif( $type == 'image' ) {
 			?>
-				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>">
+				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<input id="fileupload" type="file" name="images" name="<?php echo $name ?>" multiple /> 
 				</section>
@@ -129,7 +135,20 @@ class PL_Form {
 					$bundle .= "</section>";
 				}
 			 echo $bundle;
-		} elseif ( $type == 'custom_data' ) {
+		} elseif ($type == 'radio') {
+			?>
+				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>" >
+					<label for="<?php echo $id ?>"><?php echo $text ?></label>
+					<?php foreach( $options as $key => $text ): ?>
+					<div class="<?php echo $name . '_radios'; ?>">
+						<label for="<?php echo $name . '_' . $key; ?>"><?php echo $text ?></label>
+						<input id="<?php echo $name . '_' . $key; ?>" type="radio" value="<?php echo $text; ?>" name="<?php echo $name; ?>" />
+					</div>
+					<?php endforeach; ?>	
+				</section>
+			<?php	
+		}
+		 elseif ( $type == 'custom_data' ) {
 			?>
 				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="">Category Name</label>
@@ -171,7 +190,14 @@ class PL_Form {
 
 		// get options, if there are any.
 		if (isset($attributes['bound']) && is_array(($attributes['bound']))) {
-			$options = call_user_func(array($attributes['bound']['class'], $attributes['bound']['method']), (isset($attributes['bound']['params']) ? $attributes['bound']['params'] : null));
+			// Deal with params...
+			$params = ( isset($attributes['bound']['params']) ? $attributes['bound']['params'] : array() ) ;
+			// If "params" is a single element, encapsulate in an array...
+			if ( isset($params) && !is_array($params) ) {
+				$params = array($params);
+			}
+
+			$options = call_user_func_array(array($attributes['bound']['class'], $attributes['bound']['method']), $params);
 		} elseif (isset($attributes['options'])) {
 			$options = $attributes['options'];
 		} else {

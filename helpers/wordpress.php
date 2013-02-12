@@ -9,7 +9,7 @@ class PL_WordPress_Helper {
 	}
 
 	function report_theme () {
-		$theme = strtolower(get_current_theme());
+		$theme = strtolower(wp_get_theme());
 		$response = PL_WordPress::set(array_merge(array('theme' => $theme), array('url' => site_url() ) ) );
 		return $response;
 	}

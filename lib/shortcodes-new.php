@@ -11,7 +11,7 @@
 PL_Shortcodes::init();
 class PL_Shortcodes
 {
-	public static $codes = array('search_form', 'search_listings', 'prop_details', 'search_map', 'listing_slideshow', 'advanced_slideshow','featured_listings', 'static_listings', 'post_listing');
+	public static $codes = array('search_form', 'search_listings', 'prop_details', 'search_map', 'listing_slideshow', 'advanced_slideshow','featured_listings', 'static_listings', 'post_listing', 'pl_neighborhood');
 
 	public static $p_codes = array(	'search_form' => 'Search Form Shortcode',
 									'search_listings' => 'Search Listings Shortcode',
@@ -22,6 +22,7 @@ class PL_Shortcodes
 									'featured_listings' => 'Slideshow Template',
 									'static_listings' => 'Slideshow Template',
 									'post_listing' => 'Post Listing Template',
+									'pl_neighborhood' => 'Neighborhood Template',
 								);
 	
 	// TODO: Construct these lists dynamically by examining the doc hierarchy...
@@ -34,6 +35,7 @@ class PL_Shortcodes
 	  				                'featured_listings' => array('twentyten', 'twentyeleven'),
 	  				                'static_listings' 	=> array('twentyten', 'twentyeleven'),
 	  				                'post_listing' 			=> array('twentyten', 'twentyeleven'),
+									'pl_neighborhood' 			=> array('twentyten', 'twentyeleven'),
 			               			'listings' 			=> array('twentyten', 'twentyeleven') );
 
 	public static $subcodes = array('search_form'  =>  array('bedrooms',
@@ -84,7 +86,21 @@ class PL_Shortcodes
             												'listing_type',
             												'img_gallery',
             												'amenities',
-            												'compliance')
+            												'price_unit',
+            												//'compliance'
+            												),
+									'neighborhood' => array('nb_title',
+															'nb_featured_image',
+															'nb_description',
+															'nb_link',
+															'nb_map'),
+									'listing_slideshow' => array(
+														'ls_index',
+														'ls_url',
+														'ls_address',
+														'ls_beds',
+														'ls_baths',
+											),
             						);
 
 	// TODO: These are a temporary solution, come up with a better convention...
@@ -120,6 +136,10 @@ class PL_Shortcodes
 		foreach (self::$codes as $code) {
 			add_option( ('pls_' . $code), self::$defaults[$code][0] );
 		}
+		
+		// Separately register the Compliance shortcode as it's not completely relevant
+		// to the widget types
+		add_shortcode( 'compliance', array( __CLASS__, 'compliance_shortcode_handler' ) );
 
 		// Handle the special case of turning property details functionality on/off...
 		add_option( self::$prop_details_enabled_key, 'false' ); 
@@ -133,10 +153,24 @@ class PL_Shortcodes
 
 	/*** Shortcode Handlers ***/	
 	
+	public static function compliance_shortcode_handler( $atts ) {
+		$content = PL_Component_Entity::compliance_entity( $atts );
+		
+		return PL_Shortcode_Wrapper::create( 'compliance', $content );
+		
+	} 
+	
 	public static function search_form_shortcode_handler($atts) {
 		$content = PL_Component_Entity::search_form_entity( $atts );
 		
 		return PL_Shortcode_Wrapper::create( 'search_form', $content );
+	}
+	
+	public static function neighborhood_shortcode_handler($atts) {
+		//$content = PL_Component_Entity::search_form_entity( $atts );
+		$content = '';
+		
+		return PL_Shortcode_Wrapper::create( 'neighborhood', $content );
 	}
 
 
@@ -189,12 +223,23 @@ class PL_Shortcodes
 	}
 
 
-	public static function search_listings_shortcode_handler( $atts )
-	{
+	public static function search_listings_shortcode_handler( $atts, $content )
+	{		
+		add_filter('pl_filter_wrap_filter', array( __CLASS__, 'pl_filter_wrap_default_filters' ));
+		$filters = '';
+		
+		// call do_shortcode for all pl_filter shortcodes
+		// Note: don't leave whitespace or other non-valuable symbols
+		if( ! empty( $content ) ) {
+			$filters = do_shortcode( strip_tags( $content ) );
+		}
+		
+		$filters = str_replace('&nbsp;', '', $filters);
+		
 		// Handle attributes using shortcode_atts...
 		// These attributes will hand the look and feel of the listing form container, as 
 		// the context func applies to each individual listing.
-		$content = PL_Component_Entity::search_listings_entity( $atts );
+		$content = PL_Component_Entity::search_listings_entity( $atts, $filters );
 		
 		return PL_Shortcode_Wrapper::create( 'search_listings', $content );
 	}
@@ -203,6 +248,13 @@ class PL_Shortcodes
 		$content = PL_Component_Entity::search_map_entity( $atts );
 		
 		return PL_Shortcode_Wrapper::create( 'search_map', $content );
+	}
+	
+
+	public static function pl_neighborhood_shortcode_handler( $atts ) {
+		$content = PL_Component_Entity::pl_neighborhood_entity( $atts );
+	
+		return PL_Shortcode_Wrapper::create( 'pl_neighborhood', $content );
 	}
 
 /*** Context Filter Handlers ***/	
@@ -250,14 +302,26 @@ class PL_Shortcodes
 /*** Sub-Shortcode Handlers ***/
 
 	public static function search_form_sub_shortcode_handler ($atts, $content, $tag) 
-	{
-		return self::$form_html[$tag];
+	{ 
+		return isset( self::$form_html[$tag] ) ? self::$form_html[$tag] : '';
 	}
 
 	public static function listing_sub_shortcode_handler ($atts, $content, $tag) {
 		$content = PL_Component_Entity::listing_sub_entity( $atts, $content, $tag );
 		
 		return PL_Shortcode_Wrapper::create( 'listing_sub', $content );
+	}
+	
+	public static function listing_slideshow_sub_shortcode_handler ($atts, $content, $tag) {
+		$content = PL_Component_Entity::listing_slideshow_sub_entity( $atts, $content, $tag );
+	
+		return PL_Shortcode_Wrapper::create( 'listing_slideshow_sub', $content );
+	}
+	
+	public static function neighborhood_sub_shortcode_handler ($atts, $content, $tag) {
+		$content = PL_Component_Entity::neighborhood_sub_entity( $atts, $content, $tag );
+	
+		return PL_Shortcode_Wrapper::create( 'neighborhood_sub', $content );
 	}
 	
 	/** Helpcode shortcode handler **/
@@ -309,6 +373,11 @@ class PL_Shortcodes
 		// assign a template as a shortcode arg
 		if( ! empty( $template_name ) ) {
 			$snippet_name = $template_name;
+			if( isset( self::$defaults[$shortcode] ) && in_array( $template_name, self::$defaults[$shortcode] ) ) {
+				$type = 'default';
+			} else {
+				$type = 'custom';
+			}
 		}
 		$snippet_body = PL_Router::load_snippet($shortcode, $snippet_name, $type);
 		return $snippet_body;

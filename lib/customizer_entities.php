@@ -296,13 +296,22 @@ function define_custom_controls()
    		public function render() {
    			?>
    			  <div id="color_scheme">
-   			  	<?php $preset_colors = array('---' => 'none',
-   			  								 'Default' => 'default',
-   			  								 'Forest Green' => '#569E28',
-   			  								 'Navy Blue' => '#000080',
-   			  								 'Maroon' => '#AD0707',
-   			  								 'Violet' => '#800080',
-   			  								 'Golden' => '#CCB400'); 
+   			  	<?php
+	 				$preset_colors = array('---' => 'none', 'Default' => 'default');
+	 				$curr_theme = wp_get_theme()->Template;
+	   			  	$skin_dir = ( trailingslashit(PL_THEME_SKIN_DIR) . trailingslashit($curr_theme) );
+					
+					// Generate list of available skins by filename...
+					$dir = @opendir($skin_dir);
+					if (!empty($dir)) {
+						while ($filename = readdir($dir)) { 
+							// Only look at files with a .css extension...
+							if ( eregi("\.css", $filename) ) {
+						    	$filename = substr( $filename, 0, -strlen('.css') ); // Omit file extension...
+						    	$preset_colors[ucfirst($filename)] = $filename;
+						  	}
+						}
+					}
    			  	?>
 
    			  	<div id="color_message" class="error" style="display: none">

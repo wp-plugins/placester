@@ -85,7 +85,7 @@ class PLS_Shuffle_Bricks {
         if (post_type_exists ('testimonial')) {
             $testimonial_args = array( 
                           'post_type' => 'testimonial',
-                          'meta_key' => 'testimonial_sticky_check',
+                          'meta_key' => 'testimonial_featured',
                           'meta_value' => 'on',
                           'meta_compare' => '=='
                           );

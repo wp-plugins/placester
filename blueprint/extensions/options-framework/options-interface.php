@@ -536,17 +536,6 @@ function optionsframework_fields() {
 
 			<div class="group" id="<?php echo esc_attr( $jquery_click_hook ) ?>">
 				<h3 id="optionsframework-submit-top" >
-					<!-- Build default dropdown... -->
-					<div id="default_opts">
-					  <span>Use default settings: </span>
-					  <select id="def_theme_opts">
-					  <?php foreach (PLS_Options_Manager::$def_theme_opts_list as $name) : ?>
-					  	<option value="<?php echo $name?>"><?php echo $name; ?></option>
-					  <?php endforeach; ?>
-					  </select>
-					  <input type="button" id="btn_def_opts" class="top-button button-primary" value="Load" style="margin: 0px" />
-					</div>
-
 					<div>
 						<span><?php echo esc_html( $value['name'] ) ?></span>
 						<input type="submit" class="top-button button-primary" name="update" value="Save Options" />
@@ -590,17 +579,6 @@ function build_import_export() {
 	?>
 		<div class="group" id="<?php echo esc_attr( $jquery_click_hook ) ?>">
 			<h3 id="optionsframework-submit-top" >
-				<!-- Build default dropdown... -->
-				<div id="default_opts">
-				  <span>Use default settings: </span>
-				  <select id="def_theme_opts">
-				  <?php foreach (PLS_Options_Manager::$def_theme_opts_list as $name) : ?>
-				  	<option value="<?php echo $name?>"><?php echo $name; ?></option>
-				  <?php endforeach; ?>
-				  </select>
-				  <input type="button" id="btn_def_opts" class="top-button button-primary" value="Load" style="margin: 0px" />
-				</div>
-
 				<div>
 					<span><?php echo esc_html( 'Import/Export' ); ?></span>
 					<input type="submit" class="top-button button-primary" name="update" value="Save Options" />

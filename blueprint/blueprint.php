@@ -74,12 +74,13 @@ class Placester_Blueprint {
         $i_am_a_placester_theme = TRUE;
 
         global $placester_blueprint;
+        $placester_blueprint = array();
 
         /** Store 'boot_from' directive in a class var for access by other function members */
         self::$boot_from = $boot_from;
 
         /** Set the plugin error flag. */
-        $placester_blueprint->has_plugin_error = $this->_has_plugin_error(); 
+        $placester_blueprint['has_plugin_error'] = $this->_has_plugin_error(); 
 
 		/** Define the famework constants. */
 		add_action( 'after_setup_theme', array( &$this, 'constants' ), 1 );
@@ -181,20 +182,20 @@ class Placester_Blueprint {
         switch (self::$boot_from)
         {
             case 'plugin':
-              $blueprint_url = trailingslashit( plugins_url() ) . 'placester';
+              $blueprint_url = plugin_dir_url(__FILE__);
               break;
             
             case 'theme':
-              $blueprint_url = get_template_directory_uri();
+              $blueprint_url = trailingslashit( get_template_directory_uri() ) . 'blueprint';
               break;
 
             default:
               die('Cannot load Blueprint: boot location type unknown');
         }
-
+        
         /** Parent theme directory path and url */
         define( 'PLS_DIR', trailingslashit( dirname(__FILE__) ) );
-        define( 'PLS_URL', trailingslashit( $blueprint_url ) . 'blueprint');
+        define( 'PLS_URL', trailingslashit( $blueprint_url ) );
 
         /** Child theme directory path and url */
         define( 'CHILD_DIR', get_stylesheet_directory() );
@@ -276,6 +277,8 @@ class Placester_Blueprint {
             'masonry' => array('script' => true, 'style' => false),
             'jquery-tools' => array('script' => true, 'style' => false),
             'form' => array('script' => true, 'style' => true),
+            'cookies' => array('script' => true, 'style' => false),
+            'lead-capture' => array('script' => true, 'style' => false)
           ) 
         );
         add_theme_support( 'pls-theme-options' );
@@ -303,7 +306,7 @@ class Placester_Blueprint {
         add_theme_support( 'automatic-feed-links' );
         
         /** Add theme support for sidebars - this doesn't turn all sidebars on. */
-        add_theme_support( 'pls-sidebars', array( 'primary', 'listings-search', 'footer-widgets', 'single-property', 'rental-search', 'sales-search', 'blog-index', 'single-post', 'neighborhoods', 'single-neighborhood', 'contact' ) );
+        add_theme_support( 'pls-sidebars', array( 'primary', 'listings-search', 'footer-widgets', 'single-property', 'rental-search', 'sales-search', 'blog-index', 'single-post', 'neighborhoods', 'single-neighborhood', 'contact', 'testimonials', 'agents', 'services' ) );
         
         // Add Default Sidebars
         add_theme_support( 'pls-main-sidebar' );
@@ -372,13 +375,13 @@ class Placester_Blueprint {
         /** Load the utility functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'util.php' );
 
-        /** Load the utility functions. */
+        /** Load the pages functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'pages.php' );
 
         /** Load the compatibility class. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'compatibility.php' );
 
-        /** Load the compatibility class. */
+        /** Load the listings class. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'listings.php' );
 
         /** Load the formatting class. */
@@ -393,17 +396,26 @@ class Placester_Blueprint {
         /** Load the notifications. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'notifications.php' );
 
-        /** Load the notifications. */
+        /** Load the optoins-manager. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'options-manager.php' );
 
-        /** Load the notifications. */
+        /** Load the caching. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'caching.php' );
 
         /** Load the widgets. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'widgets.php' );
 
-        /** Load the scripts functions. */
+        /** Load the lead capture functions. */
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'lead-capture.php' );
+
+        /** Load the shortcodes functions. */
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'shortcodes.php' );
+
+        /** Load the saved search functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'saved_search.php' );
+
+        /** Load the internationalization functions. */
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'internationalization.php' );
 
         /** Load the styles functions. */
         require_once( trailingslashit ( PLS_CSS_DIR ) . 'styles.php' );
@@ -432,8 +444,6 @@ class Placester_Blueprint {
         /** Load the debug functionality if supported. */
         require_if_theme_supports( 'pls-walkscore', trailingslashit ( PLS_FUNCTIONS_DIR ) . 'walkscore.php' );
 
-        /** Create the listings and blog pages. */
-        $this->create_pages();
 	}
 
 	/**
@@ -481,22 +491,6 @@ class Placester_Blueprint {
             require_if_theme_supports( 'pls-shuffle-bricks', trailingslashit( PLS_EXT_DIR ) . 'shuffle-bricks.php' );
         }
         
-	}
+  }
 
-    /**
-     * On activation, creates the blog and listings pages and assignes them 
-     * templates.
-     *
-     * @since 0.0.1
-     */
-    function create_pages() {
-       global $pagenow;
-       if ( is_admin() && isset($_GET['activated'] ) && $pagenow == 'themes.php' ) {
-            $page_list[] = array( 'title' => 'Blog', 'template' => 'page-template-blog.php' );
-            $page_list[] = array( 'title' => 'Listings', 'template' => 'page-template-listings.php' );
-            $page_list[] = array( 'title' => 'Client Profile', 'template' => 'page-template-client.php' );
-            $page_list[] = array( 'title' => 'Sample Listing', 'template' => 'sample-listing.php' );
-            PLS_Pages::create_once($page_list);
-        } 
-    }
 }

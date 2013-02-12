@@ -9,6 +9,7 @@ class PLS_Featured_Listing_Option {
 	function init ( $params = array() ) {
 		// pls_dump($params);
 		ob_start();
+			do_action( 'pl_featured_listings_head' );
 			extract( $params );
 			include( trailingslashit( PLS_OPTRM_DIR ) . 'views/featured-listings-inline.php' );
 		return ob_get_clean();
@@ -66,7 +67,7 @@ class PLS_Featured_Listing_Option {
 		$listings = array();
 		foreach ($api_response['listings'] as $key => $listing) {
 			$listings[$key][] = $listing['location']['address'] . ', ' . $listing['location']['locality'] . ' ' . $listing['location']['region']; 
-			$listings[$key][] = !empty($listing['images']) ? '<a id="listing_image" href="' . $listing['images'][0]['url'] . '"  style="display: inline-block">Preview</a>' :  'No Image'; 
+			$listings[$key][] = !empty($listing['images']) ? '<a id="listing_image" href="' . $listing['images'][0]['url'] . '"  style="display: inline-block" onclick=\'return false;\'>Preview</a>' :  'No Image'; 
 			$listings[$key][] = '<a id="pls_add_option_listing" href="#" ref="'.$listing['id'].'">Make Featured</a>';
 		}
 
