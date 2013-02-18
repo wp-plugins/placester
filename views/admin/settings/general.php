@@ -1,8 +1,12 @@
-<?php extract(PL_Helper_User::whoami()); ?>
-<?php extract(array('places_api_key' => PL_Option_Helper::get_google_places_key() ) ) ; ?>
-<?php extract(array('error_logging' => PL_Option_Helper::get_log_errors())); ?>
-<?php extract(array('block_address' => PL_Option_Helper::get_block_address())); ?>
-<?php $demo_data_flag = PL_Option_Helper::get_demo_data_flag(); ?>
+<?php 
+	$pls_whoami = PL_Helper_User::whoami();
+	if( is_array( $pls_whoami ) ) {
+		extract( $pls_whoami ); 
+	}
+	extract(array('places_api_key' => PL_Option_Helper::get_google_places_key() ) ) ; 
+	extract(array('error_logging' => PL_Option_Helper::get_log_errors())); 
+	extract(array('block_address' => PL_Option_Helper::get_block_address())); 
+	$demo_data_flag = PL_Option_Helper::get_demo_data_flag(); ?>
 
 	<div class="wrap">
 		<?php echo PL_Helper_Header::pl_settings_subpages(); ?>

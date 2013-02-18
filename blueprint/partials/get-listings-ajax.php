@@ -189,7 +189,7 @@ class PLS_Partials_Get_Listings_Ajax {
         
 		    // Pagination
         // If length is not set for number of listings to return, set it to our Theme Options default
-        if( !$_POST['iDisplayLength'] ) {
+        if( ! isset( $_POST['iDisplayLength'] ) ) {
           $_POST['iDisplayLength'] = pls_get_option( 'listings_default_list_length' );
         }
         $_POST['limit'] = @$_POST['iDisplayLength'];

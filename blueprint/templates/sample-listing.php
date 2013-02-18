@@ -60,12 +60,12 @@ ob_start();
         </ul>
     </div>
 
-    <?php $amenities = PLS_Format::amenities_but(&$listing_data, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price')); ?>
+    <?php $amenities = PLS_Format::amenities_but($listing_data, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price')); ?>
    
     <?php if (isset($amenities['list'])): ?>
         <div class="amenities grid_8 alpha">
             <h3>Listing Amenities</h3>
-        	<?php PLS_Format::translate_amenities(&$amenities['list']); ?>
+        	<?php $amenities['list'] = PLS_Format::translate_amenities($amenities['list']); ?>
             <?php foreach ($amenities['list'] as $amenity => $value): ?>
                 <li><span><?php echo $amenity; ?></span> <?php echo $value ?></li>
             <?php endforeach ?>
@@ -75,7 +75,7 @@ ob_start();
     <?php if (isset($amenities['ngb'])): ?>
         <div class="amenities grid_8 alpha">
             <h3>Local Amenities</h3>
-        	<?php PLS_Format::translate_amenities(&$amenities['ngb']); ?>
+        	<?php $amenities['ngb'] = PLS_Format::translate_amenities($amenities['ngb']); ?>
             <?php foreach ($amenities['ngb'] as $amenity => $value): ?>
                 <li><span><?php echo $amenity; ?></span> <?php echo $value ?></li>
             <?php endforeach ?>
@@ -85,7 +85,7 @@ ob_start();
 	<?php if (isset($amenities['uncur'])): ?>
         <div class="amenities grid_8 alpha">
             <h3>Local Amenities</h3>
-        	<?php PLS_Format::translate_amenities(&$amenities['uncur']); ?>
+        	<?php $amenities['uncur'] = PLS_Format::translate_amenities($amenities['uncur']); ?>
             <?php foreach ($amenities['uncur'] as $amenity => $value): ?>
                 <li><span><?php echo $amenity; ?></span> <?php echo $value ?></li>
             <?php endforeach ?>

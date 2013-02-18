@@ -1,4 +1,4 @@
-<style type="text/css">
+<style id="pl_infobar" type="text/css">
   #infobar {
 	overflow: hidden;
 	/*position: absolute;*/
@@ -30,7 +30,7 @@
 
   #infobar .close {
 	float: right;
-	background: url(wp-content/plugins/placester/images/icons/x_white_icon.png) no-repeat;
+	background: url(<?php echo PL_IMG_URL; ?>icons/x_white_icon.png) no-repeat;
 	height: 17px;
 	width: 14px;
 	cursor: pointer;

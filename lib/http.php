@@ -70,7 +70,8 @@ Class PL_HTTP {
 	public static function send_request($url, $request, $method = 'GET', $allow_cache = true, $allow_empty_values = false, $force_return = false, $use_ecoding = true) {
 
 	    $request_string = self::build_request($request, $allow_empty_values);
-
+	    // error_log($url);
+	    // error_log($request_string);
 	    if (!$use_ecoding) {
 	    	$request_string = urldecode($request_string);
 	    }

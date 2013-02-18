@@ -78,30 +78,51 @@ class PL_Listing_Helper {
 	public function many_details($args) {
 		extract(wp_parse_args($args, array('property_ids' => array(), 'limit' => '50', 'offset' => '0')));
 		$response = array();
+		$response['listings'] = array();
+
 		if (empty($property_ids)) {
 			return array('listings' => array(), 'total' => 0);
 		}
+		
+		// Respect the offset and limit...
 		$use_property_ids = array_slice($property_ids, $offset, $limit);
-		foreach ($use_property_ids as $id) {
-			$listing = self::details(array('id' => $id) );
-			$listing['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
-			$listing['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
-			$response['listings'][] = $listing;
+
+		// New args array for 'get' listings call...
+		$args_get = array();
+
+		// Respect block address setting
+		$args_get['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
+
+		// Transfer property IDs...
+		$args_get['listing_ids'] = $args['property_ids'];
+
+		// Try to retrieve details for all the listings...
+		$listings = PL_Listing::get($args_get);
+		
+		// Make sure it contains listings, then process accordingly...
+		if ( !empty($listings['listings']) ) {
+			foreach ($listings['listings'] as $listing) {
+				// Process with details method...
+				$listing = self::process_details($listing);
+
+				// Move on if no listing info is found...
+				if ( empty($listing) ) { continue; }
+
+				$listing['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
+				$listing['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
+				$response['listings'][] = $listing;
+			}	
 		}
-		$response['total'] = count($property_ids);
+		
+		$response['total'] = count($response['listings']);
+		// ob_start(); var_dump($response); error_log(ob_get_clean());
 		return $response;
 	}
 
-	public function details($args = array()) {
-		
-		//respect block address setting
-		if (PL_Option_Helper::get_block_address()) {
-			$args['address_mode'] = 'exact';
-		} else {
-			$args['address_mode'] = 'polygon';
-		}
+	public function process_details( $listing = null ) {
+		// Sanity check...
+		if ( empty($listing) ) { return null; };
 
-		$listing = PL_Listing::details($args);
 		//rename cur_data to metadata due to api weirdness;
 		$listing['metadata'] = $listing['cur_data'];
 		// unset($listing['cur_data']);
@@ -132,12 +153,34 @@ class PL_Listing_Helper {
 		return $listing;
 	}
 
+	/* 
+	 * To be used specifically when a single listing's data is needed -- do NOT loop over calls to this function
+	 * to get N listings for performance reasons ('results()' and 'many_details()' in this class should be used).
+     *
+     * NOTE: Does NOT respect global filters!
+	 */
+	public function get_single_listing ( $property_id = null ) {
+		// Sanity check...
+		if ( empty($property_id) ) { return null; }
+
+		// Response is always bundled...
+		$listings = PL_Listing::get( array('listing_ids' => array($property_id)) );
+
+		$listing = null;
+		if ( !empty($listings['listings']) ) {
+			// There should be only one result...
+			$listing = $listings['listings'][0];
+		}
+
+		return $listing;
+	}
+
 	public function custom_attributes($args = array()) {
 		$custom_attributes = PL_Custom_Attributes::get(array('attr_class' => '2'));
 		return $custom_attributes;
 	}
 
-	function datatable_ajax() {
+	public function datatable_ajax() {
 		$response = array();
 		//exact addresses should be shown. 
 		$_POST['address_mode'] = 'exact';
@@ -159,44 +202,44 @@ class PL_Listing_Helper {
 		// We need to check for and parse listing_types
 		$listing_type_string = $_POST['listing_types'][0];
 		if( !empty( $listing_type_string ) ) {
-      switch( $listing_type_string) {
-        case "Residential Sale":
-          $_POST['zoning_types'][] = 'residential';
-          $_POST['purchase_types'][] = 'sale';
-          // empty listing_types so it doesn't negate our search
-          $_POST['listing_types'] = false;
-          break;
-        case "Residential Rental":
-          $_POST['zoning_types'][] = 'residential';
-          $_POST['purchase_types'][] = 'rental';
-          $_POST['listing_types'] = false;
-          break;
-        case "Commercial Sale":
-          $_POST['zoning_types'][] = 'commercial';
-          $_POST['purchase_types'][] = 'sale';
-          $_POST['listing_types'] = false;
-          break;
-        case "Commercial Rental":
-          $_POST['zoning_types'][] = 'commercial';
-          $_POST['purchase_types'][] = 'rental';
-          $_POST['listing_types'] = false;
-          break;
-        case "Vacation Rental":
-          $_POST['listing_types'][] = 'vac_rental';
-          $_POST['zoning_types'] = false;
-          $_POST['purchase_types'] = false;
-          break;
-        case "Sublet":
-          $_POST['listing_types'][] = 'sublet';
-          $_POST['zoning_types'] = false;
-          $_POST['purchase_types'] = false;
-          break;
-        default:
-          // if we get here, we have a custom type to deal with
-          // let's leave listing_types alone for now
-          $_POST['zoning_types'] = false;
-          $_POST['purchase_types'] = false;
-      }
+	      switch( $listing_type_string) {
+	        case "Residential Sale":
+	          $_POST['zoning_types'][] = 'residential';
+	          $_POST['purchase_types'][] = 'sale';
+	          // empty listing_types so it doesn't negate our search
+	          $_POST['listing_types'] = false;
+	          break;
+	        case "Residential Rental":
+	          $_POST['zoning_types'][] = 'residential';
+	          $_POST['purchase_types'][] = 'rental';
+	          $_POST['listing_types'] = false;
+	          break;
+	        case "Commercial Sale":
+	          $_POST['zoning_types'][] = 'commercial';
+	          $_POST['purchase_types'][] = 'sale';
+	          $_POST['listing_types'] = false;
+	          break;
+	        case "Commercial Rental":
+	          $_POST['zoning_types'][] = 'commercial';
+	          $_POST['purchase_types'][] = 'rental';
+	          $_POST['listing_types'] = false;
+	          break;
+	        case "Vacation Rental":
+	          $_POST['listing_types'][] = 'vac_rental';
+	          $_POST['zoning_types'] = false;
+	          $_POST['purchase_types'] = false;
+	          break;
+	        case "Sublet":
+	          $_POST['listing_types'][] = 'sublet';
+	          $_POST['zoning_types'] = false;
+	          $_POST['purchase_types'] = false;
+	          break;
+	        default:
+	          // if we get here, we have a custom type to deal with
+	          // let's leave listing_types alone for now
+	          $_POST['zoning_types'] = false;
+	          $_POST['purchase_types'] = false;
+	      }
 		}
 
 		// Get listings from model
@@ -239,7 +282,7 @@ class PL_Listing_Helper {
 		echo json_encode($api_response);
 		if (isset($api_response['id'])) {
 			PL_HTTP::clear_cache();
-			self::details(array('id' => $api_response['id']));
+			PL_Listing::get( array('listing_ids' => array($api_response['id'])) );
 			
 			// If on, turn off demo data...
 			PL_Option_Helper::set_demo_data_flag(false);
@@ -258,7 +301,7 @@ class PL_Listing_Helper {
 		if (isset($api_response['id'])) {
 			PL_HTTP::clear_cache();
 			PL_Pages::delete_by_name($api_response['id']);
-			self::details(array('id' => $api_response['id']));
+			PL_Listing::get( array('listing_ids' => array($api_response['id'])) );
 		}
 		die();
 	}	

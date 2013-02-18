@@ -4,11 +4,12 @@ jQuery(document).ready(function($) {
 		event.preventDefault();
 		// console.log("in here...");
 	  	$.post(info.ajaxurl, {action: 'demo_data_off'}, function(response) {
-            // Now that demo data has been turned off, reload the page to reflect the change...
+            // Now that demo data has been turned off, re-direct the user back the home page to reflect the change.
             //
           	// Note that "parent" is used, in order to allow refreshing from inside iframes--this
           	// still works when in the main window, as its parent property is self-referential.
-            window.parent.location.reload(true);
+            var homepage = ( window.location.origin ) ? window.location.origin : ( window.location.protocol + "//" + window.location.host );
+            window.location.href = homepage;
         },'json');
 	});
 

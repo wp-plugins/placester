@@ -1,8 +1,7 @@
 <?php 
 
 class PLS_Format {
-
-
+  
 	static public function phone ($phone, $options = '') {
 		$new_phone = '';
 
@@ -17,7 +16,7 @@ class PLS_Format {
 
         extract( $options, EXTR_SKIP );
 
-        if (self::validate_number(&$phone)) {
+        if (self::validate_number($phone)) {
             $phone_parts = self::process_phone_parts($phone);
 
             switch ($format) {
@@ -75,13 +74,11 @@ class PLS_Format {
 	// formats the given number based on the supplied options. 
 	static public function number ( $number, $options = '') {
 
-    if ($number == "0") {
-
-    } elseif ($number == '') {
-      error_log("hello!");
-      return '';
-    }
-    
+		// Handle specific values AND types (this makes sure to allow '0' as a string and 0 as an integer)
+	    if ( $number === '' || $number === false || $number === null ) {
+	    	return '';
+	    }
+	    
 		$formatted_number = false;
 
 		/** Define the default argument array. */
@@ -155,7 +152,7 @@ class PLS_Format {
 		return $abbreviated_number;
 	}
 
-	static private function validate_number ($phone) {
+	static private function validate_number (&$phone) {
 		
 		//placester api dumps a + in there. 		
 		if (substr($phone, 0, 1) == '+') {
@@ -300,6 +297,11 @@ class PLS_Format {
 		$amenities['ngb'] = array();
 		$amenities['list'] = array();
 
+		// Prevent fake data handling when there is no valid listing
+		if( is_null( $listing_data ) ) {
+			return $amenities;
+		}
+		
 		foreach ($listing_data['cur_data'] as $amenity => $value) {
 		  if (empty($value)) { continue; }
 			if (in_array($amenity, $amenities_to_remove)) { continue; }
@@ -652,6 +654,38 @@ class PLS_Format {
 		
 		return $amenities;
 	}
+
+  static public function shorten_excerpt ( $post, $length = 50, $ellipsis = true ) {
+    
+    if ( !empty($post->post_excerpt) ) {
+      // 1st priority: excerpt
+      $excerpt = $post->post_excerpt;
+    } elseif ( !empty($post->post_content) ) {
+      // 2nd priority: content
+      $content = strip_shortcodes($post->post_content);
+      $content = strip_tags($content);
+      $excerpt = $content;
+    } else {
+      return '';
+    }
+    
+    $shortened_excerpt = preg_replace('/\s+?(\S+)?$/', '', substr($excerpt, 0, $length));
+    
+    if ($ellipsis == true) {
+      $shortened_excerpt .= '...';
+    }
+    
+    return $shortened_excerpt;
+  }
+
+  static public function shorten_text ( $content, $length = 50 ) {
+    if (strlen($content) > $length) {
+      $shortened_content = preg_replace('/\s+?(\S+)?$/', '', substr($content, 0, $length));
+      return $shortened_content;
+    } else {
+      return $content;
+    }
+  }
 
 //end of class
 }

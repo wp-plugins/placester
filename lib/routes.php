@@ -80,7 +80,10 @@ class PL_Router {
 
 	public function add_listings() {
 		if (isset($_GET['id'])) {
-			$_POST = PL_Listing_Helper::details($_GET);
+			// Fetch listing and process it...
+			$listing = PL_Listing_Helper::get_single_listing($_GET['id']);
+			$_POST = PL_Listing_Helper::process_details($listing);
+			
 			switch ($_POST['compound_type']) {
 				case 'res_sale':
 					$_POST['property_type-res_sale'] = $_POST['property_type'];

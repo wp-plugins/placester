@@ -182,6 +182,7 @@ class PL_Component_Entity {
 	
 	public static function search_map_entity( $atts ) {
 		$atts = wp_parse_args($atts, array('type' => 'listings', 'width' => 600, 'height' => 400));
+		if( ! isset( $atts['map_id'] ) ) { return ''; }
 		$map_id = $atts['map_id'];
 		
 		$values = get_post_meta( $map_id );
@@ -525,14 +526,14 @@ class PL_Component_Entity {
 							$val = PLS_Format::translate_property_type($listing_list);
 							break;
 						case 'amenities':
-							$amenities = PLS_Format::amenities_but(&$listing_list, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price', 'desc'));
+							$amenities = PLS_Format::amenities_but($listing_list, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price', 'desc'));
 							$amen_type = array_key_exists('type', $atts) ? (string)$atts['type'] : 'list';
 							ob_start();
 							?>
 								<div class="amenities-section grid_8 alpha">
 				                    <ul>
 				                    	<?php if (is_array($amenities[$amen_type])): ?>
-				                    	<?php PLS_Format::translate_amenities(&$amenities[$amen_type]); ?>
+				                    	<?php $amenities[$amen_type] = PLS_Format::translate_amenities($amenities[$amen_type]); ?>
 						                    <?php foreach ($amenities[$amen_type] as $amenity => $value): ?>
 						                        <li><span><?php echo $amenity; ?></span> <?php echo $value ?></li>
 						                    <?php endforeach ?>		
@@ -564,21 +565,26 @@ class PL_Component_Entity {
 			$term_name = '';
 			$neighborhood_term = '';
 			
+			// Type of neighborhood is set as radio_type from the radio box in the admin
+			// get key and value to test for neighborhood object
+			if( ! isset( $atts['radio_type'] ) ) { 	return;  }
+			$key = $atts['radio_type'];
+			if( ! isset( $atts['nb_select_' . $key] ) ) { return;  }
+			$value = $atts['nb_select_' . $key];
+			
 			// API searches for neighborhood by slug
-			foreach( $atts as $key => $value ) {
-				if( in_array( $key, array( 'state', 'city', 'neighborhood', 'zip', 'street' ) ) ) {
-					$term = get_term_by('id', $value, $key);
-					if( ! empty( $term ) ) {
-						$taxonomy_type = $key;
-						$taxonomy = get_taxonomy( $key );
-						$atts[$key] = $term->slug;
-						$term_slug = $term->slug;
-						$term_name = $term->name;
-						$neighborhood_term = $term;
-					}
+			if( in_array( $key, array( 'state', 'city', 'neighborhood', 'zip', 'street' ) ) ) {
+				$term = get_term_by('id', $value, $key);
+				if( ! empty( $term ) ) {
+					$taxonomy_type = $key;
+					$taxonomy = get_taxonomy( $key );
+					$atts[$key] = $term->slug;
+					$term_slug = $term->slug;
+					$term_name = $term->name;
+					$neighborhood_term = $term;
 				}
 			}
-			
+
 			if( empty( $taxonomy ) ) {
 				return;
 			}

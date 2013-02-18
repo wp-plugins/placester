@@ -20,6 +20,18 @@ function of_sanitize_textarea($input) {
 	return $output;
 }
 
+function of_sanitize_integer($input) {
+	if($match = preg_match( '/^\d+$/', $input ) ) {
+	   $output = $input;
+	} else {
+	  $output = 0;
+	}
+	
+	return $output;
+}
+
+add_filter( 'of_sanitize_integer', 'of_sanitize_integer' );
+
 add_filter( 'of_sanitize_textarea', 'of_sanitize_textarea' );
 
 /* Info */

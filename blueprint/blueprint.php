@@ -83,25 +83,25 @@ class Placester_Blueprint {
         $placester_blueprint['has_plugin_error'] = $this->_has_plugin_error(); 
 
 		/** Define the famework constants. */
-		add_action( 'after_setup_theme', array( &$this, 'constants' ), 1 );
+		add_action( 'after_setup_theme', array( $this, 'constants' ), 1 );
 
 		/** Load the framework's core functions. */
-		add_action( 'after_setup_theme', array( &$this, 'core' ), 2 );
+		add_action( 'after_setup_theme', array( $this, 'core' ), 2 );
 
 		/** Initialize the framework's default actions and filters. */
-		add_action( 'after_setup_theme', array( &$this, 'default_filters' ), 3 );
+		add_action( 'after_setup_theme', array( $this, 'default_filters' ), 3 );
 
 		/** Add default theme support. */
-		add_action( 'after_setup_theme', array( &$this, 'default_theme_support' ), 4 );
+		add_action( 'after_setup_theme', array( $this, 'default_theme_support' ), 4 );
 
 		/** Language functions and translations setup. */
-		add_action( 'after_setup_theme', array( &$this, 'locale' ), 5 );
+		add_action( 'after_setup_theme', array( $this, 'locale' ), 5 );
 
 		/** Load the framework components. */
-		add_action( 'after_setup_theme', array( &$this, 'components' ), 12 );
+		add_action( 'after_setup_theme', array( $this, 'components' ), 12 );
 
         /* Load the framework extensions. */
-		add_action( 'after_setup_theme', array( &$this, 'extensions' ), 13 );
+		add_action( 'after_setup_theme', array( $this, 'extensions' ), 13 );
 	}
 
     private function _has_plugin_error() {

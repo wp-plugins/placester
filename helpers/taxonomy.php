@@ -343,6 +343,7 @@ class PL_Taxonomy_Helper {
 		$zip = '';
 		$city = '';
 		$street = '';
+		$neighborhood = '';
         $rewritecode = array('%state%','%city%','%zip%','%neighborhood%','%street%', $leavename ? '' : '%postname%', $leavename ? '' : '%pagename%', $leavename ? '' : '%pagename%');
         
         if ( !empty($permalink) && $post->post_type == 'property' && !in_array($post->post_status, array('draft', 'pending', 'auto-draft')) ) {

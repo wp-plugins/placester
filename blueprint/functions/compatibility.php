@@ -15,7 +15,7 @@ function pls_get_property_list( $params ) {
 }
 
 function pls_get_valid_property_list_fields( &$args ) {
-    return PLS_Plugin_API::get_valid_property_list_fields( &$args );
+    return PLS_Plugin_API::get_valid_property_list_fields( $args );
 }
 
 function pls_get_property_list_fields( $field = '' ) {

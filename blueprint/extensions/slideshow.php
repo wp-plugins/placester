@@ -241,36 +241,39 @@ class PLS_Slideshow {
             'captions' => '',
         );
         /** Create the slideshow */
-        foreach( $data['images'] as $index => $slide_src ) {
-            $extra_attr = array();
-            $extra_attr['title'] = '';
 
-            /** Save the caption and the title attribute for the img. */
-            if ( isset( $data['captions'][$index] ) ) {
-                $html['captions'] .= $data['captions'][$index];
-                $extra_attr['title'] = "#caption-{$index}";
-            }
-            
-            
-            if( isset( $data['type'] ) ) {
-                // Get image, but only Dragonfly listing images
-                if ($data['type'][$index] == "listing") {
-                  $slide_src = PLS_Image::load($slide_src, array('resize' => array('w' => 940, 'h' => 415), 'fancybox' => false, 'as_html' => false, 'allow_dragonfly' => false));
-                } elseif ($data['type'][$index] == "custom") {
-                  $slide_src = PLS_Image::load($slide_src, array('allow_resize' => false, 'fancybox' => false, 'as_html' => false, 'allow_dragonfly' => false));
-                }
-            }
-            
-            /** Create the img element. */
-            $slide = pls_h_img($slide_src, false, $extra_attr);
-
-            /** Wrap it in an achor if the anchor exists. */
-            if ( isset( $data['links'][$index] ) )
-                $slide = pls_h_a( $data['links'][$index], $slide, array('data-caption' => "#caption-{$index}") );
-
-            $html['slides'] .= $slide;
-
-}
+		if( isset( $data['images'] ) ) {
+	        foreach( $data['images'] as $index => $slide_src ) {
+	            $extra_attr = array();
+	            $extra_attr['title'] = '';
+	
+	            /** Save the caption and the title attribute for the img. */
+	            if ( isset( $data['captions'][$index] ) ) {
+	                $html['captions'] .= $data['captions'][$index];
+	                $extra_attr['title'] = "#caption-{$index}";
+	            }
+	            
+	            
+	            if( isset( $data['type'] ) ) {
+	                // Get image, but only Dragonfly listing images
+	                if ($data['type'][$index] == "listing") {
+	                  $slide_src = PLS_Image::load($slide_src, array('resize' => array('w' => 940, 'h' => 415), 'fancybox' => false, 'as_html' => false, 'allow_dragonfly' => false));
+	                } elseif ($data['type'][$index] == "custom") {
+	                  $slide_src = PLS_Image::load($slide_src, array('allow_resize' => false, 'fancybox' => false, 'as_html' => false, 'allow_dragonfly' => false));
+	                }
+	            }
+	            
+	            /** Create the img element. */
+	            $slide = pls_h_img($slide_src, false, $extra_attr);
+	
+	            /** Wrap it in an achor if the anchor exists. */
+	            if ( isset( $data['links'][$index] ) )
+	                $slide = pls_h_a( $data['links'][$index], $slide, array('data-caption' => "#caption-{$index}") );
+	
+	            $html['slides'] .= $slide;
+	
+			}
+		}
         /** Combine the html. */
         $html = pls_h_div(
             $html['slides'],

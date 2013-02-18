@@ -460,8 +460,15 @@ class PLS_Partials_Listing_Search_Form {
     $form_opt_attr = array();
 
     /** Filter form fields. */
-    foreach( $form_options as $option_name => &$opt_array ) {
-
+    $form_option_keys = array_keys( $form_options );
+    $form_options_count = count( $form_option_keys );
+    
+    // foreach( $form_options as $option_name => &$opt_array ) {
+    // replace the foreach with for to provide reference update functionality in the loop
+    for( $i = 0; $i < $form_options_count; $i++ ) {
+		$option_name = $form_option_keys[$i];
+		$opt_array = $form_options[$option_name];
+    	
         /** Filter each of the fields options arrays. */
         $opt_array = apply_filters( pls_get_merged_strings( array( "pls_listings_search_form_{$option_name}_array", $context ), '_', 'pre', false ), $opt_array, $context_var );
 
@@ -477,6 +484,8 @@ class PLS_Partials_Listing_Search_Form {
         if ( isset( $opt_array['pls_empty_value'] ) ) {
             $form_opt_attr[$option_name] = $form_opt_attr[$option_name] + array( 'data-placeholder' => $opt_array['pls_empty_value'] );
         }
+        
+        $form_options[$option_name] = $opt_array;
     }
 
     if (!isset($_POST['metadata'])) {
@@ -813,9 +822,18 @@ class PLS_Partials_Listing_Search_Form {
     }
 
     /** Apply filters on all the form elements html. */
-    foreach( $form_html as $option_name => &$opt_html ) {
+    $form_html_keys = array_keys( $form_html );
+    $form_html_count = count( $form_html_keys );
+    
+    // foreach( $form_html as $option_name => &$opt_html ) {
+    for( $i = 0; $i < $form_html_count; $i++ ) {
+    	$option_name = $form_html_keys[$i];
+    	$opt_html = $form_html[$option_name];
+    	
         $opt_html = apply_filters( pls_get_merged_strings( array( "pls_listings_search_form_{$option_name}_html", $context ), '_', 'pre', false ),
                                    $opt_html, $form_options[$option_name], $section_title[$option_name], $context_var );
+        
+        $form_html[$option_name] = $opt_html;
     }
 
     /** Combine the form elements. */

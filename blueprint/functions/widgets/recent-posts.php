@@ -38,9 +38,9 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
         parent::__construct( "pls-recent-posts", 'Placester: Recent Blog Posts', $widget_options );
 
         /** Delete the widget cache if a post is modified, deleted, or a the theme is switched. */
-		add_action( 'save_post', array( &$this, 'flush_widget_cache' ) );
-		add_action( 'deleted_post', array( &$this, 'flush_widget_cache' ) );
-		add_action( 'switch_theme', array( &$this, 'flush_widget_cache' ) );
+		add_action( 'save_post', array( $this, 'flush_widget_cache' ) );
+		add_action( 'deleted_post', array( $this, 'flush_widget_cache' ) );
+		add_action( 'switch_theme', array( $this, 'flush_widget_cache' ) );
 	}
 
 	/**

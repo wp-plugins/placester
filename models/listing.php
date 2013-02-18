@@ -26,6 +26,7 @@ class PL_Listing {
 		if ( defined('HOSTED_PLUGIN_KEY') ) {
 			$request['hosted_key'] = HOSTED_PLUGIN_KEY;
 		}
+		
 		// sent request, use details from config.
 		$response = PL_HTTP::send_request(PL_Config::PL_API_LISTINGS('get', 'request', 'url'), $request, PL_Config::PL_API_LISTINGS('get', 'request', 'type'));
 		// validate response. 
@@ -62,23 +63,6 @@ class PL_Listing {
 		$delete_url = trailingslashit($config['request']['url']) . $request['id'];
 		$response = PL_HTTP::send_request($delete_url, $request, $config['request']['type']);
 		$response = PL_Validate::attributes($response, $config['returns']);
-		return $response;	
-	}
-
-	public function details($args = array()) {
-		$config = PL_Config::PL_API_LISTINGS('details');
-		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));
-		if ( defined('HOSTED_PLUGIN_KEY') ) {
-			$request['hosted_key'] = HOSTED_PLUGIN_KEY;
-		}
-		// sometimes id is not defined
-		if( ! isset( $request['id'] ) ) {
-		  $request['id'] = '';
-		}
-		$details_url = trailingslashit($config['request']['url']) . $request['id'];
-		$response = PL_HTTP::send_request($details_url, $request, $config['request']['type']);
-		$response = PL_Validate::attributes($response, $config['returns']);
-		PL_Pages::manage_listing($response);
 		return $response;	
 	}
 

@@ -99,6 +99,8 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 			if( isset( $meta['pl_template_after_block'] ) ) unset( $meta['pl_template_after_block'] );
 			
 			foreach( $meta as $key => $value ) {
+				// dashes break shortcode attributes, convert to underscores
+				$key = str_replace('-', '_', $key);
 				// ignore underscored private meta keys from WP
 				if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
 					if( 'pl_static_listings_option' === $key  || 'pl_featured_listing_meta' === $key) {
@@ -111,16 +113,20 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 							$nb_type = $type_value;
 							$nb_value_key = 'nb-select-' . $nb_type;
 							$nb_value = isset( $meta[$nb_value_key] ) ? $meta[$nb_value_key][0] : ''; 
+							// dashes break shortcode attributes, convert to underscores
+							$nb_type = str_replace( '-', '_', $nb_type );
+							$nb_value = str_replace( '-', '_', $nb_value );
 							$args .= "$nb_type = '{$nb_value}' ";
+							
 							// $args .= "$nb_value_key = '{$nb_value}' ";
 						}
 					} else if( ! in_array( $key, array('pl_cpt_template', 'type') ) ) {
 						if( is_array( $value ) ) {
 							// handle meta values as arrays
-							$args .= "$key = '{$value[0]}' ";
+							$args .= "$key='{$value[0]}' ";
 						} else {
 							// handle _GET vars as strings
-							$args .= "$key = '{$value}' ";
+							$args .= "$key='{$value}' ";
 						}
 					}
 					

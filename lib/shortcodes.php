@@ -448,7 +448,7 @@ class PL_Shortcodes
 					<div class="amenities-section grid_8 alpha">
 	                    <ul>
 	                    	<?php if (is_array($amenities[$amen_type])): ?>
-	                    	<?php PLS_Format::translate_amenities(&$amenities[$amen_type]); ?>
+	                    	<?php $amenities[$amen_type] = PLS_Format::translate_amenities($amenities[$amen_type]); ?>
 			                    <?php foreach ($amenities[$amen_type] as $amenity => $value): ?>
 			                        <li><span><?php echo $amenity; ?></span> <?php echo $value ?></li>
 			                    <?php endforeach ?>		
