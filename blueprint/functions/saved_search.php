@@ -34,15 +34,9 @@ class PLS_Saved_Search {
 
 	function check ($search_id) {
 		
-		$cache = new PL_Cache('ss');
-        if ($result = $cache->get($search_id)) {
-          return $result;
-        }
-
 		$key = self::generate_key( $search_id );
 		
 		if ( $result = get_option($key, false) ) {
-			$cache->save($result);  
 			return $result;	
 		} else {
 			self::save($search_id, $_POST);

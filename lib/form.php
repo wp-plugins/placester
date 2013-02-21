@@ -224,8 +224,10 @@ class PL_Form {
 			} else {
 				$value = $attributes['bound']['default'];	
 			}
-			
 		} 
+		
+		// extra check for blank arrays
+		$value = ( is_array( $value ) && count( $value ) === 0 ) ? null : $value;
 
 		return array('name' => $name, 'value' => $value, 'text' => $text, 'options' => $options, 'id' => $id, 'type' => $attributes['type'], 'css' => $css);
 	}
@@ -237,7 +239,7 @@ class PL_Form {
 			$form_types = $form_types['args']['attr_type']['options'];
 			$attributes = array('label' => $option['name'], 'type' => $form_types[$option['attr_type']]);
 			$custom_items[$option['cat']][] = self::item($option['key'], $attributes, $method, 'metadata');
-		}
+		} 
 		return $custom_items;
 	}
 

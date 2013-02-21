@@ -447,7 +447,7 @@ class PL_Membership {
         ob_start();
         ?>
         <div style="display: none">
-            <form method="post" action="#<?php echo $role; ?>" id="pl_lead_register_form" name="pl_lead_register_form">
+            <form method="post" action="#<?php echo $role; ?>" id="pl_lead_register_form" name="pl_lead_register_form" autocomplete="off">
                 <div style="display:none" id="form_message_box"></div>
                 <h2>Sign Up</h2>
                 <!-- <p>

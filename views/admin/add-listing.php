@@ -20,7 +20,10 @@
 			<div id="post-body">
 				<div id="post-body-content">
 					<div class="property-type-selects">
-						<?php PL_Helper_Add_Listing::property_selects(); ?>
+						<!-- Compound Type Select -->
+						<?php echo PL_Form::item('compound_type', PL_Config::PL_API_LISTINGS('create', 'args', 'compound_type'), 'POST'); ?>
+					    <!-- Property Type Input -->
+					    <?php echo PL_Form::generate_form( PL_Config::bundler('PL_API_LISTINGS', array('create', 'args'), array('property_type')), array('method'=>'POST', 'include_submit' => false, 'wrap_form' => false, 'echo_form' => false) ); ?>
 					</div>					
 					<div class="clear"></div>
 					<?php PL_Router::load_builder_partial('admin-box.php',

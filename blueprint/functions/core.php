@@ -226,6 +226,12 @@ function pls_document_title() {
     // Add a page number if necessary:
     if ( $paged >= 2 || $page >= 2 )
         $title .= ' | ' . sprintf( 'Page %s', max( $paged, $page ) );
+    
+    // When front page is the blog listing, don't display latest blog title
+    if( is_home() && is_front_page() ) {
+    	$title = get_bloginfo( 'name' );
+    	if( ! empty( $site_description ) ) $title .= " | $site_description";
+    }
 
     echo $title;
 }

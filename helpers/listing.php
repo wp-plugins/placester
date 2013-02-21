@@ -273,11 +273,8 @@ class PL_Listing_Helper {
 	}
 	
 	public function add_listing_ajax() {
-		foreach ($_POST as $key => $value) {
-			if (is_int(strpos($key, 'property_type')) && $value !== 'false') {
-				$_POST['property_type'] = $value;
-			}
-		}
+		self::prepare_post_array();
+		
 		$api_response = PL_Listing::create($_POST);
 		echo json_encode($api_response);
 		if (isset($api_response['id'])) {
@@ -291,11 +288,8 @@ class PL_Listing_Helper {
 	}	
 
 	public function update_listing_ajax() {
-		foreach ($_POST as $key => $value) {
-			if (is_int(strpos($key, 'property_type')) && $value !== 'false') {
-				$_POST['property_type'] = $value;
-			}
-		}
+		self::prepare_post_array();
+		
 		$api_response = PL_Listing::update($_POST);
 		echo json_encode($api_response);
 		if (isset($api_response['id'])) {
@@ -305,6 +299,17 @@ class PL_Listing_Helper {
 		}
 		die();
 	}	
+	
+	private function prepare_post_array() {
+		foreach ($_POST as $key => $value) {
+			if (is_int(strpos($key, 'property_type'))) {
+				unset( $_POST[$key] );
+				if( $value !== 'false' && ! empty( $value ) ) {
+					$_POST['metadata']['prop_type'] = $value;
+				}
+			}
+		}
+	}
 
 	public function add_temp_image() {
 		$api_response = array();
@@ -492,7 +497,7 @@ class PL_Listing_Helper {
 
 	public function get_listing_attributes() {
 		$options = array();
-		$attributes = PL_Config::bundler('PL_API_LISTINGS', array('get', 'args'), array('listing_types','property_type.sublet','property_type.res_sale','property_type.res_rental','property_type.vac_rental','property_type.comm_sale','property_type.comm_rental', 'zoning_types', 'purchase_types', 'agency_only', 'non_import', array('location' => array('region', 'locality', 'postal', 'neighborhood', 'county'))));
+		$attributes = PL_Config::bundler('PL_API_LISTINGS', array('get', 'args'), array('listing_types','property_type', 'zoning_types', 'purchase_types', 'agency_only', 'non_import', array('location' => array('region', 'locality', 'postal', 'neighborhood', 'county'))));
 		foreach ($attributes as $key => $attribute) {
 			if ( isset($attribute['label']) ) {
 				$options['basic'][$key] = $attribute['label'];

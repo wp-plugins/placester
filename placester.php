@@ -99,7 +99,7 @@ include_once('config/customizer/onboard_settings.php');
 include_once('config/customizer/theme_choices.php');
 
 //lib
-// include_once('lib/social_networks.php');
+include_once('lib/social_networks.php');
 include_once('lib/config.php');
 include_once('lib/routes.php');
 include_once('lib/http.php');
@@ -142,7 +142,6 @@ include_once('models/education-com.php');
 
 //helpers
 include_once('helpers/listing.php');
-include_once('helpers/add-listing.php');
 include_once('helpers/option.php');
 include_once('helpers/compatibility.php');
 include_once('helpers/css.php');
@@ -234,7 +233,7 @@ function placester_admin_menu() {
     add_submenu_page( 'placester', 'Widgets', 'Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
     
     /* TODO: Re-enable when social functionality is all set... */
-    // add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks_Twitter','add_social_settings_cb') );
+    add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks_Twitter','add_social_settings_cb') );
     
     // add_submenu_page( 'placester', '', 'Settings', 'edit_pages', 'placester_settings_general', array('PL_Router','settings') );    
     add_submenu_page( 'placester', '', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );    

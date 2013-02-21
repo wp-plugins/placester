@@ -181,15 +181,15 @@ class PL_Component_Entity {
 	}
 	
 	public static function search_map_entity( $atts ) {
-		$atts = wp_parse_args($atts, array('type' => 'listings', 'width' => 600, 'height' => 400));
-		if( ! isset( $atts['map_id'] ) ) { return ''; }
-		$map_id = $atts['map_id'];
+		$atts = wp_parse_args($atts, array('type' => 'listings', 'width' => 600, 'height' => 400, 'sync_map_to_list' => false));
+// 		if( ! isset( $atts['map_id'] ) ) { return ''; }
+// 		$map_id = $atts['map_id'];
 		
-		$values = get_post_meta( $map_id );
-		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) && is_array( $values['pl_featured_listing_meta'] ) ? @unserialize($values['pl_featured_listing_meta'][0]) : '';
-		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) && ! isset( $pl_featured_listing_meta['featured-listings-type'] ) ? array() : $pl_featured_listing_meta['featured-listings-type'];
+// 		$values = get_post_meta( $map_id );
+// 		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) && is_array( $values['pl_featured_listing_meta'] ) ? @unserialize($values['pl_featured_listing_meta'][0]) : '';
+// 		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) && ! isset( $pl_featured_listing_meta['featured-listings-type'] ) ? array() : $pl_featured_listing_meta['featured-listings-type'];
 		
-		$property_ids = array_flip( $pl_featured_meta_value );
+// 		$property_ids = array_flip( $pl_featured_meta_value );
 		
 		$encoded_atts = array( 
 			'width' => $atts['width'],
@@ -210,6 +210,7 @@ class PL_Component_Entity {
     		// var filter = new Filters ();
     		var listings = new Listings ({
     			map: map,
+    			<?php if( $atts['sync_map_to_list'] ): ?>sync_map_to_list: true, <?php endif; ?>
     			<?php // echo "property_ids: ['" . implode("','", $property_ids) . "'],"; ?>
     			// filter: filter,
     		});
@@ -251,7 +252,8 @@ class PL_Component_Entity {
     </script>
 
 	<?php
-	    echo PLS_Map::listings( null, array('width' => $atts['width'], 'height' => $atts['height']) );
+		$listings = null;
+	    echo PLS_Map::listings( $listings, array('width' => $atts['width'], 'height' => $atts['height']) );
 	  	return ob_get_clean();  
 	}
 	

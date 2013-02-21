@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
 
-	console.log(adminurl);
-	console.log(siteurl);
+	// console.log(adminurl);
+	// console.log(siteurl);
 
 	//property selectbox
 	set_property_type();
@@ -9,12 +9,6 @@ jQuery(document).ready(function($) {
 	//if we're editing, disable listing type.
 	if ($('#add_listing_form').attr('method') == 'PUT') {
 		$('select#compound_type').prop('disabled', true);
-		$('select#property_type-sublet').prop('disabled', true)
-		$('select#property_type-res_sale').prop('disabled', true)
-		$('select#property_type-vac_rental').prop('disabled', true)
-		$('select#property_type-res_rental').prop('disabled', true)
-		$('select#property_type-comm_rental').prop('disabled', true)
-		$('select#property_type-comm_sale').prop('disabled', true)
 	} else {
 		$('select#compound_type').bind('change', function () {
 			set_property_type();
@@ -38,14 +32,6 @@ jQuery(document).ready(function($) {
 	})
 
 	function set_property_type() {
-		$('#property_type-sublet').hide().find('select').prop('disabled', true);
-		$('#property_type-res_sale').hide().find('select').prop('disabled', true);
-		$('#property_type-vac_rental').hide().find('select').prop('disabled', true);
-		$('#property_type-res_rental').hide().find('select').prop('disabled', true);
-		$('#property_type-comm_rental').hide().find('select').prop('disabled', true);
-		$('#property_type-comm_sale').hide().find('select').prop('disabled', true);
-		$('#property_type-' + $('select#compound_type').val() ).show().find('select').prop('disabled', false);
-
 		//res_sale
 		$('div#res_sale_details_admin_ui_basic').hide().find('input, select').prop('disabled', true);
 		$('div#res_sale_details_admin_ui_advanced').hide().find('input, select').prop('disabled', true);
@@ -75,7 +61,7 @@ jQuery(document).ready(function($) {
 		$('div#park_rental_details_admin_ui_ad').hide().find('input, select').prop('disabled', true);
 
 		//show the right boxes
-		console.log('#' + $('select#compound_type').val() + '_details_admin_ui_basic');
+		// console.log('#' + $('select#compound_type').val() + '_details_admin_ui_basic');
 		$('#' + $('select#compound_type').val() + '_details_admin_ui_basic' ).show().find('input, select').prop('disabled', false);
 		$('#' + $('select#compound_type').val() + '_details_admin_ui_advanced' ).find('input, select').prop('disabled', false);
 	}
@@ -93,8 +79,8 @@ jQuery(document).ready(function($) {
         done: function (e, data) {
             $.each(data.result, function (index, file) {
             	var count = $('.image_container div input').length;
-            	console.log(count);
-            	console.log(index);
+            	// console.log(count);
+            	// console.log(index);
             	var id = '#' + file.orig_name.replace(/( )|(\.)|(\))|(\()/g,'');
             	$(id).parentsUntil('#image_container_remove').remove();
                 $('#fileupload-holder-message').append('<li class="image_container"><div><img width="100px" height="100px" src="'+file.url+'" ><a id="remove_image">Remove</a><input id="hidden_images" type="hidden" name="images['+count+'][filename]" value="'+file.name+'"></div></li>');
@@ -102,7 +88,7 @@ jQuery(document).ready(function($) {
         },
         failed: function (e, data) {
         	alert('error');
-        	console.log(data);
+        	// console.log(data);
         }
     });
 
@@ -157,7 +143,7 @@ jQuery(document).ready(function($) {
         //set context of the form.
        var form = $('#add_listing_form');
        //ajax request for creating the listing.
-       console.log(form_values); 
+       // console.log(form_values); 
         $.ajax({
 			url: ajaxurl, //wordpress thing
 			type: "POST",
