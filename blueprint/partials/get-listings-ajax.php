@@ -346,6 +346,7 @@ class PLS_Partials_Get_Listings_Ajax {
     
         ob_start("ob_gzhandler");
         echo json_encode($response);
+
         // Enable W3TC Debugging
         // if(WP_DEBUG === true) {
         //   $db = w3_instance('W3_DbCache');        
