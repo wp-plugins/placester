@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: Placester
+Contributors: Placester, mattbarba
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
 Tested up to: 3.5.1
@@ -28,6 +28,9 @@ From the creators of http://placester.com: Create your fully functional real est
 
 This is the only plugin you need to create a powerful WordPress powered real estate website. Watch our quick demo about how to get started:
 http://www.youtube.com/watch?v=a6sJi4iXObU&feature=plcp
+
+**Getting Started without a Non-Placester Theme**
+http://www.youtube.com/watch?v=pBneS5LjuNU&feature=player_embedded
 
 
 Check out premium themes available to hosted users:
