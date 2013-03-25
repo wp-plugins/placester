@@ -1,4 +1,4 @@
-$(document).ready(function($) {
+jQuery(document).ready(function($) {
 	$('#delete_pages').live('click', function () {
 		$('#regenerate_message').html('Deleting...');
 		$.post(ajaxurl, {action:'ajax_delete_all'}, function(data, textStatus, xhr) {

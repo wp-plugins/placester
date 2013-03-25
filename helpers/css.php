@@ -35,6 +35,7 @@ class PL_Css_Helper {
 		 			   'placester_page_placester_settings_filtering', 
 		 			   'placester_page_placester_settings_template', 
 		 			   'placester_page_placester_settings_client',
+		 			   'placester_page_placester_social',
 					   'edit.php');
 
 		if (!in_array($hook, $pages)) { return; }

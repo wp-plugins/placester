@@ -75,7 +75,7 @@ class PL_Router {
 	}
 	
 	public function my_listings() {
-		self:: router('my-listings.php', array('test'=>'donkey'), false);
+		self::router('my-listings.php', array('test'=>'donkey'), false);
 	}
 
 	public function add_listings() {
@@ -83,38 +83,9 @@ class PL_Router {
 			// Fetch listing and process it...
 			$listing = PL_Listing_Helper::get_single_listing($_GET['id']);
 			$_POST = PL_Listing_Helper::process_details($listing);
-			
-			switch ($_POST['compound_type']) {
-				case 'res_sale':
-					$_POST['property_type-res_sale'] = $_POST['property_type'];
-					break;
-
-				case 'res_rental':
-					$_POST['property_type-res_rental'] = $_POST['property_type'];
-					break;
-
-				case 'vac_rental':
-					$_POST['property_type-vac_rental'] = $_POST['property_type'];
-					break;					
-
-				case 'comm_sale':
-					$_POST['property_type-comm_sale'] = $_POST['property_type'];
-					break;
-
-				case 'comm_rental':
-					$_POST['property_type-comm_rental'] = $_POST['property_type'];
-					break;
-
-				case 'sublet':
-					$_POST['property_type-sublet'] = $_POST['property_type'];
-					break;
-				
-				default:
-					# code...
-					break;
-			}
 		}
-		self:: router('add-listing.php', array(), false);
+		
+		self::router('add-listing.php', array(), false);
 	}
 
 	public static function load_snippet($shortcode, $snippet, $type) {
@@ -138,44 +109,44 @@ class PL_Router {
 
 	public function theme_gallery() {
 		if (isset($_GET['theme_url'])) {
-			self:: router('install-theme.php', array('test'=>'donkey'), false);	
+			self::router('install-theme.php', array('test'=>'donkey'), false);	
 		} else {
-			self:: router('theme-gallery.php', array('test'=>'donkey'), false);	
+			self::router('theme-gallery.php', array('test'=>'donkey'), false);	
 		}
 	}
 
 	public function settings() {
-		self:: router('settings/general.php', array(), false);
+		self::router('settings/general.php', array(), false);
 	}
 	public function settings_polygons() {
-		self:: router('settings/polygons.php', array(), false);
+		self::router('settings/polygons.php', array(), false);
 	}
 	public function settings_property_pages() {
-		self:: router('settings/property.php', array(), false);
+		self::router('settings/property.php', array(), false);
 	}
 	public function settings_international() {
-		self:: router('settings/international.php', array(), false);
+		self::router('settings/international.php', array(), false);
 	}
 	public function settings_neighborhood() {
-		self:: router('settings/neighborhood.php', array(), false);
+		self::router('settings/neighborhood.php', array(), false);
 	}
 	public function settings_filtering() {
-		self:: router('settings/filtering.php', array(), false);
+		self::router('settings/filtering.php', array(), false);
 	}
 	public function settings_template() {
-		self:: router('settings/template.php', array(), false);
+		self::router('settings/template.php', array(), false);
 	}
 	public function settings_client() {
 		self::load_builder_helper('membership.php');
-		self:: router('settings/client.php', PL_Membership_Helper::get_client_settings(), false);
+		self::router('settings/client.php', PL_Membership_Helper::get_client_settings(), false);
 	}
 
 	public function support() {
-		self:: router('support.php', array(), false);
+		self::router('support.php', array(), false);
 	}
 
 	public function integrations() {
-		self:: router('integrations.php', array(), false);
+		self::router('integrations.php', array(), false);
 	}
 
 //end of class

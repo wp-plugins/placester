@@ -38,8 +38,50 @@ $green-background: #DFF0D8
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5)
     @include border-radius(3px)
 
+.login-form-validator-error, .register-form-validator-error
+  z-index: 999999
+  span
+    border: 5px solid
+    border-color: $red-border transparent transparent transparent
+    bottom: -10px
+    left: 5px
+    display: block
+    height: 0
+    width: 0
+    position: absolute
+  p
+    float: left
+    margin: 0
+    padding: 6px
+    color: $red
+    background: $red-background
+    border: 1px solid $red-border
+    font-size: 12px
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5)
+    @include border-radius(3px)
 
-.side-ctnr.placester_contact
+#pl_login_form, #pl_lead_register_form
+  .success
+    @include border-radius(3px)
+    @include box-sizing
+    width: 100%
+    text-align: center
+    margin-bottom: 10px
+    font-size: 13px
+    float: left
+    padding: 7px 10px
+    display: none
+    color: $green
+    border-color: $green-border
+    background: $green-background
+  .error
+    color: #DE4826
+    border-color: #DE4826
+  .invalid
+    box-shadow: 0 0 1px 1px red
+
+
+.placester_contact_form
   label
     display: block
     margin-bottom: 5px

@@ -9,12 +9,13 @@ function optionsframework_fields() {
 	$optionsframework_settings = get_option('optionsframework');
 
 	// Get the theme name so we can display it up top
-	// wp_get_theme deprecated in wp34
 	if( function_exists( 'wp_get_theme' ) ) {
-	  $themename = wp_get_theme();
-	} else {
-    $themename = get_theme_data( get_stylesheet_directory() . '/style.css' );
-  }
+		$themename = wp_get_theme();
+	} 
+	else  {
+		// 'get_theme_data' deprecated as of WP 3.4
+		$themename = get_theme_data( get_stylesheet_directory() . '/style.css' );
+	}
 	$themename = $themename['Name'];
 
 	// Gets the unique option id
@@ -23,7 +24,7 @@ function optionsframework_fields() {
 	}
 	else {
 		$option_name = 'optionsframework';
-	};
+	}
 
 	$settings = get_option($option_name);
 	// pls_dump($option_name);

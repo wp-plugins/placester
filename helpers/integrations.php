@@ -41,7 +41,7 @@ class PL_Integration_Helper {
 	public function get () {
 		$response = array();
 		$integration = PL_Integration::get();
-		$whoami = PL_User::whoami();
+		$whoami = PL_Helper_User::whoami();
 		$listings = PL_Listing::get();
 		$locations = PL_Listing::locations();
 		return array('integration_status' => array('integration' => $integration, 'whoami' => $whoami, 'listings' => $listings, 'locations' => $locations));

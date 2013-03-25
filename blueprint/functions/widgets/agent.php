@@ -155,8 +155,12 @@ class PLS_Widget_Agent extends WP_Widget {
                   $agent_html['photo'] = pls_h_img( @pls_get_option('pls-user-image'), trim( $agent['user']['first_name'] . ' ' . $agent['user']['last_name'] ), array( 'class' => 'photo', 'itemprop' => 'image' ) + array() + array() );
                   $agent_array['photo'] = $user_image_option;
               } else {
+                if (isset($agent['user']['headshot'])) {
                   $agent_html['photo'] = pls_h_img( $agent['user']['headshot'], trim( $agent['user']['first_name'] . ' ' . $agent['user']['last_name'] ), array( 'class' => 'photo', 'itemprop' => 'image' ) + array() + array() );
                   $agent_array['photo'] = $agent['user']['headshot'];
+                } else {
+                  $agent_array['photo'] = '';
+                }
               }
             }
 

@@ -82,7 +82,7 @@ class PLS_Partial_Get_Listings {
             $listings_raw = false;
             
             if ($featured_option_id) {
-              $listings_raw = PLS_Listing_Helper::get_featured($featured_option_id);
+              $listings_raw = PLS_Listing_Helper::get_featured($featured_option_id, $args);
             }
 
             if ($neighborhood_polygons) {
@@ -117,6 +117,7 @@ class PLS_Partial_Get_Listings {
         if( isset( $featured_listing_id ) ) {
         	$listings_raw = apply_filters( $context . '_partial_get_listings', $listings_raw,  $featured_listing_id );
         }
+        
         foreach ( $listings_raw['listings'] as $listing_data ) {
             // pls_dump($listing_data);
             /**

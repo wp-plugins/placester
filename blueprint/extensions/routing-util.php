@@ -48,7 +48,7 @@ class PLS_Route {
 		
 		// debug messages;
 		PLS_Debug::add_msg("routing_logic used.....");
-		PLS_Debug::add_msg("We've recorded the request as: " . self::$request);
+    // PLS_Debug::add_msg("We've recorded the request as: " . self::$request);
 		PLS_Debug::add_msg('Wordpress wants:' . $template);
 		
 		$new_template = '';

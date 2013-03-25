@@ -14,7 +14,6 @@ function Listings ( params ) {
 	this.is_new_serch = false;
 	this.from_back_button = false;
 	this.search_hash = false;
-
 }
 
 Listings.prototype.pending = false;
@@ -184,7 +183,10 @@ Listings.prototype.get = function ( success ) {
 			if (that.poi )
 				that.poi.update();
 			
-
+      // execute manual_callback function
+      if ( that.list.manual_callback )
+        that.list.manual_callback();
+        
 			that.active_filters = [];
 	    }
 	});
@@ -215,4 +217,46 @@ Listings.prototype.fast_hasher = function(str){
         hash = hash & hash; // Convert to 32bit integer
     }
     return hash;
+}
+
+Listings.prototype.get_search_count = function () {
+  var that = this;
+  // check search form count on load
+  that.check_search_form_count();
+  jQuery(".pls_search_results_num_form select, .pls_search_results_num_form input[type='text'], .pls_search_results_num_form input[type='hidden']").live("change", function(event) {
+    // check search form count on form changes
+    that.check_search_form_count();
+  });
+
+}
+
+Listings.prototype.check_search_form_count = function () {
+  
+  // Add spinner
+  jQuery('#pls_num_results_found').before("<div id='pls_search_count_spinner'></div>")
+  // get form data
+  var form_data = jQuery('.pls_search_results_num_form').serializeArray();
+  var data = {};
+
+  for (var i=0; i < form_data.length; i++) {
+    data[form_data[i].name] = form_data[i].value;
+  };
+
+  data.action = 'pls_get_search_count';
+  data.iDisplayLength = 1;
+
+  jQuery.ajax({
+    "dataType" : 'json',
+    "type" : "POST",
+    "data" : data,
+    "url" : info.ajaxurl,
+    "success" : function ( response ) {
+        if ( response ) {
+          // remove spinner
+          jQuery("#pls_search_count_spinner").remove();
+          // add listings count
+          jQuery('#pls_num_results_found').html(response.count);
+        }
+      }
+  },'json');
 }

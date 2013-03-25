@@ -1,4 +1,4 @@
-$(document).ready(function($) {
+jQuery(document).ready(function($) {
 	$('#set_default_country').live('click', function(event) {
 	  	event.preventDefault();
 	  	var country = $('#set_default_country_select').val();

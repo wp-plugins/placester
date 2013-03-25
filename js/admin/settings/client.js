@@ -1,4 +1,4 @@
-$(document).ready(function($) {
+jQuery(document).ready(function($) {
 
 	$('#save').click(function(event) {
 		event.preventDefault();

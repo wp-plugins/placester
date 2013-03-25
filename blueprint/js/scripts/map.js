@@ -49,7 +49,8 @@ Map.prototype.init = function ( params ) {
 	this.always_center = params.always_center || true;
 	this.filter_by_bounds = params.filter_by_bounds === false ? false : true;
 	this.full_callback = params.full_callback || false;
-
+  this.disable_info_window = params.disable_info_window === true ? true : false;
+  
 	//marker settings
 	this.marker = {};
 	this.marker.icon = params.marker || false;
@@ -263,20 +264,23 @@ Map.prototype.create_marker = function ( marker_options ) {
 		marker.listing = marker_options.listing;	
 	}
 	
-	var infowindow = new google.maps.InfoWindow({content: marker_options.content});
-	this.infowindows.push(infowindow);
+	if ( (this.disable_info_window === false) && (this.type != 'single_listing') ) {
+	  var infowindow = new google.maps.InfoWindow({content: marker_options.content});
+  	this.infowindows.push(infowindow);
 
-	google.maps.event.addListener(marker, 'click', marker_options.click || function() {
-		if ( marker.listing ) {
-			that.marker_click( marker.listing.id );	
-		}
+  	google.maps.event.addListener(marker, 'click', marker_options.click || function() {
+  		if ( marker.listing ) {
+  			that.marker_click( marker.listing.id );	
+  		}
 		
-		for (var i = that.infowindows.length - 1; i >= 0; i--) {
-			that.infowindows[i].setMap(null)
-		}
-		infowindow.open( that.map, marker );
-	});
+  		for (var i = that.infowindows.length - 1; i >= 0; i--) {
+  			that.infowindows[i].setMap(null)
+  		}
+  		infowindow.open( that.map, marker );
+  	});
 
+	};
+	
 	google.maps.event.addListener(marker,"mouseover",function(){
 		if (marker.listing) {
 			that.marker_mouseover( marker.listing.id );

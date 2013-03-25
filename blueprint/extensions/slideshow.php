@@ -92,7 +92,8 @@ class PLS_Slideshow {
             'listings' => 'limit=5&sort_by=price',
             'data' => false,
             'post_id' => false,
-            'post_meta_key' => false
+            'post_meta_key' => false,
+            'fluid' => false
         );
         $args = wp_parse_args( $args, $defaults );
         $cache = new PLS_Cache('slide');
@@ -122,7 +123,7 @@ class PLS_Slideshow {
                     self::$option_id  = $slides;
                     
                     // populate slides when all slides are set to custom, but empty
-                    if (($slides[0]['type'] == 'custom') && empty($slides[0]['image'])) {
+                    if (isset($slides[0]) && ($slides[0]['type'] == 'custom') && empty($slides[0]['image'])) {
                       $slides = self::empty_slides_and_add_random_listings($slides);
                     }
 
@@ -334,6 +335,7 @@ class PLS_Slideshow {
                         context_var: false,
                         listings: '<?php echo $listings ?>',
                         data: '<?php echo $data ?>',
+                        fluid: <?php echo $fluid ? 'true' : 'false'; ?>
         
             });
         });

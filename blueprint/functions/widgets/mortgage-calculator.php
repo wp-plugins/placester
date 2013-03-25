@@ -14,9 +14,24 @@ class PLS_Widget_Mortgage_Calculator extends WP_Widget {
 
   function widget( $args, $instance ) {
     // Widget output
-    extract($args);
+    
     $title = empty($instance['title']) ? ' ' : apply_filters('widget_title', $instance['title']);
     $home_price = empty($instance['home_price']) ? ' ' : apply_filters('home_price', $instance['home_price']);
+    
+    /** Define the default argument array. */
+    $defaults = array(
+      'before_widget' => '<section id="pls_mortgage_calc" class="pls_mortgage_calc_wrapper widget">',
+      'after_widget' => '</section>',
+      'title' => '',
+      'before_title' => '<h3 class="widget-title">',
+      'after_title' => '</h3>',
+    );
+
+    /** Merge the arguments with the defaults. */
+    $args = wp_parse_args( $args, $defaults );
+
+    extract($args, EXTR_SKIP);
+    
     ?>
 
     <script type="text/javascript">
@@ -49,11 +64,11 @@ class PLS_Widget_Mortgage_Calculator extends WP_Widget {
       });
     </script>
 
-    <section id="pls_mortgage_calc" class="pls_mortgage_calc_wrapper widget">
-  
+    <?php echo $before_widget; ?>
+
       <div class="widget-inner pls_mortgage_calc_widget_inner">
-  
-        <h3 class="widget-title"><?php echo $title; ?></h3>
+
+        <?php echo $before_title . $title . $after_title; ?>
     
         <form method="post" action="" id="pls_mortgage_calc_form">
 
@@ -84,7 +99,7 @@ class PLS_Widget_Mortgage_Calculator extends WP_Widget {
 
       </div>
 
-    </section>
+    <?php echo $after_widget; ?>
 
     <?php
   }

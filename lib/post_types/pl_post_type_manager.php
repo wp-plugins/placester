@@ -44,7 +44,9 @@ class PL_Post_Type_Manager {
 		if ($handle = opendir( $folder ) ) {
 			while (false !== ($entry = readdir($handle))) {
 				// get post type names before .php beyond the ignore list
-				if( ! (in_array( $entry, $ignore ) ) ) {
+				if( ! (in_array( $entry, $ignore ) ) 
+						&& strlen( $entry ) > 4
+						&& substr( $entry, -4 ) === '.php' ) {
 					$post_types[] = current( explode( ".php", $entry ) );
 				}
 			}

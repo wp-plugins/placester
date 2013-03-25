@@ -61,7 +61,11 @@
       array_pop($descripwords);
     $description = implode(' ', $descripwords) . $descrip_more;
     $image_array = get_tax_meta($term->term_id,'image_1');
-    $image = $image_array['src'];
+    if (isset($image_array['src'])) {
+      $image = $image_array['src'];
+    } else {
+      $image = '';
+    }
     $author = @pls_get_option('pls-user-name');
     $is_attribute_php = true;
     

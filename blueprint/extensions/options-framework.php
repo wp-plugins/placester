@@ -12,11 +12,12 @@ if ( ! function_exists( 'optionsframework_option_name' ) ) {
 
     function optionsframework_option_name() {
         // Get the theme name so we can display it up top
-        // wp_get_theme deprecated in wp34
         if( function_exists( 'wp_get_theme' ) ) {
-          $options_id = wp_get_theme();
-        } else {
-          $options_id = get_theme_data( get_stylesheet_directory() . '/style.css' );
+            $options_id = wp_get_theme();
+        } 
+        else {
+            // 'get_theme_data' deprecated as of WP 3.4
+            $options_id = get_theme_data( get_stylesheet_directory() . '/style.css' );
         }
 	
         $options_id = $options_id['Name'];

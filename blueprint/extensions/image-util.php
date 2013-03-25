@@ -75,7 +75,8 @@ class PLS_Image {
 		}
 
     $args = self::process_defaults($args);
-
+    $disable_dragonfly = pls_get_option('pls-disable-dragonfly');
+    
     // use standard default image
 		if ( $old_image === '' || empty($old_image)) {
 
@@ -85,7 +86,7 @@ class PLS_Image {
         $old_image = PLS_IMG_URL . "/null/listing-1200x720.jpg";
       }
 
-		} else if ( $args['allow_resize'] && $args['resize']['w'] && $args['resize']['h'] && get_theme_support('pls-dragonfly') ) {
+		} else if ( $args['allow_resize'] && $args['resize']['w'] && $args['resize']['h'] && get_theme_support('pls-dragonfly') && ($disable_dragonfly != true)) {
 
 			extract(wp_parse_args(parse_url($old_image), array('query' => '') ));
 

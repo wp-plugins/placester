@@ -14,6 +14,7 @@ class PL_Helper_User {
 		add_action( 'wp_ajax_ajax_log_errors', array(__CLASS__, 'ajax_log_errors' ) );
 		add_action( 'wp_ajax_ajax_block_address', array(__CLASS__, 'ajax_block_address' ) );
 		add_action( 'wp_ajax_ajax_default_address', array(__CLASS__, 'set_default_country' ) );
+		add_action( 'wp_ajax_enable_community_pages', array(__CLASS__, 'enable_community_pages' ) );
 		add_action( 'wp_ajax_whoami', array(__CLASS__, 'ajax_whoami' ) );
 		add_action( 'wp_ajax_subscriptions', array(__CLASS__, 'ajax_subscriptions' ) );
 		add_action( 'wp_ajax_start_subscription_trial', array(__CLASS__, 'start_subscription_trial' ) );
@@ -48,8 +49,8 @@ class PL_Helper_User {
 		die();
 	}
 
-	public static function whoami($args = array()) {
-		return PL_User::whoami($args);
+	public static function whoami($args = array(), $api_key = null) {
+		return PL_User::whoami($args, $api_key);
 	}
 
 	public static function existing_api_key_view () {
@@ -61,6 +62,25 @@ class PL_Helper_User {
 		self::set_admin_email();
 		echo PL_Router::load_builder_partial('sign-up.php');
 		die();	
+	}
+	
+	public function enable_community_pages() {
+		$enable_pages = 1; 
+		if( $_POST['enable_pages'] === 'false' || ! $_POST['enable_pages'] ) {
+			$enable_pages = 0;
+		}
+		 
+		$updated = PL_Option_Helper::set_community_pages($enable_pages);
+		$result = true;
+		if( ! $updated || ! $enable_pages ) $result = false;
+
+		// TODO: some bad caching occurs here, do fix 
+		if( $result ) {
+			echo json_encode(array('result' => true, 'message' => 'You successfully enabled community pages'));
+		} else {
+			echo json_encode(array('result' => false, 'message' => 'You successfully disabled community pages'));
+		}
+		die();
 	}
 
 	public function set_placester_api_key() {

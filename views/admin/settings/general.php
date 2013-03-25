@@ -6,6 +6,7 @@
 	extract(array('places_api_key' => PL_Option_Helper::get_google_places_key() ) ) ; 
 	extract(array('error_logging' => PL_Option_Helper::get_log_errors())); 
 	extract(array('block_address' => PL_Option_Helper::get_block_address())); 
+	extract(array('enable_community_pages' => PL_Option_Helper::get_community_pages_enabled()));
 	$demo_data_flag = PL_Option_Helper::get_demo_data_flag(); ?>
 
 	<div class="wrap">
@@ -127,12 +128,19 @@
 			<div class="header-wrapper">
 				<h2>Other Settings</h2>
 				<div id="error_logging_message"></div>
+				<div id="community_pages_message"></div>
 			</div>
 			<ul>
 				<li>
 					<input id="error_logging_click" type="checkbox" name="error_logging" <?php echo $error_logging ? 'checked="checked"' : '' ?>>
 					<label for="error_logging">You can help improve Placester. Allow the Real Estate Website Builder Plugin to anonymously report errors and usage information so we can fix errors and add new features.</label>
 				</li>
+				<?php if( current_theme_supports('pls-community-pages') ) {?>
+				<li>
+					<input id="enable_community_pages" type="checkbox" name="enable_community_pages" <?php echo $enable_community_pages ? 'checked="checked"' : '' ?>>
+					<label for="enable_community_pages">Enable Community Pages</label>
+				</li>
+				<?php } ?>
 			</ul>
 
 			

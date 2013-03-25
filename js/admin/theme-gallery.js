@@ -1,4 +1,4 @@
-$(document).ready(function($) {
+jQuery(document).ready(function($) {
 	var that = {};
 	$('#install_theme').live('click', function (event) {
 		event.preventDefault();

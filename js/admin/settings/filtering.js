@@ -1,4 +1,4 @@
-$(document).ready(function($) {
+jQuery(document).ready(function($) {
 	update_global_form_status();
 	$('#selected_global_filter').bind('change', function () {
 		update_global_form_status();

@@ -5,6 +5,8 @@ class PLS_Listing_Helper {
 	
 	function init() {
 		add_action('wp_ajax_pls_listings_for_options', array(__CLASS__,'listings_for_options'));
+		add_action('wp_ajax_pls_get_search_count', array(__CLASS__,'get_search_count'));
+		add_action('wp_ajax_nopriv_pls_get_search_count', array(__CLASS__,'get_search_count'));
 	}
 
 	function listings_for_options () {
@@ -25,18 +27,22 @@ class PLS_Listing_Helper {
 		die();
 	}
 
-	function get_featured ($featured_option_id) {
+	function get_featured ( $featured_option_id, $args = array() ) {
 		$option_ids = pls_get_option($featured_option_id);
 		if (!empty( $option_ids ) ) {
 			$property_ids = array_keys($option_ids);
-			$api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => $property_ids));
+			if( ! empty( $args ) ) {
+				$args['property_ids'] = $property_ids;
+			}
+			$api_response = PLS_Plugin_API::get_listings_details_list( $args );
+			
       // remove listings without images
-      foreach ($api_response['listings'] as $key => $listing) {
-          if ( empty($listing['images']) ) {
-            unset($api_response['listings'][$key]);
-          }
-      }
-			return $api_response;	
+	      foreach ($api_response['listings'] as $key => $listing) {
+	          if ( empty($listing['images']) ) {
+	            unset($api_response['listings'][$key]);
+	          }
+	      }
+		  return $api_response;	
 		} else {
 			return array('listings' => array());
 		}
@@ -75,4 +81,10 @@ class PLS_Listing_Helper {
 		}
 		return false;
 	}
+
+  function get_search_count() {
+    $response = PLS_Plugin_API::get_listings_list($_POST);
+    echo json_encode(array('count' => $response['total']));
+    die();
+  }
 }

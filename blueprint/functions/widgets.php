@@ -46,12 +46,37 @@ function pls_register_widgets() {
   /** Load the Placester Feedburner Subscribe Form widget. */
   require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/feedburner-subscribe-form.php' );
 
-	/* Register each of the widgets. */
-	register_widget( 'PLS_Widget_Agent' );
-	register_widget( 'PLS_Widget_Office' );
-	register_widget( 'PLS_Widget_Recent_Posts' );
-	register_widget( 'PLS_Quick_Search_Widget' );
-	register_widget( 'PLS_Widget_Listings' );
+  /* Register each of the widgets. */
+  register_widget( 'PLS_Widget_Agent' );
+  register_widget( 'PLS_Widget_Office' );
+  register_widget( 'PLS_Widget_Recent_Posts' );
+  register_widget( 'PLS_Quick_Search_Widget' );
+  register_widget( 'PLS_Widget_Listings' );
+
+  if ( current_theme_supports( 'pls-widget-testimonials' ) ) {
+    require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/testimonials.php' );
+    register_widget( 'PLS_Widget_Testimonials' );
+  }
+
+  if ( current_theme_supports( 'pls-widget-agents' ) ) {
+    require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/agents.php' );
+    register_widget( 'PLS_Widget_Agents' );
+  }
+
+  if ( current_theme_supports( 'pls-widget-services' ) ) {
+    require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/services.php' );
+    register_widget( 'PLS_Widget_Services' );
+  }
+
+  if ( current_theme_supports( 'pls-widget-twitter' ) ) {
+    require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/twitter.php' );
+    register_widget( 'PLS_Widget_Twitter' );
+  }
+
+  if ( current_theme_supports( 'pls-widget-facebook' ) ) {
+    require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/facebook.php' );
+    register_widget( 'PLS_Widget_Facebook' );
+  }
 
   if ( current_theme_supports( 'pls-widget-mortgage-calculator' ) ) {
     register_widget( 'PLS_Widget_Mortgage_Calculator' );

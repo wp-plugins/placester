@@ -41,7 +41,6 @@ class PLS_Options_Manager {
 
 	static function import_ajax() {
 		// error_log('Made it into import_ajax...');
-
 		if ( isset($_POST['options_raw']) ) {
 			$options_raw = stripslashes($_POST['options_raw']);
 			$options = unserialize($options_raw);

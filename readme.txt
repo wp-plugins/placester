@@ -3,7 +3,7 @@ Contributors: Placester, MattBarba
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
 Tested up to: 3.5.1
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -141,6 +141,9 @@ Absolutely, [reach out](mailto:support@placester.com) to us and let us know what
 In general - real-time. But if you use 3rd party property management services, the updates will only be as recent as your provider allows.
 
 == Changelog ==
+
+= 1.1.6 =
+* jQuery and jQuery UI updates for UI
 
 = 1.1.5 =
 * Compatibility for WordPress 3.5.1 and PHP 5.4.x

@@ -10,13 +10,12 @@ class Placester_Contact_Widget extends WP_Widget {
   //Front end contact form
   function form($instance){
     //Defaults
-    $instance = wp_parse_args( (array) $instance, array('title'=>'', 'button' => 'Submit', 'modern' => 0, 'departments' => '') );
+    $instance = wp_parse_args( (array) $instance, array('title'=>'', 'button' => 'Submit', 'departments' => '') );
 
     $title = htmlspecialchars($instance['title']);
 
     extract($instance, EXTR_SKIP);
 
-    $modern_checked = isset($instance['modern']) && $instance['modern'] == 1 ? 'checked' : '';
     $show_property_checked = isset($instance['show_property']) && $instance['show_property'] == 1 ? 'checked' : '';
     $show_subject_checked = isset($instance['subject']) && $instance['subject'] == 1 ? 'checked' : '';
     $show_phone_checked = isset( $instance['phone_number'] ) && $instance['phone_number'] == 1 ? 'checked' : '';
@@ -24,7 +23,7 @@ class Placester_Contact_Widget extends WP_Widget {
     // Output the options
     echo '<p><label for="' . $this->get_field_name('title') . '"> Title: </label><input class="widefat" type="text" id="' . $this->get_field_id('title') . '" name="' . $this->get_field_name('title') . '" value="' . $title . '" /></p>';
     echo '<p><label for="' . $this->get_field_name('button') . '"> Submit button label: </label><input class="widefat" type="text" id="' . $this->get_field_id('button') . '" name="' . $this->get_field_name('button') . '" value="' . $button . '" /></p>';
-    echo '<p><input class="checkbox" type="checkbox" id="' . $this->get_field_id('modern') . '" name="' . $this->get_field_name('modern') . '"' . $modern_checked . ' style="margin-right: 5px;"/><label for="' . $this->get_field_id('modern') . '"> Use placeholders instead of labels</label></p>';
+    // echo '<p><input class="checkbox" type="checkbox" id="' . $this->get_field_id('modern') . '" name="' . $this->get_field_name('modern') . '"' . $modern_checked . ' style="margin-right: 5px;"/><label for="' . $this->get_field_id('modern') . '"> Use placeholders instead of labels</label></p>';
     echo '<p><input class="checkbox" type="checkbox" id="' . $this->get_field_id('show_property') . '" name="' . $this->get_field_name('show_property') . '"' . $show_property_checked . ' style="margin-right: 5px;"/><label for="' . $this->get_field_id('show_property') . '"> Display property address on the form when viewing a property page</label></p>';
     echo '<p><input class="checkbox" type="checkbox" id="' . $this->get_field_id('subject') . '" name="' . $this->get_field_name('subject') . '"' . $show_subject_checked . ' style="margin-right: 5px;"/><label for="' . $this->get_field_id('subject') . '">Show the subject field in the contact form</label></p>';
     echo '<p><input class="checkbox" type="checkbox" id="' . $this->get_field_id('phone_number') . '" name="' . $this->get_field_name('phone_number') . '"' . $show_phone_checked . ' style="margin-right: 5px;"/><label for="' . $this->get_field_id('phone_number') . '">Show phone number field in the contact form</label></p>';
@@ -40,7 +39,6 @@ class Placester_Contact_Widget extends WP_Widget {
     $instance = $old_instance;
     $instance['title'] = strip_tags(stripslashes($new_instance['title']));
     $instance['button'] = strip_tags(stripslashes($new_instance['button']));
-    $instance['modern'] = isset($new_instance['modern']) ? 1 : 0;
     $instance['show_property'] = isset($new_instance['show_property']) ? 1 : 0;
     $instance['subject'] = isset($new_instance['subject']) ? 1 : 0;
     $instance['phone_number'] = isset($new_instance['phone_number']) ? 1 : 0;
@@ -78,7 +76,6 @@ class Placester_Contact_Widget extends WP_Widget {
         } else {
           $data = array();
         }
-        extract($args);
 
         // Labels and Values
         $title = apply_filters('widget_title', empty($instance['title']) ? '&nbsp;' : $instance['title']);
@@ -147,17 +144,38 @@ class Placester_Contact_Widget extends WP_Widget {
           $back_on_lc_cancel = 0;
         }
         
-        $modern = ( isset($instance['modern']) && !empty($instance['modern']) ) ? 1 : 0;
         $show_property = ( isset($instance['show_property']) && !empty($instance['show_property']) ) ? 1 : 0;
         $template_url = get_template_directory_uri();
 
-        echo '<section class="side-ctnr placester_contact ' . $container_class . ' widget">' . "\n";
-        if ( $title ) {
-          echo '<h3>' . $title . '</h3>';
-        } 
-          ?>
-              <section class="<?php echo $inner_class; ?> common-side-cont clearfix">
+        /** Define the default argument array. */
+        $defaults = array(
+          'before_widget' => '<section class="side-ctnr placester_contact ' . $container_class . ' widget">',
+          'after_widget' => '</section>',
+          'title' => '',
+          'before_title' => '<h3>',
+          'after_title' => '</h3>',
+        );
+
+        /** Merge the arguments with the defaults. */
+        $args = wp_parse_args( $args, $defaults );
+
+        extract($args, EXTR_SKIP);
+        ?>
+        
+          <?php pls_do_atomic( 'contact_form_before_widget' ); ?>
+          
+          <?php echo $before_widget; ?>
+
+              <?php pls_do_atomic( 'contact_form_before_title' ); ?>
+              
+              <?php echo $before_title . $title . $after_title; ?>
+              
+              <?php pls_do_atomic( 'contact_form_after_title' ); ?>
+              
+              <section class="<?php echo $inner_class; ?> common-side-cont placester_contact_form clearfix">
+
                   <div class="success"><?php echo $success_message; ?></div>
+
                   <form name="widget_contact" action="" method="post">
 
                     <?php //this must be included to get additional user data; ?>
@@ -178,9 +196,6 @@ class Placester_Contact_Widget extends WP_Widget {
                     <input type="hidden" name="back_on_lc_cancel" value="<?php echo @$back_on_lc_cancel; ?>">
                     <input type="hidden" name="form_submitted" value="0">
 
-                  <?php
-                  // For HTML5 enabled themes
-                  if ( $modern == 0 ) { ?>
                     <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
                     <label class="required" for="name"><?php echo $name_label; ?></label>
                     <input class="required" id="name" placeholder="<?php echo $name_value ?>" type="text" name="name" tabindex="<?php echo $sidebar_pos; ?>1" <?php echo $name_required == true ? 'required="required"' : '' ?> <?php echo !empty($name_error) ? 'data-message="'.$name_error.'"' : ''; ?> />
@@ -227,23 +242,6 @@ class Placester_Contact_Widget extends WP_Widget {
                     <textarea rows="5" id="question" name="question" placeholder="<?php echo $question_value; ?>" tabindex="<?php echo $sidebar_pos; ?>6" <?php echo $question_required == true ? 'required="required"' : '' ?> <?php echo !empty($question_error) ? 'data-message="'.$question_error.'"' : ''; ?>></textarea>
                     <?php echo empty($instance['textarea_container']) ? '' : '</div>'; ?>
                     
-                  <?php } else { ?>
-                    
-                    <input class="required" placeholder="<?php echo $email_label; ?>" type="email" name="email" tabindex="<?php echo $sidebar_pos; ?>1" />
-                    <input class="required" placeholder="<?php echo $name_label; ?>" type="text" name="name" tabindex="<?php echo $sidebar_pos; ?>2" />
-
-                    <?php if($show_property == 1) : ?>
-                      <?php $full_address = @self::_get_full_address($data); if(!empty($full_address)) : ?>
-                        <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
-                        <label>Property</label><span class="info"><?php echo str_replace("\n", " ", $full_address); ?></span>
-                        <?php echo empty($instance['inner_containers']) ? '' : '</div>'; ?>                      
-                      <?php endif; ?>
-                    <?php endif; ?>
-
-                    <textarea rows="5" placeholder="<?php echo $question_label; ?>" id="question" name="question" tabindex="<?php echo $sidebar_pos; ?>3"></textarea>
-
-                  <?php } ?>
-                    
                   <input type="submit" value="<?php echo $submit_value; ?>" class="<?php echo $button_class; ?>" tabindex="<?php echo $sidebar_pos; ?>7" />
                   
                   <div class="pls-contact-form-loading" style='display:none;'>
@@ -254,7 +252,11 @@ class Placester_Contact_Widget extends WP_Widget {
                 
               </section>
               <div class="separator"></div>
-            </section>
+
+            <?php echo $after_widget; ?>
+
+            <?php pls_do_atomic( 'contact_form_after_widget' ); ?>
+            
     <?php }
 
   /**

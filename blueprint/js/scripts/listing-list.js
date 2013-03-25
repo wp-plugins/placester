@@ -20,7 +20,8 @@ List.prototype.init = function ( params ) {
 	this.settings = params.settings || { "bFilter": false, "bProcessing": true, "bServerSide": true, "sServerMethod": "POST", 'sPaginationType': 'full_numbers', "sAjaxSource": info.ajaxurl, 'iDisplayLength': this.limit_default, 'aLengthMenu' : this.limit_choices };
   	this.results_as_total = 0;
   	this.fnCallback = params.fnCallback || false;
-  	
+  this.manual_callback = params.manual_callback || false;
+
 	//objects
 	this.listings = params.listings || alert('List: You need to include a listings object');
 	this.map = params.map || false;

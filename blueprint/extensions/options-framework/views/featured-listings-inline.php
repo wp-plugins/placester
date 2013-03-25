@@ -1,5 +1,6 @@
 <?php //pls_dump($params) ?>
 <div class="featured-listings-wrapper">
+<?php var_dump($params);?>
 	<div class="head">
 		<button class="featured-listings button" id="<?php echo $params['value']['id'] ?>" <?php echo isset($params['iterator']) ? 'rel="' . $params["iterator"] . '"' : ''; ?>>Pick featured listings</button>
 	</div>
@@ -31,6 +32,13 @@
 				<?php endforeach ?>
 			<?php endif ?>
 			</ol>	
+		<?php elseif( is_string($params['val'] ) ): ?>
+		<ol>
+			<li>
+				<div id="pls-featured-text" ref="range_listings">Search range</div>
+				<input type='hidden' name="<?php echo $params['option_name'] . '[' . $params['value']['id'] . ']' ?>" value='<?php echo $val; ?>'>
+			</li>
+		</ol>
 		<?php else: ?>
 			<p>You haven't set any featured listings yet. Currently, a random selection of listings are being displayed until you pick some. If you previously picked listings, and now they are missing, it's because you (or your MLS), has marked them inactive, sold, rented, or they've been deleted.</p>
 		<?php endif ?>

@@ -27,17 +27,18 @@ class PL_Logging {
 	 	ob_start();
 	 	?>
 	 		<script type="text/javascript">
-	 			(function(d,c){var a,b,g,e;a=d.createElement("script");a.type="text/javascript";
-			    a.async=!0;a.src=("https:"===d.location.protocol?"https:":"http:")+
-			    '//mixpanel.com/site_media/js/api/mixpanel.2.js';b=d.getElementsByTagName("script")[0];
-			    b.parentNode.insertBefore(a,b);c._i=[];c.init=function(a,d,f){var b=c;
-			    "undefined"!==typeof f?b=c[f]=[]:f="mixpanel";g=['disable','track','track_links',
-			    'track_forms','register','register_once','unregister','identify','name_tag','set_config'];
-			    for(e=0;e<g.length;e++)(function(a){b[a]=function(){b.push([a].concat(
-			    Array.prototype.slice.call(arguments,0)))}})(g[e]);c._i.push([a,d,f])};window.mixpanel=c}
-			    )(document,[]);
+			    (function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");
+			    b.type="text/javascript";b.async=!0;b.src=("https:"===c.location.protocol?"https:":"http:")+
+			    '//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';d=c.getElementsByTagName("script")[0];
+			    d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){
+			    var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(
+			    Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?g=a[f]=[]:
+			    f="mixpanel";g.people=g.people||[];h=['disable','track','track_pageview','track_links',
+			    'track_forms','register','register_once','unregister','identify','alias','name_tag',
+			    'set_config','people.set','people.increment','people.track_charge','people.append'];
+			    for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.2;})(document,window.mixpanel||[]);
 			    mixpanel.init("9186cdb540264089399036dd672afb10");
-	 		</script>	
+			</script>
 	 	<?php
 	 	echo ob_get_clean();
 	 }
@@ -52,16 +53,16 @@ class PL_Logging {
 	 	if (!PL_Option_Helper::api_key()) {
 	 		?>
 		 		<script type="text/javascript">
-		 			$('#signup_wizard').live('dialogopen', function () {
+		 			jQuery('#signup_wizard').live('dialogopen', function () {
 		 				mixpanel.track("SignUp: Overlay Opened");			
 		 			});
-		 			$('#signup_wizard').live('dialogclose', function () {
+		 			jQuery('#signup_wizard').live('dialogclose', function () {
 		 				mixpanel.track("SignUp: Overlay Closed");			
 		 			});
-		 			$('#pls_search_form input#email').live('focus', function() {
+		 			jQuery('#pls_search_form input#email').live('focus', function() {
 		 				mixpanel.track("SignUp: Edit Sign Up Email");			
 		 			});
-		 			$('#confirm_email_button').live('click', function() {
+		 			jQuery('#confirm_email_button').live('click', function() {
 		 				mixpanel.track("SignUp: Confirm Email Click");			
 		 			});
 		 		</script>	
@@ -71,7 +72,7 @@ class PL_Logging {
 	 	if ($hook == 'placester_page_placester_property_add') {
 		 	?>
 		 		<script type="text/javascript">
-		 			$(document).ready(function($) {
+		 			jQuery(document).ready(function($) {
 		 				mixpanel.track("Add Property: View");		
 		 				$('#add_listing_publish').bind('click', function () {
 		 					mixpanel.track("Add Property: Submit");		
@@ -84,7 +85,7 @@ class PL_Logging {
 	 	if ($hook == 'placester_page_placester_theme_gallery') {
 		 	?>
 		 		<script type="text/javascript">
-		 			$(document).ready(function($) {
+		 			jQuery(document).ready(function($) {
 		 				mixpanel.track("Theme Gallery: View");		
 		 				$('#theme_gallery_placester').bind('click', function () {
 		 					mixpanel.track("Theme Gallery: To Placester");		

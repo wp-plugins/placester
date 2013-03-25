@@ -691,10 +691,10 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		
 		$post = get_queried_object();
 
-		if( empty( $post ) ) {
+		if( empty( $post ) || ! isset( $post->post_type ) ) {
 			return $single;
 		}
-
+		
 		if( ! in_array( $post->post_type, PL_Post_Type_Manager::$post_types )
 				&& 'pl_general_widget' !== $post->post_type ) {
 			return $single;

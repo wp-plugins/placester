@@ -75,7 +75,7 @@ class PL_Listing_Helper {
 		return $listings;
 	}
 
-	public function many_details($args) {
+	public function many_details($args) { 
 		extract(wp_parse_args($args, array('property_ids' => array(), 'limit' => '50', 'offset' => '0')));
 		$response = array();
 		$response['listings'] = array();
@@ -95,6 +95,12 @@ class PL_Listing_Helper {
 
 		// Transfer property IDs...
 		$args_get['listing_ids'] = $args['property_ids'];
+		
+		// Add options and pass below
+		// TODO: see if we could send the entire $args
+		if( isset( $sort_by ) ) $args_get['sort_by'] = $sort_by;
+		if( isset( $sort_type ) ) $args_get['sort_type'] = $sort_type;
+		if( isset( $limit ) ) $args_get['limit'] = $limit;
 
 		// Try to retrieve details for all the listings...
 		$listings = PL_Listing::get($args_get);
@@ -381,7 +387,7 @@ class PL_Listing_Helper {
 		$global_filters = PL_Helper_User::get_global_filters();
 		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['location']) ) {
 			// TODO: Move these to a global var or constant...
-			$global_filters['keys'] = array( 'location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county' );
+			$global_filters['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
 			$response = PL_Listing::aggregates($global_filters);
 		
 			// Remove "location." from key names to conform to data standard expected by caller(s)...
@@ -413,6 +419,28 @@ class PL_Listing_Helper {
 		} else {
 			return array();	
 		}
+	}
+
+	/* 
+	 * Aggregates listing data to produce all unique values that exist for the given set of keys passed
+	 * in as array.  Classified as "basic" because no filters are incorporated (might add this later...)
+	 *
+	 * Keys must be passed in a slightly different format than elsewhere, for example, to aggregate on
+	 * city and state (i.e., find all unique cities and states present in all available listings), you'd
+	 * pass the following value for $keys:
+	 *     array('location.region', 'location.locality') // Notice the 'dot' notation in contrast to brackets...
+	 *
+	 * Returns an array containing keys for all those passed in (i.e. $keys) that themselves map to arrays 
+	 * filled with the coresponding unique values that exist.
+	 */
+	public function basic_aggregates ($keys) {
+		// Need to specify an array that contains at least one key..
+		if (!is_array($keys) || empty($keys)) { return array(); }
+
+		$args = array('keys' => $keys);
+		$response = PL_Listing::aggregates($args);
+
+		return $response;
 	}
 
 	public function polygon_locations ($return_only = false) {

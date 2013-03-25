@@ -341,11 +341,13 @@ class Placester_Blueprint {
 	 */
 	function locale() {
 
-		/** Load theme textdomain. Filterable  */
-        load_theme_textdomain( pls_get_textdomain(), PLS_LANGUAGES_DIR );
-
-		/** Get the user's locale. */
-        $locale = get_locale();
+		if( function_exists( 'pls_get_textdomain' ) ) {
+			/** Load theme textdomain. Filterable  */
+	        load_theme_textdomain( pls_get_textdomain(), PLS_LANGUAGES_DIR );
+	
+			/** Get the user's locale. */
+	        $locale = get_locale();
+		}
 	}
 
 	/**
@@ -416,6 +418,9 @@ class Placester_Blueprint {
 
         /** Load the internationalization functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'internationalization.php' );
+        
+        /** Load the SEO Helper. */
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'seo-helper.php' );
 
         /** Load the styles functions. */
         require_once( trailingslashit ( PLS_CSS_DIR ) . 'styles.php' );

@@ -206,7 +206,9 @@ function pls_site_description( $echo = true ) {
  * @returns string The description html.
  * @since 0.0.1
  */
-add_filter('wp_title', 'pls_document_title');
+if( ! defined( 'WPSEO_VERSION' ) ) {
+	add_filter('wp_title', 'pls_document_title');
+}
 function pls_document_title() {
     $title = get_the_title();
     /*
@@ -216,16 +218,22 @@ function pls_document_title() {
 
     if (empty($title)) {
         $title = get_bloginfo( 'name' );
+    } else {
+    	$title .= ' | ' . get_bloginfo( 'name' );
     }
 
     // Add the blog description for the home/front page.
     $site_description = get_bloginfo( 'description', 'display' );
-    if ( $site_description && ( is_home() || is_front_page() ) )
-        $title .= " | $site_description";
-
+        
     // Add a page number if necessary:
     if ( $paged >= 2 || $page >= 2 )
         $title .= ' | ' . sprintf( 'Page %s', max( $paged, $page ) );
+    
+    // When front page is the blog listing, don't display latest blog title
+    if( is_home() && is_front_page() ) {
+    	$title = get_bloginfo( 'name' );
+    	if( ! empty( $site_description ) ) $title .= " | $site_description";
+    }
 
-    echo $title;
+    return $title;
 }

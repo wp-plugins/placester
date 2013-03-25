@@ -680,6 +680,7 @@ class PLS_Format {
 
   static public function shorten_text ( $content, $length = 50 ) {
     if (strlen($content) > $length) {
+      $content = strip_tags($content);
       $shortened_content = preg_replace('/\s+?(\S+)?$/', '', substr($content, 0, $length));
       return $shortened_content;
     } else {

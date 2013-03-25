@@ -14,4 +14,8 @@
     <h3>Facebook</h3>
     <?php do_action( 'pl_facebook_display' ); ?>
     
+    <h3>Google+</h3>
+    <?php do_action( 'pl_googleplus_display' ); ?>
+    
+    
 </div>

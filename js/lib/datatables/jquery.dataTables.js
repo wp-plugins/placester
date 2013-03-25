@@ -3704,7 +3704,11 @@
 				}
 				return s+"px";
 			}
-			
+	
+			// if DOM object has been captured
+			if(typeof(s) === 'object') {
+				return "0px";
+			}
 			/* Check if the last character is not 0-9 */
 			var c = s.charCodeAt( s.length-1 );
 			if (c < 0x30 || c > 0x39)

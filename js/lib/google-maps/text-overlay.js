@@ -15,7 +15,7 @@ function TxtOverlay(pos, txt, cls, map){
     this.setMap(map);
 }
 	
-$(document).ready(function($) {
+jQuery(document).ready(function($) {
 	
 	TxtOverlay.prototype = new google.maps.OverlayView();
 

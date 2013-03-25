@@ -7,7 +7,7 @@
 
 
 // For datatable
-$(document).ready(function($) {
+jQuery(document).ready(function($) {
 
     // Filter Filters
     handle_custom_filter_choices();

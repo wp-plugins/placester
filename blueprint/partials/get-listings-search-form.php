@@ -91,6 +91,8 @@ class PLS_Partials_Listing_Search_Form {
         'max_price_sales' => 1,
         'neighborhood_polygons' => 0,
         'neighborhood_polygons_type' => false,
+        'min_sqft' => 1,
+        'max_sqft' => 1,
         'include_submit' => true
     );
 
@@ -249,6 +251,55 @@ class PLS_Partials_Listing_Search_Form {
         sort($neighborhood_polygons_options);
         $form_options['neighborhood_polygons'] = array('pls_empty_value' => 'Any') + $neighborhood_polygons_options;
     }
+    
+    // Min/Max Sqft 
+    /** Define the minimum price options array. */
+    $form_options['min_sqft'] = array(
+          'pls_empty_value' => 'Any',
+          '200' => '200',
+          '400' => '400',
+          '600' => '600',
+          '800' => '800',
+          '1000' => '1,000',
+          '1200' => '1,200',
+          '1400' => '1,400',
+          '1600' => '1,600',
+          '1800' => '1,800',
+          '2000' => '2,000',
+          '2200' => '2,200',
+          '2400' => '2,400',
+          '2600' => '2,600',
+          '2800' => '2,800',
+          '3000' => '3,000',
+          '3500' => '3,500',
+          '4000' => '4,000',
+          '4500' => '4,500',
+          '5000' => '5,000',
+          '6000' => '6,000',
+          '7000' => '7,000',
+          '8000' => '8,000',
+    );
+
+    $user_start_sqft = pls_get_option('pls-option-sqft-min') ? pls_get_option('pls-option-sqft-min') : 0;
+    $user_end_sqft = pls_get_option('pls-option-sqft-max');
+    $user_inc_sqft = pls_get_option('pls-option-sqft-inc');
+
+    if (is_numeric($user_start_sqft) && is_numeric($user_end_sqft) && is_numeric($user_inc_sqft)) {
+      
+        // Handle when increment is larger than the range from start to end
+        if ($user_inc_sqft > ($user_end_sqft - $user_start_sqft) ) {
+          $user_inc_sqft = ($user_end_sqft - $user_start_sqft);
+        }
+        
+        $range = range($user_start_sqft, $user_end_sqft, $user_inc_sqft);
+        $form_options['min_sqft'] = array();
+        foreach ($range as $sqft_value) {
+            $form_options['min_sqft'][$sqft_value] = PLS_Format::number($sqft_value, array('abbreviate' => false));
+        }
+    }
+    /** Set the maximum price options array. */
+    $form_options['max_sqft'] = $form_options['min_sqft'];
+    
     
     // Price for Sales
     /** Define the minimum price options array. */
@@ -717,6 +768,30 @@ class PLS_Partials_Listing_Search_Form {
         }
     }
 
+    /** Add the minimum sqft select element. */
+    if ($min_sqft == 1) {
+      $selected_min_sqft = isset( $_POST['metadata']['min_sqft']  ) ? wp_kses_post( $_POST['metadata']['min_sqft'] ) : false;
+      
+        $form_html['min_sqft'] = pls_h(
+            'select',
+            array( 'name' => 'metadata[min_sqft]' ) + $form_opt_attr['min_sqft'],
+            /** Get the list of options with the empty valued element selected. */
+            pls_h_options( $form_options['min_sqft'], $selected_min_sqft )
+        );
+    }
+
+    /** Add the minimum price select element. */
+    if ($max_sqft == 1) {
+      $selected_max_sqft = isset( $_POST['metadata']['max_sqft']  ) ? wp_kses_post( $_POST['metadata']['max_sqft'] ) : false;
+      
+        $form_html['max_sqft'] = pls_h(
+            'select',
+            array( 'name' => 'metadata[max_sqft]' ) + $form_opt_attr['max_sqft'],
+            /** Get the list of options with the empty valued element selected. */
+            pls_h_options( $form_options['max_sqft'], $selected_max_sqft )
+        );
+    }
+    
     /** Add the minimum price select element. */
     if ($min_price == 1) {
     	$selected_min_price = isset( $_POST['metadata']['min_price']  ) ? wp_kses_post( $_POST['metadata']['min_price'] ) : false;
@@ -814,6 +889,8 @@ class PLS_Partials_Listing_Search_Form {
         'min_price_sales' => 'Min Price Sales',
         'max_price_sales' => 'Max Price Sales',
         'neighborhood_polygons' => 'Neighborhood Polygon',
+        'min_sqft' => 'Min Sqft',
+        'max_sqft' => 'Max Sqft'
     );
 
     // In case user somehow disables all filters.

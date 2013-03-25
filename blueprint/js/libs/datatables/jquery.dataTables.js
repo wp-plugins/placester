@@ -738,8 +738,11 @@
 			{
 				if ( oSettings.iDrawError != oSettings.iDraw && oCol.sDefaultContent === null )
 				{
-					_fnLog( oSettings, 0, "Requested unknown parameter '"+oCol.mDataProp+
-						"' from the data source for row "+iRow );
+					// Don't alert for IE if the code works, this is cache engine
+					if( jQuery.browser.msie === undefined || jQuery.browser.msie === false ) {
+						_fnLog( oSettings, 0, "Requested unknown parameter '"+oCol.mDataProp+
+							"' from the data source for row "+iRow );
+					}
 					oSettings.iDrawError = oSettings.iDraw;
 				}
 				return oCol.sDefaultContent;
@@ -3474,11 +3477,11 @@
 				for ( i=0 ; i<iColums ; i++ )
 				{
 					var oColumn = oSettings.aoColumns[i];
-					if ( oColumn.bVisible && oColumn.sWidthOrig !== null && oColumn.sWidthOrig !== "" )
+					if ( oColumn.bVisible && oColumn.sWidthOrig !== null && oColumn.sWidthOrig !== "" && nThs[i-iCorrector] !== undefined )
 					{
 						nThs[i-iCorrector].style.width = _fnStringToCss( oColumn.sWidthOrig );
 					}
-					else if ( oColumn.bVisible )
+					else if ( oColumn.bVisible && nThs[i-iCorrector] !== undefined )
 					{
 						nThs[i-iCorrector].style.width = "";
 					}

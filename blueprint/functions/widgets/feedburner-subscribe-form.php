@@ -14,15 +14,31 @@ class PLS_Widget_Feedburner_Widget extends WP_Widget {
 
   function widget( $args, $instance ) {
     // Widget output
-    extract($args);
+
+    /** Define the default argument array. */
+    $defaults = array(
+      'before_widget' => '<section id="pls_feedburner_widget" class="pls_feedburner_widget_wrapper widget">',
+      'after_widget' => '</section>',
+      'title' => '',
+      'before_title' => '<h3 class="widget-title">',
+      'after_title' => '</h3>',
+    );
+
+    /** Merge the arguments with the defaults. */
+    $args = wp_parse_args( $args, $defaults );
+
+    extract($args, EXTR_SKIP);
+    
     $title = empty($instance['title']) ? ' ' : apply_filters('widget_title', $instance['title']);
     $instructions = empty($instance['instructions']) ? ' ' : apply_filters('instructions', $instance['instructions']);
     $email_placeholder = empty($instance['email_placeholder']) ? ' ' : apply_filters('email_placeholder', $instance['email_placeholder']);
+
     ?>
 
-    <section id="pls_feedburner_widget" class="pls_feedburner_widget_wrapper widget">
+    
+     <?php echo $before_widget; ?>
 
-      <h3 class="widget-title"><?php echo $title; ?></h3>
+      <?php echo $before_title . $title . $after_title; ?>
 
       <form action="http://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('http://feedburner.google.com/fb/a/mailverify?uri=<?php echo pls_get_option('pls-feedburner-uri') ?>', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
 
@@ -36,7 +52,7 @@ class PLS_Widget_Feedburner_Widget extends WP_Widget {
 
       </form>
 
-    </section>
+      <?php echo $after_widget; ?>
 
 <?php
   }
