@@ -1,0 +1,162 @@
+$white: #fff
+$red: #B94A48
+$red-border: #EED3D7
+$red-background: #F2DEDE
+$green: #468847
+$green-border: #D6E9C6
+$green-background: #DFF0D8
+
+@mixin border-radius($num)
+  border-radius: $num
+  -moz-border-radius: $num
+  -webkit-border-radius: $num
+
+@mixin box-sizing
+  box-sizing: border-box
+  -webkit-box-sizing: border-box
+  -moz-box-sizing: border-box
+  
+.contact-form-validator-error
+  z-index: 999999
+  span
+    border: 5px solid
+    border-color: $red-border transparent transparent transparent
+    bottom: -10px
+    left: 5px
+    display: block
+    height: 0
+    width: 0
+    position: absolute
+  p
+    float: left
+    margin: 0
+    padding: 6px
+    color: $red
+    background: $red-background
+    border: 1px solid $red-border
+    font-size: 12px
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5)
+    @include border-radius(3px)
+
+.login-form-validator-error, .register-form-validator-error
+  z-index: 999999
+  span
+    border: 5px solid
+    border-color: $red-border transparent transparent transparent
+    bottom: -10px
+    left: 5px
+    display: block
+    height: 0
+    width: 0
+    position: absolute
+  p
+    float: left
+    margin: 0
+    padding: 6px
+    color: $red
+    background: $red-background
+    border: 1px solid $red-border
+    font-size: 12px
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5)
+    @include border-radius(3px)
+
+#pl_login_form, #pl_lead_register_form
+  .success
+    @include border-radius(3px)
+    @include box-sizing
+    width: 100%
+    text-align: center
+    margin-bottom: 10px
+    font-size: 13px
+    float: left
+    padding: 7px 10px
+    display: none
+    color: $green
+    border-color: $green-border
+    background: $green-background
+  .error
+    color: #DE4826
+    border-color: #DE4826
+  .invalid
+    box-shadow: 0 0 1px 1px red
+
+
+.placester_contact_form
+  label
+    display: block
+    margin-bottom: 5px
+    font-size: 13px
+  input
+    &[type="text"], &[type="email"]
+      width: 200px
+      margin-bottom: 10px
+  textarea
+    width: 250px
+    margin-bottom: 10px
+  .info
+    width: 200px
+    margin-bottom: 10px
+    font-size: 80%
+  .pls-contact-form-loading
+    float: right
+    margin: 0
+    width: 50px
+    height: 50px
+    #medium-spinner
+      float: right
+
+  .success
+    @include border-radius(3px)
+    @include box-sizing
+    width: 100%
+    text-align: center
+    margin-bottom: 10px
+    font-size: 13px
+    float: left
+    padding: 7px 10px
+    display: none
+    color: $green
+    border-color: $green-border
+    background: $green-background
+  .error
+    color: #DE4826
+    border-color: #DE4826
+  .invalid
+    box-shadow: 0 0 1px 1px red
+
+.ui-dialog
+  &[aria-labelledby="ui-dialog-title-property-details-lead-capture"]
+    padding: 0 !important
+    @include box-sizing
+    .ui-widget-header
+      background: transparent
+      border: none
+      > a.ui-dialog-titlebar-close
+        margin: 34px 20px 0 0
+        z-index: 99999
+        top: 40% !important
+        background: transparent url(../../js/libs/jquery-ui/css/smoothness/images/ui-icons_222222_256x240.png) no-repeat !important
+        background-position: -96px -128px !important
+        border: none !important
+        padding: 0
+        .ui-icon
+          display: none
+
+        
+    .lead-capture-wrapper
+      float: left
+    .lc-contact-form
+      .placester_contact
+        h3
+          display: block
+        .success
+          text-align: left
+
+#property-details-lead-capture
+  padding: 0 !important
+  overflow: hidden
+.property-details-lead-capture
+  &.ui-widget-content
+    border: none !important
+    background: none !important
+//
