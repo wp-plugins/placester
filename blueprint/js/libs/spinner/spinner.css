@@ -1,0 +1,115 @@
+@-webkit-keyframes rotateThis {
+  from {
+    -webkit-transform: scale(0.5) rotate(0deg); }
+
+  to {
+    -webkit-transform: scale(0.5) rotate(360deg); } }
+
+#spinner {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 1.5em;
+  margin-right: 1.5em;
+  -moz-border-radius: 100px;
+  float: left;
+  -moz-transform: scale(0.5);
+  -webkit-transform: scale(0.5);
+  position: absolute;
+  -webkit-animation-name: rotateThis;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear; }
+  #spinner div {
+    width: 10px;
+    height: 30px;
+    background: black;
+    position: absolute;
+    top: 35px;
+    left: 45px; }
+    #spinner div.bar1 {
+      -moz-transform: rotate(0deg) translate(0, -40px);
+      -webkit-transform: rotate(0deg) translate(0, -40px);
+      opacity: 0.12; }
+    #spinner div.bar2 {
+      -moz-transform: rotate(45deg) translate(0, -40px);
+      -webkit-transform: rotate(45deg) translate(0, -40px);
+      opacity: 0.25; }
+    #spinner div.bar3 {
+      -moz-transform: rotate(90deg) translate(0, -40px);
+      -webkit-transform: rotate(90deg) translate(0, -40px);
+      opacity: 0.37; }
+    #spinner div.bar4 {
+      -moz-transform: rotate(135deg) translate(0, -40px);
+      -webkit-transform: rotate(135deg) translate(0, -40px);
+      opacity: 0.5; }
+    #spinner div.bar5 {
+      -moz-transform: rotate(180deg) translate(0, -40px);
+      -webkit-transform: rotate(180deg) translate(0, -40px);
+      opacity: 0.62; }
+    #spinner div.bar6 {
+      -moz-transform: rotate(225deg) translate(0, -40px);
+      -webkit-transform: rotate(225deg) translate(0, -40px);
+      opacity: 0.75; }
+    #spinner div.bar7 {
+      -moz-transform: rotate(270deg) translate(0, -40px);
+      -webkit-transform: rotate(270deg) translate(0, -40px);
+      opacity: 0.87; }
+    #spinner div.bar8 {
+      -moz-transform: rotate(315deg) translate(0, -40px);
+      -webkit-transform: rotate(315deg) translate(0, -40px);
+      opacity: 1; }
+
+#medium-spinner {
+  position: relative;
+  margin-top: -25px;
+  margin-left: -25px;
+  width: 100px;
+  height: 100px;
+  -moz-border-radius: 100px;
+  float: left;
+  -moz-transform: scale(0.5);
+  -webkit-transform: scale(0.5);
+  -webkit-animation-name: rotateThis;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear; }
+  #medium-spinner div {
+    width: 7px;
+    height: 20px;
+    background: black;
+    position: absolute;
+    top: 41px;
+    left: 46px; }
+    #medium-spinner div.bar1 {
+      -moz-transform: rotate(0deg) translate(0, -30px);
+      -webkit-transform: rotate(0deg) translate(0, -30px);
+      opacity: 0.12; }
+    #medium-spinner div.bar2 {
+      -moz-transform: rotate(45deg) translate(0, -30px);
+      -webkit-transform: rotate(45deg) translate(0, -30px);
+      opacity: 0.25; }
+    #medium-spinner div.bar3 {
+      -moz-transform: rotate(90deg) translate(0, -30px);
+      -webkit-transform: rotate(90deg) translate(0, -30px);
+      opacity: 0.37; }
+    #medium-spinner div.bar4 {
+      -moz-transform: rotate(135deg) translate(0, -30px);
+      -webkit-transform: rotate(135deg) translate(0, -30px);
+      opacity: 0.5; }
+    #medium-spinner div.bar5 {
+      -moz-transform: rotate(180deg) translate(0, -30px);
+      -webkit-transform: rotate(180deg) translate(0, -30px);
+      opacity: 0.62; }
+    #medium-spinner div.bar6 {
+      -moz-transform: rotate(225deg) translate(0, -30px);
+      -webkit-transform: rotate(225deg) translate(0, -30px);
+      opacity: 0.75; }
+    #medium-spinner div.bar7 {
+      -moz-transform: rotate(270deg) translate(0, -30px);
+      -webkit-transform: rotate(270deg) translate(0, -30px);
+      opacity: 0.87; }
+    #medium-spinner div.bar8 {
+      -moz-transform: rotate(315deg) translate(0, -30px);
+      -webkit-transform: rotate(315deg) translate(0, -30px);
+      opacity: 1; }
