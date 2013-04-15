@@ -1,9 +1,9 @@
 === Plugin Name ===
-Contributors: Placester
+Contributors: Placester, MattBarba
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
-Tested up to: 3.2.1
-Stable tag: 0.3.12
+Tested up to: 3.5.1
+Stable tag: 1.1.7
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -11,12 +11,13 @@ Easily create and manage real estate sites powered by WordPress.
 
 From the creators of http://placester.com: Create your fully functional real estate website with a single plugin. Some of the features include: 
 
-* Free RETS integrations available, continuously updated so you don't have to.
+* RETS integrations available, continuously updated with you MLS.
+* Full international listing support (240+ countries!)
 * Create / edit / update / search listings.
 * Set listings as "Featured" to highlight them in your sidebar throughout your site.
 * Every listing automatically has a unique landing page created - great for SEO.
 * Fully customizable sidebar layout and custom Placester real estate widgets.
-* Unlimited images per listing
+* Unlimited images per listing.
 * Placester has themes free themes that work seamlessly with this free Placester plugin (hosted premium themes also available).
 
 
@@ -24,10 +25,12 @@ From the creators of http://placester.com: Create your fully functional real est
 
 * Fully functional demo: [Columbus Theme](http://columbus.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=columbus)
 * Single property demo: [Bluestone Theme](http://bluestone.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=bluestone)
-* Foundation is a blank theme ready for designers to make it beautiful: [Foundation Theme](http://foundation.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=foundation)
 
 This is the only plugin you need to create a powerful WordPress powered real estate website. Watch our quick demo about how to get started:
-http://www.youtube.com/watch?v=WZBha9cU0IM
+http://www.youtube.com/watch?v=a6sJi4iXObU&feature=plcp
+
+**Getting Started without a Non-Placester Theme**
+http://www.youtube.com/watch?v=pBneS5LjuNU&feature=player_embedded
 
 
 Check out premium themes available to hosted users:
@@ -37,7 +40,7 @@ Check out premium themes available to hosted users:
 [Slate Theme](http://slate.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=slate)
 
 
-Find the latest themes and theme updates at [Placester.com/themes](https://placester.com/themes/)
+Find the latest themes and theme updates at [Placester.com/portfolio/](https://placester.com/portfolio/)
 
 
 **Highlights:**
@@ -74,14 +77,11 @@ Note ^: Feature requires a Placester-enabled theme.
 1. Via the "Placester" left-hand menu, and Plugin Settings tab, add your API key and configure the plugin.
 
 == Screenshots ==
-1. Admin Dashboard
-2. Active Listings 
-3. Create Listing Screen
-4. Setting screen
-5. Custom Layout Controls
-6. Custom property list controls
-7. Custom map controls
-8. Support Built in!
+1. Listing Index
+2. Add/Edit Listings
+3. Basic Home Page
+4. Listing Search
+
 
 == Frequently Asked Questions ==
 
@@ -95,14 +95,7 @@ Not unless you want there to be, that is Placester is your marketing partner. Ou
 
 = Which markets (countries) are supported? =
 
-Placester Real Estate Pro currently supports the following markets:
-* Australia
-* Belize
-* Canada
-* Russia
-* South Africa
-* United Kingdom
-* United States
+Placester's Real Estate Website Builder currently supports all iso countries. A complete list can be found here: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
 
 We'll be adding more as time goes on. [Reach out](mailto:support@placester.com) to us if you would like to see your market supported.
 
@@ -148,6 +141,26 @@ Absolutely, [reach out](mailto:support@placester.com) to us and let us know what
 In general - real-time. But if you use 3rd party property management services, the updates will only be as recent as your provider allows.
 
 == Changelog ==
+
+= 1.1.6 =
+* jQuery and jQuery UI updates for UI
+
+= 1.1.5 =
+* Compatibility for WordPress 3.5.1 and PHP 5.4.x
+
+= 1.0.4 =
+* Added RETS integration form
+
+= 1.0.3 =
+* Updated listing return spec to account for id
+* Correct date formatting in listings index
+
+= 1.0.2 =
+* Added theme gallery for 1 click theme installation 
+* Added full international support with default country
+
+= 1.0.1 =
+* Complete groundup rewrite of core functionality.
 
 = 0.3.12 =
 * Minor changes to WordPress function due to deprecation
