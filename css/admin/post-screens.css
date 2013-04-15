@@ -1,0 +1,14 @@
+#icon-placester {
+   background: url('../../../images/featured.png') no-repeat center;
+   width: 16px;
+   height: 18px;
+   padding-top: 15px;
+}
+
+.view-switch {
+	display: none;
+}
+
+#pl_social_box textarea {
+	width: 100%;
+}
