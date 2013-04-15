@@ -2,13 +2,13 @@
 /**
 Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
-Plugin URI: http://placester.com/wordpress/plugin/
-Author: Placester, Inc.
-Version: 0.3.9
-Author URI: http://www.placester.com/developer/wordpress
+Plugin URI: https://placester.com/
+Author: Placester.com
+Version: 1.1.7
+Author URI: https://www.placester.com/
 */
 
-/*  Copyright (c) 2011 Placester, Inc. <frederick@placester.com>
+/*  Copyright (c) 2013 Placester, Inc. <matt@placester.com>
 	All rights reserved.
 
 	Placester Promoter is distributed under the GNU General Public License, Version 2,
@@ -27,175 +27,242 @@ Author URI: http://www.placester.com/developer/wordpress
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-include_once( 'core/init.php' );
-include_once( 'core/util.php' );
-include_once( 'core/webservice_client.php' );
-include_once( 'core/settings_functions.php' );
-include_once( 'core/listings_list_util.php' );
-include_once( 'options/init.php' );
-include_once( 'admin/init.php' );
-include_once( 'admin/widgets.php' );
-include_once( 'core/shortcodes.php');
-include_once( 'core/leads.php' );
-include_once( 'core/membership.php' );
-include_once( 'lib/debug.php' );
+define('PL_PLUGIN_VERSION','1.1.6');
 
+define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
+define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
+
+define( 'PL_VIEWS_DIR', trailingslashit(PL_PARENT_DIR) . 'views/' );
+define( 'PL_VIEWS_URL', trailingslashit(PL_PARENT_URL) . 'views/' );
+
+define( 'PL_VIEWS_ADMIN_DIR', trailingslashit(PL_VIEWS_DIR) . 'admin/' );
+define( 'PL_VIEWS_ADMIN_URL', trailingslashit(PL_VIEWS_URL) . 'admin/' );
+
+define( 'PL_VIEWS_CLIENT_DIR', trailingslashit(PL_VIEWS_DIR) . 'client/' );
+define( 'PL_VIEWS_CLIENT_URL', trailingslashit(PL_VIEWS_URL) . 'client/' );
+
+define( 'PL_VIEWS_PART_DIR', trailingslashit(PL_VIEWS_DIR) . 'partials/' );
+define( 'PL_VIEWS_PART_URL', trailingslashit(PL_VIEWS_URL) . 'partials/' );
+
+define( 'PL_VIEWS_SHORT_DIR', trailingslashit(PL_VIEWS_DIR) . 'shortcodes/' );
+define( 'PL_VIEWS_SHORT_URL', trailingslashit(PL_VIEWS_URL) . 'shortcodes/' );
+
+define( 'PL_JS_DIR', trailingslashit(PL_PARENT_DIR) . 'js/' );
+define( 'PL_JS_URL', trailingslashit(PL_PARENT_URL) . 'js/' );
+
+define( 'PL_LIB_DIR', trailingslashit(PL_PARENT_DIR) . 'lib/' );
+define( 'PL_LIB_URL', trailingslashit(PL_PARENT_URL) . 'lib/' );
+
+define( 'PL_HLP_DIR', trailingslashit(PL_PARENT_DIR) . 'helpers/' );
+define( 'PL_HLP_URL', trailingslashit(PL_PARENT_URL) . 'helpers/' );
+
+define( 'PL_JS_LIB_DIR', trailingslashit(PL_JS_DIR) . 'lib/' );
+define( 'PL_JS_LIB_URL', trailingslashit(PL_JS_URL) . 'lib/' );
+
+define( 'PL_JS_PUB_DIR', trailingslashit(PL_JS_DIR) . 'public/' );
+define( 'PL_JS_PUB_URL', trailingslashit(PL_JS_URL) . 'public/' );
+
+define( 'PL_CSS_DIR', trailingslashit(PL_PARENT_DIR) . 'css/' );
+define( 'PL_CSS_URL', trailingslashit(PL_PARENT_URL) . 'css/' );
+
+define( 'PL_IMG_DIR', trailingslashit(PL_PARENT_DIR) . 'images/' );
+define( 'PL_IMG_URL', trailingslashit(PL_PARENT_URL) . 'images/' );
+
+define( 'PL_CSS_ADMIN_DIR', trailingslashit(PL_CSS_DIR) . 'admin/' );
+define( 'PL_CSS_ADMIN_URL', trailingslashit(PL_CSS_URL) . 'admin/' );
+
+define( 'PL_CSS_CLIENT_DIR', trailingslashit(PL_CSS_DIR) . 'client/' );
+define( 'PL_CSS_CLIENT_URL', trailingslashit(PL_CSS_URL) . 'client/' );
+
+define( 'PL_THIRD_PARTY_DIR', trailingslashit(PL_PARENT_DIR) . 'third-party/' );
+define( 'PL_THIRD_PARTY_URL', trailingslashit(PL_PARENT_URL) . 'third-party/' );
+
+define( 'ADMIN_URL', trailingslashit( admin_url() ) );
+define( 'ADMIN_MENU_URL', trailingslashit( ADMIN_URL ) . 'admin.php' );
+
+// Demo Account API Key
+define( 'DEMO_API_KEY', '7e63514ebfad7608bbe7b4469ab470ecef4dc651099ae06fc1df6807717f0deacd38809e3c314ca09c085125f773a4c7' );
+
+// Theme skin directory
+define( 'PL_THEME_SKIN_DIR', trailingslashit(PL_PARENT_DIR) . 'config/customizer/theme-skins/' );
+
+//config
+include_once('config/toggle_form_sections.php');
+include_once('config/api/custom_attributes.php');
+include_once('config/api/listings.php');
+include_once('config/api/users.php');
+include_once('config/api/people.php');
+include_once('config/api/integration.php');
+include_once('config/third-party/google-places.php');
+include_once('config/api/wordpress.php');
+include_once('config/customizer/onboard_settings.php');
+include_once('config/customizer/theme_choices.php');
+include_once('config/analytics.php');
+
+//lib
+include_once('lib/config.php');
+include_once('lib/routes.php');
+include_once('lib/http.php');
+include_once('lib/debug.php');
+include_once('lib/form.php');
+include_once('lib/validation.php');
+include_once('lib/pages.php');
+include_once('lib/community-pages.php');
+include_once('lib/menus.php');
+include_once('lib/posts.php');
+include_once('lib/membership.php');
+include_once('lib/caching.php');
+include_once('lib/shortcode_wrapper.php');
+include_once('lib/component_entities.php');
+include_once('lib/shortcodes.php');
+include_once('lib/featured_listings_post_type.php');
+include_once('lib/demo_data.php');
+include_once('lib/customizer.php');
+include_once('lib/customizer_entities.php');
+include_once('lib/social_networks.php');
+include_once('lib/analytics.php');
+
+//post types
+include_once('lib/post_types/pl_post_type_manager.php');
+
+//models
+include_once('models/listing.php');
+include_once('models/custom_attribute.php');
+include_once('models/options.php');
+include_once('models/user.php');
+include_once('models/people.php');
+include_once('models/themes.php');
+include_once('models/integration.php');
+include_once('models/google-places.php');
+include_once('models/wordpress.php');
+include_once('models/walkscore.php');
+include_once('models/education-com.php');
+
+//helpers
+include_once('helpers/listing.php');
+include_once('helpers/option.php');
+include_once('helpers/compatibility.php');
+include_once('helpers/css.php');
+include_once('helpers/js.php');
+include_once('helpers/header.php');
+include_once('helpers/user.php');
+include_once('helpers/pages.php');
+include_once('helpers/people.php');
+include_once('helpers/logging.php');
+include_once('helpers/compliance.php');
+include_once('helpers/integrations.php');
+include_once('helpers/custom_attributes.php');
+include_once('helpers/settings.php');
+include_once('helpers/taxonomy.php');
+include_once('helpers/google-places.php');
+include_once('helpers/wordpress.php');
+include_once('helpers/education-com.php');
+include_once('helpers/caching.php');
+include_once('helpers/membership.php');
+include_once('helpers/snippet.php');
+include_once('helpers/template.php');
+include_once('helpers/customizer.php');
+include_once('helpers/bootup.php');
+
+
+//third-party scripts
+include_once('third-party/tax-meta-class/tax-meta-class.php');
+include_once('third-party/convex-hull/convex-hull.php');
+include_once('third-party/mixpanel/mixpanel.php');
+
+
+// Register hook to load blueprint from plugin if no theme has yet to do so...
+add_action( 'after_setup_theme', 'load_blueprint_from_plugin', 18 );
+function load_blueprint_from_plugin() 
+{
+    if (!class_exists('Placester_Blueprint')) {
+        require_once('blueprint/blueprint.php');
+        new Placester_Blueprint('2.1', 'plugin');
+        add_action('init', 'blueprint_settings');
+        
+    }
+}
+
+function blueprint_settings() {
+    remove_theme_support( 'pls-default-css' );
+    remove_theme_support( 'pls-default-style' );
+    remove_theme_support( 'pls-default-960' );
+    remove_theme_support( 'pls-default-normalize' );
+    remove_theme_support( 'pls-js' );
+    remove_theme_support( 'pls-routing-util-templates' );
+}
+
+add_action( 'admin_menu', 'placester_admin_menu' );
+function placester_admin_menu() {
+    // Add separator
+    global $menu;
+    $menu['3a'] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
+
+    // Add Placester Menu
+    add_menu_page('Placester','Placester','edit_pages','placester',array('PL_Router','my_listings'), plugins_url('/placester/images/icons/logo_16.png'), '3b' /* position between 3 and 4 */ );
+
+    // Avoid submenu to start with menu function
+    global $submenu;
+    $submenu['placester'] = array();
+
+    add_submenu_page( 'placester', '','Listings', 'edit_pages', 'placester_properties', array('PL_Router','my_listings'));
+    add_submenu_page( 'placester', '', 'Add Listing', 'edit_pages', 'placester_property_add', array('PL_Router','add_listings') );    
+    
+    // If the site using the plugin is on our hosted network, don't show the theme gallery...
+    if ( !defined('HOSTED_PLUGIN_KEY') ) {
+    	add_submenu_page( 'placester', '', 'Theme Gallery', 'edit_pages', 'placester_theme_gallery', array('PL_Router','theme_gallery') );    	
+    }
+    
+    global $settings_subpages;
+    $settings_subpages = array('Settings' => '',
+                               'Client Settings' => '_client',
+                               'Global Property Filtering' => '_filtering', 
+                               'Polygon Controls' => '_polygons', 
+                               'Property Pages' => '_property_pages', 
+                               'Template Controls' => '_template', 
+                               'International Settings' => '_international' );
+    foreach ($settings_subpages as $name => $page_url) {
+        add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    
+    }
+    add_submenu_page( 'placester', 'Widgets', 'Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
+    
+    /* Social Integration functionality... */
+    add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks','add_social_settings_cb') );
+    
+    // add_submenu_page( 'placester', '', 'Settings', 'edit_pages', 'placester_settings_general', array('PL_Router','settings') );    
+    add_submenu_page( 'placester', '', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );    
+    add_submenu_page( 'placester', '', 'IDX / MLS', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );    
+
+
+}
 
 register_activation_hook( __FILE__, 'placester_activate' );
-register_deactivation_hook( __FILE__, 'placester_deactivate' );
+// register_deactivation_hook( __FILE__, 'placester_deactivate' );
+function placester_activate() {
+    $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
+    $metrics->track('Activation');
+    PL_WordPress_Helper::report_url();
+}
 
-
-
-/**
- * Registers filter form on a page which will control 
- * property lists / property maps on this page.
- * 
- * @param string $form_dom_id - DOM id of form object containing filter
- * @param bool $echo Wether to echo or return the content.
- */
-function placester_register_filter_form( $form_dom_id, $echo = true ) {
-
-    if ( ! $echo ) {
-        ob_start(); 
-        require_once( 'core/register_filter_form.php' );
-        $content = ob_get_contents(); 
-        ob_end_clean(); 
-
-        return $content;
-    } else {
-        require_once( 'core/register_filter_form.php' );
+add_action('admin_notices', 'on_first_activation');
+function on_first_activation() {
+    if (!get_option('placester_activation_redirect', false)) {
+        ?>
+            <script type="text/javascript">    
+                window.location.href = "<?php echo trailingslashit(admin_url()) . 'admin.php?page=placester_properties' ?>";
+                mixpanel.track("Activation");
+            </script>         
+        <?php
+        // Make sure this doesn't happen again...
+        update_option('placester_activation_redirect', true);
     }
 }
 
+add_action( 'wp_head', 'placester_info_bar' );
+function placester_info_bar() {
+    if ( PL_Option_Helper::get_demo_data_flag() && current_user_can('manage_options') ) {
+        PL_Router::load_builder_partial('infobar.php');
+    }
+}
 
-
-/**
- * Prints google maps object containing properties
- * 
- * @param array $parameters - configuration data.
- *
- *        Configuration elements:
- *
- *        - js_on_marker_click =>
- *           js function name called when marker is clicked with prototype:
- *           function(markerData)
- *             markerData - array of all queried property fields
- *        - js_get_marker_class => 
- *           js function name called to get css class for marker with prototype:
- *           function(markerData)
- *             markerData - array of all queried property fields
- */
-function placester_listings_map( $parameters = array(), $return = false ) {
-    require_once( 'core/listings_map.php' );
-    if ( !$return ) {
 ?>
-<div id="placester_listings_map_map"></div>
-<?php 
-    } else {
-        return '<div id="placester_listings_map_map"></div>';
-    }
-}
-
-
-
-/**
- * Prints standalone list of properties
- * 
- * @param array $parameters - Configuration data.
- *        Configuration elements are different based on list mode.
- *        There are different modes defined by 'table_type' parameter.
- *
- *        For table_type = datatable list is displayed using
- *		  <a href="http://datatables.net">datatables.net</a> library. 
- *        Parameters are:
- *			- table_type => 'datatable'
- *			- paginate =>
- *            number of rows for each page
- *			- attributes
- *            array, fields to display, where key is field name
- *				- fieldname =>
- *				- label =>
- *                Name of field, how to display it
- *				- width =>
- *                Width of field
- *			- js_renderer
- *                JS function called to convert field content and return
- *                html representation of field to display
- *
- *        For table_type = html list is displayed as sequence of pure html &lt;div&gt;
- *        elements where each element represent single listing.
- *        Parameters are:
- *				- table_type => 'html'
- *				- js_row_renderer =>
- *            JS function name taking array of property fields data and 
- *            returning html to print.
- *				- pager =>
- *            array. Elements are:
- *					- render_in_dom_element =>
- *              If specified - pager will be rendered to that DOM id
- *            		- rows_per_page =>
- *              Number of properties to print at single page
- *            		- css_current_button =>
- *              CSS style of "current page" button
- *            		- css_not_current_button =>
- *              CSS style of other page-switch buttons
- *            		- first_page =>
- *              array, configuration of "first page" button of pager.
- *              parameters are:
- *						- visible =>
- *                true / false
- *						- label =>
- *                html of button' text
- *            		- previous_page =>
- *              array, configuration of "previous page" button of pager.
- *              same as for "first page"
- *            		- next_page =>
- *              array, configuration of "next page" button of pager.
- *              same as for "first page"
- *            		- last_page' => 
- *              array, configuration of "last page" button of pager.
- *              same as for "first page"
- *            		- numeric_links =>
- *              array, configuration of numeric links buttons of pager.
- *              parameters are:
- *						- visible =>
- *                true / false
- *						- max_count => 
- *                maximum number of page links to show
- *						- more_label
- *                if there are more pages than printed, this html is inserted
- *						- css_outer
- *                CSS class of outer div for numberic links
- *				- attributes =>
- *            array of fields name to extract from data storage.
- *            Dont ask for fields not displayed - that will
- *            unreasonably slow down requests.
- */
-function placester_listings_list($parameters, $return = false) {
-
-    /** Extract the crop description settings before moving forward. */
-    if ( isset( $parameters['crop_description'] ) ) {
-        $crop_description = $parameters['crop_description'];
-        unset( $parameters['crop_description'] );
-    } else {
-        $crop_description = false;
-    }
-
-    require_once('core/listings_list_lone.php');
-
-    /** Return or echo. */
-    if ( $return )
-        return $result; 
-    echo $result;
-}
-
-/**
- * Prints list of properties which are displayed right now on the map
- * So this list can be used only on pages with map
- *
- * @param array $parameters - configuration data
- *        The same as for "placester_listings_list" function
- */
-function placester_listings_list_of_map($parameters) {
-    require_once('core/listings_list_of_map.php');
-}
