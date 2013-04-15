@@ -36,6 +36,15 @@
 	color: red;
 	font-weight: bold;
 }
+#api_key_validation span.red, #phone-validation-message {
+	background-color: white !important;
+	border: none !important;
+	/*display: none;*/
+	color: red;
+	/*font-weight: bold;*/
+}
+
+
 #api_key_success {
 	display: none;
 	color: green;

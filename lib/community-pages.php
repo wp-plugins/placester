@@ -7,7 +7,7 @@ if( $community_pages_enabled ) {
 
 class PL_Community_Pages {
 
-	private static $community_post_type = 'community_page';
+	private static $community_post_type = 'community';
 	private static $neighborhood_community_meta_key = 'community_page';
 	
 
@@ -42,6 +42,9 @@ class PL_Community_Pages {
 		// no regular users too
 		if( ! current_user_can( 'manage_options' ) ) {
 			return; 
+		}
+		if( isset( $_POST['page_header_title'] ) ) {
+			update_post_meta( $post_id, 'page_header_title', $_POST['page_header_title'] );
 		}
 		
 		// Get old meta and clear neighborhoods
@@ -113,13 +116,18 @@ class PL_Community_Pages {
 	
 	public static function neighborhood_picker_box( $post ) {
 		
-		// TODO: get all saved neighborhoods
+		$page_header_title = get_post_meta( $post->ID, 'page_header_title', true );
+		
+		if( empty( $page_header_title ) ) $page_header_title = '';
+		
+		echo "<p>Page Header Title: <input type='text' name='page_header_title' value='$page_header_title' style='width: 150px'/></p>";
+		
 		$page_neighborhoods = get_post_meta( $post->ID, 'community_neighborhoods', true );
 		if( empty( $page_neighborhoods ) ) {
 			$page_neighborhoods = array();
 		} 
 
-		$neighborhoods = get_terms( 'neighborhood' );
+		$neighborhoods = get_terms( 'neighborhood', array( 'hide_empty' => false ) );
 
 		foreach( $neighborhoods as $neighborhood ) {
  			printf("<input type='checkbox' name='neighborhoods[]' id=n-".$neighborhood->term_id." value='%d' %s />", 
@@ -145,7 +153,7 @@ class PL_Community_Pages {
 		
 		$my_meta->addPosts( self::$neighborhood_community_meta_key, 
 				array( 'post_type' => self::$community_post_type, 'std' => 'Select Page' ),
-				array( 'name' => 'Community Page' ) );		
+				array( 'name' => 'Community' ) );		
 		
 		
 		$my_meta->Finish();
@@ -154,16 +162,16 @@ class PL_Community_Pages {
 	public static function create_community_page_cpt() {
 		$args = array(
 				'labels' => array(
-						'name' => __( 'Community Pages', 'pls' ),
+						'name' => __( 'Communities', 'pls' ),
 						'singular_name' => __( self::$community_post_type, 'pls' ),
-						'add_new_item' => __('Add New Community Page', 'pls'),
-						'edit_item' => __('Edit Community Page', 'pls'),
-						'new_item' => __('New Community Page', 'pls'),
-						'all_items' => __('All Community Pages', 'pls'),
-						'view_item' => __('View Community Pages', 'pls'),
-						'search_items' => __('Search Community Pages', 'pls'),
-						'not_found' =>  __('No Community Pages found', 'pls'),
-						'not_found_in_trash' => __('No Community Pages found in Trash', 'pls')),
+						'add_new_item' => __('Add New Community', 'pls'),
+						'edit_item' => __('Edit Community', 'pls'),
+						'new_item' => __('New Community', 'pls'),
+						'all_items' => __('All Communities', 'pls'),
+						'view_item' => __('View Communities', 'pls'),
+						'search_items' => __('Search Communities', 'pls'),
+						'not_found' =>  __('No Community found', 'pls'),
+						'not_found_in_trash' => __('No Community found in Trash', 'pls')),
 				'menu_icon' => trailingslashit(PL_IMG_URL) . 'featured.png',
 				'public' => true,
 				'publicly_queryable' => true,

@@ -157,6 +157,16 @@ jQuery(document).ready(function($) {
 		
 	});
 	$('.slideshow_type').trigger('change');
+	
+	if( window.location.hash !== undefined && window.location.hash !== '' ) {
+		var window_hash = window.location.hash;
+
+		$('.side-nav.nav-tab-wrapper li a').each(function() {
+			if( $(this).attr('href') === window_hash ) {
+				$(this).trigger('click');
+			}
+		});
+	}
 
 
 	/*

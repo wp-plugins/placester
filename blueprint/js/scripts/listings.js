@@ -14,6 +14,8 @@ function Listings ( params ) {
 	this.is_new_serch = false;
 	this.from_back_button = false;
 	this.search_hash = false;
+	this.sort_by = params.list ? params.list.sort_by : false;
+	this.sort_type = params.list ? params.list.sort_type : false;
 }
 
 Listings.prototype.pending = false;
@@ -124,12 +126,25 @@ Listings.prototype.get = function ( success ) {
 		that.active_filters = that.active_filters.concat(this.filter.get_values());
 	}
 
+  // Sort By if set by list
+  if (this.list.sort_by) {
+		that.active_filters.push( { "name": "sort_by", "value" :  this.list.sort_by} );
+	}
+
+  // Sort Type if set by list
+  if (this.list.sort_type) {
+		that.active_filters.push( { "name": "sort_type", "value" :  this.list.sort_type} );
+	}
+	
 	//get bounding box or polygon information
 	//there should be a map
 	//also, we either need a type of neighborhood or filter bounds to be enabled
 	if (this.map && (this.map.type == 'neighborhood' || this.map.filter_by_bounds ) ) {
 		this.map.show_loading();
-		that.active_filters = that.active_filters.concat(this.map.get_bounds());
+		// concat bounds only if bounds exist
+		if (this.map.filter_by_bounds) {
+			that.active_filters = that.active_filters.concat(this.map.get_bounds());
+		};		
 	}
 
 	if (that.filter_override) {
@@ -139,8 +154,11 @@ Listings.prototype.get = function ( success ) {
 	};
 	that.active_filters.push( { "name": "action", "value" : this.hook} );
 
-	//saved search functionality
-	var hash = that.generate_search_hash()
+	// Check submitted filters for multiples of same filter(*) to add "[*_match]=in"
+	that.active_filters = that.check_multiple_search_filters(that.active_filters);
+
+	// Saved search functionality
+	var hash = that.generate_search_hash();
 	var current_hash = jQuery.address.value();
 
 	// Don't display in preview screens, nor in widget pages
@@ -163,7 +181,7 @@ Listings.prototype.get = function ( success ) {
 			that.search_hash = '/' + hash;
 		}
 	}
-		
+  // console.log(that.active_filters);
 	jQuery.ajax({
 	    "dataType" : 'json',
 	    "type" : "POST",
@@ -186,7 +204,7 @@ Listings.prototype.get = function ( success ) {
       // execute manual_callback function
       if ( that.list.manual_callback )
         that.list.manual_callback();
-        
+
 			that.active_filters = [];
 	    }
 	});
@@ -235,18 +253,41 @@ Listings.prototype.check_search_form_count = function () {
   // Add spinner
   jQuery('#pls_num_results_found').before("<div id='pls_search_count_spinner'></div>")
   // get form data
+  
   var form_data = jQuery('.pls_search_results_num_form').serializeArray();
+  // console.log(form_data);
+
   var data = {};
+  
+  form_data = this.check_multiple_search_filters(form_data);
 
-  for (var i=0; i < form_data.length; i++) {
-    data[form_data[i].name] = form_data[i].value;
+  var multi_value_form_keys = new Array("location[locality][]", "location[neighborhood][]", "location[region][]");
+
+  for (var i = form_data.length - 1; i >= 0; i--) {
+  		
+  	if (data[form_data[i].name] && multi_value_form_keys.indexOf(form_data[i].name) != -1) {
+
+  		var existing_val = data[form_data[i].name];
+  		// if it's already an Array, push values to the array
+			if (existing_val instanceof Array) {
+				data[form_data[i].name].push(form_data[i].value);
+			} else {
+				// if it's not already an array, create one and assign the first value
+				data[form_data[i].name] = new Array(existing_val, form_data[i].value);
+			}
+
+		} else {
+			// if the key doesn't exist, give it a value
+			data[form_data[i].name] = form_data[i].value;
+		};
+	  
   };
-
+ 
   data.action = 'pls_get_search_count';
   data.iDisplayLength = 1;
 
   jQuery.ajax({
-    "dataType" : 'json',
+	"dataType" : 'json',
     "type" : "POST",
     "data" : data,
     "url" : info.ajaxurl,
@@ -259,4 +300,44 @@ Listings.prototype.check_search_form_count = function () {
         }
       }
   },'json');
+}
+
+Listings.prototype.check_multiple_search_filters = function (filters) {
+
+  // Search for multiple cities / neighborhoods / states / property types
+  var checkMultiples = new Array("location[locality]", "location[neighborhood]", "location[region]", "property_type", "metadata[condo_name]");
+
+  // console.log(checkMultiples);
+  for (var i = checkMultiples.length - 1; i >= 0; i--){
+
+    var formAdditions = new Array();
+    
+    for (var j = filters.length - 1; j >= 0; j--){
+      
+      filter = filters[j];
+      
+      // if the filter, minus the "[]" brackets, equals the multi-select location, add it.
+      if (filter.name.slice(0,-2) == checkMultiples[i]) {
+        // find 1 or more cities entered into form
+        formAdditions.push(filter.value);
+        delete(filter);
+      }
+    };
+
+    // Add 'in' match params for multiple cities
+    if (formAdditions.length > 1) {
+
+      // remove ']' from end of checkMultiples
+      if (checkMultiples[i].slice(-1) == ']') {
+        multiFilterMatch = checkMultiples[i].slice(0,-1) + '_match]';
+      } else {
+        // property_type is the only one that doesn't have brackets from checkMultiples variable.
+        multiFilterMatch = checkMultiples[i] + '_match';
+      };
+      
+      filters.push({name: multiFilterMatch, value: 'in'});
+    };
+    
+  };
+  return filters;
 }

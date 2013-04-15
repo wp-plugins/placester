@@ -1,8 +1,10 @@
 <?php 
-// Class Designed to Handle the rigors of Membership, and membership options...
-// or something like that. 
-// by matt, though much was taken from alex. 
 
+/** 
+ * Class Designed to Handle the rigors of Membership, and membership options...
+ * or something like that. 
+ * by matt, though much was taken from alex. 
+ */
 
 PL_Membership::init();
 class PL_Membership {
@@ -16,11 +18,11 @@ class PL_Membership {
         add_action( 'wp_ajax_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
         add_action( 'wp_ajax_nopriv_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
         add_action( 'wp_ajax_remove_favorite_property', array(__CLASS__,'ajax_remove_favorite_property'));
+        
+        add_action( 'wp_ajax_save_search', array(__CLASS__,'ajax_save_search'));
 
         add_shortcode('favorite_link_toggle', array(__CLASS__,'placester_favorite_link_toggle'));
         add_shortcode('lead_user_navigation', array(__CLASS__,'placester_lead_control_panel'));
-
-        
         
         // Create the "Property lead" role
         $lead_role = add_role( 'placester_lead','Property Lead',array('add_roomates' => true,'read_roomates' => true,'delete_roomates' => true,'add_favorites' => true,'delete_roomates' => true,'level_0' => true,'read' => true));
@@ -35,6 +37,24 @@ class PL_Membership {
 				  }
 				}
 			  return $ids;
+    }
+    
+    public static function ajax_save_search() {
+    	// irrelevant data to the search form filters
+    	$internal_params = array( 'action', 'submit', 'address_match' );
+    	foreach( $internal_params as $internal ) {
+    		if( isset( $_POST[$internal] ) ) unset($_POST[$internal]);
+    	}
+    	
+    	// add meta to user for searches
+    	if( ! empty( $_POST ) ) {
+    		$api_response = PL_People_Helper::add_member_saved_search( $_POST );
+    		echo json_encode( $api_response );
+    	} else {
+    		echo false;
+    	}
+
+    	die();
     }
 
     public function ajax_add_favorite_property () {

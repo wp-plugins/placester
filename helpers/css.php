@@ -4,13 +4,13 @@ PL_Css_Helper::init();
 
 class PL_Css_Helper {
 	
-	function init () {		
+	public static function init () {		
 		// add_action( 'admin_init', array( __CLASS__, 'admin' ));
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin' ) );
 		add_action( 'customize_controls_enqueue_scripts', array( __CLASS__, 'customizer' ) );
 	}
 
-	function admin ($hook) {
+	public static function admin ($hook) {
 		// Inject premium themes logic into the themes admin page when visiting from any site on the hosted env...
 		if ($hook == 'themes.php' && defined('HOSTED_PLUGIN_KEY')) {		
 			self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');
@@ -19,7 +19,7 @@ class PL_Css_Helper {
 		}
 		
 		if( $hook == 'post-new.php' || $hook == 'post.php' || ( $hook == 'edit.php' && isset( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) ) {
-			self::register_enqueue_if_not('post-screens', trailingslashit(PL_CSS_ADMIN_URL) .  '/post-screens.css');
+			self::register_enqueue_if_not('post-screens', trailingslashit(PL_CSS_ADMIN_URL) .  'post-screens.css');
 		}
 		
 		$pages = array('placester_page_placester_properties', 
@@ -43,8 +43,11 @@ class PL_Css_Helper {
 		//always load these
 		self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');		
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
-		self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) .  'integration.css');		
-
+		
+		// If no API key is set, load the following CSS files for use by the wizard on ANY plugin settings page...
+		if (!PL_Option_Helper::api_key()) {
+		  self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) .  'integration.css');		
+        }
 
 		if ($hook == 'placester_page_placester_properties') {
 			self::register_enqueue_if_not('my-listings', trailingslashit(PL_CSS_ADMIN_URL) .  'my-listings.css');					
@@ -62,20 +65,24 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('support', trailingslashit(PL_CSS_ADMIN_URL) .  'theme-gallery.css');			
 		}
 
+		if ($hook == 'placester_page_placester_integrations') {
+			self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) .  'integration.css');
+		}
+
 		if ($hook == 'placester_page_placester_settings') {
-			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  '/settings/all.css');					
-			self::register_enqueue_if_not('settings-general', trailingslashit(PL_CSS_ADMIN_URL) .  '/settings/general.css');	
+			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/all.css');					
+			self::register_enqueue_if_not('settings-general', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/general.css');	
 		}
 
 		if ($hook == 'placester_page_placester_settings_polygons') {
-			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  '/settings/all.css');					
-			self::register_enqueue_if_not('settings-polygons', trailingslashit(PL_CSS_ADMIN_URL) .  '/settings/polygon.css');									
+			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/all.css');					
+			self::register_enqueue_if_not('settings-polygons', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/polygon.css');									
 			self::register_enqueue_if_not('colorpicker', trailingslashit(PL_JS_URL) .  'lib/colorpicker/css/colorpicker.css');					
 		}
 
 		if ($hook == 'placester_page_placester_settings_property_pages') {
-			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  '/settings/all.css');		
-			self::register_enqueue_if_not('settings-pages', trailingslashit(PL_CSS_ADMIN_URL) .  '/settings/pages.css');					
+			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/all.css');		
+			self::register_enqueue_if_not('settings-pages', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/pages.css');					
 		}
 		
 		if ($hook == 'placester_page_placester_settings_international') {
@@ -87,18 +94,18 @@ class PL_Css_Helper {
 		}
 		
 		if ($hook == 'placester_page_placester_settings_client') {
-			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  '/settings/all.css');					
+			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/all.css');					
 			self::register_enqueue_if_not('settings-filtering', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/client.css');					
 		}
 		
 		if ($hook == 'placester_page_placester_settings_filtering') {
-			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  '/settings/all.css');					
+			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/all.css');					
 			self::register_enqueue_if_not('settings-filtering', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/filtering.css');					
 		}
 
 	}
 
-	function customizer() {
+	public static function customizer() {
 		self::register_enqueue_if_not('customizer-css', trailingslashit(PL_CSS_URL) . 'customizer.css');
 		self::register_enqueue_if_not('onboard-css', trailingslashit(PL_CSS_URL) . 'onboard.css');
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
@@ -108,7 +115,7 @@ class PL_Css_Helper {
 	    }
 	}
 
-	private function register_enqueue_if_not($name, $path, $dependencies = array()) {
+	private static function register_enqueue_if_not($name, $path, $dependencies = array()) {
 		if (!wp_style_is($name, 'registered')) {
 			wp_register_style($name, $path, $dependencies);		
 		}

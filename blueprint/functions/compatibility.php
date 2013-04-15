@@ -42,6 +42,14 @@ function pls_get_filter_form_extra( $form_dom_id ) {
     return PLS_Plugin_API::get_filter_form_extra( $form_dom_id );
 }
 
+function pls_get_save_search_link() {
+	return PLS_Plugin_API::get_save_search_link();
+}
+
+function pls_get_user_saved_searches( $user_id = 0 ) {
+	return PLS_Plugin_API::get_user_saved_searches( $user_id );
+}
+
 /**
  * This class acts as a buffer between the theme and the plugin. All calls to 
  * functions from the plugin must be done using this class. If new functions 
@@ -205,14 +213,6 @@ class PLS_Plugin_API {
         }
         return false;
         
-    }
-
-
-    static function get_property_config() {
-        if ( pls_has_plugin_error() )  {
-            return false;
-        }
-        return PL_Config::PL_API_LISTINGS('get', 'args');
     }
 
     /**
@@ -584,6 +584,14 @@ class PLS_Plugin_API {
         return false;
     }
 
+    static function get_listing_aggregates( $keys ) {
+        $return = self::_try_for_exceptions(array("PL_Listing_Helper", "basic_aggregates"), $keys );
+        if ( $return )  {
+            return $return;
+        }
+        return array();
+    }
+
     static function get_listings_fav_ids() {
         $return = self::_try_for_exceptions(array("PL_Membership", "get_favorite_ids"), '', true );
         if ( $return )  {
@@ -697,6 +705,30 @@ class PLS_Plugin_API {
             return $return;
 
         return false;
+    }
+    
+    static function get_save_search_link( ) {
+    
+    	/** Test the function for any exceptions. */
+    	$return = self::_try_for_exceptions( array('PL_Membership_Helper', 'get_save_search_link') );
+    
+    	/** If no exceptions were detected, return the result. */
+    	if ( $return )
+    		return $return;
+    
+    	return '';
+    }
+    
+    static function get_user_saved_searches( $user_id ) {
+    
+    	/** Test the function for any exceptions. */
+    	$return = self::_try_for_exceptions( array('PL_People_Helper', 'get_user_saved_links'), $user_id );
+    
+    	/** If no exceptions were detected, return the result. */
+    	if ( $return )
+    		return $return;
+    
+    	return array();
     }
 
 	// get theme options using the plugin theme option getter

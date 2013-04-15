@@ -38,17 +38,34 @@ class PLS_Widget_Facebook extends WP_Widget {
       ob_start();
       ?>
         <article class="fb_post <?php echo $fb_post['type']; ?>">
+          
           <p class="fb_post_message"><?php echo $fb_post['message']; ?></p>
-          <div class="fb_post_media">
-            <?php echo $fb_post['media']; ?>
-            <div class="fb_media_caption_wrapper">
-              <?php if (!empty($fb_post['title_caption'])) { ?>
-                <p class="fb_media_title_caption"><a href="<?php echo $fb_post['link']; ?>"><?php echo $fb_post['title_caption']; ?></a></p>
-              <?php } ?>
-              <p class="fb_media_caption"><?php echo $fb_post['caption']; ?></p>
+          
+          <?php if (!empty($fb_post['media'])) { ?>
+            <div class="fb_post_media">
+
+              <!-- Media -->
+              <?php echo $fb_post['media']; ?>
+                
+              <div class="fb_media_caption_wrapper">
+
+                <?php if (!empty($fb_post['title_caption'])) { ?>
+                  <!-- Caption Title -->
+                  <p class="fb_media_title_caption"><a href="<?php echo $fb_post['link']; ?>"><?php echo $fb_post['title_caption']; ?></a></p>
+                <?php } ?>
+
+                <?php if (!empty($fb_post['description'])) { ?>
+                  <!-- description -->
+                  <p class="fb_media_caption"><?php echo $fb_post['description']; ?></p>
+                <?php } ?>
+              </div>
+
             </div>
-          </div>
+
+          <?php } ?>
+
           <p class="fb_post_date"><span class="fb_month"><?php echo $fb_post['month']; ?></span> <span class="fb_day"><?php echo $fb_post['day']; ?></span>, <span class="fb_year"><?php echo $fb_post['year']; ?></span></p>
+        
         </article>
       <?php
       $post_item = ob_get_clean();
@@ -130,10 +147,10 @@ class PLS_Widget_Facebook extends WP_Widget {
 function get_facebook_feed ( $page_id, $limit, $post_types = array() ) {
 
     // manually delete transient
-    // delete_transient('facebook_feed');
+    delete_transient('facebook_feed');
     
     // check for transient first
-    if ( false === ( $feed = get_transient( 'facebook_feed' ) ) ) {
+    if ( false === ( $custom_feed = get_transient( 'facebook_feed' ) ) ) {
       
         // Obtain App Access Token
         $app_id = "263914027073402";
@@ -173,22 +190,24 @@ function get_facebook_feed ( $page_id, $limit, $post_types = array() ) {
         // reset posts array keys
         $feed['posts']['data'] = array_values($feed['posts']['data']);
         
+        // how many posts are available after unsetting empty ones?
         $count = count($feed['posts']['data']);
         
-        // reduce count down to limit
-        for ($i=-1; $i < $count; $i++) {
-          if ($count >= ($limit-5)) {
-            $count--;
-            array_pop($feed['posts']['data']);
-          }
-          
+        // declare new var
+        $custom_feed['posts']['data'] = array();
+
+        // reset actual limit set by admin
+        $real_limit = $limit - 5;
+        
+        for ($j=0; $j < $real_limit; $j++) { 
+          array_push($custom_feed['posts']['data'], $feed['posts']['data'][$j]);
         }
 
         // set transient to avoid slow loading and rate limits
         set_transient( 'facebook_feed', $feed, 60*60 );
     }
     
-    return $feed;
+    return $custom_feed;
 
 }
 
@@ -210,6 +229,12 @@ function build_fb_post_html ( $post ) {
     'date_string' => '',
     'type' => $post['type']
   );
+        
+  $args = wp_parse_args( $post, $fb_post );
+
+  extract( $args, EXTR_SKIP );
+
+  if( ! isset( $post['caption'] ) ) $post['caption'] = '';
   
   // determine post type
   switch ($post['type']) {
@@ -229,55 +254,58 @@ function build_fb_post_html ( $post ) {
         // just give image of video and link if not YouTube
         $media = '<a href="' . $post['source'] . '" style="position:relative;float:left;"><i class="fb-play-icon"></i><img src="' . $post['picture'] . '" alt=""></a>';
       }
-      $fb_post['message'] = $post['message'];
+      $fb_post['message'] = isset($post['message']) ? $post['message'] : '';
       $fb_post['link'] = $post['source'];
-      $fb_post['caption'] = $post['caption'];
+      $fb_post['caption'] = isset($caption) ? $caption : '';
 
       break;
     
 
-    case 'photo':
-      $fb_post['message'] = $post['message'];
-      // $link = $post['link'];
-      $fb_post['media'] = '<img src="' . $post['picture'] . '" alt="' . $post['caption'] . '">';
-      $fb_post['caption'] = $post['caption'];
+    // case 'photo':
+    //   $fb_post['message'] = isset($post['message']) ? $post['message'] : '';
+    //   // $link = $post['link'];
+    //   $fb_post['media'] = '<img src="' . $post['picture'] . '" alt="' . @$post['caption'] . '">';
+    //   $fb_post['caption'] = isset($caption) ? $caption : '';
       
-      break;
+    //   break;
 
-    case 'link':
-      $fb_post['message'] = $post['message'];
-      // $link = $post['link'];
-      $fb_post['media'] = '<img src="' . $post['picture'] . '" alt="' . $post['caption'] . '">';
-      $fb_post['caption'] = $post['caption'];
+    // case 'link':
+    //   $fb_post['message'] = $post['message'];
+    //   // $link = $post['link'];
+    //   $fb_post['media'] = '<img src="' . $picture . '" alt="' . $caption . '">';
+    //   $fb_post['caption'] = isset($description) ? $description : '';
       
-      break;
+    //   break;
 
-    case 'status':
+    // case 'status':
       
-      $fb_post['message'] = $post['message'];
-      // $link = $post['link'];
-      $fb_post['media'] = '<img src="' . $post['picture'] . '" alt="' . $post['caption'] . '">';
-      $fb_post['caption'] = $post['caption'];
+    //   $fb_post['message'] = isset($post['message']) ? $post['message'] : '';
+    //   // $link = $post['link'];
+    //   $fb_post['media'] = '<img src="' . $post['picture'] . '" alt="' . @$post['caption'] . '">';
+    //   $fb_post['caption'] = isset($caption) ? $caption : '';
       
-      break;
+    //   break;
 
-    case 'checkin':
+    // case 'checkin':
       
-      $fb_post['message'] = $post['message'];
-      // $link = $post['link'];
-      $fb_post['media'] = '<img src="' . $post['picture'] . '" alt="' . $post['caption'] . '">';
-      $fb_post['caption'] = $post['caption'];
+    //   $fb_post['message'] = isset($post['message']) ? $post['message'] : '';
+    //   // $link = $post['link'];
+    //   $fb_post['media'] = '<img src="' . $post['picture'] . '" alt="' . @$post['caption'] . '">';
+    //   $fb_post['caption'] = isset($caption) ? $caption : '';
       
-    break;
+    // break;
 
     default:
       // other less common post_types
       // music, question, review, swf, offer, note
-      $fb_post['message'] = $post['message'];
-      // $link = $post['link'];
-      $fb_post['media'] = '<img src="' . $post['picture'] . '" alt="' . $post['caption'] . '">';
-      $fb_post['caption'] = $post['caption'];
-      
+      $fb_post['message'] = isset($post['message']) ? $post['message'] : '';
+      $fb_post['link'] = isset($link) ? $link : '';
+      if (!empty($picture)) {
+        $fb_post['media'] = '<img src="' . $picture . '" alt="' . $caption . '">';
+      }
+      $fb_post['caption'] = isset($caption) ? $caption : '';
+      $fb_post['description'] = isset($description) ? $description : '';
+
       break;
       
   }

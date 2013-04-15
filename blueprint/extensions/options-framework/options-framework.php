@@ -271,6 +271,7 @@ function optionsframework_validate( $input ) {
 	 * button, the options defined in the theme's options.php
 	 * file will be added to the option for the active theme.
 	 */
+	 
 	if ( isset( $_POST['reset'] ) ) {
 		add_settings_error( 'options-framework', 'restore_defaults', 'Default options restored.', 'updated fade' );
 		return of_get_default_values();

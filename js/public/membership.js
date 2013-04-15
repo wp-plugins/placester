@@ -338,8 +338,38 @@ jQuery(document).ready(function($) {
   //   
   // };
 
+    $('.pls_save_search').on('click', function() {
+    	var data = {};
 
+    	// $('.pls_save_search').closest('form').find('input, select, textarea').each(function() { 
+    	$('.pls_search_form_listings').find('input, select, textarea').each(function() {
+	    	var control = $(this);
+	    	var nameAttr = control.attr('name');
+	    	var isName = typeof(nameAttr) !== 'undefined' && nameAttr !== false;
 
+	    	if(isName && control.val() !== '' && control.val() != '0' ) {
+	    	   data[nameAttr] = control.val();
+	    	} 
+	    });
+    	
+    	// var serialized = JSON.stringify(data);
+    	data['action'] = 'save_search';
+    	$.ajax({
+            url: info.ajaxurl, 
+            data: data, 
+            async: false,
+            type: "POST",
+            success: function(response) {
+            	console.log(JSON.parse(response));
+            },
+    		error: function(response) {
+    			console.log('error');
+    			console.log(response);
+    		}
+    	});
+    	
+    	
+    });
 
 
 

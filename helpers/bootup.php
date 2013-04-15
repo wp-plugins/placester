@@ -19,7 +19,14 @@ class PL_Bootup {
       add_action('after_switch_theme', array( __CLASS__, 'theme_switch_user_prompt' ));
     }
     
+    add_action('customize_register', array( __CLASS__, 'show_theme_switch_customizer' ) );
     add_action('wp_ajax_add_dummy_data', array( __CLASS__, 'add_dummy_data') );
+  }
+  
+  public function show_theme_switch_customizer() {
+  	if( PL_Customizer_Helper::is_onboarding() ) {
+  		self::theme_switch_user_prompt();
+  	}
   }
 
   public function is_theme_switched () {

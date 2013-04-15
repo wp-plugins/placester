@@ -134,7 +134,6 @@ function check_info_for_prem_trial(that, success_callback, cancel_callback) {
             $('#prem_form_messages').html('<div id="message" class="error"><h3>'+ data['message'] + '</h3><ul>' + item_messages.join(' ') + '</ul></div>');	
           };
         }, 'json');
-
     };
 
 }

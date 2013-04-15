@@ -3,18 +3,18 @@
 PL_Membership_Helper::init();
 class PL_Membership_Helper {
 
-	function init () {
-		add_action( 'wp_ajax_set_client_settings', array('PL_Membership_Helper', 'set_client_settings'  )); 
-		add_action( 'wp', array(__CLASS__, 'admin_bar'  )); 
+	public static function init () {
+		add_action('wp_ajax_set_client_settings', array(__CLASS__, 'set_client_settings')); 
+		add_action('wp', array(__CLASS__, 'admin_bar')); 
 	}
 
-	function admin_bar() {
+	public static function admin_bar() {
 		if (current_user_can( 'placester_lead' )) {
 			add_filter('show_admin_bar', '__return_false');
 		}
 	}
 
-	function get_client_settings () {
+	public static function get_client_settings () {
 		$send_client_message = get_option('pls_send_client_option');
 		$send_client_message_text = get_option('pls_send_client_text');
 		if (!$send_client_message_text) {
@@ -28,7 +28,7 @@ class PL_Membership_Helper {
 		return array('send_client_message' => $send_client_message, 'send_client_message_text' => $send_client_message_text);
 	}
 
-	function set_client_settings () {
+	public static function set_client_settings () {
 		$send_client_message = isset($_POST['send_client_message']) ? $_POST['send_client_message'] : false;
 		$send_client_message_text = isset($_POST['send_client_message_text']) ? $_POST['send_client_message_text'] : false;
 		PL_Options::set('pls_send_client_option', $send_client_message);
@@ -37,7 +37,7 @@ class PL_Membership_Helper {
 		die();
 	}
 
-	function parse_client_message ($client) {
+	public static function parse_client_message ($client) {
 		$settings = self::get_client_settings();
 		$send_client_message_text = $settings['send_client_message_text'];
 		$admin_details = PL_Helper_User::whoami();
@@ -47,5 +47,12 @@ class PL_Membership_Helper {
 		}
 		return $send_client_message_text;
 	}
-
+	
+	/**
+	 * Helper functions for saved search
+	 */
+	public static function get_save_search_link() {
+		return '<a href="#" class="pls_save_search">Save Search</a>';
+	}
+	
 }

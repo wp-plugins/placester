@@ -165,7 +165,13 @@ class PLS_Partial_Get_Listings {
 
   <div class="listing-thumbnail grid_3 alpha">
     <a href="<?php echo @$listing_data['cur_data']['url']; ?>">
-      <?php echo PLS_Image::load($listing_data['images'][0]['url'], array('resize' => array('w' => 210, 'h' => 140), 'fancybox' => true, 'as_html' => true, 'html' => array('alt' => $listing_data['location']['full_address'], 'itemprop' => 'image'))); ?>
+
+      <?php $property_images = ( is_array($listing_data['images']) ? $listing_data['images'] : array() );
+        usort($property_images, array(__CLASS__, 'order_listing_images')); ?>
+      
+      <?php echo PLS_Image::load($property_images[0]['url'], array('resize' => array('w' => 210, 'h' => 140), 'fancybox' => true, 'as_html' => true, 'html' => array('alt' => $listing_data['location']['full_address'], 'itemprop' => 'image'))); ?>
+    
+
     </a>
   </div>
 
@@ -251,5 +257,9 @@ class PLS_Partial_Get_Listings {
     return $return;
   }
 
+  static private function order_listing_images ($a, $b) {
+    if ($a['order'] == $b['order']) { return 0; }
+    return ($a['order'] < $b['order']) ? -1 : 1;
+  }
 
 }

@@ -42,34 +42,11 @@ class PL_Settings_Helper {
 							}
 						}
 					}
-				} else { 
-
-					/*
-					ob_start();
-					?>
-						<span id="active_filter_item">
-							<a href="#"  id="remove_filter"></a>
-							<span class="global_dark_label"><?php echo ucwords(str_replace('_', ' ', $key)) . '-' . @$subkey ?></span> : <?php echo ucwords(str_replace('_', ' ', $filter)) ?>
-							<input type="hidden" name="<?php echo $key ?>" value="<?php echo $filter ?>">	
-						</span>
-					<?php 
-
-					$html .= ob_get_clean();
-					*/
 				}
 			}
 		}
 		echo $html;
 	}
-
-
-			// $name = $key . '[' . key($filter) . ']';
- 		// 			$label = ucwords($key) . '-' . ucwords(key($filter));
-			
-			
-
-
-
 
 //end of class
 }

@@ -44,7 +44,7 @@ class PLS_Saved_Search {
 		}
 	}
 
-	function save ($search_id, $value, $new = true) {
+	public static function save ($search_id, $value, $new = true) {
 		$key = self::generate_key( $search_id );
 		if ( $new ) {
 			// Setting 'no' ensures these option-entries are NOT autoloaded on every request...
@@ -55,7 +55,7 @@ class PLS_Saved_Search {
 		}
 	}
 
-	function generate_key ( $search_id ) {
+	public static function generate_key ( $search_id ) {
 		$hash = sha1($search_id);
 		$key = self::$save_extension . $hash;
 		return $key;

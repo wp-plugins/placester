@@ -12,7 +12,7 @@ class PL_Option_Helper {
 
 	function set_api_key($new_api_key) {
 		if (empty($new_api_key) ) {
-			return array('result' => false,'message' => 'Google Places keys must not be empty');
+			return array('result' => false,'message' => 'API key must not be empty');
 		}
 		if (get_option('placester_api_key') == $new_api_key) {
 			return array('result' => false,'message' => 'You\'re already using that Placester API Key.');

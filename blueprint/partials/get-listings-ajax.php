@@ -47,7 +47,21 @@ class PLS_Partials_Get_Listings_Ajax {
       self::get(array('property_ids' => $favorite_ids, 'allow_id_empty' => true));
     }
 
-    function load($args = array()) {		
+    function load($args = array()) {
+      
+      // Set Sort By
+      if (isset($args['sort_by'])) {
+        $sort_by = $args['sort_by'];
+      }
+      $sort_by_theme_option = pls_get_option( 'listings_default_sort_by' );
+      if (!empty($sort_by_theme_option)) {
+        $sort_by = $sort_by_theme_option;
+      }
+      if( empty( $sort_by ) ) {
+        $sort_by = 'image';
+      }
+      
+      // Set Sort Type
       if (isset($args['sort_type'])) {
         $sort_type = $args['sort_type'];
       }
@@ -55,28 +69,28 @@ class PLS_Partials_Get_Listings_Ajax {
       if (!empty($sort_type_theme_option)) {
         $sort_type = $sort_type_theme_option;
       }
-      
       if( empty( $sort_type ) ) {
-        $sort_type = 'image';
+        $sort_type = 'desc';
       }
 
-        // * Set the options for the "Sort by" select. 
-        $defaults = array(
-            'loading_img' => admin_url( 'images/wpspin_light.gif' ),
-            'image_width' => 100,
-            'sort_type' => $sort_type,
-            'crop_description' => 0,
-            'listings_per_page' => pls_get_option( 'listings_default_list_length' ),
-            'context' => '',
-            'context_var' => NULL,
-            'append_to_map' => true,
-            'search_query' => $_POST,
-            'table_id' => 'placester_listings_list',
-            'show_sort' => true,
-            'map_js_var' => 'pls_google_map',
-            'search_class' => 'pls_search_form_listings',
-        	'query_limit' => pls_get_option( 'listings_default_list_limit' )
-        );
+      // * Set the options for the "Sort by" select. 
+      $defaults = array(
+          'loading_img' => admin_url( 'images/wpspin_light.gif' ),
+          'image_width' => 100,
+          'sort_type' => $sort_type,
+          'sort_by' => $sort_by,
+          'show_sort' => true,
+          'crop_description' => 0,
+          'listings_per_page' => pls_get_option( 'listings_default_list_length' ),
+          'context' => '',
+          'context_var' => NULL,
+          'append_to_map' => true,
+          'search_query' => $_POST,
+          'table_id' => 'placester_listings_list',
+          'map_js_var' => 'pls_google_map',
+          'search_class' => 'pls_search_form_listings',
+          'query_limit' => pls_get_option( 'listings_default_list_limit' )
+      );
 
         /** Extract the arguments after they merged with the defaults. */
         $args = wp_parse_args( $args, $defaults );
@@ -102,12 +116,12 @@ class PLS_Partials_Get_Listings_Ajax {
 		    // need to do this assuming sort_by and sort_type might not exist! -pek
         if( !isset( $_POST['sort_by'] ) ) {
         	// sort_by was not specified, set our theme options default
-        	$_POST['sort_by'] = pls_get_option( 'listings_default_sort_by' );
+        	$_POST['sort_by'] = $sort_by;
         }
         
         if( !isset( $_POST['sort_type'] ) ) {
         	// not specified, set our theme options default
-        	$_POST['sort_type'] = pls_get_option( 'listings_default_sort_type' );
+        	$_POST['sort_type'] = $sort_type;
         }
         ?>
                 <script type="text/javascript" src="<?php echo trailingslashit(PLS_JS_URL) ?>scripts/listing-list.js"></script>
@@ -177,9 +191,30 @@ class PLS_Partials_Get_Listings_Ajax {
         echo ob_get_clean();
     }
 
-	function get ($args = array()) {    
+	function get ($args = array()) { 
+		$saved_user_search = false;   
         if (isset($_POST['saved_search_lookup']) ) {
-          if ( $result = PLS_Saved_Search::check($_POST['saved_search_lookup']) ) {
+		  if( strpos( $_POST['saved_search_lookup'], 'pl_ss_' ) !== false ) {
+		  	$user_lookup = $_POST['saved_search_lookup'];
+		  	$user_lookup = trim( $user_lookup, '/' );
+		  	if( is_user_logged_in() ) {
+		  		$logged_user_id = get_current_user_id();
+		  		$saved_searches = get_user_meta( $logged_user_id, 'pls_saved_searches', true );
+		  		if( ! empty( $saved_searches ) ) {
+		  			if( is_array( $saved_searches ) && isset( $saved_searches[$user_lookup] ) ) {
+		  				$stored_user_search = $saved_searches[$user_lookup];
+		  				
+		  				$values = json_decode( $stored_user_search, true );
+		  				if( ! empty( $values ) && is_array( $values ) ) {
+		  					$_POST = $values + $_POST;
+		  				}			
+		  				
+		  				$saved_user_search = true;
+		  			}
+		  		}
+		  	}
+		  }
+          elseif ( $result = PLS_Saved_Search::check($_POST['saved_search_lookup']) ) {
             $sEcho = $_POST['sEcho'];
             unset($result['sEcho']);
             $_POST = $result;
@@ -245,7 +280,10 @@ class PLS_Partials_Get_Listings_Ajax {
               $api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => $property_ids, 'limit' => $_POST['limit'], 'offset' => $_POST['offset']));
             } elseif (isset($search_query['neighborhood_polygons']) && !empty($search_query['neighborhood_polygons']) ) {
               $api_response = PLS_Plugin_API::get_polygon_listings( $search_query );
-            } else {
+            } elseif( $saved_user_search ) {
+            	$api_response = PLS_Plugin_API::get_listings_list($_POST);
+            }
+             else {
               $api_response = PLS_Plugin_API::get_listings_list($search_query);
             }
         }
@@ -269,7 +307,13 @@ class PLS_Partials_Get_Listings_Ajax {
 <div class="listing-item grid_8 alpha" itemscope itemtype="http://schema.org/Offer" data-listing="<?php echo $listing['id'] ?>">
 
   <div class="listing-thumbnail grid_3 alpha">
-     <a href="<?php echo @$listing['cur_data']['url']; ?>" itemprop="url"><?php echo PLS_Image::load($listing['images'][0]['url'], array('resize' => array('w' => 210, 'h' => 140), 'fancybox' => true, 'as_html' => true, 'html' => array('alt' => $listing['location']['full_address'], 'itemprop' => 'image', 'placeholder' => PLS_IMG_URL . "/null/listing-300x180.jpg"))); ?></a>
+    <?php $property_images = ( is_array($listing['images']) ? $listing['images'] : array() );
+        usort($property_images, array(__CLASS__, 'order_images_ajax'));
+        ?>
+      
+     <a href="<?php echo @$listing['cur_data']['url']; ?>" itemprop="url">
+      <?php echo PLS_Image::load($property_images[0]['url'], array('resize' => array('w' => 210, 'h' => 140), 'fancybox' => true, 'as_html' => true, 'html' => array('alt' => $listing['location']['full_address'], 'itemprop' => 'image', 'placeholder' => PLS_IMG_URL . "/null/listing-300x180.jpg"))); ?>
+    </a>
   </div>
 
   <div class="listing-item-details grid_5 omega">
@@ -359,4 +403,8 @@ class PLS_Partials_Get_Listings_Ajax {
         die();
 	}
 
+  static private function order_images_ajax ($a, $b) {
+    if ($a['order'] == $b['order']) { return 0; }
+    return ($a['order'] < $b['order']) ? -1 : 1;
+  }
 }//end of class

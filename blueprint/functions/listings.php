@@ -28,20 +28,20 @@ class PLS_Listing_Helper {
 	}
 
 	function get_featured ( $featured_option_id, $args = array() ) {
-		$option_ids = pls_get_option($featured_option_id);
+		$option_ids = pls_get_option($featured_option_id); 
 		if (!empty( $option_ids ) ) {
 			$property_ids = array_keys($option_ids);
-			if( ! empty( $args ) ) {
+
+			if( ! empty( $property_ids ) ) {
 				$args['property_ids'] = $property_ids;
 			}
 			$api_response = PLS_Plugin_API::get_listings_details_list( $args );
-			
       // remove listings without images
 	      foreach ($api_response['listings'] as $key => $listing) {
 	          if ( empty($listing['images']) ) {
 	            unset($api_response['listings'][$key]);
 	          }
-	      }
+	      } 
 		  return $api_response;	
 		} else {
 			return array('listings' => array());

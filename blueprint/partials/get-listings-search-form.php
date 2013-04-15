@@ -79,9 +79,12 @@ class PLS_Partials_Listing_Search_Form {
         'purchase_types' => 1,
         'available_on' => 1,
         'cities' => 1,
+        'multi_cities' => 0,
         'states' => 1,
+        'multi_states' => 0,
         'zips' => 1,
         'neighborhood' => 1,
+        'multi_neighborhoods' => 0,
         'county' => 1,
         'min_price' => 1,
         'max_price' => 1,
@@ -178,8 +181,11 @@ class PLS_Partials_Listing_Search_Form {
 		if ( empty($get_type_response) ) {
 			$form_options['property_type'] = array( 'pls_empty_value' => 'Any' );
 		} else {
+      // if API serves up 'false' key in the array, remove it, because we're going to add one.
+      if (isset($get_type_response['false'])) {
+        unset($get_type_response['false']);
+      }
 			$form_options['property_type'] = array_merge( array('pls_empty_value' => 'Any'), $get_type_response );
-			// unset($form_options['property_type']['false']);
 		}
 
     /** Get the listing type options. */
@@ -692,27 +698,41 @@ class PLS_Partials_Listing_Search_Form {
             pls_h_options( $form_options['available_on'], $selected_avail_on )
         );
     }
-                               
+    
     /** Add the cities select element. */
-    if ($cities == 1) {
-    	$selected_locality = isset( $_POST['location']['locality']  ) ? wp_kses_post( $_POST['location']['locality'] ) : false;
-    	
-        $form_html['cities'] = pls_h(
-            'select',
-            array( 'name' => 'location[locality]' ) + $form_opt_attr['cities'],
-            pls_h_options( $form_options['cities'], $selected_locality, true )
-        );
+    if ( $multi_cities == 1 ) {
+      // multi-city select option enabled
+      $selected_locality = isset( $_POST['location']['locality']  ) ? wp_kses_post( $_POST['location']['locality'] ) : false;
+      $form_html['cities'] = pls_h(
+          'select',
+          array( 'name' => 'location[locality][]', 'multiple' => 'multiple' ) + $form_opt_attr['cities'],
+          pls_h_options( $form_options['cities'], $selected_locality, true )
+      );
+    } elseif ($cities == 1) {
+      $selected_locality = isset( $_POST['location']['locality']  ) ? wp_kses_post( $_POST['location']['locality'] ) : false;
+      $form_html['cities'] = pls_h(
+          'select',
+          array( 'name' => 'location[locality]' ) + $form_opt_attr['cities'],
+          pls_h_options( $form_options['cities'], $selected_locality, true )
+      );
     }
     
     /** Add the cities select element. */
-    if ($states == 1) {
-    		$selected_region = isset( $_POST['location']['region']  ) ? wp_kses_post( $_POST['location']['region'] ) : false;
-    	
-            $form_html['states'] = pls_h(
-            'select',
-            array( 'name' => 'location[region]' ) + $form_opt_attr['states'],
-            pls_h_options( $form_options['states'], $selected_region, true )
-        );
+    if ($multi_states == 1) {
+      // multi-state select option enabled
+      $selected_region = isset( $_POST['location']['region']  ) ? wp_kses_post( $_POST['location']['region'] ) : false;
+      $form_html['states'] = pls_h(
+          'select',
+          array( 'name' => 'location[region][]', 'multiple' => 'multiple' ) + $form_opt_attr['states'],
+          pls_h_options( $form_options['states'], $selected_region, true )
+      );
+    } elseif ($states == 1) {
+      $selected_region = isset( $_POST['location']['region']  ) ? wp_kses_post( $_POST['location']['region'] ) : false;
+      $form_html['states'] = pls_h(
+          'select',
+          array( 'name' => 'location[region]' ) + $form_opt_attr['states'],
+          pls_h_options( $form_options['states'], $selected_region, true )
+      );
     }
 
     /** Add the cities select element. */
@@ -727,14 +747,21 @@ class PLS_Partials_Listing_Search_Form {
     }
 
     /** Add the neighborhood select element. */
-    if ($neighborhood == 1) {
-    	$selected_neighborhood = isset( $_POST['location']['neighborhood']  ) ? wp_kses_post( $_POST['location']['neighborhood'] ) : false;
-    	
-        $form_html['neighborhood'] = pls_h(
-            'select',
-            array( 'name' => 'location[neighborhood]' ) + $form_opt_attr['neighborhood'],
-            pls_h_options( $form_options['neighborhood'], $selected_neighborhood, true )
-        );
+    if ($multi_neighborhoods == 1) {
+      // multi-neighborhood select option enabled
+      $selected_neighborhood = isset( $_POST['location']['neighborhood']  ) ? wp_kses_post( $_POST['location']['neighborhood'] ) : false;
+      $form_html['neighborhood'] = pls_h(
+          'select',
+          array( 'name' => 'location[neighborhood][]', 'multiple' => 'multiple' ) + $form_opt_attr['neighborhood'],
+          pls_h_options( $form_options['neighborhood'], $selected_neighborhood, true )
+      );
+    } elseif ($neighborhood == 1) {
+      $selected_neighborhood = isset( $_POST['location']['neighborhood']  ) ? wp_kses_post( $_POST['location']['neighborhood'] ) : false;
+      $form_html['neighborhood'] = pls_h(
+          'select',
+          array( 'name' => 'location[neighborhood]' ) + $form_opt_attr['neighborhood'],
+          pls_h_options( $form_options['neighborhood'], $selected_neighborhood, true )
+      );
     }
 
     /** Add the county select element. */
@@ -748,15 +775,17 @@ class PLS_Partials_Listing_Search_Form {
         );
     }
 
-    /** Add the county select element. */
+    /** Add the neighborhood / neighborhood_polygon select element. */
     if ($neighborhood_polygons == 1) {
-        if ( !empty($selected_polygons) ) {
+        
+        if ( count($form_options['neighborhood_polygons']) > 1 ) {
             $selected_polygons = isset( $_POST['neighborhood_polygons']  ) ? wp_kses_post( $_POST['neighborhood_polygons'] ) : false;
             $form_html['neighborhood_polygons'] = pls_h(
                 'select',
                 array( 'name' => 'neighborhood_polygons' ) + $form_opt_attr['neighborhood_polygons'],
                 pls_h_options( $form_options['neighborhood_polygons'], $selected_polygons, true )
             );
+          
         } else {
             // default to MLS data for neighborhoods if no polygons are set
             $selected_polygons = isset( $_POST['location']['neighborhood']  ) ? wp_kses_post( $_POST['location']['neighborhood'] ) : false;
@@ -946,11 +975,205 @@ class PLS_Partials_Listing_Search_Form {
         @$form_data->hidden_field . apply_filters( pls_get_merged_strings( array( "pls_listings_search_form_inner", $context ), '_', 'pre', false ), $form, $form_html, $form_options, $section_title, $context_var )
     );
 
-    
     /** Filter the form. */
     $return = apply_filters( pls_get_merged_strings( array( "pls_listings_search_form_outer", $context ), '_', 'pre', false ), $form, $form_html, $form_options, $section_title, @$form_data, $form_id, $context_var ) . '<script type="text/javascript" src="' . trailingslashit(PLS_JS_URL) . 'scripts/filters.js"></script>';
 
     $cache->save($return);
     return $return;
 	}
+
+  function create_custom_select_element($post_param, $post_sub_param, $options = array(), $placeholder = 'Any', $multi_select = false) {
+    // at this point this is only ready for metadata params
+
+    /* Option Examples: */
+    // $post_param = 'location'
+    // $post_sub_param = 'neighborhood'
+    // $name = ''
+    // $options = array(
+    //  "beacon hill" => "Beacon Hill",
+    //  "value" => "Label"
+    // )
+    // $placeholder = 'Neighborhoods' /* placeholder of the select element w/ Chosen library */
+    // $multi_select = true /* you can search multiple neighborhoods at once */
+    
+    /* Create Option Elements */
+
+    // check to see if $_POST has passed this value as selected
+    $options_elements = '';
+
+    if (isset($options['optgroups']) && !empty($options['optgroups'])) {
+
+      foreach ($options['optgroups'] as $optgroup_value) {
+        
+        // add options to optgroup
+        foreach ($optgroup_value as $og_value_key => $og_value_name) {
+            
+          $options_elements .= '<optgroup label="'.$og_value_key.'">';
+
+          // Foreach option within the subgroup: $single_og_value_name
+          foreach ($og_value_name[0] as $single_og_key => $single_og_value_name) {
+
+            $selected = false;
+
+            // Multiple values of same param, ie. more than one neighborhood
+            if ($multi_select == true) {
+              
+                if (isset($_POST[$post_param][$post_sub_param]) && !empty($_POST[$post_param][$post_sub_param])) {
+                  // If the param is set in the post value...
+
+                  $posted_values = array();
+
+                  // loop through each of the multiple $post_sub_param's values: $v
+                  foreach ($_POST[$post_param][$post_sub_param] as $k => $v) {
+                      
+                      $selected = false;
+                      // clean $value
+                      $multi_value = wp_kses_post( $v );
+                      // does $_POST param's current value match the option we're on now?
+                      $selected = ($single_og_value_name == $multi_value) ? true : false;
+                      
+                      if ($selected == true) {
+                        
+                          // make sure this option element isn't created again
+                          array_push($posted_values, $single_og_value_name);
+                          // create selected option element
+                          $options_elements .= self::create_option_element($single_og_value_name, $single_og_value_name, true);
+                      
+                      } 
+                  }
+
+                  // create unselected option element if $single_og_value_name isn't a $posted_values
+                  if (!in_array($single_og_value_name, $posted_values) ) {
+                      $options_elements .= self::create_option_element($single_og_value_name, $single_og_value_name, false);                  
+                  }
+
+              } else {
+                  // If the param isn't set in the post value...
+
+                  // Add unselected option
+                  $options_elements .= self::create_option_element($single_og_value_name, $single_og_value_name);
+              }
+
+            } else {
+                // Single param
+                if (isset($_POST[$post_param][$post_sub_param]) && !empty($_POST[$post_param][$post_sub_param])) {
+                  $selected_options = wp_kses_post( $_POST[$post_param][$post_sub_param] );
+                  $selected = ($_POST[$post_param][$post_sub_param] == $value) ? true : false;  
+                }
+                $options_elements .= self::create_option_element($single_og_value_name, $single_og_value_name, $selected);
+            }
+
+          }
+
+          $options_elements .= '</optgroup>';
+        }
+    
+      }
+
+    } else {
+      foreach ($options as $key => $value) {
+        $selected = false;
+        
+        // Multiple values of same param, ie. more than one neighborhood
+        if ($multi_select == true) {
+          if (isset($_POST[$post_param][$post_sub_param]) && !empty($_POST[$post_param][$post_sub_param])) {
+            foreach ($_POST[$post_param][$post_sub_param] as $k => $v) {
+              $multi_value = wp_kses_post( $_POST[$post_param][$post_sub_param][$k] );
+              $selected = ($value == $multi_value) ? true : false;
+            }
+          }
+          $options_elements .= self::create_option_element($value, $value, $selected);
+        } else {
+          // Single param
+          if (isset($_POST[$post_param][$post_sub_param]) && !empty($_POST[$post_param][$post_sub_param])) {
+            $selected_options = wp_kses_post( $_POST[$post_param][$post_sub_param] );
+            $selected = ($_POST[$post_param][$post_sub_param] == $value) ? true : false;  
+          }
+          $options_elements .= self::create_option_element($value, $value, $selected);
+        }
+      }
+    }
+
+    if ($multi_select == true) {
+      $select_name = $post_param.'['.$post_sub_param.'][]';
+    } else {
+      $select_name = $post_param.'['.$post_sub_param.']';
+    }
+    
+    /* Create Select Element w/ Options Created */ 
+    $select_element = self::create_select_element($select_name, $placeholder, $multi_select, $options_elements);
+
+    return $select_element;
+  }
+
+
+  private static function create_option_element($label, $value, $selected = false) {
+
+    if ($selected == true) {
+      $option = '<option value="'.$value.'" selected="selected">'.$label.'</option>';
+    } else {
+      $option = '<option value="'.$value.'">'.$label.'</option>';
+    }
+
+    return $option;
+  }
+
+
+  private static function create_select_element($name, $placeholder, $multi_select, $options) {
+
+    // Open select tag
+    $select_element = '<select ';
+
+    // add name attr
+    if (isset($name)) {
+      $select_element .= 'name="'.$name.'" ';
+    }
+
+    if (isset($placeholder)) {
+      $select_element .= 'data-placeholder="'.$placeholder.'" title="'.$placeholder.'"';
+    }
+
+    // is multi_select select?
+    if ($multi_select == true) {
+      $select_element .= 'multiple="multiple" ';
+    }
+
+    $select_element .= '>';
+
+    // Add options to select tags
+    $select_element .= $options;
+
+    // Close select tags
+    $select_element .= '</select>';
+
+    return $select_element;
+  }
+
+
+  private static function set_post_params_to_options($post_param, $post_sub_param, $multi_select) {
+    
+    GLOBAL $_POST;
+    
+    // check to see if $_POST has passed this value as selected
+    $options_elements = '';
+
+    // Multiple locations of same param, ie. more than one neighborhood
+    if ($multi_select == true && is_array($_POST[$post_param][$post_sub_param])) {
+
+      foreach ($_POST[$post_param][$post_sub_param] as $k => $v) {
+        $multi_value = wp_kses_post( $_POST[$post_param][$post_sub_param][$k] );
+        $selected = ($value == $multi_value) ? true : false;
+        $options_elements .= self::create_option_element($key, $value, $selected);
+      }
+
+    } else {
+      // Single location param
+      $selected_options = wp_kses_post( $_POST[$post_param][$post_sub_param] );
+      $selected = ($_POST[$post_param][$post_sub_param] == $value) ? true : false;
+      $options_elements .= self::create_option_element($key, $value, $selected);
+    }
+
+    return $options_elements;
+  }
+
 }

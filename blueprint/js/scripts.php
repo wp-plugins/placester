@@ -39,6 +39,9 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
          *  notification about needing the plugin. Localize the notification 
          *  message. Accompanied by plugin-nags.css.
          */
+		wp_register_script( 'jquery-placeholder', trailingslashit( PLS_JS_URL ) . 'libs/jquery-placeholder/jquery.placeholder.min.js' , array( 'jquery' ), '1.0.1', true );
+		wp_enqueue_script( 'jquery-placeholder' );
+		
         wp_register_script( 'listings-object', trailingslashit( PLS_JS_URL ) . 'scripts/listings.js' , array( 'jquery' ), '1.0.1', true );
         wp_enqueue_script('listings-object');
 

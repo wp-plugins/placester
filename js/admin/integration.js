@@ -1,14 +1,26 @@
 jQuery(document).ready(function($) {
 
-	function validate_phone (number) {
-		// Check for blank input...
-		if (!number) { 
-			return false;
-		}
+	var integration_success_callback = function () {
+		jQuery('#integration_wizard').dialog("close");
+		prompt_demo_data();
+	};
 
-		// All tests passed...
-		return true;
-	}
+	var integration_buttons = {
+		1 : {
+				text: "Skip Integration Set Up",
+				click: function() {
+					 $(this).dialog( "close" );
+					 prompt_demo_data();
+				}
+			},
+		2 : {
+				text: "Submit",
+				id: 'submit_integration_button',
+				click: function() {
+					 submit_handler(integration_success_callback);
+				}
+			}
+	};
 
 	$('#pls_integration_form').live('submit', function(event) {
 		event.preventDefault();
@@ -47,7 +59,7 @@ jQuery(document).ready(function($) {
 		$('#rets_form_message').html('Checking Account Status...');
 
 		// Check to see if phone number input exists--if it exists and has invalid input, act accordingly...
-		if ( $('#phone').length != 0 && !validate_phone($('#phone').val()) ) {
+		if ( $('#phone').length != 0 && !validate_phone_number($('#phone').val()) ) {
 			$('#phone').addClass('invalid');
 			$('#phone').closest('div .row').find('h3').first().addClass('invalid');
 
@@ -131,43 +143,29 @@ jQuery(document).ready(function($) {
 		$('#pls_integration_form').prepend('<div id="message" class="error"><h3>Sorry, this feature requires a premium subscription</h3><p>However, you can test the MLS integration feature for free by creating a website at <a href="https://placester.com" target="_blank">placester.com</a></p></div>');
 	}
 
-	var integration_buttons = {
-		1 : {
-			text: "Skip Integration Set Up",
-			click: function() {
-				 $(this).dialog( "close" );
-				 prompt_demo_data();
-			}
-		},
-		2 : {
-			text: "Submit",
-			id: 'submit_integration_button',
-			click: function() {
-				 submit_handler(modal_state.demo_data_launch);
-			}
-		}
+	function prompt_integration_local () {
+		// TODO: Add spinner/loading prompt...
+		$.post(ajaxurl, {action:"new_integration_view"}, function (result) {
+		  	if (result) {
+				// If it doesn't already exist, create container for the wizard dialog...
+				if ( $('#integration_wizard').length == 0 ) {
+					$('body').append('<div id="integration_wizard"></div>');
+				}
+				// Render...
+				$('#integration_wizard').html(result);
+				$( "#integration_wizard" ).dialog({
+					autoOpen: true,
+					draggable: false,
+					modal: true,
+					title: '<h3>Set Up an MLS Integration for your Website</h3>',
+					width: 810,
+					minHeight: 500,
+					buttons: integration_buttons
+				});
+		  	}
+		});
 	}
 
-	$( "#integration_wizard" ).dialog({
-		autoOpen: false,
-		draggable: false,
-		modal: true,
-		title: '<h3>Set Up an MLS Integration for your Website</h3>',
-		width: 810,
-		minHeight: 500,
-		buttons: integration_buttons
-	});
+	// Expose function to global namespace
+	prompt_integration = prompt_integration_local;
 });
-
-function prompt_integration () {
-  jQuery(document).ready(function($) {
-  	$('#integration_wizard').dialog( "open" );
-  	// TODO: Add spinner/loading prompt...
-	$.post(ajaxurl, {action:"new_integration_view"}, function (result) {
-	  if (result) {
-		// console.log(result);
-		$('#integration_wizard').html(result);
-	  };
-	});
-  });
-}

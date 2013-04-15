@@ -302,27 +302,31 @@ class PLS_Format {
 			return $amenities;
 		}
 		
-		foreach ($listing_data['cur_data'] as $amenity => $value) {
-		  if (empty($value)) { continue; }
-			if (in_array($amenity, $amenities_to_remove)) { continue; }
-			if (is_int(strrpos((string)$amenity, 'ngb'))) {
-				if ($value) {
-					$amenities['ngb'][$amenity] = ' ' . $value;	
-				}
-			} else {
-				if ($value) {
-					$amenities['list'][$amenity] =  ' ' .$value;
+		if (is_array($listing_data['cur_data'])) {
+			foreach ($listing_data['cur_data'] as $amenity => $value) {
+			  	if (empty($value)) { continue; }
+				if (in_array($amenity, $amenities_to_remove)) { continue; }
+				if (is_int(strrpos((string)$amenity, 'ngb'))) {
+					if ($value) {
+						$amenities['ngb'][$amenity] = ' ' . $value;	
+					}
+				} else {
+					if ($value) {
+						$amenities['list'][$amenity] =  ' ' . $value;
+					}
 				}
 			}
-		}
+		}			
+
 		if (is_array($listing_data['uncur_data'])) {
-		  $amenities['uncur'] = array();
+		  	$amenities['uncur'] = array();
 			foreach ($listing_data['uncur_data'] as $uncur_amenity => $uncur_value) {
 			    if (empty($uncur_value)) { continue; }
 				if (in_array($uncur_amenity, $amenities_to_remove)) { continue; }
 				$amenities['uncur'][$uncur_amenity] = $uncur_value;
 			}
 		}
+
 		return $amenities;
 	}
 
@@ -370,6 +374,7 @@ class PLS_Format {
 				'pk_spce' => 'Parking Spaces Included',
 				'park_type' => "Parking Type",
 				'air_cond' => 'Air Conditioning',
+				'air_conditioning' => 'Air Conditioning',
 				'price_unit' => 'Unit Price',
 				'lt_sz_unit' => 'Unit Lot Size',
 				'lse_trms' => 'Lease Terms',
@@ -417,6 +422,7 @@ class PLS_Format {
 				"room" => "Rooms",
 				"rooms" => "Rooms",
 				"floor" => "Floors",
+				"flooring" => "Flooring",
 				"belowgroundlsqf" => "Below Ground Sqft",
 				"below_ground_sqft" => "Below Ground Sqft",
 				"above_ground_sqft" => "Above Ground Sqft",
@@ -430,7 +436,8 @@ class PLS_Format {
 				"tank_type" => "Tank Type",
 				"tank_size" => "Tank Size",
 				"number_of_rooms" => "Number of Rooms",
-				"Construction Status" => "Construction Status",
+				"energy_features" => "Energy Features",
+				"exterior_constr" => "Exterior Construction",
 				"occupancyclose" => "Occupancy Close",
 				"zone_desc" => "Zone Description",
 				"assessment_amount" => "Assessment Amount",
@@ -444,6 +451,7 @@ class PLS_Format {
 				"washer" => "Washer",
         "status" => "Status",
 				"appliances" => "Appliances",
+				"appliances_included" => "Appliances",
 				"oid" => "Office ID",
       	"aid" => "Agent ID",
       	"mls_id" => "MLS ID",
@@ -477,8 +485,18 @@ class PLS_Format {
       	"basement" => "Basement",
       	"basemnt" => "Basement",
       	"building_levels" => "Building Levels",
+      	"levels" => "Levels",
+      	"utility_room" => "Utility Room",
+      	"room_areas" => "Room Areas",
+      	"water_heater" => "Water Heater",
+      	"other_rooms" => "Other Rooms",
+      	"fence" => "Fence",
+      	"fireplace_details" => "Fireplace Details",
+      	"lot_number" => "Lot Number",
+      	"water_heaters" => "Water Heaters",
+      	"kitchen_equipment" => "Kitchen Equipment",
+      	"living_areas" => "Living Areas",
       	"electric" => "Electric",
-      	"exterior" => "exterior",
       	"first_floor_rooms" => "First Floor Rooms",
       	"second_floor_rooms" => "Second Floor Rooms",
       	"third_floor_rooms" => "Third Floor Rooms",
@@ -509,11 +527,16 @@ class PLS_Format {
       	"approx_heat_cost" => "Approximate Heat Cost",
       	"association_fee" => "Association Fee",
       	"exterior" => "Exterior",
+      	"exterior_features" => "Exterior Features",
       	"interior" => "Interior",
+      	"Interior_features" => "Interior Features",
         "water_amenities" => "Water Amenities",
         "acres" => "Acres",
         "master_bath" => "Master Bath",
         "park_type" => "Parking Type",
+        "property_type" => "Property Type",
+        "built_to_suit" => "Built to Suit",
+        "mobile_homes_allowed" => "Mobile Homes Allowed",
         "basemnt" => "Basement",
         "move_in" => "Move In",
         "bld_name" => "Building Name",
@@ -553,6 +576,7 @@ class PLS_Format {
         "avail_info" => "Availability",
         "hoa_mand" => "HOA Mandatory",
         "hoa_fee" => "HOA Fee",
+        "hoa_fee_desc" => "HOA Fee Description",
         "lndr_own" => "Lender Owned",
         "ngb_trans" => "Public Transportation",
         "ngb_shop" => "Shopping",
@@ -569,6 +593,11 @@ class PLS_Format {
         "ngb_mar" => "Marina",
         "ngb_pvtsch" => "Private School",
         "ngb_pubsch" => "Public School",
+        "school_district" => "School District",
+        "zone" => "Zone",
+        "road_surface" => "Road Surface",
+        "utilities" => "Utilities",
+        "restrictions" => "Restrictions",
         "ngb_uni" => "University",
         "cats" => "Cats",
         "dogs" => "Dogs",
@@ -581,6 +610,7 @@ class PLS_Format {
         "bld_sz" => "Building Size",
         "max_cont" => "Maximum Contiguous",
         "min_div" => "Minimum Divisible",
+        "lst_dte" => "List Date"
       );
 
     $local_values_dictionary = array(
@@ -678,10 +708,11 @@ class PLS_Format {
     return $shortened_excerpt;
   }
 
-  static public function shorten_text ( $content, $length = 50 ) {
+  static public function shorten_text ( $content, $length = 50, $ellipsis = true ) {
     if (strlen($content) > $length) {
       $content = strip_tags($content);
       $shortened_content = preg_replace('/\s+?(\S+)?$/', '', substr($content, 0, $length));
+      $shortened_content = $shortened_content . '...';
       return $shortened_content;
     } else {
       return $content;

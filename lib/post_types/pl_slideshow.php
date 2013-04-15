@@ -67,9 +67,9 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 		
 
 		if( isset( $_POST['pl_template_listing_slideshow'] ) ) {
-			update_post_meta( $post_id, 'pl_cpt_template', $_POST['listing_slideshow']);
+			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_template_listing_slideshow']);
 		}
-
+		
 		if( isset( $_POST['pl_cpt_template'] ) ) {
 			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_cpt_template']);
 		}

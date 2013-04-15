@@ -3,20 +3,7 @@ class PL_Router {
 
 	private static function router($template, $params, $wrap = false, $directory = PL_VIEWS_ADMIN_DIR) {
 		ob_start();
-// 			delete_option('placester_api_key');
 			self::load_builder_view('header.php');
-
-			// Need to conditionally include these...
-	    	self::load_builder_partial('free-trial.php');
-
-			if (!PL_Option_Helper::api_key()) {
-				do_action('sign-up-action');
-				self::load_builder_partial('sign-up.php');
-
-				// Other components that are only needed when plug-in has no associated API key...
-				echo '<div id="integration_wizard"></div>';	
-		    	self::load_builder_partial('demo-data.php');
-			}
 			self::load_builder_view($template, $directory, $params);	
 			self::load_builder_view('footer.php');
 		echo ob_get_clean();	
@@ -53,10 +40,10 @@ class PL_Router {
 			echo ob_get_clean();	
 	}
 	
-	
 	public static function pl_extensions() {
 		return '';
 	}
+
 	/**
 	 * List post type view paths (post types are hidden not to overlap admin dashboard)
 	 * 
@@ -74,11 +61,11 @@ class PL_Router {
 		return '';
 	}
 	
-	public function my_listings() {
+	public static function my_listings() {
 		self::router('my-listings.php', array('test'=>'donkey'), false);
 	}
 
-	public function add_listings() {
+	public static function add_listings() {
 		if (isset($_GET['id'])) {
 			// Fetch listing and process it...
 			$listing = PL_Listing_Helper::get_single_listing($_GET['id']);
@@ -107,7 +94,7 @@ class PL_Router {
 		return ob_get_clean();
 	}
 
-	public function theme_gallery() {
+	public static function theme_gallery() {
 		if (isset($_GET['theme_url'])) {
 			self::router('install-theme.php', array('test'=>'donkey'), false);	
 		} else {
@@ -115,38 +102,44 @@ class PL_Router {
 		}
 	}
 
-	public function settings() {
+	public static function settings() {
 		self::router('settings/general.php', array(), false);
 	}
-	public function settings_polygons() {
+	public static function settings_polygons() {
 		self::router('settings/polygons.php', array(), false);
 	}
-	public function settings_property_pages() {
+	public static function settings_property_pages() {
 		self::router('settings/property.php', array(), false);
 	}
-	public function settings_international() {
+	public static function settings_international() {
 		self::router('settings/international.php', array(), false);
 	}
-	public function settings_neighborhood() {
+	public static function settings_neighborhood() {
 		self::router('settings/neighborhood.php', array(), false);
 	}
-	public function settings_filtering() {
+	public static function settings_filtering() {
 		self::router('settings/filtering.php', array(), false);
 	}
-	public function settings_template() {
+	public static function settings_template() {
 		self::router('settings/template.php', array(), false);
 	}
-	public function settings_client() {
+	public static function settings_client() {
 		self::load_builder_helper('membership.php');
 		self::router('settings/client.php', PL_Membership_Helper::get_client_settings(), false);
 	}
 
-	public function support() {
+	public static function support() {
 		self::router('support.php', array(), false);
 	}
 
-	public function integrations() {
+	public static function integrations() {
 		self::router('integrations.php', array(), false);
+		
+		// This gets loaded by default if no API key is present, so conditionally load it here
+		// to ensure it's not included twice...
+		if (PL_Option_Helper::api_key()) {
+			self::load_builder_partial('free-trial.php');
+		}
 	}
 
 //end of class

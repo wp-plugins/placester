@@ -84,7 +84,7 @@
   <?php endif; ?>
 
 <?php if (!isset($no_form)): ?>
-   </form>
+  </form>
 <?php endif; ?>
 
- </div>
+</div>

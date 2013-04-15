@@ -54,18 +54,19 @@ jQuery(document).ready(function($) {
     });
   }
 
+  function prompt_demo_data_local () {
+    $('#demo_data_wizard').dialog('open');  
+
+    // Load Google Maps API
+    // var googleMapsURL = 'https://maps.googleapis.com/maps/api/js?sensor=false&callback=initializeMap';
+    // $.getScript(googleMapsURL);
+  }
+
+  // Expose function to global namespace
+  prompt_demo_data = prompt_demo_data_local;
 });
 
 // These are global vars...
 var geocoder;
 var map;
 
-function prompt_demo_data () {
-  jQuery(document).ready(function($) {
-    $('#demo_data_wizard').dialog('open');  
-
-    // Load Google Maps API
-    // var googleMapsURL = 'https://maps.googleapis.com/maps/api/js?sensor=false&callback=initializeMap';
-    // $.getScript(googleMapsURL);
-  });
-}

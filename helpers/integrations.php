@@ -6,9 +6,10 @@ class PL_Integration_Helper {
 	public function init() {
 		add_action('wp_ajax_create_integration', array(__CLASS__, 'create' ) );
 		add_action('wp_ajax_new_integration_view', array(__CLASS__, 'new_integration_view') );
+		add_action('wp_ajax_idx_prompt_view', array(__CLASS__, 'idx_prompt_view') );
 	}
 
-	public function create () {
+	public function create() {
 		// TODO: Handle Phone Number if it exists!!!
 		if (isset($_POST['phone']))
 		{
@@ -38,7 +39,12 @@ class PL_Integration_Helper {
 		die();
 	}
 
-	public function get () {
+	public function idx_prompt_view() {
+		PL_Router::load_builder_partial('idx-prompt.php');
+		die();
+	}
+
+	public function get() {
 		$response = array();
 		$integration = PL_Integration::get();
 		$whoami = PL_Helper_User::whoami();
@@ -47,7 +53,7 @@ class PL_Integration_Helper {
 		return array('integration_status' => array('integration' => $integration, 'whoami' => $whoami, 'listings' => $listings, 'locations' => $locations));
 	}
 
-	public function mls_list () {
+	public function mls_list() {
 		$mls_list = PL_Integration::mls_list();
 		return $mls_list;
 	}

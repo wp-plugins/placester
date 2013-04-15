@@ -88,7 +88,6 @@ widget_autosave = function() {
 	                'widget_class': widget_class
 	};
 	
-	debugger;
 	post_data[neighborhood_type] = neighborhood_value;
 	post_data[radio_type] = neighborhood_value;
 	 

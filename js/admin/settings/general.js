@@ -1,29 +1,70 @@
 jQuery(document).ready(function($) {
 
-	$('#existing_placester').bind('click', function() {
-		$( "#existing_placester_dialog" ).dialog( "open" );
-		return false;
+	function create_existing_dialog() {
+		$.post(ajaxurl, {action:"existing_api_key_view"}, function (result) {
+			if (result) {
+				$('#existing_placester_dialog').html(result);
+				$("#existing_placester_dialog").dialog({
+					autoOpen: true,
+					draggable: false,
+					modal: true,
+					width: 700,
+					title: '<h3>Use an existing Placester account</h3>',
+					buttons: {
+						1: {
+						  text: "Close",
+						  class: "gray-btn",
+						  click: function() {
+							  $(this).dialog("close");
+						  }
+						},
+						2: {
+						  text: "Switch API Keys",
+							id: "switch_placester_api_key",
+							class: "green-btn right-btn",
+							click: function() {
+								 check_api_key($("#existing_placester_modal_api_key").val());
+							}
+						}
+					}
+				});
+			}
+		});		
+	}
+
+	// Create the sign-up wizard dialog container on initial page load...
+	$('body').append('<div id="existing_placester_dialog"></div>');
+
+
+	$('#existing_placester').on('click', function() {
+		create_existing_dialog();
 	});
 
-	$('#new_email').bind('click', function () {
-		$.post(ajaxurl, {action: 'new_api_key_view'}, function(data, textStatus, xhr) {
-  			//optional stuff to do after success
-  			$("#existing_placester_dialog" ).dialog("open");
-  			$('#existing_placester_dialog').html(data);
-  			$('#existing_placester_dialog').dialog('option', 'title', '	<h2>Welcome to the RE Website Builder Set Up Wizard</h2>');
-			$('#existing_placester_dialog').dialog('option', 'buttons', {
-				1:{
-					text: "Cancel",
-					class: "gray-btn",
-					click: function (){
-						$(this).dialog("close")
-					}
-				},
-				2:{
-					text: "Confirm Email",
-					class: "green-btn right-btn",
-					click: function () {
-						new_sign_up();
+	$('#new_email').on('click', function () {
+		$.post(ajaxurl, {action: 'new_api_key_view'}, function (result) {
+  			// Change the dialog's content and display it...
+  			$('#existing_placester_dialog').html(result);
+  			
+			$('#existing_placester_dialog').dialog({
+				autoOpen: true,
+				draggable: false,
+				modal: true,
+				width: 500,
+				title: '<h3>Create a New Placester Account</h3>' ,
+				buttons: {
+					1:{
+						text: "Cancel",
+						class: "gray-btn",
+						click: function (){
+							$(this).dialog("close")
+						}
+					},
+					2:{
+						text: "Confirm Email",
+						class: "green-btn right-btn",
+						click: function () {
+							new_sign_up(function () { $(this).dialog("close"); });
+						}
 					}
 				}
 			});
@@ -32,34 +73,7 @@ jQuery(document).ready(function($) {
 		
 	});
 
-	$( "#existing_placester_dialog" ).dialog({
-		autoOpen: false,
-		draggable: false,
-		modal: true,
-		title: false,
-		width: 700,
-		title: "<h2>Use an existing Placester account</h2>",
-		buttons: {
-				1: {
-				  text: "Close",
-				  class: "gray-btn",
-				  click: function() {
-					  $( this ).dialog( "close" );
-				  }
-				},
-				2: {
-				  text: "Switch API Keys",
-					id: "switch_placester_api_key",
-					class: "green-btn right-btn",
-					click: function() {
-						 check_api_key($("#existing_placester_modal_api_key").val());
-					}
-				}
-			}
-	});
-	
-
-	$('#error_logging_click').live('click', function() {
+	$('#error_logging_click').on('click', function() {
 		var request = {
 			report_errors: $(this).is(':checked'),
 			action: 'ajax_log_errors'
@@ -73,7 +87,7 @@ jQuery(document).ready(function($) {
 		  	$('#error_logging_message').html(data.message);
 		  	$('#error_logging_message').removeClass('green');
 		  	$('#error_logging_message').addClass('red');
-		  };
+		  }
 		}, 'json');
 	});
 	
@@ -96,7 +110,7 @@ jQuery(document).ready(function($) {
 	});
 
 
-	$('#block_address').live('click', function() {
+	$('#block_address').on('click', function() {
 		var request = {
 			use_block_address: $(this).is(':checked'),
 			action: 'ajax_block_address'
@@ -114,7 +128,7 @@ jQuery(document).ready(function($) {
 		}, 'json');
 	});
 
-	$('#demo_data').live('click', function() {
+	$('#demo_data').on('click', function() {
 		var method = ( $(this).is(':checked') ? 'demo_data_on' : 'demo_data_off' );
 		var request = { action : method };
 
@@ -127,7 +141,7 @@ jQuery(document).ready(function($) {
 		}, 'json');
 	});
 
-	$('#google_places_api_button').live('click', function (event) {
+	$('#google_places_api_button').on('click', function (event) {
 		event.preventDefault();
 		var request = {};
 		request.places_key = $('#google_places_api').val();

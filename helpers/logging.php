@@ -72,7 +72,7 @@ class PL_Logging {
 	 	if ($hook == 'placester_page_placester_property_add') {
 		 	?>
 		 		<script type="text/javascript">
-		 			jQuery(document).ready(function($) {
+		 			$(document).ready(function($) {
 		 				mixpanel.track("Add Property: View");		
 		 				$('#add_listing_publish').bind('click', function () {
 		 					mixpanel.track("Add Property: Submit");		
@@ -85,7 +85,7 @@ class PL_Logging {
 	 	if ($hook == 'placester_page_placester_theme_gallery') {
 		 	?>
 		 		<script type="text/javascript">
-		 			jQuery(document).ready(function($) {
+		 			$(document).ready(function($) {
 		 				mixpanel.track("Theme Gallery: View");		
 		 				$('#theme_gallery_placester').bind('click', function () {
 		 					mixpanel.track("Theme Gallery: To Placester");		

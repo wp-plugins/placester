@@ -27,8 +27,7 @@
 
 		</div>
 		<div id="featured-button-group-wrapper">
-			<button id="save-range-of-listings">Use this search</button>
-			<button id="save-featured-listings">Use selected listings</button>
+			<button id="save-featured-listings">Save</button>
 			<button id="cancel-featured-listings">Cancel</button>
 		</div>
 	</div>
