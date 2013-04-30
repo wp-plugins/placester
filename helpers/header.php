@@ -47,7 +47,7 @@
     function placester_admin_header($title_postfix = '' ) {
       // placester_verified_check()
 
-      global $i_am_a_placester_theme;
+      // global $i_am_a_placester_theme;
       global $wp_rewrite;
 
       $placester_admin_options = get_option('placester_admin_options');

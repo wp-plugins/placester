@@ -169,7 +169,7 @@ class PL_Customizer
 				break;
 			
 			case 'integration':
-				if ( PL_Option_Helper::api_key() ) {
+				if ( PL_Option_Helper::api_key() && !PL_Integration_Helper::idx_prompt_completed() ) {
 			        $int_ctrl_id = 'integration_ctrl';
 			        $int_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $section_id, 'type' => 'none');
 			        $wp_customize->add_control( new PL_Customize_Integration_Control($wp_customize, $int_ctrl_id, $int_args_ctrl) );

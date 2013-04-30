@@ -58,7 +58,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 			$cache = array();
 
         /** If cache has been set for this widget, echo it, and return. */
-		if ( isset( $cache[$args['widget_id']] ) ) {
+		if ( isset($args['widget_id']) && isset( $cache[$args['widget_id']] ) ) {
 			echo $cache[$args['widget_id']];
 			return;
 		}
@@ -117,6 +117,8 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
                 $post_html['excerpt'] = empty( $instance['excerpt'] ) ? ''
                                         : pls_h_div( ( has_excerpt() ? get_the_excerpt() : '' ), array( 'class' => 'excerpt' ) );
 
+                $post_html['url'] = empty( $instance['excerpt'] ) ? '' : get_permalink();
+                
                 $post_html['read_more'] = empty( $instance['read_more'] ) ? ''
                                           : pls_h_a( get_permalink(), 'Read more', array( 'class' => 'read-more' ) );
 

@@ -374,10 +374,12 @@ function optionsframework_fields() {
 
 
 		// Border
+		case 'border_shadow':
+		case 'box_shadow':
 		case 'border':
 		
 			$border_stored = $val;
-
+			
 			// Check if null
 			if ( !isset( $border_stored['size'] ) ) {
 				$border_stored['size'] = '';
@@ -391,9 +393,12 @@ function optionsframework_fields() {
 
 			// Border Size
 			$output .= '<select class="of-border of-border-size" name="' . esc_attr( $option_name . '[' . $value['id'] . '][size]' ) . '" id="' . esc_attr( $value['id'] . '_size' ) . '">';
-			for ($i = 1; $i < 11; $i++) { 
+			for ($i = 0; $i < 11; $i++) { 
 				$size = $i . 'px';
-				$output .= '<option value="' . esc_attr( $size ) . '" ' . selected( $border_stored['size'], $size, false ) . '>' . esc_html( $size ) . '</option>';
+				// select 1px by default if empty
+				$stored_or_one = ( '' === $border_stored['size'] ) ? '1px' : $border_stored['size'] . 'px';
+				
+				$output .= '<option value="' . esc_attr( $size ) . '" ' . selected( $stored_or_one, $size, false ) . '>' . esc_html( $size ) . '</option>';
 			}
 			$output .= '</select>';
 
@@ -429,8 +434,6 @@ function optionsframework_fields() {
 								<select class="slideshow_type" name="<?php echo esc_attr( $option_name . '[' . $value['id'] . '][' . $i . '][type]') ?>" id="" >
 									<option value="custom" <?php echo $val[$i]['type'] == 'custom' ? 'selected=selected' : '' ?> >Custom Image</option>
 									<option value="listing" <?php echo $val[$i]['type'] == 'listing' ? 'selected=selected' : '' ?> >Listing</option>
-<!-- 									<option value="post">Post</option>
-									<option value="area">Area Page</option> -->
 								</select>
 							</div>
 							<div class="type_controls" id="custom_type">
@@ -451,14 +454,6 @@ function optionsframework_fields() {
 							<div class="type_controls" id="listing_type">
 								<?php echo pls_generate_featured_listings_ui($value, $val[$i], $option_name, $i, $for_slideshow = true) ?>		
 							</div>
-							<!-- <div class="type_controls" id="post_type">
-								<select name="" id="">
-									<option>How the web was won</option>
-								</select>
-							</div>
-							<div class="type_controls" id="area_type">
-								
-							</div> -->
 						</div>						
 					</div>
 				<?php

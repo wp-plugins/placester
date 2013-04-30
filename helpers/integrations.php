@@ -3,13 +3,14 @@
 PL_Integration_Helper::init();
 class PL_Integration_Helper {
 	
-	public function init() {
+	public static function init() {
 		add_action('wp_ajax_create_integration', array(__CLASS__, 'create' ) );
 		add_action('wp_ajax_new_integration_view', array(__CLASS__, 'new_integration_view') );
 		add_action('wp_ajax_idx_prompt_view', array(__CLASS__, 'idx_prompt_view') );
+		add_action('wp_ajax_idx_prompt_completed', array(__CLASS__, 'idx_prompt_completed_ajax') );
 	}
 
-	public function create() {
+	public static function create() {
 		// TODO: Handle Phone Number if it exists!!!
 		if (isset($_POST['phone']))
 		{
@@ -34,17 +35,35 @@ class PL_Integration_Helper {
 		die();
 	}
 
-	public function new_integration_view() {
+	public static function new_integration_view() {
 		PL_Router::load_builder_partial('integration-form.php', array('wizard' => true));
 		die();
 	}
 
-	public function idx_prompt_view() {
+	public static function idx_prompt_view() {
 		PL_Router::load_builder_partial('idx-prompt.php');
 		die();
 	}
 
-	public function get() {
+	/*
+	 * If either through the plugin sign-up dialog flow, or the customizer
+	 */
+	public static function idx_prompt_completed ($mark_completed = false) {
+		$key = 'idx_prompt_completed';
+
+		// If $mark_complete is true, try to set the option and store the outcome -- otherwise,
+		// check if it currently exists and retrieve its value...
+		$exists = ( $mark_completed ? PL_Options::set($key, true) : $exists = PL_Options::get($key) );
+		
+		return $exists;
+	}
+
+	public static function idx_prompt_completed_ajax() {
+		self::idx_prompt_completed(isset($_POST['mark_completed']));
+		die();
+	}
+
+	public static function get() {
 		$response = array();
 		$integration = PL_Integration::get();
 		$whoami = PL_Helper_User::whoami();
@@ -53,7 +72,7 @@ class PL_Integration_Helper {
 		return array('integration_status' => array('integration' => $integration, 'whoami' => $whoami, 'listings' => $listings, 'locations' => $locations));
 	}
 
-	public function mls_list() {
+	public static function mls_list() {
 		$mls_list = PL_Integration::mls_list();
 		return $mls_list;
 	}

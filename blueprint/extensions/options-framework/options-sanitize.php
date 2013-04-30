@@ -251,6 +251,11 @@ add_filter( 'of_font_face', 'of_sanitize_font_face' );
 
 /* Border */
 
+// added because of the options-framework save engine
+function of_sanitize_border_shadow( $input ) {
+	of_sanitize_border( $input );
+}
+
 function of_sanitize_border( $input ) {
 	$output = wp_parse_args( $input, array(
 		'size'  => '',
@@ -264,6 +269,7 @@ function of_sanitize_border( $input ) {
 
 	return $output;
 }
+add_filter( 'of_sanitize_border_shadow', 'of_sanitize_border' );
 add_filter( 'of_sanitize_border', 'of_sanitize_border' );
 
 
@@ -465,7 +471,7 @@ function of_recognized_border_styles() {
  */
  
 function of_recognized_border_sizes() {
-	$sizes = range( 1, 11 );
+	$sizes = range( 0, 11 );
 	$sizes = apply_filters( 'of_recognized_border_sizes', $sizes );
 	$sizes = array_map( 'absint', $sizes );
 	return $sizes;

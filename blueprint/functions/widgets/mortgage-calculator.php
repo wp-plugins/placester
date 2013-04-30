@@ -3,7 +3,10 @@
 class PLS_Widget_Mortgage_Calculator extends WP_Widget {
 
   function PLS_Widget_Mortgage_Calculator() {
-    $widget_ops = array( 'classname' => 'example', 'description' => '' );
+    $widget_ops = array( 
+      'classname' => 'pls-mortgage-calculator-widget',
+      'description' => ''
+    );
 
     /* Widget control settings. */
     $control_ops = array( 'width' => 200, 'height' => 290 );

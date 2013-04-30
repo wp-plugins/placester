@@ -33,7 +33,7 @@ class PLS_Partials_Get_Listings_Ajax {
      * @return string The html and js.
      * @since 0.0.1
      */
-    function init() {
+    public static function init() {
         // Hook the callback for ajax requests
         add_action('wp_ajax_pls_listings_ajax', array(__CLASS__, 'get' ) );
         add_action('wp_ajax_nopriv_pls_listings_ajax', array(__CLASS__, 'get' ) );
@@ -42,12 +42,12 @@ class PLS_Partials_Get_Listings_Ajax {
         add_action( 'wp_ajax_nopriv_pls_listings_fav_ajax', array(__CLASS__,'get_favorites'));
     }
 
-    function get_favorites () {
+    public static function get_favorites () {
       $favorite_ids = PLS_Plugin_API::get_listings_fav_ids();
       self::get(array('property_ids' => $favorite_ids, 'allow_id_empty' => true));
     }
 
-    function load($args = array()) {
+    public static function load($args = array()) {
       
       // Set Sort By
       if (isset($args['sort_by'])) {
@@ -124,7 +124,8 @@ class PLS_Partials_Get_Listings_Ajax {
         	$_POST['sort_type'] = $sort_type;
         }
         ?>
-                <script type="text/javascript" src="<?php echo trailingslashit(PLS_JS_URL) ?>scripts/listing-list.js"></script>
+            <script type="text/javascript" src="<?php echo trailingslashit(PLS_JS_URL) ?>scripts/listing-list.js"></script>
+            
             <!-- Sort Dropdown -->
             <?php if ($show_sort): ?>
               <form class="sort_wrapper">
@@ -191,7 +192,7 @@ class PLS_Partials_Get_Listings_Ajax {
         echo ob_get_clean();
     }
 
-	function get ($args = array()) { 
+	public static function get ($args = array()) { 
 		$saved_user_search = false;   
         if (isset($_POST['saved_search_lookup']) ) {
 		  if( strpos( $_POST['saved_search_lookup'], 'pl_ss_' ) !== false ) {
@@ -303,70 +304,69 @@ class PLS_Partials_Get_Listings_Ajax {
             ob_start();
             // pls_dump($listing);
             ?>
+              <div class="listing-item grid_8 alpha" itemscope itemtype="http://schema.org/Offer" data-listing="<?php echo $listing['id'] ?>">
 
-<div class="listing-item grid_8 alpha" itemscope itemtype="http://schema.org/Offer" data-listing="<?php echo $listing['id'] ?>">
+                <div class="listing-thumbnail grid_3 alpha">
+                  <?php $property_images = ( is_array($listing['images']) ? $listing['images'] : array() );
+                      usort($property_images, array(__CLASS__, 'order_images_ajax'));
+                      ?>
+                    
+                   <a href="<?php echo @$listing['cur_data']['url']; ?>" itemprop="url">
+                    <?php echo PLS_Image::load($property_images[0]['url'], array('resize' => array('w' => 210, 'h' => 140), 'fancybox' => true, 'as_html' => true, 'html' => array('alt' => $listing['location']['full_address'], 'itemprop' => 'image', 'placeholder' => PLS_IMG_URL . "/null/listing-300x180.jpg"))); ?>
+                  </a>
+                </div>
 
-  <div class="listing-thumbnail grid_3 alpha">
-    <?php $property_images = ( is_array($listing['images']) ? $listing['images'] : array() );
-        usort($property_images, array(__CLASS__, 'order_images_ajax'));
-        ?>
-      
-     <a href="<?php echo @$listing['cur_data']['url']; ?>" itemprop="url">
-      <?php echo PLS_Image::load($property_images[0]['url'], array('resize' => array('w' => 210, 'h' => 140), 'fancybox' => true, 'as_html' => true, 'html' => array('alt' => $listing['location']['full_address'], 'itemprop' => 'image', 'placeholder' => PLS_IMG_URL . "/null/listing-300x180.jpg"))); ?>
-    </a>
-  </div>
+                <div class="listing-item-details grid_5 omega">
+                  <header>
+                    <p class="listing-item-address h4" itemprop="name">
+                      <a href="<?php echo PLS_Plugin_API::get_property_url($listing['id']); ?>" rel="bookmark" title="<?php echo $listing['location']['address'] ?>" itemprop="url">
+                        <?php echo $listing['location']['address'] . ', ' . $listing['location']['locality'] . ' ' . $listing['location']['region'] . ' ' . $listing['location']['postal']  ?>
+                      </a>
+                    </p>
+                  </header>
 
-  <div class="listing-item-details grid_5 omega">
-    <header>
-      <p class="listing-item-address h4" itemprop="name">
-        <a href="<?php echo PLS_Plugin_API::get_property_url($listing['id']); ?>" rel="bookmark" title="<?php echo $listing['location']['address'] ?>" itemprop="url">
-          <?php echo $listing['location']['address'] . ', ' . $listing['location']['locality'] . ' ' . $listing['location']['region'] . ' ' . $listing['location']['postal']  ?>
-        </a>
-      </p>
-    </header>
+                  <div class="basic-details">
+                    <ul>
+                    	<?php if (!empty($listing['cur_data']['beds'])) { ?>
+                    		<li class="basic-details-beds p1"><span>Beds:</span> <?php echo @$listing['cur_data']['beds']; ?></li>
+                    	<?php } ?>
 
-    <div class="basic-details">
-      <ul>
-      	<?php if (!empty($listing['cur_data']['beds'])) { ?>
-      		<li class="basic-details-beds p1"><span>Beds:</span> <?php echo @$listing['cur_data']['beds']; ?></li>
-      	<?php } ?>
+                    	<?php if (!empty($listing['cur_data']['baths'])) { ?>
+                    		<li class="basic-details-baths p1"><span>Baths:</span> <?php echo @$listing['cur_data']['baths']; ?></li>
+                    	<?php } ?>
 
-      	<?php if (!empty($listing['cur_data']['baths'])) { ?>
-      		<li class="basic-details-baths p1"><span>Baths:</span> <?php echo @$listing['cur_data']['baths']; ?></li>
-      	<?php } ?>
+                    	<?php if (!empty($listing['cur_data']['half_baths'])) { ?>
+                    		<li class="basic-details-half-baths p1"><span>Half Baths:</span> <?php echo @$listing['cur_data']['half_baths']; ?></li>
+                    	<?php } ?>
 
-      	<?php if (!empty($listing['cur_data']['half_baths'])) { ?>
-      		<li class="basic-details-half-baths p1"><span>Half Baths:</span> <?php echo @$listing['cur_data']['half_baths']; ?></li>
-      	<?php } ?>
+                    	<?php if (!empty($listing['cur_data']['price'])) { ?>
+                    		<li class="basic-details-price p1" itemprop="price"><span>Price:</span> <?php echo PLS_Format::number($listing['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true)); ?></li>
+                    	<?php } ?>
 
-      	<?php if (!empty($listing['cur_data']['price'])) { ?>
-      		<li class="basic-details-price p1" itemprop="price"><span>Price:</span> <?php echo PLS_Format::number($listing['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true)); ?></li>
-      	<?php } ?>
+                    	<?php if (!empty($listing['cur_data']['avail_on'])) { ?>
+                    		<li class="basic-details-sqft p1"><span>Sqft:</span> <?php echo PLS_Format::number($listing['cur_data']['sqft'], array('abbreviate' => false, 'add_currency_sign' => false)); ?></li>
+                    	<?php } ?>
 
-      	<?php if (!empty($listing['cur_data']['avail_on'])) { ?>
-      		<li class="basic-details-sqft p1"><span>Sqft:</span> <?php echo PLS_Format::number($listing['cur_data']['sqft'], array('abbreviate' => false, 'add_currency_sign' => false)); ?></li>
-      	<?php } ?>
+                      <?php if (!empty($listing['rets']['mls_id'])) { ?>
+                        <li class="basic-details-mls p1"><span>MLS ID:</span> <?php echo @$listing['rets']['mls_id']; ?></li>
+                      <?php } ?>
+                    </ul>
+                  </div>
 
-        <?php if (!empty($listing['rets']['mls_id'])) { ?>
-          <li class="basic-details-mls p1"><span>MLS ID:</span> <?php echo @$listing['rets']['mls_id']; ?></li>
-        <?php } ?>
-      </ul>
-    </div>
+                  <p class="listing-description p4" itemprop="description">
+                    <?php echo substr($listing['cur_data']['desc'], 0, 300); ?>
+                  </p>
 
-    <p class="listing-description p4" itemprop="description">
-      <?php echo substr($listing['cur_data']['desc'], 0, 300); ?>
-    </p>
+                </div>
 
-  </div>
+                <div class="actions">
+                  <a class="more-link" href="<?php echo PLS_Plugin_API::get_property_url($listing['id']); ?>" itemprop="url">View Property Details</a>
+                  <?php echo PLS_Plugin_API::placester_favorite_link_toggle(array('property_id' => $listing['id'])); ?>
+                </div>
+                  
+                <?php PLS_Listing_Helper::get_compliance(array('context' => 'inline_search', 'agent_name' => @$listing['rets']['aname'] , 'office_name' => @$listing['rets']['oname'])); ?>
 
-  <div class="actions">
-    <a class="more-link" href="<?php echo PLS_Plugin_API::get_property_url($listing['id']); ?>" itemprop="url">View Property Details</a>
-    <?php echo PLS_Plugin_API::placester_favorite_link_toggle(array('property_id' => $listing['id'])); ?>
-  </div>
-    
-  <?php PLS_Listing_Helper::get_compliance(array('context' => 'inline_search', 'agent_name' => @$listing['rets']['aname'] , 'office_name' => @$listing['rets']['oname'])); ?>
-
-</div>
+              </div>
             <?php
               $item_html = ob_get_clean();
               $item_html = apply_filters( pls_get_merged_strings( array( "pls_listings_list_ajax_item_html", $context ), '_', 'pre', false ), htmlspecialchars_decode( $item_html ), $listing, $context_var);
@@ -382,29 +382,23 @@ class PLS_Partials_Get_Listings_Ajax {
         $response['sPrevious'] = 'Next';
         
         $response['sEcho'] = @$_POST['sEcho'];
-        $response['aaData'] = $listings;
-        $response['iTotalRecords'] = $api_response['total'];
-        $response['iTotalDisplayRecords'] = $api_response['total'];
+        $response['aaData'] = $listings; 
+        $api_total = isset( $api_response['total'] ) ? $api_response['total'] : 0; 
+        $response['iTotalRecords'] = $api_total;
+        $response['iTotalDisplayRecords'] = $api_total;
 
         $cache->save($response);
     
         ob_start("ob_gzhandler");
         echo json_encode($response);
 
-        // Enable W3TC Debugging
-        // if(WP_DEBUG === true) {
-        //   $db = w3_instance('W3_DbCache');        
-        //   echo "\r\n\r\n".$db->_get_debug_info();
-        //   $w3_objectcache = w3_instance('W3_ObjectCache');
-        //   echo "\r\n\r\n".$w3_objectcache->_get_debug_info();
-        // }
-
         //wordpress echos out a 0 randomly. die prevents it.
         die();
 	}
 
-  static private function order_images_ajax ($a, $b) {
+  private static function order_images_ajax ($a, $b) {
     if ($a['order'] == $b['order']) { return 0; }
     return ($a['order'] < $b['order']) ? -1 : 1;
   }
+  
 }//end of class

@@ -57,7 +57,6 @@
 */ ?>
 
 <!-- Commenting out for now, this is already included by default in all Placester admin pages... -->
-<?php // echo PL_Router::load_builder_partial('free-trial.php'); ?>		
 
 
 <?php /*

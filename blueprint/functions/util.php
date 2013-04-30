@@ -144,3 +144,27 @@ function pls_quick_list ($unknown_object, $recursive = false, $skip_html_keys = 
 
 	return $html_list;
 }
+
+/**
+ * Image functions
+ * (potential candidate for external helper file)
+ */
+	
+/**
+ * Get image src link from post thumbnail
+ * 
+ * @param int $post_id post where the thumbnail has been uploaded
+ * @param string $size the thumb size - small, large, some custom size
+ * @param string $default placeholder link if none has been found
+ */
+function pls_get_image_src_from_thumbnail( $post_id, $size, $default = '' ) {
+	$thumb_url = $default;
+	
+	$thumb = wp_get_attachment_image_src( get_post_thumbnail_id( $post_id ), $size );
+	
+	if( ! empty( $thumb ) && is_array( $thumb ) ) {
+		$thumb_url = $thumb['0'];
+	}
+	
+	return $thumb_url;
+}

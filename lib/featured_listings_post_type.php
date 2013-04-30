@@ -19,7 +19,7 @@ function pl_register_featured_listing_post_type() {
 					'menu_icon' => trailingslashit(PL_IMG_URL) . 'featured.png', 
 					'public' => true,
 					'publicly_queryable' => false,
-					'show_ui' => true,
+					'show_ui' => false,
 					'query_var' => true,
 					'capability_type' => 'post',
 					'hierarchical' => false,

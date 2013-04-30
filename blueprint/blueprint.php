@@ -4,7 +4,7 @@
  * Placester Blueprint - A Wordpress theme development framework that integrates 
  * with the Placester Real Estate Pro plugin
  *
- * Copyright (c) 2009 Placester, Inc. <matt@placester.com>
+ * Copyright (c) 2013 Placester, Inc. <matt@placester.com>
  *   Portions of this distribution are copyrighted by:
  *       Copyright (c) 2010 Devin Price <http://www.wptheming.com>
  *   All rights reserved.
@@ -32,9 +32,8 @@
  * Big thanks to Justin Tadlock for inspiration with his HybridCore Framework.
  *
  * @package PlacesterBlueprint
- * @version 2.1
- * @author Placester, Alex Ciobica, Matt Barba
- * @link http://placester.com/themes/blueprint/
+ * @version 2.5
+ * @author Placester
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
@@ -60,24 +59,26 @@ class Placester_Blueprint {
      * @since 0.0.1
      */
 
-    private static $boot_from = '';
+    private $boot_from = '';
 
     function __construct($version = '0.0', $boot_from = 'theme') {
 
-        $version_locked = '2.1';
+        $version_locked = '2.5';
         if ($version != $version_locked) {
             die('This theme is version locked to ' . $version_locked . ' of Blueprint. You are using version ' . $version . ' of Blueprint. Please be sure you are passing a version on instantiation, or update to the correct version of Blueprint');
         }
 
-        /** Let the world know that this is a Placester theme. */
-        global $i_am_a_placester_theme;
-        $i_am_a_placester_theme = TRUE;
+        // Let the world know that this is a Placester theme if BP is booted from a theme (and NOT the plugin)...
+        if ($boot_from == 'theme') {
+            global $i_am_a_placester_theme;
+            $i_am_a_placester_theme = true;
+        }
 
         global $placester_blueprint;
         $placester_blueprint = array();
 
-        /** Store 'boot_from' directive in a class var for access by other function members */
-        self::$boot_from = $boot_from;
+        // Store 'boot_from' directive of this instance for access by other function members
+        $this->boot_from = $boot_from;
 
         /** Set the plugin error flag. */
         $placester_blueprint['has_plugin_error'] = $this->_has_plugin_error(); 
@@ -109,7 +110,7 @@ class Placester_Blueprint {
         $plugin_status = $this->_is_plugin_active();
 
         if ( function_exists( 'placester_get_api_key' ) &&  $plugin_status ) {
-            if(!placester_get_api_key()) {
+            if (!placester_get_api_key()) {
                 return 'no_api_key';
             }
         } else {
@@ -174,12 +175,11 @@ class Placester_Blueprint {
 	 */
 	function constants() {
 
-        
         /** Placester Blueprint Version */
         define( 'PLS_VERSION', '0.0.1' );
 
         $blueprint_url = '';
-        switch (self::$boot_from)
+        switch ($this->boot_from)
         {
             case 'plugin':
               $blueprint_url = plugin_dir_url(__FILE__);
@@ -238,9 +238,9 @@ class Placester_Blueprint {
         define( 'PLS_FUNCTIONS_URL', trailingslashit( PLS_URL ) . 'functions' );
         
         /** Languages directory path and url only if not already defined. */
-        if ( ! defined( 'PLS_LANGUAGES_DIR' ) ) /** So it can be defined by the theme developer. */
+        if ( !defined( 'PLS_LANGUAGES_DIR' ) ) /** So it can be defined by the theme developer. */
             define( 'PLS_LANGUAGES_DIR', trailingslashit( PLS_DIR ) . 'languages' );
-        if ( ! defined( 'PLS_LANGUAGES_URL' ) ) /** So it can be defined by the theme developer. */
+        if ( !defined( 'PLS_LANGUAGES_URL' ) ) /** So it can be defined by the theme developer. */
             define( 'PLS_LANGUAGES_URL', trailingslashit( PLS_URL ) . 'languages' );
 
         define( 'PLS_WIDGETS_URL', trailingslashit( PLS_URL ) . 'widgets' );
@@ -269,17 +269,17 @@ class Placester_Blueprint {
         add_theme_support( 'pls-default-style' );
         add_theme_support( 'pls-default-css' );
         add_theme_support( 'pls-js', array( 
-            'chosen' => array( 'script' => true, 'style' => true ), 
-            'floating' => array('script' => true, 'style' => true), 
-            'datatable' => array('script' => true, 'style' => true), 
-            'jquery-ui' => array('script' => true, 'style' => true), 
-            'spinner' => array( 'script' => true, 'style' => true ), 
-            'masonry' => array('script' => true, 'style' => false),
-            'jquery-tools' => array('script' => true, 'style' => false),
-            'form' => array('script' => true, 'style' => true),
-            'cookies' => array('script' => true, 'style' => false),
-            'lead-capture' => array('script' => true, 'style' => false)
-          ) 
+                'chosen' => array( 'script' => true, 'style' => true ), 
+                'floating' => array('script' => true, 'style' => true), 
+                'datatable' => array('script' => true, 'style' => true), 
+                'jquery-ui' => array('script' => true, 'style' => true), 
+                'spinner' => array( 'script' => true, 'style' => true ), 
+                'masonry' => array('script' => true, 'style' => false),
+                'jquery-tools' => array('script' => true, 'style' => false),
+                'form' => array('script' => true, 'style' => true),
+                'cookies' => array('script' => true, 'style' => false),
+                'lead-capture' => array('script' => true, 'style' => false)
+            ) 
         );
         add_theme_support( 'pls-theme-options' );
         add_theme_support( 'pls-image-util', array('fancybox') );
@@ -323,7 +323,7 @@ class Placester_Blueprint {
 
 		/** Move the WordPress generator to a better priority. */
 		remove_action( 'wp_head', 'wp_generator' );
-    add_action( 'wp_head', 'wp_generator', 1 );
+        add_action( 'wp_head', 'wp_generator', 1 );
 
         /** Remove plugin scripts. */
         define( 'PL_NO_SCRIPTS', 100 );
@@ -427,12 +427,6 @@ class Placester_Blueprint {
 
         /** Load the scripts functions. */
         require_once( trailingslashit ( PLS_JS_DIR ) . 'scripts.php' );
-        
-        if( is_admin() ) { 
-	        /** Load TinyMCE buttons. */
-        	// some odd 'can't publish a post' issue for some installs
-	        // require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'tinymce_buttons.php' );
-        }
 
         /** Load the menus if supported. */
         require_if_theme_supports( 'pls-menus', trailingslashit ( PLS_FUNCTIONS_DIR ) . 'menus.php' );
@@ -485,16 +479,14 @@ class Placester_Blueprint {
         require_if_theme_supports( 'pls-maps-util', trailingslashit ( PLS_EXT_DIR ) . 'maps/polygon.php' );
         require_if_theme_supports( 'pls-maps-util', trailingslashit ( PLS_EXT_DIR ) . 'maps/neighborhood.php' );
 
-        /** Load the Maps Util extension if supported. */
+        /** Load the Membership extension if supported. */
         require_if_theme_supports( 'pls-membership', trailingslashit ( PLS_EXT_DIR ) . 'membership.php' );
 
         /** Load fallbacks last. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'fallback.php' );
         
         /** Load the Shuffle Bricks extension if requested. */
-        if ( current_theme_supports( 'pls-shuffle-bricks' ) ) {
-            require_if_theme_supports( 'pls-shuffle-bricks', trailingslashit( PLS_EXT_DIR ) . 'shuffle-bricks.php' );
-        }
+        require_if_theme_supports( 'pls-shuffle-bricks', trailingslashit( PLS_EXT_DIR ) . 'shuffle-bricks.php' );
         
   }
 

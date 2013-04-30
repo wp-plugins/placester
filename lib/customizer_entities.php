@@ -71,17 +71,57 @@ function define_custom_controls()
    		public $type = 'integration';
 
    		public function render() {
-   			PL_Router::load_builder_partial('integration-form.php', array('no_form' => true));
    			?>
-   			  <!-- <div id="customize_integration_submit" style="width: 50px; height: 30px; background: grey;">Submit</div> -->
+				<!-- <div id="customize_integration_submit" style="width: 50px; height: 30px; background: grey;">Submit</div> -->
+				<div id="pls_integration_form" class="rets_form">
 
-   			  <div class="row">
-		        <input type="button" id="customize_integration_submit" class="bt-norm" value="Submit Request" />
-		      </div>
+					<div class="infobox">
+						<p>By adding our IDX / MLS listings feature, Placester can pull all of the active listings from your MLS. IDX is great because: </p>
+						<ul>
+							<li><span>Less Work</span> - You don't need to manually add listings.</li>
+							<li><span>Better Listings</span> - Listings are automatically updated</li>
+							<li><span>Great SEO</span> - Pages on your website are created for each listing.</li>
+						</ul>
+					</div>
+
+					<div class="row" id="customizer_mls_request_buttons">
+						<input type="button" id="customize_integration_no" class="bt-norm" value="Manually enter listings." />
+						<input type="button" id="customize_integration_submit" class="bt-norm bt-green" value="Request IDX Integration" />
+					</div>
+					
+					<div id="customizer_mls_phone_section" style="display:none">
+						<div class="row">
+							<div class="info">
+								<h3>Would you be so kind as to provide your phone number?</h3>
+								<p>This will help us provide prompt support to get your integration setup.</p>
+							</div>
+							<div class="elements" id="custmizer_mls_phone_validation">
+								<input id="phone" name="phone" type="text" placeholder="617 555 1234">
+							</div>
+						</div>
+
+						<div class="row" id="customizer_phone_number_button">
+							<input type="button" id="customize_integration_no" class="bt-norm" value="No thanks, I like waiting" />
+							<input type="button" id="customize_integration_phone_submit" class="bt-norm bt-green" value="Submit Number" />
+						</div>
+					</div>
+					
+
+				</div>
+
+				<!-- Show if user submits an MLS/IDX request -->
+				<div id="mls_submitted" class="infobox" style="display: none">
+				    <p>Someone from the Placester Team will contact you between 9am - 5pm EST, Monday through Friday to get started.</p>
+				    <p>In a rush to setup your IDX / MLS? Feel free to call us at 1(800) 728-8391 ext. 1</p>
+    				<iframe src="http://fast.wistia.net/embed/iframe/prklf3uk1b?playerColor=1980cf&version=v1&videoHeight=259&videoWidth=460&volumeControl=true" allowtransparency="true" frameborder="0" scrolling="no" class="wistia_embed" name="wistia_embed" width="460" height="259"></iframe>
+    			</div>
+
+
+
+				<div class="row">
+					
+				</div>
    			<?php
-
-   			// Needed to subscribe a user...
-   			PL_Router::load_builder_partial('free-trial.php');
    		}
 
    		public function render_content() {

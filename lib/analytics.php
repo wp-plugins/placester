@@ -22,7 +22,7 @@ class PL_Analytics {
 	}
 
 	private static function get_admin_info() {
-		// Use for API key + web_secret
+		// Use for API key ID + web_secret
 		$whoami = PL_Helper_User::whoami();
 
 		// We need BOTH of these...
@@ -30,7 +30,7 @@ class PL_Analytics {
 			return false;
 		}
 
-		$info = array("api_key" => $whoami["api_key_id"], "web_secret" => $whoami["api_key_web_secret"]);
+		$info = array("api_key_id" => $whoami["api_key_id"], "web_secret" => $whoami["api_key_web_secret"]);
 		return $info;
 	}
 
@@ -40,12 +40,15 @@ class PL_Analytics {
 		// Sanity check...
 		if (empty($info)) { return null; }
 		
-		// Merge $data with $info to include the API key and web_secret, then encode the result as JSON...
-		$data_json = json_encode(array_merge($data, $info));
+		// Add the API key ID to the data array...
+		$data["api_key_id"] = $info["api_key_id"];
+
+		// Encode the data array as JSON...
+		$data_json = json_encode($data);
 
 		// Combine, hash and repeat as necessary...
-		$hash = PL_Base64::strict((hash_hmac("sha256", $data_json, "{$info['api_key']}{$info['web_secret']}", true)));
-		$output = PL_Base64::url_safe("{$hash}--{$data}");
+		$hash = PL_Base64::strict((hash_hmac("sha256", $data_json, "{$info['api_key_id']}{$info['web_secret']}", true)));
+		$output = PL_Base64::url_safe("{$hash}--{$data_json}");
 
 		return $output;
 	}
@@ -72,7 +75,10 @@ class PL_Analytics {
 				$data[$param] = $args[$param];
 			}	
 		}
-		error_log(var_export($data, true));
+
+		// Add the "time" arg + value...
+		$data["time"] = time();
+
 		$output = self::hash_data($data);
 		return $output;
 	}
@@ -94,8 +100,8 @@ class PL_Analytics {
 	  	ob_start();
 	  	?>
 	  		<script type="text/javascript">
-	  			if (PlacesterAds) {
-	    			PlacesterAds.log(<?php echo $data; ?>);  
+	  			if (PlacesterAnalytics) {
+	    			PlacesterAnalytics.log("<?php echo $data; ?>");  
 	  			}
 	  		</script>
 	  	<?php

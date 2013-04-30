@@ -3,7 +3,10 @@
 class PLS_Widget_Facebook extends WP_Widget {
 
   function __construct() {
-    $widget_ops = array( 'classname' => 'example', 'description' => 'Change the title of the "Facebook" widget.' );
+    $widget_ops = array(
+      'classname' => 'pls-facebook-widget',
+      'description' => 'Change the title of the "Facebook" widget.'
+    );
 
     /* Widget control settings. */
     $control_ops = array( 'width' => 200, 'height' => 350 );
@@ -146,66 +149,63 @@ class PLS_Widget_Facebook extends WP_Widget {
 
 function get_facebook_feed ( $page_id, $limit, $post_types = array() ) {
 
-    // manually delete transient
-    delete_transient('facebook_feed');
-    
-    // check for transient first
-    if ( false === ( $custom_feed = get_transient( 'facebook_feed' ) ) ) {
-      
-        // Obtain App Access Token
-        $app_id = "263914027073402";
-        $app_secret = "3f864423935f5531bb3119ea8ed59147";
-        $app_token_url = "https://graph.facebook.com/oauth/access_token?"
-            . "client_id=" . $app_id
-            . "&client_secret=" . $app_secret 
-            . "&grant_type=client_credentials";
-        $response = file_get_contents($app_token_url);
-        $params = null;
-        parse_str($response, $params);
-        // pls_dump($params['access_token']);
-
-        // How to get a link to the app
-        $graph_url = "https://graph.facebook.com/app?access_token=" . $params['access_token'];
-        $app_details = json_decode(file_get_contents($graph_url), true);
-        // pls_dump($app_details['link']);
-
-        // how to get feed from Jeff Lobb's site
-        // echo 'https://graph.facebook.com/68088808263/feed?access_token='.$params['access_token'];
-        // remove feed to be able to pass params
-        // echo 'https://graph.facebook.com/68088808263?access_token='.$params['access_token'].'&fields=posts.limit(2)';
-        $limit = $limit + 5;
-        $query = 'https://graph.facebook.com/' . $page_id . '?access_token='.$params['access_token'].'&fields=posts.limit(' . $limit . ').fields(message,caption,timeline_visibility,source,picture,description,name,type)';
-        // pls_dump($query);
-        
-        $feed = json_decode(file_get_contents($query), true);
-        // pls_dump($feed);
-
-        // remove posts that don't have a message, picture, caption, name, or source
-        foreach ($feed['posts']['data'] as $key => $value) {
-          if (!isset($feed['posts']['data'][$key]['message']) && !isset($feed['posts']['data'][$key]['picture']) && !isset($feed['posts']['data'][$key]['caption']) && !isset($feed['posts']['data'][$key]['name']) && !isset($feed['posts']['data'][$key]['source'])) {
-            unset($feed['posts']['data'][$key]);
-          }
-        }
-        
-        // reset posts array keys
-        $feed['posts']['data'] = array_values($feed['posts']['data']);
-        
-        // how many posts are available after unsetting empty ones?
-        $count = count($feed['posts']['data']);
-        
-        // declare new var
-        $custom_feed['posts']['data'] = array();
-
-        // reset actual limit set by admin
-        $real_limit = $limit - 5;
-        
-        for ($j=0; $j < $real_limit; $j++) { 
-          array_push($custom_feed['posts']['data'], $feed['posts']['data'][$j]);
-        }
-
-        // set transient to avoid slow loading and rate limits
-        set_transient( 'facebook_feed', $feed, 60*60 );
+    $cache = new PLS_Cache('fb_feed');
+    if ($result = $cache->get($page_id)) {
+      return $result;
     }
+
+    // Obtain App Access Token
+    $app_id = "263914027073402";
+    $app_secret = "3f864423935f5531bb3119ea8ed59147";
+    $app_token_url = "https://graph.facebook.com/oauth/access_token?"
+        . "client_id=" . $app_id
+        . "&client_secret=" . $app_secret 
+        . "&grant_type=client_credentials";
+    $response = file_get_contents($app_token_url);
+    $params = null;
+    parse_str($response, $params);
+    // pls_dump($params['access_token']);
+
+    // How to get a link to the app
+    $graph_url = "https://graph.facebook.com/app?access_token=" . $params['access_token'];
+    $app_details = json_decode(file_get_contents($graph_url), true);
+    // pls_dump($app_details['link']);
+
+    // how to get feed from Jeff Lobb's site
+    // echo 'https://graph.facebook.com/68088808263/feed?access_token='.$params['access_token'];
+    // remove feed to be able to pass params
+    // echo 'https://graph.facebook.com/68088808263?access_token='.$params['access_token'].'&fields=posts.limit(2)';
+    $limit = $limit + 5;
+    $query = 'https://graph.facebook.com/' . $page_id . '?access_token='.$params['access_token'].'&fields=posts.limit(' . $limit . ').fields(message,caption,timeline_visibility,source,picture,description,name,type,link)';
+    // pls_dump($query);
+    
+    $feed = json_decode(file_get_contents($query), true);
+    // pls_dump($feed);
+
+    // remove posts that don't have a message, picture, caption, name, or source
+    foreach ($feed['posts']['data'] as $key => $value) {
+      if (!isset($feed['posts']['data'][$key]['message']) && !isset($feed['posts']['data'][$key]['picture']) && !isset($feed['posts']['data'][$key]['caption']) && !isset($feed['posts']['data'][$key]['name']) && !isset($feed['posts']['data'][$key]['source'])) {
+        unset($feed['posts']['data'][$key]);
+      }
+    }
+    
+    // reset posts array keys
+    $feed['posts']['data'] = array_values($feed['posts']['data']);
+    
+    // how many posts are available after unsetting empty ones?
+    $count = count($feed['posts']['data']);
+    
+    // declare new var
+    $custom_feed['posts']['data'] = array();
+
+    // reset actual limit set by admin
+    $real_limit = $limit - 5;
+    
+    for ($j=0; $j < $real_limit; $j++) { 
+      array_push($custom_feed['posts']['data'], $feed['posts']['data'][$j]);
+    }
+
+    $cache->save($custom_feed);
     
     return $custom_feed;
 

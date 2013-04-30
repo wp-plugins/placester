@@ -638,9 +638,9 @@ a.toggle-display {
 
 a.wizard-next {
 	position: fixed;
-	top: 15px;
-	left: 445px;
-	font-size: 13px;
+	top: 16px;
+	left: 416px;
+	font-size: 16px;
 }
 
 .tip {

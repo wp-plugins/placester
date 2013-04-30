@@ -134,12 +134,6 @@ class PL_Router {
 
 	public static function integrations() {
 		self::router('integrations.php', array(), false);
-		
-		// This gets loaded by default if no API key is present, so conditionally load it here
-		// to ensure it's not included twice...
-		if (PL_Option_Helper::api_key()) {
-			self::load_builder_partial('free-trial.php');
-		}
 	}
 
 //end of class

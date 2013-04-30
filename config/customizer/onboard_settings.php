@@ -2,18 +2,18 @@
 
 global $PL_CUSTOMIZER_ONBOARD_SECTIONS;
 $PL_CUSTOMIZER_ONBOARD_SECTIONS = array(
-                                  'logo' => 1,
-								  'theme' => 10,
-								  'title' => 20,
-								  'colors' => 30,
-                                  'brand' => 40,
-								  'mls' => 50,
-								  'listing' => 60,
-								  'post' => 70,
-                                  // 'Invite Your Friends' => 80,
-								  'analytics' => 90,
-                                  'confirm' => 1000
-							   );
+    'logo' => 1,
+    'mls' => 10,
+    'theme' => 20,
+    'colors' => 30,
+    'title' => 40,
+    'brand' => 50,
+    // 'listing' => 60,
+    // 'post' => 70,
+    // 'Invite Your Friends' => 80,
+    // 'analytics' => 90,
+    'confirm' => 1000
+);
 
 global $PL_CUSTOMIZER_ONBOARD_OPTS;
 $PL_CUSTOMIZER_ONBOARD_OPTS = array( 
@@ -26,7 +26,20 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         ),    
 
         array(
-            'name' => 'Theme Selection',
+            'name' => 'Add MLS / IDX',
+            'desc' => 'Integrate Your Listing Data',
+            'id' => 'mls',
+            'type' => 'heading'
+        ),
+
+        array(
+            'name' => 'integration',
+            'type' => 'custom'
+        ), 
+
+
+        array(
+            'name' => 'Select Theme',
             'desc' => 'Choose the Right Look-and-Feel for your Business',
             'id' => 'theme',
             'type' => 'heading'
@@ -36,6 +49,25 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
             'name' => 'theme-select',
             'type' => 'custom'
         ),
+
+        array(
+            'name' => 'Select Color Palette',
+            'desc' => 'Customize your Theme to your Heart\'s Content',
+            'id' => 'colors',
+            'type' => 'heading'
+        ),
+
+        array(
+            'name' => 'color-scheme',
+            'type' => 'custom'
+        ),
+
+        array( 
+            'name' => 'Custom CSS',
+            'desc' => 'Enter custom css styles here. Will override any theme styles as well as any theme options you\'ve already set.',
+            'id' => 'pls-custom-css',
+            'type' => 'textarea'
+        ),  
 
         array(
             'name' => 'Site Title & Slogan',
@@ -83,25 +115,6 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
             'transport' => 'postMessage'
         ),
 
-        array(
-            'name' => 'Color Palette & Styling',
-            'desc' => 'Customize your Theme to your Heart\'s Content',
-            'id' => 'colors',
-            'type' => 'heading'
-        ),
-
-        array(
-            'name' => 'color-scheme',
-            'type' => 'custom'
-        ),
-
-        array( 
-            'name' => 'Custom CSS',
-            'desc' => 'Enter custom css styles here. Will override any theme styles as well as any theme options you\'ve already set.',
-            'id' => 'pls-custom-css',
-            'type' => 'textarea'
-        ),  
-
         // array(
         //     'name' => 'Upload Logo',
         //     'desc' => 'Display Your Brand',
@@ -116,55 +129,43 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         //     'type' => 'upload'
         // ),
 
-        array(
-            'name' => 'MLS Integration',
-            'desc' => 'Integrate Your Listing Data',
-            'id' => 'mls',
-            'type' => 'heading'
-        ),
+        // array(
+        //     'name' => 'Create a Listing',
+        //     'desc' => 'Quickly Add the First Listing to your Site',
+        //     'id' => 'listing',
+        //     'type' => 'heading'
+        // ),
 
-        array(
-            'name' => 'integration',
-            'type' => 'custom'
-        ), 
+        // array(
+        //     'name' => 'post-listing',
+        //     'type' => 'custom'
+        // ),   
 
-        array(
-            'name' => 'Create a Listing',
-            'desc' => 'Quickly Add the First Listing to your Site',
-            'id' => 'listing',
-            'type' => 'heading'
-        ),
+        // array(
+        //     'name' => 'Create a Blog Post',
+        //     'desc' => 'Show your Expertise by Creating Unique Content',
+        //     'id' => 'post',
+        //     'type' => 'heading'
+        // ),
 
-        array(
-            'name' => 'post-listing',
-            'type' => 'custom'
-        ),   
+        // array(
+        //     'name' => 'blog-post',
+        //     'type' => 'custom'
+        // ),   
 
-        array(
-            'name' => 'Create a Blog Post',
-            'desc' => 'Show your Expertise by Creating Unique Content',
-            'id' => 'post',
-            'type' => 'heading'
-        ),
+        // array(
+        //     'name' => 'Google Analytics',
+        //     'desc' => 'Track your Site\'s Traffic Statistics',
+        //     'id' => 'analytics',
+        //     'type' => 'heading'
+        // ),
 
-        array(
-            'name' => 'blog-post',
-            'type' => 'custom'
-        ),   
-
-        array(
-            'name' => 'Google Analytics',
-            'desc' => 'Track your Site\'s Traffic Statistics',
-            'id' => 'analytics',
-            'type' => 'heading'
-        ),
-
-        array(
-            'name' => 'Google Analytics Tracking Code',
-            'desc' => 'Add your google analytics tracking ID code here. It looks something like this: UA-XXXXXXX-X',
-            'id' => 'pls-google-analytics',
-            'type' => 'text'
-        ),
+        // array(
+        //     'name' => 'Google Analytics Tracking Code',
+        //     'desc' => 'Add your google analytics tracking ID code here. It looks something like this: UA-XXXXXXX-X',
+        //     'id' => 'pls-google-analytics',
+        //     'type' => 'text'
+        // ),
 
         array(
             'name' => 'Save & Continue',

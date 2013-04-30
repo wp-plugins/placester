@@ -87,6 +87,5 @@
 		  <?php endif; ?>
 	
 			<div class="clear"></div>	
-		<?php endif ?>
-		<?php // echo PL_Router::load_builder_partial('free-trial.php'); ?>		
+		<?php endif ?>	
 	</div>

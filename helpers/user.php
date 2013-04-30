@@ -3,10 +3,11 @@
 PL_Helper_User::init();
 class PL_Helper_User {
 	
-	public function init() {
+	public static function init() {
 		add_action( 'wp_ajax_set_placester_api_key', array(__CLASS__, 'set_placester_api_key') );
 		add_action( 'wp_ajax_existing_api_key_view', array(__CLASS__, 'existing_api_key_view') );
 		add_action( 'wp_ajax_new_api_key_view', array(__CLASS__, 'new_api_key_view') );
+		add_action( 'wp_ajax_free_trial_view', array(__CLASS__, 'free_trial_view') );
 		add_action( 'wp_ajax_create_account', array(__CLASS__, 'create_account') );
 		add_action( 'wp_ajax_user_save_global_filters', array(__CLASS__, 'set_global_filters') );
 		add_action( 'wp_ajax_user_remove_all_global_filters', array(__CLASS__, 'remove_all_global_filters') );
@@ -27,7 +28,8 @@ class PL_Helper_User {
 	}
 
 	public static function start_subscription_trial() {
-		echo json_encode(PL_User::start_subscription_trial());
+		$args = array('source' => $_POST['source']);
+		echo json_encode(PL_User::start_subscription_trial($args));
 		die();
 	}
 
@@ -108,6 +110,10 @@ class PL_Helper_User {
 		die();
 	}
 
+	public static function free_trial_view() {
+		PL_Router::load_builder_partial('free-trial.php');
+		die();
+	}
 
 	/*
 	 * Functionality for Global Filters

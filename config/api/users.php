@@ -130,7 +130,9 @@ $PL_API_USERS = array(
 			'url' => 'http://api.placester.com/v2/subscriptions',
 			'type' => 'POST'
 		),
-		'args' => array(),
+		'args' => array(
+			'source' => false
+		),
 		'returns' => array()
 	)
 );

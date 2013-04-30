@@ -199,21 +199,24 @@ class PLS_Options_Framework {
     static function adminbar() {
 
         global $wp_admin_bar;
-
-        /** Add filtering for the name of options page. */
-        $page_name = apply_filters( 'pls_admin_bar_menu_page', 'Theme Options' );
-
-        $theme_options_url = admin_url( 'admin.php?page=pls-theme-options' );
-        if( defined( 'PLS_WPORG_THEME' ) ) {
-        	$theme_options_url = admin_url( 'themes.php?page=options-framework' );
+        global $i_am_a_placester_theme;
+         
+        if( $i_am_a_placester_theme ) {
+	        /** Add filtering for the name of options page. */
+	        $page_name = apply_filters( 'pls_admin_bar_menu_page', 'Theme Options' );
+	
+	        $theme_options_url = admin_url( 'admin.php?page=pls-theme-options' );
+	        if( defined( 'PLS_WPORG_THEME' ) ) {
+	        	$theme_options_url = admin_url( 'themes.php?page=options-framework' );
+	        }
+	        
+					// Commented out for WordPress theme submission
+	        $wp_admin_bar->add_menu( array(
+	            'id' => 'of_theme_options',
+	            'title' => $page_name,
+	            'href' => $theme_options_url
+	        ));
         }
-        
-				// Commented out for WordPress theme submission
-        $wp_admin_bar->add_menu( array(
-            'id' => 'of_theme_options',
-            'title' => $page_name,
-            'href' => $theme_options_url
-        ));
     }
 
     /**
@@ -223,22 +226,26 @@ class PLS_Options_Framework {
      */
     static function add_page() {
 
-        /** Add filtering for the name of options page. */
-        $page_name = apply_filters( 'pls_theme_options_menu_page_title', 'Theme Options' );
-
-				// Commented out for WordPress theme submission
-        /** Add the menu page. */
-        $of_page = add_object_page( 
-            $page_name, 
-            $page_name, 
-            'edit_theme_options', 
-            'pls-theme-options', 
-            'optionsframework_page', 
-            trailingslashit( PLS_IMG_URL ) . 'icons/theme_options.png', 
-            '3c' /* position between 3 and 4 */ );
-
-        /** Adds actions to hook in the required css and javascript. */
-        add_action( "admin_print_styles-$of_page", 'optionsframework_load_styles' );
-        add_action( "admin_print_scripts-$of_page", 'optionsframework_load_scripts' );
+    	global $i_am_a_placester_theme;
+    	
+    	if( $i_am_a_placester_theme ) {
+	        /** Add filtering for the name of options page. */
+	        $page_name = apply_filters( 'pls_theme_options_menu_page_title', 'Theme Options' );
+	
+					// Commented out for WordPress theme submission
+	        /** Add the menu page. */
+	        $of_page = add_object_page( 
+	            $page_name, 
+	            $page_name, 
+	            'edit_theme_options', 
+	            'pls-theme-options', 
+	            'optionsframework_page', 
+	            trailingslashit( PLS_IMG_URL ) . 'icons/theme_options.png', 
+	            '3c' /* position between 3 and 4 */ );
+	
+	        /** Adds actions to hook in the required css and javascript. */
+	        add_action( "admin_print_styles-$of_page", 'optionsframework_load_styles' );
+	        add_action( "admin_print_scripts-$of_page", 'optionsframework_load_scripts' );
+    	}
     }
 }

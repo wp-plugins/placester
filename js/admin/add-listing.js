@@ -1,9 +1,5 @@
 jQuery(document).ready(function($) {
 
-	// console.log(adminurl);
-	// console.log(siteurl);
-
-	//property selectbox
 	set_property_type();
 	
 	//if we're editing, disable listing type.
@@ -62,6 +58,7 @@ jQuery(document).ready(function($) {
 
 		//show the right boxes
 		// console.log('#' + $('select#compound_type').val() + '_details_admin_ui_basic');
+		mixpanel.track('Add Property - Type Selected', {'type' : $('select#compound_type').val() });
 		$('#' + $('select#compound_type').val() + '_details_admin_ui_basic' ).show().find('input, select').prop('disabled', false);
 		$('#' + $('select#compound_type').val() + '_details_admin_ui_advanced' ).find('input, select').prop('disabled', false);
 	}
@@ -77,18 +74,32 @@ jQuery(document).ready(function($) {
             });	
         },
         done: function (e, data) {
+        	if (data.result.message) {
+        		alert(data.result.message);
+        		return false;
+        	}
             $.each(data.result, function (index, file) {
-            	var count = $('.image_container div input').length;
-            	// console.log(count);
-            	// console.log(index);
-            	var id = '#' + file.orig_name.replace(/( )|(\.)|(\))|(\()/g,'');
-            	$(id).parentsUntil('#image_container_remove').remove();
-                $('#fileupload-holder-message').append('<li class="image_container"><div><img width="100px" height="100px" src="'+file.url+'" ><a id="remove_image">Remove</a><input id="hidden_images" type="hidden" name="images['+count+'][filename]" value="'+file.name+'"></div></li>');
+            	//The server returns a properly formed array with no url. 
+            	//forcing us to do error handling on the js side.
+            	if (!file.url) {
+            		mixpanel.track('Add Property - Image - Upload Error');
+            		alert('Error - Upload Failed. Your image needs to be smaller then 1MB and gif, jpg, or png.');
+            		var id = '#' + file.orig_name.replace(/( )|(\.)|(\))|(\()/g,'');
+	            	$(id).parentsUntil('#image_container_remove').remove();
+            		return false;
+            	} else {
+	            	mixpanel.track('Add Property - Image - Upload Complete');
+	            	var count = $('.image_container div input').length;
+	            	var id = '#' + file.orig_name.replace(/( )|(\.)|(\))|(\()/g,'');
+	            	$(id).parentsUntil('#image_container_remove').remove();
+	                $('#fileupload-holder-message').append('<li class="image_container"><div><img width="100px" height="100px" src="'+file.url+'" ><a id="remove_image">Remove</a><input id="hidden_images" type="hidden" name="images['+count+'][filename]" value="'+file.name+'"></div></li>');	
+            	}
+            	
             });
         },
         failed: function (e, data) {
+        	mixpanel.track('Add Property - Image - Upload Error');
         	alert('error');
-        	// console.log(data);
         }
     });
 

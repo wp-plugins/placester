@@ -1,20 +1,29 @@
 jQuery(document).ready(function($) {
-	$( "#premium_wizard" ).dialog({
-		autoOpen: false,
-		draggable: false,
-		modal: true,
-		width: 700,
-		zIndex: 600000
-	});
+	// Create the premium account free trial wizard dialog container on initial page load...
+  $('body').append('<div id="premium_wizard"></div>');
+
+  $.post(ajaxurl, {action: 'free_trial_view'}, function (result) {
+    if (result) {
+      $('#premium_wizard').html(result);
+      $("#premium_wizard").dialog({
+        autoOpen: false,
+        draggable: false,
+        modal: true,
+        width: 700,
+        zIndex: 600000,
+        position: 'center'
+      });
+    };
+  });
 });
 
-function prompt_free_trial (title, success_callback, cancel_callback) {
+function prompt_free_trial (title, success_callback, cancel_callback, source) {
 	$ = jQuery;
 	$( "#premium_wizard" ).dialog({title : '<h3>' + title + '</h3>'} );
 	$( "#premium_wizard" ).dialog({close : cancel_callback} );
 	$( "#premium_wizard" ).dialog( "open" );
 
-	$('#premium_wizard_start').live('click', function(event) {
+	$('#premium_wizard_start').on('click', function (event) {
 		event.preventDefault();
 		var content_div = $(this).parents('.ui-dialog-content');
 		$(content_div).html('<div class="ajax_message">Confirming Name and Phone have been entered....</div>');
@@ -39,7 +48,7 @@ function prompt_free_trial (title, success_callback, cancel_callback) {
                 {
                   text: "Save & Get Started",
                   class: "green-btn right-btn",
-                  click: function () { check_info_for_prem_trial(this, success_callback, cancel_callback); }
+                  click: function () { check_info_for_prem_trial(this, success_callback, cancel_callback, source); }
                 }
               ]
             });
@@ -49,7 +58,7 @@ function prompt_free_trial (title, success_callback, cancel_callback) {
             $(content_div).html(collect_info_form);
         } else {
           $(content_div).html('<div class="ajax_message">Name and Phone confirmed. Starting 15 day free trial...</div>');
-          start_free_trial(success_callback, cancel_callback);
+          start_free_trial(success_callback, cancel_callback, source);
           // console.log("Would have started free trial!!! #1");
           // cancel_callback();
 				};
@@ -60,7 +69,7 @@ function prompt_free_trial (title, success_callback, cancel_callback) {
 	});
 }
 
-function check_info_for_prem_trial(that, success_callback, cancel_callback) {
+function check_info_for_prem_trial(that, success_callback, cancel_callback, source) {
   $ = jQuery;
   var form_values = {};
   $.each($('#premium_name_phone').serializeArray(), function(i, field) {
@@ -108,7 +117,7 @@ function check_info_for_prem_trial(that, success_callback, cancel_callback) {
           if (data && data.result) {
             // console.log(data);
             $('#prem_form_messages').html(data.message);
-            start_free_trial(success_callback, cancel_callback);
+            start_free_trial(success_callback, cancel_callback, source);
             // console.log("Would have started free trial!!! #2");
             // cancel_callback();
           } else {
@@ -138,13 +147,14 @@ function check_info_for_prem_trial(that, success_callback, cancel_callback) {
 
 }
 
-function start_free_trial (success_callback, cancel_callback) {
-	$.post(ajaxurl, {action: "start_subscription_trial"}, function(data, textStatus, xhr) {
+function start_free_trial (success_callback, cancel_callback, source) {
+	$.post(ajaxurl, {action: "start_subscription_trial", source: source}, function (data) {
 		if (data && data["plan"] && data["plan"] == 'pro') {
-			$( "#premium_wizard" ).dialog( "close" );
+			$("#premium_wizard").dialog("close");
 			success_callback();
-		} else {
-			$( "#premium_wizard" ).dialog( "close" );
+		} 
+    else {
+			$("#premium_wizard").dialog("close");
 			cancel_callback();
 		};
 	}, "json");

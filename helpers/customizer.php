@@ -109,16 +109,18 @@ class PL_Customizer_Helper
 	    <!-- Spinner for Theme Preview overlay -->
 	    <img id="preview_load_spinner" src="<?php echo plugins_url('/placester/images/preview_load_spin.gif'); ?>" alt="Theme Preview is Loading..." />
 	  
-	  <?php if ( self::is_onboarding() ): ?>
-	    <!-- Tooltip box -->
-	    <div id="tooltip" class="tip">
-	      <a class="close" href="#"></a>    
-	    	<h4>Welcome!</h4>
-	      <p class="desc">Great!  You're making all the right moves.  We're going to take you into the main admin panel now so you can further customize your web site.<br />
-	      <br />You can always return to this customization wizard by clicking Appearance in the main menu, then clicking "Customize."</p>
-	      <p class="link"><a href="#">Let's Get Started</a></p>
-	    </div>
-	  <?php endif; ?>
+	    <?php echo PL_Logging::mixpanel_inline_js(); ?>
+
+		<?php if ( self::is_onboarding() ): ?>
+		    <!-- Tooltip box -->
+		    <div id="tooltip" class="tip">
+		      <a class="close" href="#"></a>    
+		    	<h4>Welcome!</h4>
+		      <p class="desc">Great!  You're making all the right moves.  We're going to take you into the main admin panel now so you can further customize your web site.<br />
+		      <br />You can always return to this customization wizard by clicking Appearance in the main menu, then clicking "Customize."</p>
+		      <p class="link"><a href="#">Let's Get Started</a></p>
+		    </div>
+		 <?php endif; ?>
 
 	  <?php
 	}

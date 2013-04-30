@@ -94,15 +94,14 @@ class PLS_Slideshow {
         /** Check cache, return something is there **/
         $cache = new PLS_Cache('slide');
         if ($result = $cache->get($args)) {
-          return $result;
+            return $result;
         }
         
         /** Extract all args for easy usage **/
-        extract( $args, EXTR_SKIP ); 
+        extract($args, EXTR_SKIP); 
 
         /** If the slideshow data is null or not an array AND the plugin is working, try to fetch the proper data... **/
         if ( (!$data || !is_array($data)) && !pls_has_plugin_error() ) {
-
             /** Data assumed to take this form. */
             $data = array('images' => array(),'links' => array(),'captions' => array());
 
@@ -143,7 +142,7 @@ class PLS_Slideshow {
                                 if (is_array($listing['images']) && isset($listing['images'][0]['order'])) {
                                     foreach ($listing['images'] as $key => $image) {
                                         if ($image['order'] == 1) {
-                                            $data['images'][] = $image['url'];
+                                            $data['images'][$index] = $image['url'];
                                             // break, just in case the listing has more than one '1' in the 'order' param
                                             break;
                                         }
@@ -152,11 +151,11 @@ class PLS_Slideshow {
                                             $first_valid_img_url = $image['url'];
                                         }
                                     }
-                                } 
+                                }
                                 
                             	// If image still isn't set, use first valid image URL discovered above, or just set to default...
-                            	if (empty($data['images'])) {
-                                    $data['images'][] = isset($first_valid_img_url) ? $first_valid_img_url : self::$default_img_url;
+                            	if (empty($data['images'][$index])) {
+                                    $data['images'][$index] = isset($first_valid_img_url) ? $first_valid_img_url : self::$default_img_url;
                                 }
 
                                 $data['type'][] = 'listing';
@@ -167,7 +166,6 @@ class PLS_Slideshow {
                             }
                             break;
 
-                        case 'default':
                         case 'custom':
                             $is_empty = empty($slide['image']) && empty($slide['link']) && empty($slide['image']) && empty($slide['html']);
 
@@ -219,8 +217,8 @@ class PLS_Slideshow {
         /** Create the slideshow */
         $html = array('slides' => '', 'captions' => '');
 
-        if ( is_array($data['images']) ) {
-	        foreach( $data['images'] as $index => $slide_src ) {
+        if (is_array($data['images'])) {
+	        foreach ($data['images'] as $index => $slide_src) {
 	            $extra_attr = array();
 	            $extra_attr['title'] = '';
 	
@@ -230,7 +228,7 @@ class PLS_Slideshow {
 	                $extra_attr['title'] = "#caption-{$index}";
 	            }
 	            
-	            if( isset($data['type'][$index]) ) {
+	            if (isset($data['type'][$index])) {
 	                // Get image, but only Dragonfly listing images
                     switch ($data['type'][$index]) {
                         case "listing":
@@ -381,7 +379,7 @@ class PLS_Slideshow {
                 #slider, #slider img {
                     width:<?php echo $width; ?>px !important;
                     height:<?php echo $height; ?>px !important;
-                    background: #000 url( <?php echo PLS_EXT_URL; ?> '/orbit-slider/orbit/loading.gif') no-repeat center center; 
+                    background: #000 url('<?php echo PLS_EXT_URL; ?>/slideshow/orbit/orbit/loading.gif') no-repeat center center; 
                     overflow: hidden;
                 }
             </style>

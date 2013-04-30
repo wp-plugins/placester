@@ -93,7 +93,7 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
             wp_register_script( 'chosen', trailingslashit( PLS_JS_URL ) . 'libs/chosen/chosen.jquery.min.js' , array( 'jquery' ), NULL, false );
             wp_register_script( 'chosen-custom', trailingslashit( PLS_JS_URL ) . 'libs/chosen/chosen-custom.js' , array( 'jquery' ), NULL, false );
             wp_register_style( 'chosen', trailingslashit( PLS_JS_URL ) . 'libs/chosen/chosen.css' );
-            /** Enqueue scrip and styles only if supported. */
+            /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['chosen'] ) ) {
                 if ( in_array( 'script', $js[0]['chosen'] ) ) {
                     wp_enqueue_script( 'chosen' );
@@ -110,7 +110,7 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
             /** Register the script and style. */
             wp_register_script( 'spinner', trailingslashit( PLS_JS_URL ) . 'libs/spinner/spinner.js' , array( 'jquery'), NULL, true );
             wp_register_style( 'spinner', trailingslashit( PLS_JS_URL ) . 'libs/spinner/spinner.css' );
-            /** Enqueue scrip and styles only if supported. */
+            /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['spinner'] ) ) {
                 if ( in_array( 'script', $js[0]['spinner'] ) ) {
                     wp_enqueue_script( 'spinner' );
@@ -119,11 +119,23 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
             }
         }
         
+        if ( array_key_exists( 'picturefill', $js[0] ) ) {
+        	/** Register the script and style. */
+        	wp_register_script( 'picturefill', trailingslashit( PLS_JS_URL ) . 'libs/picturefill/picturefill.js' , array( 'jquery'), NULL, true );
+        	
+        	/** Enqueue script and styles only if supported. */
+        	if ( is_array( $js[0]['picturefill'] ) ) {
+        		if ( in_array( 'script', $js[0]['picturefill'] ) ) {
+        			wp_enqueue_script( 'picturefill' );
+        		}
+        	}
+        }
+        
         if ( array_key_exists( 'masonry', $js[0] ) ) {
             /** Register the script and style. */
             wp_register_script( 'masonry', trailingslashit( PLS_JS_URL ) . 'scripts/masonry.js' , array( 'jquery'), NULL, true );
 
-            /** Enqueue scrip and styles only if supported. */
+            /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['masonry'] ) ) {
                 if ( in_array( 'script', $js[0]['masonry'] ) ) {
                     wp_enqueue_script( 'masonry' );
@@ -134,7 +146,7 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
         if ( array_key_exists( 'datatable', $js[0] ) ) {
             /** Register the script and style. */
             wp_register_script( 'datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array( 'jquery'), NULL, true );
-            /** Enqueue scrip and styles only if supported. */
+            /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['datatable'] ) ) {
                 if ( in_array( 'script', $js[0]['datatable'] ) ) {
                     wp_enqueue_script( 'datatable' );
@@ -172,7 +184,7 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
             wp_register_script( 'tabs', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/tabs.js' , array( 'jquery'), NULL, true );
             wp_register_script( 'rangeinput', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/rangeinput.js' , array( 'jquery'), NULL, true );
             wp_register_script( 'validator', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/validator.js' , array( 'jquery'), NULL, true );
-            /** Enqueue scrip and styles only if supported. */
+            /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['jquery-tools'] ) ) {
                 if ( in_array( 'script', $js[0]['jquery-tools'] ) ) {
                     wp_enqueue_script( 'tabs' );
@@ -186,7 +198,7 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
             /** Register the script and style. */
         	wp_enqueue_script( 'modernizr' );
         	wp_register_script( 'form', trailingslashit( PLS_JS_URL ) . 'scripts/form.js' , array('jquery', 'modernizr'), NULL, true );
-            /** Enqueue scrip and styles only if supported. */
+            /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['form'] ) ) {
                 if ( in_array( 'script', $js[0]['form'] ) ) {
                     wp_enqueue_script( 'form' );
@@ -202,7 +214,7 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
         if ( array_key_exists( 'cookies', $js[0] ) ) {
             /** Register the script and style. */
             wp_register_script( 'cookies', trailingslashit( PLS_JS_URL ) . 'libs/cookies/cookies.jquery.js' , array( 'jquery' ), NULL, false );
-            /** Enqueue scrip and styles only if supported. */
+            /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['cookies'] ) ) {
                 if ( in_array( 'script', $js[0]['cookies'] ) ) {
                   wp_enqueue_script( 'cookies' );
@@ -213,7 +225,7 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
         if ( array_key_exists( 'lead-capture', $js[0] ) ) {
             /** Register the script and style. */
             wp_register_script( 'lead-capture', trailingslashit( PLS_JS_URL ) . 'scripts/lead-capture.js' , array( 'jquery' ), NULL, true );
-            /** Enqueue scrip and styles only if supported. */
+            /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['lead-capture'] ) ) {
                 if ( in_array( 'script', $js[0]['lead-capture'] ) ) {
                   wp_enqueue_script( 'lead-capture' );

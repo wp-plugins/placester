@@ -110,7 +110,7 @@ class PL_Css_Helper {
 		self::register_enqueue_if_not('onboard-css', trailingslashit(PL_CSS_URL) . 'onboard.css');
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 
-		if ( PL_Bootup::is_theme_switched() ) {
+		if ( PL_Bootup::is_theme_switched() && !PL_Customizer_Helper::is_onboarding() ) {
 			self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');
 	    }
 	}

@@ -3,7 +3,10 @@
 class PLS_Widget_Feedburner_Widget extends WP_Widget {
 
   function PLS_Widget_Feedburner_Widget() {
-    $widget_ops = array( 'classname' => '', 'description' => 'Set your Feedburner URI in theme options.' );
+    $widget_ops = array( 
+      'classname' => 'pls-feedburner-widget',
+      'description' => 'Set your Feedburner URI in theme options.'
+    );
 
     /* Widget control settings. */
     $control_ops = array( 'width' => 200, 'height' => 290 );

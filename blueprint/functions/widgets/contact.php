@@ -3,7 +3,10 @@
 class Placester_Contact_Widget extends WP_Widget {
 
   function Placester_Contact_Widget() {
-    $widget_ops = array('classname' => 'Placester_Contact_Widget', 'description' => 'Works only on the Property Details Page.' );
+    $widget_ops = array(
+      'classname' => 'pls-contact-form Placester_Contact_Widget',
+      'description' => 'Works only on the Property Details Page.'
+    );
     $this->WP_Widget( 'Placester_Contact_Widget', 'Placester: Contact Form', $widget_ops );
   }
 
@@ -100,6 +103,11 @@ class Placester_Contact_Widget extends WP_Widget {
         $question_label = apply_filters('question_label', !isset($instance['question_label']) ? 'Questions/Comments' : $instance['question_label']);
         $question_value = apply_filters('question_value', !isset($instance['question_value']) ? 'Any questions for us?' : $instance['question_value']);
         
+        $custom_link = apply_filters('custom_link', !isset($instance['custom_link']) ? '' : $instance['custom_link']);
+        $custom_link_target = apply_filters('custom_link_target', !isset($instance['custom_link_target']) ? '_blank' : $instance['custom_link_target']);
+
+        $form_title = apply_filters('form_title', !isset($instance['form_title']) ? '' : $instance['form_title']);
+
         // Reguired Attribute
         $name_required = isset($instance['name_required']) && $instance['name_required'] == "false" ? false : true;
         $email_required = isset($instance['email_required']) && $instance['email_required'] == "false" ? true : true;
@@ -112,6 +120,7 @@ class Placester_Contact_Widget extends WP_Widget {
         $email_error = isset($instance['email_error']) && $instance['email_error'] != "" ? $instance['email_error'] : "A valid email is required.";
         $phone_error = isset($instance['phone_error']) && $instance['phone_error'] != "" ? $instance['phone_error'] : "A valid phone is required.";
         $question_error = isset($instance['question_error']) && $instance['question_error'] != "" ? $instance['question_error'] : "Don't forget to leave a question or comment.";
+        $subject_error = isset($instance['subject_error']) && $instance['subject_error'] != "" ? $instance['subject_error'] : "What subject would you like to speak about?";
 
         // Classes
         $container_class = apply_filters('container_class', empty($instance['container_class']) ? '' : $instance['container_class']);
@@ -195,6 +204,9 @@ class Placester_Contact_Widget extends WP_Widget {
                     <input type="hidden" name="bcc_value" value="<?php echo @$bcc_value;  ?>">
                     <input type="hidden" name="back_on_lc_cancel" value="<?php echo @$back_on_lc_cancel; ?>">
                     <input type="hidden" name="form_submitted" value="0">
+                    <input type="hidden" name="custom_link" value="<?php echo @$custom_link; ?>">
+                    <input type="hidden" name="custom_link_target" value="<?php echo @$custom_link_target; ?>">
+                    <input type="hidden" name="form_title" value="<?php echo @$form_title; ?>">
 
                     <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
                     <label class="required" for="name"><?php echo $name_label; ?></label>
@@ -242,6 +254,7 @@ class Placester_Contact_Widget extends WP_Widget {
                     <textarea rows="5" id="question" name="question" placeholder="<?php echo $question_value; ?>" tabindex="<?php echo $sidebar_pos; ?>6" <?php echo $question_required == true ? 'required="required"' : '' ?> <?php echo !empty($question_error) ? 'data-message="'.$question_error.'"' : ''; ?>></textarea>
                     <?php echo empty($instance['textarea_container']) ? '' : '</div>'; ?>
                     
+
                   <input type="submit" value="<?php echo $submit_value; ?>" class="<?php echo $button_class; ?>" tabindex="<?php echo $sidebar_pos; ?>7" />
                   
                   <div class="pls-contact-form-loading" style='display:none;'>
@@ -402,6 +415,15 @@ function ajax_placester_contact() {
         $headers[] = 'Bcc: '.$_POST['bcc_value'];
       }
 
+      // Append form title
+      if (!empty($_POST['form_title'])) {
+        $message .= "This message was sent from the contact form named: \n" . $_POST['form_title'];
+      }
+      // Append form's custom link
+      if (!empty($_POST['custom_link'])) {
+        $message .= "The visitor was sent to: \n" . $_POST['custom_link'];
+      }
+
       if (trim($_POST['email_confirmation']) == true) {
         wp_mail($email, 'Email confirmation was sent to ' . $_POST['email'] . ' from ' . home_url(), $message, $headers);
       } elseif ($email) {
@@ -411,6 +433,7 @@ function ajax_placester_contact() {
       $name = $_POST['name'];
       PLS_Membership::create_person(array('metadata' => array('name' => $name, 'email' => $_POST['email'] ) )) ;
 
+      // Send a email confirmation
       if (trim($_POST['email_confirmation']) == true) {
 
         ob_start();
@@ -418,6 +441,12 @@ function ajax_placester_contact() {
           $message_to_submitter = ob_get_clean();
 
         wp_mail( $_POST['email'], 'Form Submitted' . $subject, $message_to_submitter );
+      }
+
+      // As long as there are no errors we'll allow custom links to override
+      // the normal form submission. 
+      if (!empty($_POST['custom_link'])) {
+        return false;
       }
 
       echo "sent";

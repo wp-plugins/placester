@@ -1954,7 +1954,51 @@ endif; // End Check Class Exists
   }
 
 
+  /**
+   * From the tax meta, get image from other source
+   *
+   * Note: the image existence is not verified, just the new URL returned
+   *
+   * @param string $image_src the taxmeta image source
+   * @param int $width the width from add_image_size
+   * @param int $height the height from add_image_size
+   * $param boolean $check_file check if the new image file exists 
+   * @return the new URL or false
+   */
+  function pls_get_other_image_size_src( $image_src, $width, $height, $check_file = TRUE ) {
+	
+	$new_dimension = "{$width}x{$height}";
+  	$new_image_src = preg_replace( '/\d{1,4}x\d{1,4}/', $new_dimension, $image_src );
 
+  	// in case of an error
+  	if( is_null( $new_image_src ) ) { 
+  		return $image_src;
+  	}
+  	
+  	// if the replace went well
+  	if( $new_image_src !== $image_src ) {
+  		return $new_image_src;
+  	}
+  	
+  	// if no match was found, then append the dimensions at the end
+  	$extension_dot_index = strrpos( $image_src, '.' );
+  	$file_path = substr($image_src, 0, $extension_dot_index);
+  	$file_ext = substr($image_src, $extension_dot_index + 1);
+  	
+  	// get new image src
+  	$new_image_src = $file_path . '-' . $new_dimension . '.' . $file_ext;
+  	
+  	// if we've disabled the check
+  	if( ! $check_file ) {
+  		return $new_image_src;
+  	}
+  	
+  	if( @getimagesize( $new_image_src ) ) {
+  		return $new_image_src;
+  	}
+  	return $image_src;
+  }
+  
   
 
 

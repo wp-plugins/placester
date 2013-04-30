@@ -4,7 +4,7 @@ Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
 Author: Placester.com
-Version: 1.1.7
+Version: 1.1.8
 Author URI: https://www.placester.com/
 */
 
@@ -27,7 +27,7 @@ Author URI: https://www.placester.com/
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define('PL_PLUGIN_VERSION','1.1.6');
+define('PL_PLUGIN_VERSION','1.1.8');
 
 define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
 define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
@@ -177,7 +177,7 @@ function load_blueprint_from_plugin()
 {
     if (!class_exists('Placester_Blueprint')) {
         require_once('blueprint/blueprint.php');
-        new Placester_Blueprint('2.1', 'plugin');
+        new Placester_Blueprint('2.5', 'plugin');
         add_action('init', 'blueprint_settings');
         
     }
@@ -219,7 +219,7 @@ function placester_admin_menu() {
                                'Global Property Filtering' => '_filtering', 
                                'Polygon Controls' => '_polygons', 
                                'Property Pages' => '_property_pages', 
-                               'Template Controls' => '_template', 
+                               // 'Template Controls' => '_template', 
                                'International Settings' => '_international' );
     foreach ($settings_subpages as $name => $page_url) {
         add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    

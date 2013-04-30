@@ -90,8 +90,7 @@ jQuery(document).ready(function($) {
 				mixpanel.track("Registration - Integration Requested");
 
 				// Start free trial...
-				$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {
-					console.log(result);
+				$.post(ajaxurl, {action: "start_subscription_trial", source: "wi"}, function (result) {
 					// Instrument...
 					mixpanel.track("Registration - Trial Started",  {'source' : 'Activation Modal'});
 				}, "json");
@@ -105,13 +104,16 @@ jQuery(document).ready(function($) {
 				$(this).dialog("close");
 				
 				// Reload page to reflect the addition of an API key...
-				window.location.href = window.location.href;
+				setTimeout(function () { window.location.href = window.location.href; }, 1000);
             }
         }, 
         4 : {
             text: "I prefer email",
             class: "linkify-button hide i-prefer-email-btn",
             click: function() {
+            	// Instrument...
+            	mixpanel.track("Registration - MLS through Email");
+
 				// remove current dialog
 				$('#idx-contact-inner').addClass('hide');
 				$('.ui-dialog-title h3').html("Congratulations! IDX / MLS Request Submitted");
@@ -161,7 +163,7 @@ jQuery(document).ready(function($) {
 
 					// Update user's account with phone number in Rails...
 					$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) {
-						console.log(result);
+						// console.log(result);
 					}, "json");
 				} 
 				else {
@@ -178,8 +180,11 @@ jQuery(document).ready(function($) {
             	// Instrument...
             	mixpanel.track("Registration - Complete");
 
+				// Marks flag that prevents similar IDX prompts elsewhere in the app from firing in the future...
+				$.post(ajaxurl, {action: 'idx_prompt_completed', mark_completed: true}, function (result) { }, "json");
+
 				// Reload page to reflect the addition of an API key...
-				window.location.href = window.location.href;            
+				setTimeout(function () { window.location.href = window.location.href; }, 2000);            
 			}            
 		}
     };
@@ -197,11 +202,11 @@ jQuery(document).ready(function($) {
 					autoOpen: true,
 					draggable: false,
 					modal: true,
+					position: 'center',
 					title: '<h3>' + args.title + '</h3>',
 					width: args.width,
 					buttons: args.buttons
 				});
-				$('#signup_wizard').dialog("option", "position", "center");
 			};
 		});
 	}

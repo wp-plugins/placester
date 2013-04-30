@@ -46,7 +46,7 @@ jQuery(document).ready(function($) {
 				} 
 				else if (response && response.eligible_for_trial) {
 					// console.log('prompt free trial');
-					prompt_free_trial('Start your 15 day free trial to activate a Premium theme', success_callback, failure_callback);
+					prompt_free_trial('Start your 15 day free trial to activate a Premium theme', success_callback, failure_callback, 'wtp');
 				} 
 				else {
 					failure_callback();

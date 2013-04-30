@@ -3,7 +3,10 @@
 class PLS_Widget_Twitter extends WP_Widget {
 
   function __construct() {
-    $widget_ops = array( 'classname' => 'example', 'description' => 'Change the title of the "Twitter" widget.' );
+    $widget_ops = array(
+      'classname' => 'pls-twitter-widget',
+      'description' => 'Change the title of the "Twitter" widget.'
+    );
 
     /* Widget control settings. */
     $control_ops = array( 'width' => 200, 'height' => 350 );
@@ -46,7 +49,7 @@ class PLS_Widget_Twitter extends WP_Widget {
         
         <?php echo $before_title . $title . $after_title; ?>
         
-        <p><a href="https://twitter.com/<?php echo $username; ?>">@<?php echo $username ?></a></p>
+        <p class="twitter-handle"><a href="https://twitter.com/<?php echo $username; ?>">@<?php echo $username ?></a></p>
         
         <section id="twitter-sidebar-widget">
           <?php echo get_twitter_feed($username, $count); ?>
@@ -87,72 +90,68 @@ class PLS_Widget_Twitter extends WP_Widget {
 // Widget output
 function get_twitter_feed($username, $count) {
 
-  // manually delete transient
-  delete_transient('twitter_feed');
+  $cache = new PLS_Cache('fb_feed');
+  if ($result = $cache->get($username)) {
+    return $result;
+  }
+  
+  if (empty($username)) {
+    return;
+  }
+  
+  $name_count = strlen($username);
+  $twitter_feed = 'https://api.twitter.com/1/statuses/user_timeline.rss?screen_name=' . $username;
+  $feed = fetch_feed($twitter_feed);
 
-  // Get any existing copy of our transient data
-  if ( false === ( $twitter_feed_html = get_transient( 'twitter_feed' ) ) ) {
-      // It wasn't there, so regenerate the data and save the transient
-      
-      if (empty($username)) {
-        return;
+  if (!is_wp_error( $feed ) ) { // Checks that the object is created correctly 
+  
+    if ($feed->get_items() != null) {
+      $items = $feed->get_items();
+    } else {
+      break;
+    }
+
+    $twitter_feed_html = "";
+
+    foreach ( $feed->get_items() as $key => $item ) {
+
+      // Get title value hash
+      $full_title = $item->get_title();
+
+      $date = $item->get_date('Y-m-d');
+      $date_object = new DateTime($date);
+
+      $month = $date_object->format('M');
+      $day = $date_object->format('j');
+      $year = $date_object->format('Y');
+      // $hour = date('g', $date);
+      // $minute = date('i', $date);
+      // $am_pm = date('a', $date);
+
+      $date_string = '<p class="tweet-date"><span class="tweet-month">'.$month.'</span> <span class="tweet-day">'.$day.'</span> <span class="tweet-day">'.$year.'</span></p>';
+        // <p class="tweet-time"><span class="tweet-hour">'.$hour.'</span>:<span class="tweet-minute">'.$minute.'</span> <span class="tweet-am-pm">'.$am_pm.'</span></p>';
+
+      // Remove "gvinter" from the twitter feed
+      $title = substr($full_title, $name_count + 2);
+
+      // The Regular Expression filter
+      $reg_exUrl = "/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/";
+
+      // Check if there is a url in the text
+      if(preg_match($reg_exUrl, $title, $url)) {
+        // make the urls hyper links
+        $filtered_title = preg_replace($reg_exUrl, '<a href="'.$url[0].'" rel="nofollow" target="_blank">'.$url[0].'</a>', $title);
+      } else {
+        // if no urls in the text just return the text
+        $filtered_title = $title;
       }
-      
-      $name_count = strlen($username);
-      $twitter_feed = 'https://api.twitter.com/1/statuses/user_timeline.rss?screen_name=' . $username;
-      $feed = fetch_feed($twitter_feed);
 
-      if (!is_wp_error( $feed ) ) { // Checks that the object is created correctly 
-        
-          if ($feed->get_items() != null) {
-            $items = $feed->get_items();
-          } else {
-            break;
-          }
+      $twitter_feed_html = $twitter_feed_html . '<div class="single-tweet"><p class="tweet-content">' . $filtered_title . '</p>' . '<div class="tweet-date-wrapper">' . $date_string . '</div></div>';
 
-          $twitter_feed_html = "";
+      if( $key >= ($count - 1) ) { break; }
 
-          foreach ( $feed->get_items() as $key => $item ) {
+    } //endforeach
 
-            // Get title value hash
-            $full_title = $item->get_title();
-
-            $date = $item->get_date('Y-m-d');
-            $date_object = new DateTime($date);
-
-            $month = $date_object->format('M');
-            $day = $date_object->format('j');
-            $year = $date_object->format('Y');
-            // $hour = date('g', $date);
-            // $minute = date('i', $date);
-            // $am_pm = date('a', $date);
-
-            $date_string = '<p class="tweet-date"><span class="tweet-month">'.$month.'</span> <span class="tweet-day">'.$day.'</span> <span class="tweet-day">'.$year.'</span></p>';
-              // <p class="tweet-time"><span class="tweet-hour">'.$hour.'</span>:<span class="tweet-minute">'.$minute.'</span> <span class="tweet-am-pm">'.$am_pm.'</span></p>';
-
-            // Remove "gvinter" from the twitter feed
-            $title = substr($full_title, $name_count + 2);
-
-            // The Regular Expression filter
-            $reg_exUrl = "/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/";
-
-            // Check if there is a url in the text
-            if(preg_match($reg_exUrl, $title, $url)) {
-              // make the urls hyper links
-              $filtered_title = preg_replace($reg_exUrl, '<a href="'.$url[0].'" rel="nofollow" target="_blank">'.$url[0].'</a>', $title);
-            } else {
-              // if no urls in the text just return the text
-              $filtered_title = $title;
-            }
-
-            $twitter_feed_html = $twitter_feed_html . '<div class="single-tweet"><p class="tweet-content">' . $filtered_title . '</p>' . '<div class="tweet-date-wrapper">' . $date_string . '</div></div>';
-
-            if( $key >= ($count - 1) ) { break; }
-
-          } //endforeach
-
-          set_transient( 'twitter_feed', $twitter_feed_html, 60*60 );
-        }
-        return $twitter_feed_html;
+    return $twitter_feed_html;
   }
 }

@@ -43,6 +43,10 @@ jQuery(document).ready(function($) {
       // Show loading
       widget.find('.pls-contact-form-loading').show();
       
+      // Custom Link & Target if not empty
+      var custom_link = $(this).children('input[name="custom_link"]').val();
+      var custom_link_target = $(this).children('input[name="custom_link_target"]').val();
+
       event.preventDefault ? event.preventDefault() : event.returnValue = false;
       
       // Set Cookie
@@ -81,6 +85,12 @@ jQuery(document).ready(function($) {
                   }
                   
               } else { // Unsuccessful!
+
+                  // Open custom link in new window
+                  if (custom_link != '') {
+                    window.open(custom_link, custom_link_target);
+                  };
+                  
                   // hide spinner
                   widget.find('.pls-contact-form-loading').hide();
               }

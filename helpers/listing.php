@@ -366,12 +366,12 @@ class PL_Listing_Helper {
 	// helper sets keys to values
 	public function types_for_options() {
 		$options = array();
-		$response = PL_Listing::aggregates(array('keys' => array('property_type')));
+		$response = PL_Listing::aggregates(array('keys' => array('cur_data.prop_type')));
 		if(!$response) {
 			return array();
 		}
 		// might be able to do this faster with array_fill_keys() -pk
-		foreach ($response['property_type'] as $key => $value) {
+		foreach ($response['cur_data.prop_type'] as $key => $value) {
 			$options[$value] = $value;
 		}
 		ksort($options);

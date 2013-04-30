@@ -164,6 +164,15 @@ class PLS_Style {
             case 'border':
                 return self::handle_border($value, $id, $default, $type, $important);
                 break;
+            case 'box_shadow':
+            	return self::handle_box_shadow($value, $id, $default, $type, $important);
+            	break;
+            case 'border_shadow':
+                $border_shadow_style = self::handle_border($value, $id, $default, $type, $important);
+                $border_shadow_style .= self::handle_box_shadow($value, $id, $default, $type, $important);
+				
+                return $border_shadow_style;
+                break;
         }
     }
 
@@ -282,6 +291,34 @@ class PLS_Style {
 			} else {
 				return '';
 			}
+    }
+    
+    private static function handle_box_shadow ($value, $id, $default, $type, $important) {
+    
+    	if (is_array($value)) {
+    
+    		$shadow_style = "box-shadow: ";
+    		$webkit_style = "-webkit-box-shadow: ";
+    
+    		foreach ($value as $key => $value) {
+    			if($key == "color") {
+    				$shadow_style .= $value . ' ';
+    				$webkit_style .= $value . ' ';
+    			}
+    			else if($key == "size") {
+    				$shadow_style .= "{$value}px {$value}px {$value}px {$value}px ";
+    				$webkit_style .= "{$value}px {$value}px {$value}px {$value}px ";
+    			}
+    		}
+    		
+    		$shadow_style .= "!important; ";
+    		$webkit_style .= "!important; ";
+    		
+    		return $shadow_style . "\n" . $webkit_style . "\n";
+
+    	} else {
+    		return '';
+    	}
     }
 
 
@@ -463,7 +500,7 @@ class PLS_Style {
     private static function is_special_case($option_type)
     {
     	// adding special case for bg-gradient
-        $special_id_cases = array('typography', 'background', 'border', 'bg_gradient');
+        $special_id_cases = array('typography', 'background', 'border', 'box_shadow', 'border_shadow', 'bg_gradient');
         if ( in_array($option_type, $special_id_cases) ) {
             return true;
         } 

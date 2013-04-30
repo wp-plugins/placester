@@ -38,6 +38,7 @@ jQuery(window).load( function () {
 
 window.onbeforeunload = function () {
 	if ( customizer_global.stateAltered ) {
+		mixpanel.track("Customizer - Leaving with unsaved changes");
 		return 'You have unsaved changes that will be lost!';
 	}
 }
@@ -149,10 +150,17 @@ jQuery(document).ready(function($) {
 		var activeLi = $('#navlist li.active');
 		if ( activeLi.length > 0 ) {
 			activeLi.each( function() { $(this).toggleClass('active'); } );
+
+			//record the user closing the pane.
+			mixpanel.track("Customizer - Pane Closed", {'theme' : $('#theme_choices').val() });
 		}
 	});
 
 	$('#navlist li:not(.no-pane)').on('click', function (event) {
+
+		//pass pane opened event to mixpanel
+		mixpanel.track("Customizer - Pane Opened", {'type' : $(this).attr('id'), 'theme' : $('#theme_choices').val() });
+
 		event.preventDefault();
 
 		// If activated menu section is clicked OR preview is refreshing/loading, do nothing...
@@ -189,6 +197,8 @@ jQuery(document).ready(function($) {
 		// Set this back to false so that user won't be prompted about "losing changes" 
 		// when re-directing back to homepage...
 		customizer_global.stateAltered = false;
+
+		mixpanel.track("Customizer - Saved");
 		
 		var home_url = ( window.location.origin ) ? window.location.origin : ( window.location.protocol + "//" + window.location.host );
 
@@ -198,6 +208,62 @@ jQuery(document).ready(function($) {
 	$('.control-container label').on('click', function (event) {
 		$(this).next('input, textarea').focus();
 	});
+
+
+ /*
+  * Handles integration pane...
+  */
+
+	$('#customize_integration_submit').on('click', function() {
+
+		$.post(ajaxurl, {action: "start_subscription_trial", source: "wci"}, function (result) {
+			// Instrument...
+			mixpanel.track("Registration - Trial Started",  {'source' : 'Customizer'});
+		}, "json");
+
+		// Show the phone number section.
+		$('#customizer_mls_phone_section').show();
+		$('#customizer_mls_request_buttons').hide();
+	});
+
+	$('#customize_integration_phone_submit').on('click', function () {
+
+		// In case this is visible...
+		$('#message.error').remove();
+
+		var phone_number = $('#pls_integration_form #phone').val();
+		var valid = validate_phone_number(phone_number);
+		var is_blank = (phone_number.length == 0);
+
+		// Functionality specifically for when the user enters a valid phone number...
+		if (valid) {
+			// Instrument...
+			mixpanel.track("Customizer - Phone - Submitted");
+
+			// Update user's account with phone number in Rails...
+			$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) { phone_success(); }, "json");
+		} else {
+			// Entered number is invalid!
+			var msg = "Please enter a valid phone number (or click 'No Thanks')";
+			$('#custmizer_mls_phone_validation').prepend('<div id="message" class="error"><h3>' + msg + '</h3></div>');
+			$('#pls_integration_form #phone').addClass('invalid');
+		}
+
+	});
+
+	function phone_success() {
+		mixpanel.track("Customizer - Phone - Saved");
+		// Show integration video + hide the form...
+		
+		$('#mls_submitted').show();
+		$('#pls_integration_form').hide();
+		$('#mls_content h1').html('Congratulations!');
+		$('#mls_content h3').html('IDX / MLS Request Submitted');
+		$(this).hide();
+
+		// Set completion flag so this screen doesn't appear again...
+		$.post(ajaxurl, {action: 'idx_prompt_completed', mark_completed: true}, function (result) { }, "json");
+	}
 
 
  /*
@@ -231,9 +297,6 @@ jQuery(document).ready(function($) {
 
 	function activateTheme() {
 		var data = { action: 'change_theme', new_theme: $('#theme_choices').val() };
-		
-		// console.log(data);
-		// return;
 
 		// Show spinner to indicate theme activation is in progress...
 		var infoElem = $('#theme_info');
@@ -244,11 +307,14 @@ jQuery(document).ready(function($) {
 		submitElem.attr('disabled', 'disabled');
 		submitElem.addClass('bt-disabled');
 
+		//pass pane opened event to mixpanel
+		mixpanel.track("Customizer - Theme Changed", {'theme' : $('#theme_choices').val() });
+
 		$.post(ajaxurl, data, function (response) {
 	        if ( response && response.success ) {
 	            // Reload customizer to display new theme...
 	            var curr_href = window.location.href;
-	            
+        
 	           	if ( curr_href.indexOf('onboard=true') != -1 && curr_href.indexOf('theme_changed=true') == -1 ) {
 	            	window.location.href = curr_href + '&theme_changed=true';
 	            }
@@ -298,7 +364,7 @@ jQuery(document).ready(function($) {
 		  } 
 		  else if (response && response.eligible_for_trial) {
 		  	// console.log('prompt free trial');
-		  	prompt_free_trial('Start your 15 day Free Trial to Activate a Premium Theme', success_callback, failure_callback);
+		  	prompt_free_trial('Start your 15 day Free Trial to Activate a Premium Theme', success_callback, failure_callback, 'wc');
 		  } 
 		  else {
 		  	failure_callback();
@@ -411,7 +477,7 @@ jQuery(document).ready(function($) {
   */	
 
   	/* --- Blog Post --- */
-
+/*
 	function toggleInvalid (item, invalid) {
         if (invalid) {
 		  	item.addClass('invalid');
@@ -466,10 +532,11 @@ jQuery(document).ready(function($) {
 	        }
 	    },'json');
   	});
-
+*/
 	
 	/* --- Create a Listing --- */
 
+/*
   	$('#submit_listing').on('click', function (event) {
 		// $('#loading_overlay').show();
 
@@ -527,7 +594,7 @@ jQuery(document).ready(function($) {
 			}
 		}, 'json');
     });
-
+*/
 
 	/* -- Custom CSS -- */
 
@@ -596,6 +663,10 @@ jQuery(document).ready(function($) {
 	    $.post(ajaxurl, data, function (response) {
 	    	// console.log(response);
 	    	if (response && response.styles) {
+
+				//pass pane opened event to mixpanel
+				mixpanel.track("Customizer - Color Changed", {'theme' : $('#theme_choices').val(), 'color' : data.color });
+
 	    		// Change the linked CSS textarea to trigger an update of the preview pane...
 	    		updateCustomCSS(response.styles);
 

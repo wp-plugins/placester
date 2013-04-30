@@ -26,14 +26,14 @@ include(trailingslashit ( PLS_EXT_DIR ) . 'image-util/image-resize-writer.php');
 PLS_Image::init();
 class PLS_Image {
 
-	static function init() {
+	public static function init() {
 
 		if (!is_admin()) {
 			add_action('init', array(__CLASS__,'enqueue'));
 		}
 	}
 
-    static function enqueue() {
+    public static function enqueue() {
 
         $image_util_support = get_theme_support( 'pls-image-util' );
 
@@ -67,26 +67,26 @@ class PLS_Image {
         }
     }
 
-	static function load ( $old_image = '', $args = null) {
+	public static function load ($old_image = '', $args = null) {
 		$new_image = false;
 
 		if (isset($args['fancybox']) && $args['fancybox']) {
 			unset($args['fancybox']);
 		}
 
-    $args = self::process_defaults($args);
-    $disable_dragonfly = pls_get_option('pls-disable-dragonfly');
-    
-    // use standard default image
+	    $args = self::process_defaults($args);
+	    $disable_dragonfly = pls_get_option('pls-disable-dragonfly');
+	    
+	    // use standard default image
 		if ( $old_image === '' || empty($old_image)) {
-
-      if ( !empty($args['null_image']) ) {
-        $old_image = $args['null_image'];
-      } else {
-        $old_image = PLS_IMG_URL . "/null/listing-1200x720.jpg";
-      }
-
-		} else if ( $args['allow_resize'] && $args['resize']['w'] && $args['resize']['h'] && get_theme_support('pls-dragonfly') && ($disable_dragonfly != true)) {
+			if ( !empty($args['null_image']) ) {
+				$old_image = $args['null_image'];
+			} 
+			else {
+				$old_image = PLS_IMG_URL . "/null/listing-1200x720.jpg";
+			}
+		} 
+		elseif ( $args['allow_resize'] && $args['resize']['w'] && $args['resize']['h'] && get_theme_support('pls-dragonfly') && ($disable_dragonfly != true)) {
 
 			extract(wp_parse_args(parse_url($old_image), array('query' => '') ));
 
@@ -120,15 +120,15 @@ class PLS_Image {
 		// return the new image if we've managed to create one
 		if ($new_image) {
 			return $new_image;
-		} else {
+		} 
+		else {
 			return $old_image;
 		}
 
 	}
 	
-	static private function as_html ($old_image, $new_image = false, $args )
+	private static function as_html ($old_image, $new_image = false, $args )
 	{
-
 		extract( $args, EXTR_SKIP );
 		// echo 'here in html';
 		// pls_dump($html);
@@ -163,7 +163,7 @@ class PLS_Image {
 			'resize' => array(
 				'w' => false,
 				'h' => false
-				),
+			),
 			'allow_resize' => true,
 			'html' => array(
 				'ref' => '',
@@ -172,7 +172,7 @@ class PLS_Image {
 				'img_classes' => '',
 				'alt' => '',
 				'title' => ''
-				),
+			),
 			'as_html' => false,
 			'as_url' => true,
 			'fancybox' => array(

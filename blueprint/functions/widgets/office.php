@@ -4,7 +4,10 @@ class PLS_Widget_Office extends WP_Widget {
 	
 	function PLS_Widget_Office() {
 
-		$widget_ops = array( 'classname' => 'example', 'description' => 'Change the title of the "Our Office" widget.' );
+		$widget_ops = array(
+			'classname' => 'pls-office-widget',
+			'description' => 'Change the title of the "Our Office" widget.'
+		);
 
 		/* Widget control settings. */
 		$control_ops = array( 'width' => 200, 'height' => 350 );

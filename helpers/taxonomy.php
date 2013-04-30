@@ -64,8 +64,9 @@ class PL_Taxonomy_Helper {
 
 	function get_listings_polygon_name ($params) {
 		$polygons = PL_Option_Helper::get_polygons();
+		$neighborhood_polygons = preg_replace("/[\\\\]+'/", "\\\\'", $params['neighborhood_polygons']);
 		foreach ($polygons as $polygon) {
-			if ($polygon['name'] == $params['neighborhood_polygons']) {
+			if ($polygon['name'] == $neighborhood_polygons) {
 				return self::polygon_listings($polygon['vertices'], $params);
 			}
 		}

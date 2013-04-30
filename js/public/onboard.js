@@ -11,54 +11,30 @@ var wizard_global = {
   			link: 'Let\'s Get Started',
   			left: '39%',
   			top: '33%',
-  			next_state: 'theme'
+  			next_state: 'mls'
   		},
+      mls:  {
+        header: 'MLS Integration',
+        content: '',
+        link_text: 'Integrate with your MLS',
+        next_state: 'theme'
+      },
   		theme: {
   			header: 'Theme Selection',
   			content: '',
   			link_text: 'Select a Theme',
-  			next_state: 'title'
+  			next_state: 'colors'
   		},
+      colors: {
+        header: 'Colors & Style',
+        content: '',
+        link_text: 'Customize your Theme',
+        next_state: 'title' // switch back to 'brand' when finished...
+      },
   		title: {
   			header: 'Slogan & Title',
   			content: '',
   			link_text: 'Add a Title',
-  			next_state: 'colors'
-  		},
-  		colors: {
-  			header: 'Colors & Style',
-  			content: '',
-  			link_text: 'Customize your Theme',
-  			next_state: 'mls' // switch back to 'brand' when finished...
-  		},
-  		// brand: {
-  		// 	header: 'Upload Logo',
-  		// 	content: '',
-  		// 	link_text: 'Upload my Logo',
-  		// 	next_state: 'mls'
-  		// },
-  		mls:  {
-  			header: 'MLS Integration',
-  			content: '',
-  			link_text: 'Integrate with your MLS',
-  			next_state: 'listing'
-  		},
-  		listing: {
-  			header: 'Post a Listing',
-  			content: '',
-  			link_text: 'Post my First Listing',
-  			next_state: 'post'
-  		},
-  		post: {
-  			header: 'Make a Blog Post',
-  			content: '',
-  			link_text: 'Make a Post',
-  			next_state: 'analytics'
-  		},
-  		analytics: {
-  			header: 'Analytics',
-  			content: '',
-  			link_text: 'Integrate with Google',
   			next_state: 'confirm'
   		},
   		confirm: {
@@ -86,13 +62,17 @@ var wizard_global = {
           jQuery('#welcome-overlay').fadeIn(500, function () {
             loadState(wiz.initial_state);
           });
+
+          // Instrument...
+          mixpanel.track("Customizer - Loaded");
         }
         else {
           this.active_state = 'theme';
           this.state_num = 1; // This is subject to change...
 
           // Insert menu overlay (to prevent clicking other menu items directly...)
-          generateMenuOverlay();
+          // Commented out for now to test usability
+          // generateMenuOverlay();
 
           // Tack on tooltip display elements needed going forward...
           var tooltip = jQuery('#tooltip');
@@ -200,15 +180,25 @@ jQuery(document).ready(function($) {
       $('#welcome-overlay').remove();
 
       // Insert menu overlay (to prevent clicking other menu items directly...)
-      generateMenuOverlay();
+      // Commented out for now to test usability
+      // generateMenuOverlay();
 
       // Tack on tooltip display elements needed going forward...
       tooltip.addClass('arrow');
       tooltip.find('a.close').show();
 
-      //  Bring the tooltip back into focus with the next state loaded...
+      // Bring the tooltip back into focus with the next state loaded...
 			moveToNextState();
-      loadState(wizard_global.active_state);
+			
+  	  // Added to bring MLS popup directly after "Let's get started"
+  	  if( wizard_global.active_state === 'mls' ) {
+  		  openStatePane();
+  	  } else {
+  		  loadState(wizard_global.active_state);
+  	  }
+
+      // Instrument...
+      mixpanel.track("Customizer - Intro Dismissed");
 		}
 		else {
       // console.log('Here!');
