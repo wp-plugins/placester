@@ -4,11 +4,12 @@ PL_Analytics::init();
 
 class PL_Analytics {
 
-	public static function init() {
-		// Nothing yet...
+	public static function init () {
+		// Hook this event for general actions in the page's footer...
+		add_action('wp_footer', array(__CLASS__, 'print_footer_scripts'));
 	}
 
-	public static function can_collect() {
+	public static function can_collect () {
 		$can_collect;
 		
 		if (defined('HOSTED_PLUGIN_KEY')) {
@@ -21,7 +22,7 @@ class PL_Analytics {
 		return $can_collect;
 	}
 
-	private static function get_admin_info() {
+	private static function get_admin_info () {
 		// Use for API key ID + web_secret
 		$whoami = PL_Helper_User::whoami();
 
@@ -73,7 +74,7 @@ class PL_Analytics {
 		foreach ($type_config["allowed_params"] as $param) {
 			if (isset($args[$param])) {
 				$data[$param] = $args[$param];
-			}	
+			}
 		}
 
 		// Add the "time" arg + value...
@@ -93,7 +94,16 @@ class PL_Analytics {
 	}
 
 	public static function listing_search ($args = array()) {
-		return self::produce_data("listing_search", $args);
+		error_log(var_export($args, true));
+		// return self::produce_data("listing_search", $args);
+	}
+
+	public static function home_view () {
+		return self::produce_data("home_view");	
+	}
+
+	public static function page_view () {
+		return self::produce_data("page_view");	
 	}
 
 	public static function log_snippet_js ($data) {
@@ -108,6 +118,16 @@ class PL_Analytics {
 
 	  	return ob_get_clean();
 	}
+
+	public static function print_footer_scripts () {
+		global $i_am_a_placester_theme;
+
+		// If the site is using a Placester theme, add footer script...
+		if ($i_am_a_placester_theme === true) {
+			$data = ( is_home() ? self::home_view() : self::page_view() );
+			echo self::log_snippet_js($data);
+		}
+	}
 }
 
 /* 
@@ -119,7 +139,7 @@ class PL_Base64 {
 		// Start with the standard base64 encoding...
 		$base = base64_encode($str);
 
-		// Make base64 encoding comply with 'strict' standards...
+		// Make base64 encoding comply with 'strict' standards -- currently, that requires no extra work!
 		$strict = $base;
 		
 		return $strict;

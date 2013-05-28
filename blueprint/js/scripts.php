@@ -59,6 +59,8 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
 
         wp_register_script( 'search-bootloader', trailingslashit( PLS_JS_URL ) . 'scripts/search-loader.js' , array( 'jquery' ), NULL, true );
         wp_enqueue_script('search-bootloader');
+        
+        wp_enqueue_script( 'underscore' );
 
         if ( pls_has_plugin_error() ) {
             /** Register the nag script. */

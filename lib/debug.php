@@ -1,14 +1,4 @@
 <?php
-/**
- * Wrapper function for the PL_Debug::dump() function.
- * 
- * @access public
- * @return void
- */
-function pl_dump() {
-    $args = func_get_args();
-    PL_Debug::dump( $args );
-}
 
 PL_Debug::init();
 /**
@@ -18,25 +8,16 @@ PL_Debug::init();
  */
 class PL_Debug {
 
-    static $debug_messages = array();
-    static $message_text = '';
+    public static $debug_messages = array();
+    public static $message_text = '';
+    public static $show_debug = false;
 
-    static $show_debug = false;
-
-    
-
-    static function init() {
- 
+    public static function init() {
         add_action('wp_footer', array(__CLASS__, 'show_window' ) );
         add_action('admin_footer', array(__CLASS__, 'show_window' ) );
-
     }
 
-
-
-    static function show_window () {
-        
-
+    public static function show_window () {
         // optionally show debug messages.  
         if (self::$show_debug) {
             self::assemble_messages();
@@ -49,18 +30,16 @@ class PL_Debug {
         }   
 
     }
-    // adds routing messages for easy debugging.
+
+    // Adds routing messages for easy debugging.
     // TODO: Move this to a global class so devs
     // turn it on easily and see what's going on. 
-    static function add_msg ($new_message)
-    {
+    public static function add_msg ($new_message) {
         self::$debug_messages[] = $new_message;
         
     }
 
-
-    static function assemble_messages ($messages_array = false) {
-
+    public static function assemble_messages ($messages_array = false) {
         self::$message_text = "<ul>";
         
         foreach ( (array) self::$debug_messages as $message) {
@@ -70,8 +49,7 @@ class PL_Debug {
         self::$message_text .= "</ul>";
     }
 
-    static function style_message ($message, $indent = false) {
-        
+    public static function style_message ($message, $indent = false) {
         $styled_message = "<li>";
         
         if ($indent) {
@@ -82,7 +60,8 @@ class PL_Debug {
             foreach ($message as $item) {
                 $styled_message .= self::style_message($item, true);
             }
-        } else {
+        } 
+        else {
             $styled_message .= $message;
         }
         
@@ -101,7 +80,7 @@ class PL_Debug {
      * @param mixed $data The variable that needs to be dumped.
      * @static
      */
-    static function dump() {
+    public static function dump() {
         $args = func_get_args();
         /**
          *  If the given variable is an array use print_r
@@ -123,8 +102,6 @@ class PL_Debug {
             }
         }
     }
-
-
 
 //end class
 }

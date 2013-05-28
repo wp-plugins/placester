@@ -58,11 +58,14 @@ Neighborhood.prototype.init = function () {
 	    			var polygon = that.map.create_polygon( polygon_options );
 	    			if ( that.slug ) {
 	    				that.map.selected_polygon = polygon;
+	    				that.map.filter_by_bounds = true;
 						that.map.listings.get();	
 	    			}
 	    			
 	    		};
-	    		that.map.center_on_polygons();
+	    		if( that.map.center_map ) {
+	    			that.map.center_on_polygons();
+	    		}
 	    	} else {
 	    		//manually set filters, force the map to update;
 	    		that.neighborhood_override = true;

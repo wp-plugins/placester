@@ -152,7 +152,7 @@ class PL_Pages {
 				global $wp_rewrite;
 				$wp_rewrite->flush_rules();
 				PL_Cache::invalidate();
-				// PL_HTTP::clear_cache();
+				
 				self::delete_all();
 			}
 		}

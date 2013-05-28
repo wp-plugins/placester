@@ -7,7 +7,7 @@
  */
 function pls_dump() {
     $args = func_get_args();
-    PLS_Debug::dump( $args );
+    PLS_Debug::dump($args);
 }
 
 

@@ -23,7 +23,7 @@ jQuery(document).ready(function($) {
 		autoOpen: false,
 		draggable: false,
 		modal: true,
-		title: '<h3>Test-drive your Site with Demo Listings</h3>',
+		title: 'Test-drive your Site with Demo Listings',
 		width: 500,
 		buttons: demo_buttons
 	});

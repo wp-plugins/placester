@@ -19,7 +19,7 @@ jQuery(document).ready(function($) {
 
 function prompt_free_trial (title, success_callback, cancel_callback, source) {
 	$ = jQuery;
-	$( "#premium_wizard" ).dialog({title : '<h3>' + title + '</h3>'} );
+	$( "#premium_wizard" ).dialog({title : title} );
 	$( "#premium_wizard" ).dialog({close : cancel_callback} );
 	$( "#premium_wizard" ).dialog( "open" );
 

@@ -9,7 +9,7 @@ jQuery(document).ready(function($) {
 					draggable: false,
 					modal: true,
 					width: 700,
-					title: '<h3>Use an existing Placester account</h3>',
+					title: 'Use an existing Placester account',
 					buttons: {
 						1: {
 						  text: "Close",
@@ -50,7 +50,7 @@ jQuery(document).ready(function($) {
 				draggable: false,
 				modal: true,
 				width: 500,
-				title: '<h3>Create a New Placester Account</h3>' ,
+				title: 'Create a New Placester Account' ,
 				buttons: {
 					1:{
 						text: "Cancel",

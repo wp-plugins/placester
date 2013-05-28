@@ -10,9 +10,6 @@ class PLS_Partials_Listing_Search_Form {
      *          or not. If ajax is set to true, then for the form to work, the 
      *          results container should be defined on the page. 
      *          {@link PLS_Partials::get_listings_list_ajax()} should be used.
-     *     'results_page_id' - Default is the id of the page with the name 
-     *          'lisings'. The id of the page that will contain the 
-     *          results. In play only if 'ajax' is set to false.
      *     'context' - An execution context for the function. Used when the 
      *          filters are created.
      *     'context_var' - Any variable that needs to be passed to the filters 
@@ -56,12 +53,10 @@ class PLS_Partials_Listing_Search_Form {
      * @since 0.0.1
      */
   public static function init ($args = '') {
-
-    /** Define the default argument array. */
+    // Define the default argument array
     $defaults = array(
         'ajax' => false,
         'class' => 'pls_search_form_listings',
-        'results_page_id' => PLS_Pages::get_page_by_name('Listings', 'page-template-listings.php', true),
         'context' => '',
         'theme_option_id' => '',
         'context_var' => null,

@@ -1,9 +1,13 @@
 <?php 
 
 PL_Cache::init();
+
 class PL_Cache {
 
-	const TTL_LOW  = 900; // 15 minutes
+	const TTL_LOW  = 1800; // 30 minutes
+	const TTL_HOUR = 3600; // 1 hour
+	const TTL_MID = 43200; // 12 hours
+	const TTL_DAY = 86400; // 24 hours
 	const TTL_HIGH = 172800; // 48 hours
 
 	private static $key_prefix = 'pl_';
@@ -24,7 +28,7 @@ class PL_Cache {
 
 	public static function init() {
 		// Allow cache to be cleared by going to url like http://example.com/?clear_cache
-		if(isset($_GET['clear_cache']) || isset($_POST['clear_cache'])) {
+		if (isset($_GET['clear_cache']) || isset($_POST['clear_cache'])) {
 			// style-util.php calls its PLS_Style::init() immediately so this can't be tied to a hook
 			self::invalidate();
 		}
@@ -50,11 +54,18 @@ class PL_Cache {
 
 		// Do not cache if it is not allowed OR if escape mechanism is set...
 		if ( !self::allow_caching() || $cache_escape) {
+			// error_log("Cache bypassed...");
+			// error_log("group: {$this->group}");
+			// error_log("Is AJAX: " . (defined('DOING_AJAX') ? "YES" : "NO"));
+			// error_log("Is user logged in: " . (is_user_logged_in() ? "YES" : "NO"));
+			// error_log("Is admin: " . (is_admin() ? "YES" : "NO") . "\n");
+			// error_log("key/id/args: " . var_export(func_get_args(), true) . "\n");
 			return false;
 		}
 	
 		// Create and store item's cache key...
-		$this->transient_id = self::build_cache_key($this->group, func_get_args());
+		$args = func_get_args();
+		$this->transient_id = self::build_cache_key($this->group, $args);
 
         $transient = get_transient($this->transient_id);
         // Return as is -- if transient doesn't exist, it's up to the caller to check...
@@ -77,7 +88,7 @@ class PL_Cache {
 		// return ( !current_user_can('manage_options') && !is_admin() );
 
 		// For now, refuse caching for ALL authenticated users + devs with debug turned on...
-		return ( !is_user_logged_in() && !is_admin() && !defined('PL_DISABLE_CACHE') );
+		return ( !is_user_logged_in() && !defined('PL_DISABLE_CACHE') );
 	}
 
 	public static function build_cache_key ($group, $func_args = array()) {
@@ -171,7 +182,7 @@ function PL_Options_Save_Flush() {
 	$doing_ajax = ( defined('DOING_AJAX') && DOING_AJAX );
 	$editing_widgets = ( isset($_GET['savewidgets']) || isset($_POST['savewidgets']));
 	if ($_SERVER['REQUEST_METHOD'] == 'POST' && is_admin() && (!$doing_ajax || $editing_widgets)) {
-		// Flush the cache
+		// Flush the entire blog/site's cache...
 		PL_Cache::invalidate();
 	}
 }

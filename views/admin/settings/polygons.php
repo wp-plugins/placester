@@ -2,19 +2,19 @@
 	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
 	<div>
 		<div class="header-wrapper">
-			<h2>Custom Neighborhood Areas</h2>
+			<h2>Custom Drawn Areas</h2>
 			<div class="ajax_message" id="neighborhood_messages"></div>
 		</div>
 		<div class="clear"></div>
-		<p>Use the map below to outline neighborhoods. Once you've outlined and saved a neighborhood you can allow your visitors to use it to search or associated it with a neighborhood page.</p>
+		<p>Use the map below to outline neighborhoods. Once you've outlined and saved a custom drawn area you can allow your visitors to use it to search or associated it with an area page.</p>
 		<div class="polygon_wrapper">
 			<div class="show_neighborhood_areas">
-				<span>Show Created Neighborhoods:</span>
+				<span>Show Already Drawn Areas:</span>
 				<?php echo PL_Taxonomy_Helper::taxonomies_as_checkboxes(); ?>
 				<a id="clear_created_neighborhoods"href="#">Hide All</a>
 			</div>
 			<div class="create_new_wrapper">
-				<a href="#" id="create_new_polygon" class="button">Create New Custom Neighborhood</a>
+				<a href="#" id="create_new_polygon" class="button">Create New Custom Drawn Area</a>
 			</div>
 			<div class="ajax_message" id="polygon_ajax_messages"></div>
 			<div class="clear"></div>
@@ -28,7 +28,7 @@
 				<?php echo PL_Router::load_builder_partial('settings-polygon-create.php'); ?>				
 				<div style="display:none" class="create_prevent_overlay" id="create_prevent_overlay">
 					<h2>Click on the Map to Start Drawing</h2>
-					<p>Click on the map to start tracing the outline of your custom neighborhood.</p>
+					<p>Click on the map to start tracing the outline of your custom area.</p>
 					<a href="#" id="close_create_overlay" class="button">Cancel</a>
 				</div>	
 				

@@ -1,6 +1,5 @@
 <?php 
- global $PLS_API_DEFAULT_LISTING;
-$listing_data = $PLS_API_DEFAULT_LISTING['listings'][0];
+$listing_data = PLS_Listing_Helper::$default_listing['listings'][0];
 
 ob_start();
  ?>

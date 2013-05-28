@@ -1,4 +1,4 @@
-<?php extract(array('filters' => PL_Helper_User::get_global_filters())); ?>
+<?php extract(array('filters' => PL_Global_Filters::get_global_filters())); ?>
 <?php $_POST = $filters; ?>
 <div class="wrap">
 	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
@@ -19,13 +19,13 @@
 					<p class="label">Active Filters:</p>	
 				<?php endif ?>
 				<form action="" id="active_filters">
-					<?php PL_Settings_Helper::display_global_filters(); ?>
+					<?php PL_Global_Filters::display_global_filters(); ?>
 				</form>	
 			</div>
 			<div class="clear"></div>
 			<div class="search_filter_content">
 				<div class="global_filter_col">
-					<?php PL_Listing_Helper::get_listing_attributes(); ?>	
+					<?php PL_Global_Filters::get_listing_attributes(); ?>	
 				</div>
 				<div class="global_filter_col form_item">
 					<form action="" id="global_filter_form">

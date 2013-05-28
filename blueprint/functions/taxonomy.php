@@ -42,10 +42,10 @@ class PLS_Taxonomy {
 		if (is_array($polygon) && !empty($polygon[0])) {
 			$polygon[0]['neighborhood_polygons'] = $polygon[0]['name'];
 			$listings_raw = PLS_Plugin_API::get_polygon_listings( $polygon[0] );
-			$term['listings'] = pls_get_listings( "limit=5&context=home&neighborhood_polygons=" . $polygon[0]['name'] );
+			$term['listings'] = PLS_Partials::get_listings( "limit=5&context=home&neighborhood_polygons=" . $polygon[0]['name'] );
 		} else {
 			$listings_raw = PLS_Plugin_API::get_property_list("location[" . $term['api_field'] . "]=" . $term['name']);  	
-			$term['listings'] = pls_get_listings( "limit=5&context=home&request_params=location[" . $term['api_field'] . "]=" . $term['name'] );
+			$term['listings'] = PLS_Partials::get_listings( "limit=5&context=home&request_params=location[" . $term['api_field'] . "]=" . $term['name'] );
 		}
 
 		$term['areas'] = array('locality' => array(), 'postal' => array(), 'neighborhood' => array(), 'address' => array());

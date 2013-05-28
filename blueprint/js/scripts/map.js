@@ -25,6 +25,7 @@ Map.prototype.init = function ( params ) {
 	this.bounds = [];
 	this.list = params.list || false;
 	this.dom_id = params.dom_id || 'map_canvas';
+	this.center_map = params.center_map === false ? false : true;
 
 	//map states
 	this.is_loaded = false;
@@ -49,7 +50,8 @@ Map.prototype.init = function ( params ) {
 	this.always_center = params.always_center || true;
 	this.filter_by_bounds = params.filter_by_bounds === false ? false : true;
 	this.full_callback = params.full_callback || false;
-  this.disable_info_window = params.disable_info_window === true ? true : false;
+    this.disable_info_window = params.disable_info_window === true ? true : false;
+    this.infotemplate = params.infotemplate || false;
   
 	//marker settings
 	this.marker = {};
@@ -231,21 +233,32 @@ Map.prototype.create_listing_marker = function ( listing ) {
 	if (listing['images'] && listing['images'][0] && listing['images'][0]['url']) {
     	var image_url = listing['images'][0]['url'];
     };
-    marker_options.content = '<div id="content">'+
-        '<div id="siteNotice">'+'</div>'+
-          '<h2 id="firstHeading" class="firstHeading"><a href="'+ listing['cur_data']['url'] + '">' + listing['location']['full_address'] +'</a></h2>'+
-          '<div id="bodyContent">'+
-            '<img width="80px" height="80px" style="float: left" src="'+image_url+'" />' +
-            '<ul style="float: right; width: 130px">' +
-              '<li> Beds: '+ listing['cur_data']['beds'] +'</li>' +
-              '<li> Baths: '+ listing['cur_data']['baths'] +'</li>' +
-              '<li> Price: '+ listing['cur_data']['price'] +'</li>' +
-            '</ul>' +
-          '</div>' +
-          '<div class="viewListing" style="margin: 15px 70px; float: left; font-size: 16px; font-weight: bold;"><a href="'+listing['cur_data']['url']+'">View Details</a></div>' +
-          '<div class="clear"></div>' +
-        '</div>'+
-      '</div>';
+
+    //If infotemplate is set
+    if( false !== this.infotemplate ) {
+	    // Process the template with Underscore.js templating
+	    var data = { listing: listing };
+	    var parsedTemplate = _.template(this.infotemplate, data );
+	    marker_options.content = parsedTemplate;
+    } else {
+    // Default infowindow markup
+	    marker_options.content = '<div id="content">'+
+			    	'<div id="siteNotice">'+'</div>'+
+				    '<h2 id="firstHeading" class="firstHeading"><a href="'+ listing['cur_data']['url'] + '">' + listing['location']['full_address'] +'</a></h2>'+
+				    '<div id="bodyContent">'+
+					    '<img width="80px" height="80px" style="float: left" src="'+image_url+'" />' +
+					    '<ul style="float: right; width: 130px">' +
+						    '<li> Beds: '+ listing['cur_data']['beds'] +'</li>' +
+						    '<li> Baths: '+ listing['cur_data']['baths'] +'</li>' +
+						    '<li> Price: '+ listing['cur_data']['price'] +'</li>' +
+					    '</ul>' +
+				    '</div>' +
+					'<div class="viewListing" style="margin: 15px 70px; float: left; font-size: 16px; font-weight: bold;"><a href="'+listing['cur_data']['url']+'">View Details</a></div>' +
+					'<div class="clear"></div>' +
+				  '</div>'+
+			    '</div>';
+    }
+
     var marker = this.create_marker( marker_options );
 	this.markers_hash[marker.listing.id] = marker;
 

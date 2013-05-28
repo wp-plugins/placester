@@ -43,12 +43,13 @@ Filters.prototype.set_values = function ( search_id ) {
 		jQuery(that.listener.elements).find('input, select').each(function(i) {
 			if (data[this.name]) {
 				jQuery(this).val(data[this.name]);
+				jQuery(this).trigger("liszt:updated");
 			}
 	    });
 
 	    if (typeof that.custom_update_callback == 'function') {
 			that.custom_update_callback(data);
 	    }
-	    
+
 	}, 'json');
 }

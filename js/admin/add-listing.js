@@ -74,16 +74,17 @@ jQuery(document).ready(function($) {
             });	
         },
         done: function (e, data) {
-        	if (data.result.message) {
-        		alert(data.result.message);
-        		return false;
-        	}
+        	var message = '';
             $.each(data.result, function (index, file) {
             	//The server returns a properly formed array with no url. 
             	//forcing us to do error handling on the js side.
             	if (!file.url) {
             		mixpanel.track('Add Property - Image - Upload Error');
-            		alert('Error - Upload Failed. Your image needs to be smaller then 1MB and gif, jpg, or png.');
+            		if (file.message) {
+            			message += file.message;
+            		} else {
+                		alert('Error - Upload Failed. Your image needs to be smaller then 1MB and gif, jpg, or png.');
+            		}
             		var id = '#' + file.orig_name.replace(/( )|(\.)|(\))|(\()/g,'');
 	            	$(id).parentsUntil('#image_container_remove').remove();
             		return false;
@@ -94,8 +95,11 @@ jQuery(document).ready(function($) {
 	            	$(id).parentsUntil('#image_container_remove').remove();
 	                $('#fileupload-holder-message').append('<li class="image_container"><div><img width="100px" height="100px" src="'+file.url+'" ><a id="remove_image">Remove</a><input id="hidden_images" type="hidden" name="images['+count+'][filename]" value="'+file.name+'"></div></li>');	
             	}
-            	
             });
+        	if (message) {
+        		alert(message);
+        		return false;
+        	}
         },
         failed: function (e, data) {
         	mixpanel.track('Add Property - Image - Upload Error');
@@ -115,21 +119,6 @@ jQuery(document).ready(function($) {
         selectOtherMonths: true,
         dateFormat: "yy-mm-dd"
 	});
-
-	// duplicates the custom attribute form.
-	// $('button#custom_data').live('click', function (event) {
-	// 	event.preventDefault();
-	// 	var html = $(this).closest('section').clone();
-	// 	$(this).html('Remove').attr('id', 'custom_data_remove');
-	// 	$(this).closest(".form_group").append(html);
-	// });	
-
-	// $('button#custom_data_remove').live('click', function (event) {
-	// 	event.preventDefault();
-	// 	$(this).closest('section').remove();
-	// });	
-
-	
 	    
 	//create listing
 	$('#add_listing_publish').live('click', function(event) {

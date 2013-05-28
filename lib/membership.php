@@ -478,7 +478,7 @@ class PL_Membership {
         ob_start();
         ?>
         <div style="display:none;">
-          <form method="post" action="#<?php echo $role; ?>" id="pl_lead_register_form" name="pl_lead_register_form" class="pl_login_reg_form" autocomplete="off">
+          <form method="post" action="#<?php echo $role; ?>" id="pl_lead_register_form" name="pl_lead_register_form" class="pl_login_reg_form pl_lead_register_form" autocomplete="off">
 
               <div style="display:none" class="success">You have been successfully signed up. This page will refresh momentarily.</div>
 

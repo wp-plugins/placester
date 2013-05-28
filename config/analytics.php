@@ -11,26 +11,38 @@ $PL_ANALYTICS_CONFIG = array(
 	"listing_search" => array(
 		"category" => "search",
 		"allowed_params" => array( 
-			"min_beds", 
-			"max_beds", 
-			"min_baths", 
-			"max_baths", 
-			"purchase_type", 
-			"zoning_type", 
-			"listing_type", 
-			"property_type", 
-			"country", 
-			"street_address", 
-			"locality", 
-			"region", 
+			"min_beds",
+			"max_beds",
+			"min_baths",
+			"max_baths",
+			"purchase_type",
+			"zoning_type",
+			"listing_type",
+			"property_type",
+			"street_address",
+			"locality",
+			"region",
 			"postal",
-			"neighborhood", 
-			"county")
-			// MISSING: "min_price", "max_price", "beds", "baths", "min_sqft", "max_sqft"
+			"neighborhood",
+			"county",
+			"country"
+		), // MISSING: "min_price", "max_price", "min_sqft", "max_sqft"
+		"translated_params" => array(
+			"beds" => array("min_beds", "max_beds"),
+			"baths" => array("min_baths", "max_baths")
+		)
 	),
 	"contact_submitted" => array(
 		"category" => "contact",
 		"allowed_params" => array("phone", "e-mail")
+	),
+	"home_view" => array(
+		"category" => "home",
+		"allowed_params" => array()
+	),
+	"page_view" => array(
+		"category" => "none",
+		"allowed_params" => array()
 	)
 );
 

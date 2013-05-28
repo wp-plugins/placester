@@ -1,4 +1,13 @@
-
+.advanced_area_controls {
+	display: none;
+}
+#show_advanced_styles {
+	float: right;
+	clear: both;
+}
+.customBox {
+	position:absolute;
+}
 .polygon_wrapper {
 	position: relative;
 }
@@ -58,10 +67,11 @@
 	float: left;
 	clear: both;
 	height: 35px;
+	margin-top: 10px;
 }
 .form-item label {
 	float: left;
-	width: 140px;
+	width: 143px;
 	text-align: right;
 }
 .form-item select, .form-item input {

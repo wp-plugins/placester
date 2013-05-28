@@ -38,6 +38,7 @@ class PL_Integration {
 		$request = array_merge($request, array("api_key" => PL_Option_Helper::api_key()));
 
 		$response = PL_HTTP::send_request(PL_Config::PL_API_INTEGRATION('mls_list', 'request', 'url'), $request, PL_Config::PL_API_INTEGRATION('mls_list', 'request', 'type'));
+		ksort($response);
 		return $response;
 	}
 }

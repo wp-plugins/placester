@@ -37,7 +37,6 @@ class PL_Page_Helper {
 		
 		// Get listings from model
 		$pages = PL_Pages::get();
-		// pl_dump($pages);
 
 		$items = array();
 

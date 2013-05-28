@@ -4,7 +4,7 @@ Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
 Author: Placester.com
-Version: 1.1.8
+Version: 1.1.9
 Author URI: https://www.placester.com/
 */
 
@@ -27,7 +27,7 @@ Author URI: https://www.placester.com/
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define('PL_PLUGIN_VERSION','1.1.8');
+define('PL_PLUGIN_VERSION','1.1.9');
 
 define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
 define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
@@ -103,7 +103,7 @@ include_once('config/analytics.php');
 include_once('lib/config.php');
 include_once('lib/routes.php');
 include_once('lib/http.php');
-include_once('lib/debug.php');
+// include_once('lib/debug.php');
 include_once('lib/form.php');
 include_once('lib/validation.php');
 include_once('lib/pages.php');
@@ -141,7 +141,6 @@ include_once('models/education-com.php');
 //helpers
 include_once('helpers/listing.php');
 include_once('helpers/option.php');
-include_once('helpers/compatibility.php');
 include_once('helpers/css.php');
 include_once('helpers/js.php');
 include_once('helpers/header.php');
@@ -152,13 +151,14 @@ include_once('helpers/logging.php');
 include_once('helpers/compliance.php');
 include_once('helpers/integrations.php');
 include_once('helpers/custom_attributes.php');
-include_once('helpers/settings.php');
 include_once('helpers/taxonomy.php');
 include_once('helpers/google-places.php');
 include_once('helpers/wordpress.php');
 include_once('helpers/education-com.php');
+include_once('helpers/global-filters.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
+include_once('helpers/lead-capture.php');
 include_once('helpers/snippet.php');
 include_once('helpers/template.php');
 include_once('helpers/customizer.php');
@@ -192,6 +192,7 @@ function blueprint_settings() {
     remove_theme_support( 'pls-routing-util-templates' );
 }
 
+// Build plugin settings tabs/UI...
 add_action( 'admin_menu', 'placester_admin_menu' );
 function placester_admin_menu() {
     // Add separator
@@ -199,7 +200,7 @@ function placester_admin_menu() {
     $menu['3a'] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
 
     // Add Placester Menu
-    add_menu_page('Placester','Placester','edit_pages','placester',array('PL_Router','my_listings'), plugins_url('/placester/images/icons/logo_16.png'), '3b' /* position between 3 and 4 */ );
+    add_menu_page('Placester','Placester','edit_pages','placester',array('PL_Router','my_listings'), plugins_url('images/icons/logo_16.png', __FILE__ ), '3b' /* position between 3 and 4 */ );
 
     // Avoid submenu to start with menu function
     global $submenu;
@@ -217,14 +218,17 @@ function placester_admin_menu() {
     $settings_subpages = array('Settings' => '',
                                'Client Settings' => '_client',
                                'Global Property Filtering' => '_filtering', 
-                               'Polygon Controls' => '_polygons', 
+                               'Custom Drawn Areas' => '_polygons', 
                                'Property Pages' => '_property_pages', 
                                // 'Template Controls' => '_template', 
                                'International Settings' => '_international' );
     foreach ($settings_subpages as $name => $page_url) {
         add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    
     }
-    add_submenu_page( 'placester', 'Widgets', 'Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
+    
+    add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
+
+    add_submenu_page( 'placester', 'Shortcodes / Widgets', 'Shortcodes / Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
     
     /* Social Integration functionality... */
     add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks','add_social_settings_cb') );

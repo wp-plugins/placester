@@ -117,3 +117,10 @@ function validate_phone_number (phone) {
     var valid = ( (regex_NA.test(phone) || regex_int.test(phone)) ? true : false );
     return valid;
 }
+
+function validate_email_address (email) {
+
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    return re.test(email);
+} 

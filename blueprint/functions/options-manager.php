@@ -9,47 +9,36 @@ class PLS_Options_Manager {
 		add_action('wp_ajax_import_theme_options', array(__CLASS__, 'import_ajax'));
 	}
 
-	static function export_http() {
-	  // error_log("Made it into export_http...");
-	  if ( isset($_GET['page']) && ($_GET['page'] == 'pls-theme-options') && isset($_GET['export']) ) {	
-		// error_log("In export_http...");
+	public static function export_http() {
+		// error_log("Made it into export_http...");
+		if ( isset($_GET['page']) && ($_GET['page'] == 'pls-theme-options') && isset($_GET['export']) ) {	
+			// error_log("In export_http...");
 
-		$config = get_option( 'optionsframework' );
-		$options = get_option( $config['id'], false );
+			$config = get_option('optionsframework');
+			$options = get_option( $config['id'], false );
 
-		$theme_name = strtolower(wp_get_theme()->Template);
-		$filename = 'theme_options';
-		if ( isset($_GET['filename']) && !empty($_GET['filename'])) {
-			$filename = $_GET['filename'];
+			$theme_name = strtolower(wp_get_theme()->Template);
+			$filename = 'theme_options';
+			if ( isset($_GET['filename']) && !empty($_GET['filename'])) {
+				$filename = $_GET['filename'];
+			}
+
+			// Set HTTP response headers...
+			header("Content-type: text/plain");
+			header("Content-Disposition: attachment; filename={$theme_name}_{$filename}.txt");
+			header("Pragma: no-cache");
+			header("Expires: 0");
+
+			echo serialize($options);
+			exit;
 		}
-
-		// ob_start();
-		//   pls_dump($options);
-		// $options_str = ob_get_clean();
-		// error_log($options_str);
-
-		// Set HTTP response headers...
-		header("Content-type: text/plain");
-        header("Content-Disposition: attachment; filename={$theme_name}_{$filename}.txt");
-        header("Pragma: no-cache");
-        header("Expires: 0");
-
-		echo serialize($options);
-        exit;
-      }
 	}
 
-	static function import_ajax() {
+	public static function import_ajax() {
 		// error_log('Made it into import_ajax...');
-
 		if ( isset($_POST['options_raw']) ) {
 			$options_raw = stripslashes($_POST['options_raw']);
 			$options = unserialize($options_raw);
-
-			// ob_start();
-			//   pls_dump($options);
-			// $options_str = ob_get_clean();
-			// error_log($options_str);  
 
 			$config = get_option( 'optionsframework' );
 			// error_log($config['id']);			

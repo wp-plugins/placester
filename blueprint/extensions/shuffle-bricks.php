@@ -7,13 +7,33 @@
 class PLS_Shuffle_Bricks {
 
     // Standard brick types included by default
-    private static $standard_types = array('posts', 'listings', 'testimonials');
+    private static $standard_types = array('posts', 'listings');
 
-    public static function shuffle_bricks ($args = '') {
+    // Standard CPTs included by default
+    private static $standard_CPTs = array(
+        'ads' => array(
+            'post_type' => 'ad',
+            'meta_key' => 'ad_featured'
+        ),
+        'agents' => array(
+            'post_type' => 'agent',
+            'meta_key' => 'agent_featured'
+        ),
+        'openhouses' => array(
+            'post_type' => 'openhouse',
+            'meta_key' => 'openhouse_featured'
+        ),
+        'testimonials' => array(
+            'post_type' => 'testimonial',
+            'meta_key' => 'testimonial_featured'
+        )
+    );
+
+    public static function shuffle_bricks ($args = array()) {
       
         // Check for existence of plugin and not go forward if it is not here
         if ( pls_has_plugin_error() ) {
-            return '';
+            return array();
         }
 
         // process default args
@@ -22,16 +42,19 @@ class PLS_Shuffle_Bricks {
         //cache the whole html snippet if we can.
         $cache = new PLS_Cache('brick');
         if ($result = $cache->get($args)) {
-            return $result;
+            // return $result;
         }
 
-        // get args
-        extract( $args, EXTR_SKIP );
+        extract($args, EXTR_SKIP);
 
-        // Remove excluded types from standard type to get a list of permissible brick types...
-        $brick_types = array_diff(self::$standard_types, $excluded_types);
+        // Merge standard types with the keys of the standard CPTs to get a consolidated list of standard brick types...
+        $CPT_types = array_keys(self::$standard_CPTs);
+        $types = array_merge(self::$standard_types, $CPT_types);
+        
+        // Remove excluded types from standard types to get a list of permissible brick types...
+        $brick_types = array_diff($types, $excluded_types);
 
-        // Start Bricks array
+        // Construct bricks
         $bricks = array();
 
         foreach ($brick_types as $supported_type) {
@@ -42,13 +65,15 @@ class PLS_Shuffle_Bricks {
                     $bricks_to_add = self::get_brick_posts($post_options, $post_limit);
                     break;
                 case 'listings':
-                    $bricks_to_add = self::get_brick_listings($listing_params, 'home-featured-listings');
-                    break;
-                case 'testimonials':
-                    $bricks_to_add = self::get_brick_testimonials($post_limit);
+                    $bricks_to_add = self::get_brick_listings($listing_params, $featured_option_id);
                     break;
                 default:
-                    // Given type is not supported...
+                    // Check to see if type is a supported CPT...
+                    if (array_key_exists($supported_type, self::$standard_CPTs)) {
+                        // Fetch CPT's bricks via passing in its config...
+                        $config = self::$standard_CPTs[$supported_type];
+                        $bricks_to_add = self::get_bricks_CPT($config);
+                    }
             }
 
             // Add bricks if necessary...
@@ -63,21 +88,28 @@ class PLS_Shuffle_Bricks {
         return $bricks;
     }
 
-
-    // retrieve Posts
+    // Retrieve normal posts
     public static function get_brick_posts ($post_options, $post_limit) {
-        // NOTE: Need to actually use $post_options -- they are passed in, but ignored for defaults...
+        // Try to retrieve all post IDs marked as 'sticky'...
+    	$sticky_array = get_option('sticky_posts');
+    	
+    	// If non-sticky posts are explicity disabled and no stickies posts exist, return an empty
+        // array to prevent 'get_posts' from returning a random selection of non-sticky posts...
+    	if ( empty($sticky_array) && $post_options['disable_non_sticky'] ) {
+    		return array();
+    	}
+    	
         $get_post_args = array(
           'post__in' => get_option('sticky_posts'),
-          'showposts' => $post_limit,
-          // add categories
+          'showposts' => $post_limit
+          // TODO: add categories...
         );
         $posts = get_posts( $get_post_args, ARRAY_A );
-
+        
         return $posts;
     }
 
-    // retrieve Featured Listings
+    // Retrieve featured listings
     public static function get_brick_listings ($listing_params, $featured_option_id) {
         if ($featured_option_id) {
             $brick_listings = PLS_Listing_Helper::get_featured($featured_option_id);
@@ -89,24 +121,24 @@ class PLS_Shuffle_Bricks {
         return $brick_listings['listings'];
     }
 
-    // retrieve Testimonials
-    public static function get_brick_testimonials() {
-        if (post_type_exists ('testimonial')) {
-            $testimonial_args = array( 
-                'post_type' => 'testimonial',
-                'meta_key' => 'testimonial_featured',
+    // Retrieve featured posts of the passed CPT
+    public static function get_bricks_CPT ($config) {
+        if (post_type_exists($config['post_type'])) {
+            $custom_type_args = array( 
+                'post_type' => $config['post_type'],
+                'meta_key' => $config['meta_key'],
                 'meta_value' => 'on',
                 'meta_compare' => '=='
             );
-            $testimonials = get_posts( $testimonial_args, ARRAY_A );
+            $featured_CPT_posts = get_posts( $custom_type_args, ARRAY_A );
           
-            return $testimonials;
+            return $featured_CPT_posts;
         }
     }
 
-    // Process Args
-    private static function process_defaults ( $args ) {
-    	$sticky_posts = get_option( 'sticky_posts' );
+    // Process passed args against defaults...
+    private static function process_defaults ($args) {
+    	$sticky_posts = get_option('sticky_posts');
 
         $defaults = array(
         /** Define the default argument array. */
@@ -114,7 +146,7 @@ class PLS_Shuffle_Bricks {
             'featured_option_id' => false,
             'listing_params' => 'limit=5&sort_by=price',
             'post_options' => array(
-                'post__in' => $sticky_posts,
+                'disable_non_sticky' => false
                 // 'categories' => false
             ),
             'post_limit' => 10

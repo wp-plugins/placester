@@ -26,14 +26,11 @@ class PLS_Style {
     static function get_options()
     {
         // Cache options
-        if((WP_DEBUG !== true)) {
-            $cache = new PLS_Cache('Theme PLS Options');
-            $cache_args = array();
-            if ($options = $cache->get($cache_args)) {
-                PLS_Debug::add_msg('[[Theme options cache hit!]] Returning cached options');
-                self::$styles = array_merge(self::$styles, $options);
-                return;
-            }
+        $cache = new PLS_Cache('Theme PLS Options');
+        $cache_args = array();
+        if ($options = $cache->get($cache_args)) {
+            self::$styles = array_merge(self::$styles, $options);
+            return;
         }
 
         require(PLS_Route::locate_blueprint_option('init.php'));
@@ -51,9 +48,7 @@ class PLS_Style {
         require_if_theme_supports("pls-css-options", PLS_Route::locate_blueprint_option('css.php'));
 
         // Cache options
-        if((WP_DEBUG !== true)) {
-            $cache->save(self::$styles);
-        }
+        $cache->save(self::$styles);
     }
 
     public static function add ($options = false)
@@ -64,15 +59,14 @@ class PLS_Style {
     }
 
 	public static function create_css () {
+			// error_log('Styles being created');
 
-			PLS_Debug::add_msg('Styles being created');
-				// groups all the styles by selector so they can 
-				// be combine in a string, which is echo'd out. 
-				$sorted_selector_array = self::sort_by_selector(self::$styles);
+			// Groups all the styles by selector so they can be combined into a string, which is echo'd out 
+			$sorted_selector_array = self::sort_by_selector(self::$styles);
 
-				if ( empty($sorted_selector_array) ) {
-					return false;
-				}
+			if ( empty($sorted_selector_array) ) {
+				return false;
+			}
 
 			$styles = '';
 
@@ -115,7 +109,7 @@ class PLS_Style {
 				$styles .= '}' . "\n";
 			}
 
-			PLS_Debug::add_msg('<pre>' . $styles . '</pre>');
+			// error_log('<pre>' . $styles . '</pre>');
 
 			$styles = '<style type="text/css">' . $styles . '</style>';
 

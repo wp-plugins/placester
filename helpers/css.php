@@ -36,6 +36,7 @@ class PL_Css_Helper {
 		 			   'placester_page_placester_settings_template', 
 		 			   'placester_page_placester_settings_client',
 		 			   'placester_page_placester_social',
+		 			   'placester_page_placester_lead_capture',
 					   'edit.php');
 
 		if (!in_array($hook, $pages)) { return; }
@@ -65,6 +66,11 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('support', trailingslashit(PL_CSS_ADMIN_URL) .  'theme-gallery.css');			
 		}
 
+		if ($hook == 'placester_page_placester_lead_capture') {
+			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/all.css');					
+			self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) .  'lead-capture/general.css');
+		}
+
 		if ($hook == 'placester_page_placester_integrations') {
 			self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) .  'integration.css');
 		}
@@ -86,11 +92,11 @@ class PL_Css_Helper {
 		}
 		
 		if ($hook == 'placester_page_placester_settings_international') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_CSS_ADMIN_URL) .  'settings.css');					
+			// self::register_enqueue_if_not('settings', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/all.css');					
 		}
 		
 		if ($hook == 'placester_page_placester_settings_neighborhood') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_CSS_ADMIN_URL) .  'settings.css');					
+			// self::register_enqueue_if_not('settings', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/all.css');					
 		}
 		
 		if ($hook == 'placester_page_placester_settings_client') {

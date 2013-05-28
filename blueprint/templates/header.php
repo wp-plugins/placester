@@ -74,7 +74,7 @@
     $content = get_option('placester_listing_layout');
     if(isset($content) && $content != '') {return $content;}
     $html = '';
-    $listing = PL_Listing_Helper::get_listing_in_loop();
+    $listing = PLS_Plugin_API::get_listing_in_loop();
     
     $itemtype = 'http://schema.org/Offer';
     if (isset($listing['location']['unit']) && $listing['location']['unit'] != null) {

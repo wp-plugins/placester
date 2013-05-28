@@ -168,3 +168,11 @@ function pls_get_image_src_from_thumbnail( $post_id, $size, $default = '' ) {
 	
 	return $thumb_url;
 }
+
+function pls_clean_markup_for_javascript( $content ) {
+	// Strip quotes and spaces to be able to pass safely to JS
+	$content = str_replace( '"', '\"', $content );
+	$content = preg_replace( '/\s+/', ' ', $content );
+	
+	return $content;
+}

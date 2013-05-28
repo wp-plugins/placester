@@ -10,7 +10,7 @@ class PLS_Partials_Property_Details {
 
 	    	$html = '';
 
-          	$listing_data = PL_Listing_Helper::get_listing_in_loop();
+          	$listing_data = PLS_Plugin_API::get_listing_in_loop();
           
           	// Problems with API key or inconsistent data lead to notices due to null listings
           	if (!is_null( $listing_data)) {
@@ -26,7 +26,7 @@ class PLS_Partials_Property_Details {
 						<span itemprop="streetAdress"><?php echo $listing_data['location']['address']; ?></span> <span itemprop="addressLocality"><?php echo $listing_data['location']['locality']; ?></span>, <span itemprop="addressRegion"><?php echo $listing_data['location']['region']; ?></span>
 					</h2>
 	
-					<?php echo PL_Membership::placester_favorite_link_toggle(array('property_id' => $listing_data['id'], 'add_text' => 'Add To Favorites', 'remove_text' => 'Remove From Favorites')); ?>
+					<?php echo PLS_Plugin_API::placester_favorite_link_toggle(array('property_id' => $listing_data['id'], 'add_text' => 'Add To Favorites', 'remove_text' => 'Remove From Favorites')); ?>
 	
 					<p itemprop="price"><?php echo PLS_Format::number($listing_data['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true)); ?> <span><?php echo PLS_Format::translate_lease_terms($listing_data); ?></span></p>
 	

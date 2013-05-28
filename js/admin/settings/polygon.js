@@ -130,6 +130,28 @@ jQuery(document).ready(function($) {
 		
 	}
 
+	$('#show_advanced_styles').live('click', function (event) {
+		event.preventDefault();
+		if ($('.advanced_area_controls').is(":visible")) {
+			$(this).html('Show Advanced Controls');
+			$('.advanced_area_controls').hide();
+		} else {
+			$(this).html('Hide Advanced Controls');
+			$('.advanced_area_controls').show();
+			
+		}
+	});
+
+	$('#preset_area_styles').live('change', function () {
+
+		$('#border-weight option[value='+$(this).find(':selected').data('borderWeight')+']').attr('selected','selected');
+		$('#border-opacity option[value="'+$(this).find(':selected').data('borderOpacity')+'"]').attr('selected','selected');
+		$('#fill-opacity option[value="'+$(this).find(':selected').data('fillOpacity')+'"]').attr('selected','selected');
+		$('#polygon_border div').css('background-color', $(this).find(':selected').data('polygon_border'))
+		$('#polygon_fill div').css('background-color', $(this).find(':selected').data('polygon_fill'))
+		
+	});
+
 	$('.polygon_controls form').live('change', function () {
 		PolyFormUpdate();
 	});
@@ -215,9 +237,9 @@ jQuery(document).ready(function($) {
 		};
 		$.post(ajaxurl, polygon_info, function(data, textStatus, xhr) {
 			if (data && data.message) {
+				window.location.href = window.location;
 				$('#polygon_ajax_messages').html(data.message);
 				clearPolyLine();
-				polygon_listings_datatable.fnDraw();
 				show_neighborhood_areas();
 				setTimeout(function () {
 					$('#polygon_ajax_messages').html('');
@@ -275,7 +297,6 @@ jQuery(document).ready(function($) {
 	});
 	
 	function handle_custom_taxonomy_field ( data ) {
-		console.log('here');
 		var type = $('.polygon_controls form #poly_taxonomies').val();
 		var item_value = $('.polygon_controls form .poly_taxonmy_values#' + type).val();
 		if ( item_value == 'custom') {

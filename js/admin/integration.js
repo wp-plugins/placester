@@ -143,7 +143,7 @@ jQuery(document).ready(function($) {
 					autoOpen: true,
 					draggable: false,
 					modal: true,
-					title: '<h3>Set Up an MLS Integration for your Website</h3>',
+					title: 'Set Up an MLS Integration for your Website',
 					width: 810,
 					minHeight: 500,
 					buttons: integration_buttons

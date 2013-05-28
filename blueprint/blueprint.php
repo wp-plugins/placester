@@ -243,8 +243,11 @@ class Placester_Blueprint {
         if ( !defined( 'PLS_LANGUAGES_URL' ) ) /** So it can be defined by the theme developer. */
             define( 'PLS_LANGUAGES_URL', trailingslashit( PLS_URL ) . 'languages' );
 
-        define( 'PLS_WIDGETS_URL', trailingslashit( PLS_URL ) . 'widgets' );
-        define( 'PLS_WIDGETS_DIR', trailingslashit( PLS_DIR ) . 'widgets' );
+        define( 'PLS_WIDGETS_URL', trailingslashit( PLS_FUNCTIONS_URL ) . 'widgets' );
+        define( 'PLS_WIDGETS_DIR', trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets' );
+        
+        define( 'PLS_POST_TYPES_URL', trailingslashit( PLS_FUNCTIONS_URL ) . 'post-types' );
+        define( 'PLS_POST_TYPES_DIR', trailingslashit( PLS_FUNCTIONS_DIR ) . 'post-types' );
 
 	}
 
@@ -312,6 +315,16 @@ class Placester_Blueprint {
         add_theme_support( 'pls-main-sidebar' );
         add_theme_support( 'pls-listings-search-sidebar' );
         add_theme_support( 'pls-single-property-sidebar' );
+        
+        // Add default widgets
+        add_theme_support( 'pls-widget-recent-posts' );
+        if( ! pls_has_plugin_error() ) {
+        	add_theme_support( 'pls-widget-contact' );
+        }
+        add_theme_support( 'pls-widget-agent' );
+        add_theme_support( 'pls-widget-office' );
+        add_theme_support( 'pls-widget-quick-search' );
+        add_theme_support( 'pls-widget-listings' );
     }
 
 	/**
@@ -377,9 +390,6 @@ class Placester_Blueprint {
         /** Load the utility functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'util.php' );
 
-        /** Load the pages functions. */
-        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'pages.php' );
-
         /** Load the compatibility class. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'compatibility.php' );
 
@@ -406,6 +416,9 @@ class Placester_Blueprint {
 
         /** Load the widgets. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'widgets.php' );
+        
+        /** Load the post types. */
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'post-types.php' );
 
         /** Load the lead capture functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'lead-capture.php' );
@@ -421,6 +434,9 @@ class Placester_Blueprint {
         
         /** Load the SEO Helper. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'seo-helper.php' );
+        
+        /** Load the Form Helper. */
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'form.php' );
 
         /** Load the styles functions. */
         require_once( trailingslashit ( PLS_CSS_DIR ) . 'styles.php' );

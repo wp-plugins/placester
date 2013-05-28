@@ -1,18 +1,18 @@
 jQuery(document).ready(function($) {
 
     // beat Chrome's HTML5 tooltips for form validation
-    $('form#pl_lead_register_form input[type="submit"]').on('mousedown', function() {
-      validate_register_form();
+    $('form.pl_lead_register_form input[type="submit"]').on('mousedown', function() {
+      validate_register_form(this);
     });
     $('form#pl_login_form input[type="submit"]').on('mousedown', function() {
       validate_login_form();
     });
     
     // Catch "Enter" keystroke and block it from submitting, except on Submit button
-    $('#pl_lead_register_form').bind("keypress", function(e) {
+    $('.pl_lead_register_form').bind("keypress", function(e) {
       var code = e.keyCode || e.which;
       if (code  == 13) {
-        validate_register_form();
+        validate_register_form(this);
       }
     });
     $('#pl_login_form').bind("keypress", function(e) {
@@ -22,7 +22,7 @@ jQuery(document).ready(function($) {
       }
     });
     
-    $('#pl_lead_register_form').bind('submit', function(e) {
+    $('.pl_lead_register_form').bind('submit', function(e) {
         
         // prevent default form submission logic
         e.preventDefault();
@@ -246,9 +246,15 @@ jQuery(document).ready(function($) {
     }
 
     function validate_register_form () {
-      
-      var this_form = $('form#pl_lead_register_form');
-      
+    	
+      var this_form;
+     
+      if( arguments.length > 0 ) {
+    	  this_form = $(arguments[0]);
+    	  this_form = this_form.closest('form');
+      } else {
+    	  var this_form = $('form#pl_lead_register_form'); 
+      }
       // get fields that are required from form and execture validator()
       var inputs = $(this_form).find("input[required]").validator({
           messageClass: 'register-form-validator-error', 

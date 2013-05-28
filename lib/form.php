@@ -232,7 +232,7 @@ class PL_Form {
 		return array('name' => $name, 'value' => $value, 'text' => $text, 'options' => $options, 'id' => $id, 'type' => $attributes['type'], 'css' => $css);
 	}
 
-	private function prepare_custom_item($options, $method) {
+	public function prepare_custom_item($options, $method) {
 		$custom_items = array();
 		foreach ($options as $key => $option) {
 			$form_types = PL_Config::PL_API_CUST_ATTR('get');

@@ -104,6 +104,9 @@ h3.hndle {
       -webkit-box-shadow: none;
       -moz-box-shadow: none;
       padding: 0; }
+    .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-button-text {
+	text-indent: -999px;
+    }
       .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-icon {
         display: none; }
   .ui-dialog.ui-widget-content .ui-dialog-content {

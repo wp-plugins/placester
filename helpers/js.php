@@ -52,6 +52,7 @@ class PL_Js_Helper {
 					   'placester_page_placester_settings_neighborhood',
 					   'placester_page_placester_settings_filtering', 
 					   'placester_page_placester_settings_client',
+					   'placester_page_placester_lead_capture',
 					   'placester_page_placester_settings_template');
 
 		if (!in_array($hook, $pages)) { return; }
@@ -83,6 +84,10 @@ class PL_Js_Helper {
 		if ($hook == 'placester_page_placester_integrations') {
 			self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) . 'admin/integration.js', array('jquery'));
 			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+		}
+
+		if ($hook == 'placester_page_placester_lead_capture') {
+			self::register_enqueue_if_not('lead-capture', trailingslashit(PL_JS_URL) . 'admin/lead-capture/general.js', array('jquery-ui-core', 'jquery-ui-dialog'));	
 		}
 
 		if ($hook == 'placester_page_placester_settings') {
@@ -124,7 +129,7 @@ class PL_Js_Helper {
 		}
 	}
 
-	public static function admin_menu_url () {
+	public static function admin_menu_url() {
 		?>
 			<script type="text/javascript">
 				var adminurl = '<?php echo ADMIN_MENU_URL; ?>';

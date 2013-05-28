@@ -6,7 +6,7 @@
  * @subpackage Functions
  */
 
-/* Register Hybrid widgets. */
+/* Register Placester widgets. */
 add_action( 'widgets_init', 'pls_register_widgets' );
 
 /**
@@ -20,70 +20,91 @@ add_action( 'widgets_init', 'pls_register_widgets' );
 function pls_register_widgets() {
 
 	/** Load the Placester Agent widget. */
-	require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/agent.php' );
-
+	if ( current_theme_supports( 'pls-widget-agent' ) ) {
+		require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'agent.php' );
+		register_widget( 'PLS_Widget_Agent' );
+	}
 	/** Load the Placester Office widget. */
-	require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/office.php' );
-
+	if ( current_theme_supports( 'pls-widget-office' ) ) {
+		require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'office.php' );
+		register_widget( 'PLS_Widget_Office' );
+	}
+	
 	/** Load the Placester Contact widget. */
-	if( ! pls_has_plugin_error() ) {
-	  require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/contact.php' );
-    register_widget( 'Placester_Contact_Widget' );
+	if( ! pls_has_plugin_error() && current_theme_supports( 'pls-widget-contact' ) ) {
+		require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'contact.php' );
+    	register_widget( 'Placester_Contact_Widget' );
 	}
 
 	/** Load the Placester Recent Posts widget. */
-	require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/recent-posts.php' );
-
+	if ( current_theme_supports( 'pls-widget-recent-posts' ) ) {
+		require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'recent-posts.php' );
+		register_widget( 'PLS_Widget_Recent_Posts' );
+	}
+	
 	/** Load the Placester Quick Search widget. */
-	require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/quick-search.php' );
-
+	if ( current_theme_supports( 'pls-widget-quick-search' ) ) {
+		require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'quick-search.php' );
+		register_widget( 'PLS_Quick_Search_Widget' );
+	}
+	
 	/** Load the Placester Listings widget. */
-	require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/listings.php' );
-
+	if ( current_theme_supports( 'pls-widget-listings' ) ) {
+		require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'listings.php' );
+		register_widget( 'PLS_Widget_Listings' );
+	}
+	
   /** Load the Placester Mortgage Calculator widget. */
-  require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/mortgage-calculator.php' );
+	if ( current_theme_supports( 'pls-widget-mortgage-calculator' ) ) {
+  		require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'mortgage-calculator.php' );
+		register_widget( 'PLS_Widget_Mortgage_Calculator' );
+	}
 
   /** Load the Placester Feedburner Subscribe Form widget. */
-  require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/feedburner-subscribe-form.php' );
+	if ( current_theme_supports( 'pls-widget-feedburner-form' ) ) {
+  		require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'feedburner-subscribe-form.php' );
+    	register_widget( 'PLS_Widget_Feedburner_Widget' );
+	}
 
-  /* Register each of the widgets. */
-  register_widget( 'PLS_Widget_Agent' );
-  register_widget( 'PLS_Widget_Office' );
-  register_widget( 'PLS_Widget_Recent_Posts' );
-  register_widget( 'PLS_Quick_Search_Widget' );
-  register_widget( 'PLS_Widget_Listings' );
+	/** Load the Testimonials widget. */
+	if ( current_theme_supports( 'pls-widget-testimonials' ) ) {
+    	require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'testimonials.php' );
+    	register_widget( 'PLS_Widget_Testimonials' );
+  	}
 
-  if ( current_theme_supports( 'pls-widget-testimonials' ) ) {
-    require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/testimonials.php' );
-    register_widget( 'PLS_Widget_Testimonials' );
-  }
+  	/** Load the Agents widget. */
+  	if ( current_theme_supports( 'pls-widget-agents' ) ) {
+    	require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'agents.php' );
+    	register_widget( 'PLS_Widget_Agents' );
+  	}
 
-  if ( current_theme_supports( 'pls-widget-agents' ) ) {
-    require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/agents.php' );
-    register_widget( 'PLS_Widget_Agents' );
-  }
+  	/** Load the Services widget. */
+  	if ( current_theme_supports( 'pls-widget-services' ) ) {
+    	require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'services.php' );
+    	register_widget( 'PLS_Widget_Services' );
+  	}
 
-  if ( current_theme_supports( 'pls-widget-services' ) ) {
-    require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/services.php' );
-    register_widget( 'PLS_Widget_Services' );
-  }
+  	/** Load the Twitter widget. */
+  	if ( current_theme_supports( 'pls-widget-twitter' ) ) {
+    	require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'twitter.php' );
+    	register_widget( 'PLS_Widget_Twitter' );
+  	}
 
-  if ( current_theme_supports( 'pls-widget-twitter' ) ) {
-    require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/twitter.php' );
-    register_widget( 'PLS_Widget_Twitter' );
-  }
+  	/** Load the Facebook widget. */
+  	if ( current_theme_supports( 'pls-widget-facebook' ) ) {
+    	require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'facebook.php' );
+    	register_widget( 'PLS_Widget_Facebook' );
+  	}
 
-  if ( current_theme_supports( 'pls-widget-facebook' ) ) {
-    require_once( trailingslashit( PLS_FUNCTIONS_DIR ) . 'widgets/facebook.php' );
-    register_widget( 'PLS_Widget_Facebook' );
-  }
+  	/** Load the YouTube widget. */
+  	if ( current_theme_supports( 'pls-widget-youtube' ) ) {
+    	require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'youtube.php' );
+    	register_widget( 'PLS_Widget_YouTube' );
+  	}
 
-  if ( current_theme_supports( 'pls-widget-mortgage-calculator' ) ) {
-    register_widget( 'PLS_Widget_Mortgage_Calculator' );
-  }
-  
-  if ( current_theme_supports( 'pls-widget-feedburner-form' ) ) {
-    register_widget( 'PLS_Widget_Feedburner_Widget' );
-  }
-  
+  	/** Load the Facebook Like Box widget. */
+  	if ( current_theme_supports( 'pls-widget-facebook-like-box' ) ) {
+    	require_once( trailingslashit( PLS_WIDGETS_DIR ) . 'facebook-like-box.php' );
+    	register_widget( 'PLS_Widget_Facebook_Like_Box' );
+  	}
 }

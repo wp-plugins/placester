@@ -10,6 +10,7 @@ class PL_Logging {
 	  'placester_page_placester_settings' => 'Settings - General', 
 	  'placester_page_placester_support' => 'Property Support', 
 	  'placester_page_placester_theme_gallery' => 'Property Theme Gallery',
+	  'placester_page_placester_lead_capture' => 'Lead Capture - General',
 	  'placester_page_placester_settings_client' => 'Settings - Client',
 	  'placester_page_placester_settings_filtering' => 'Settings - Global Filtering',
 	  'placester_page_placester_settings_polygons' => 'Settings - Polygons',

@@ -9,8 +9,7 @@ class PL_Helper_User {
 		add_action( 'wp_ajax_new_api_key_view', array(__CLASS__, 'new_api_key_view') );
 		add_action( 'wp_ajax_free_trial_view', array(__CLASS__, 'free_trial_view') );
 		add_action( 'wp_ajax_create_account', array(__CLASS__, 'create_account') );
-		add_action( 'wp_ajax_user_save_global_filters', array(__CLASS__, 'set_global_filters') );
-		add_action( 'wp_ajax_user_remove_all_global_filters', array(__CLASS__, 'remove_all_global_filters') );
+
 		add_action( 'wp_ajax_ajax_log_errors', array(__CLASS__, 'ajax_log_errors') );
 		add_action( 'wp_ajax_ajax_block_address', array(__CLASS__, 'ajax_block_address') );
 		add_action( 'wp_ajax_ajax_default_address', array(__CLASS__, 'set_default_country') );
@@ -115,51 +114,6 @@ class PL_Helper_User {
 		die();
 	}
 
-	/*
-	 * Functionality for Global Filters
-	 */
-
-	public static function remove_all_global_filters() {
-		$response = PL_Option_Helper::set_global_filters(array('filters' => array()));
-		if ($response) {
-			echo json_encode(array('result' => true, 'message' => 'You successfully removed all global search filters'));
-		} else {
-			echo json_encode(array('result' => false, 'message' => 'Change not saved or no change detected. Please try again.'));
-		}
-		die();
-	}
-
-	public static function get_global_filters() {
-		$response = PL_Option_Helper::get_global_filters();
-		return $response;
-	}
-
-	public static function set_global_filters ($args = array()) {
-		if (empty($args) ) {
-			unset($_POST['action']);
-			$args = $_POST;
-		}
-		
-		$global_search_filters = PL_Validate::request($args, PL_Config::PL_API_LISTINGS('get', 'args'));
-		foreach ($global_search_filters as $key => $filter) {
-			foreach ($filter as $subkey => $subfilter) {
-				if (!is_array($subfilter) && (count($filter) > 1) ) {
-					$global_search_filters[$key . '_match'] = 'in';
-				} elseif (count($subfilter) > 1) {
-					$global_search_filters[$key][$subkey . '_match'] = 'in';
-				}
-			}
-		}
-		$response = PL_Option_Helper::set_global_filters(array('filters' => $global_search_filters));
-		if ($response) {
-			echo json_encode(array('result' => true, 'message' => 'You successfully updated the global search filters'));
-		} else {
-			echo json_encode(array('result' => false, 'message' => 'Change not saved or no change detected. Please try again.'));
-		}
-		echo json_encode(PL_WordPress_Helper::report_filters());
-		die();
-	}
-
 
 	/*
 	 * Get/Setter callbacks for generic plugin settings
@@ -192,7 +146,6 @@ class PL_Helper_User {
 		}
 		$api_response = PL_Option_Helper::set_block_address($block_address);
 		if ($api_response) {
-			PL_Http::clear_cache();
 			PL_Pages::delete_all();		
 			if ($block_address) {
 				echo json_encode(array('result' => true, 'message' => 'You successfully turned on block addresses'));

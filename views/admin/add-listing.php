@@ -6,7 +6,7 @@
 	<?php endif ?>
 	
 	<div id="manage_listing_message"></div>
-	<form action="/wp-admin/admin-ajax.php" method="<?php echo isset($_GET['id']) ? 'PUT' : 'POST' ?>" enctype="multipart/form-data" id="add_listing_form">  
+	<form action="<?php echo admin_url('/admin-ajax.php')?>" method="<?php echo isset($_GET['id']) ? 'PUT' : 'POST' ?>" enctype="multipart/form-data" id="add_listing_form">  
 		<?php if (isset($_GET['id'])): ?>
 			<input type="hidden" name="id" value="<?php echo $_GET['id'] ?>">
 		<?php endif ?>

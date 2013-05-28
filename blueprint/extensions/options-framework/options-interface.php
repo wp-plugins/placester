@@ -43,9 +43,6 @@ function optionsframework_fields() {
 		$checked = '';
 		
 		// Wrap all options
-		
-
-
 		if ( ($value['type'] != "heading") && ($value['type'] != "info") ) {
 
 			// Keep all ids lowercase with no spaces

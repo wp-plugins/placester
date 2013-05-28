@@ -8,19 +8,22 @@
  */
 class PLS_Cache {
 	
-	const TTL_LOW  = 900; // 15 minutes
+	const TTL_LOW  = 1800; // 30 minutes
+	const TTL_HOUR = 3600; // 1 hour
+	const TTL_MID = 43200; // 12 hours
+	const TTL_DAY = 86400; // 24 hours
 	const TTL_HIGH = 172800; // 48 hours
 	
 	public $pl_cache_object = NULL;
 	
-	function __construct ($type = 'general') {
-		if( class_exists( 'PL_Cache' ) ) {
-			$this->pl_cache_object = new PL_Cache( $type );
+	function __construct ($group = 'general') {
+		if (class_exists('PL_Cache')) {
+			$this->pl_cache_object = new PL_Cache($group);
 		}
 	}
 	
 	public function get() {
-		if( ! is_null( $this->pl_cache_object ) ) {
+		if ( !is_null($this->pl_cache_object) ) {
 			$args = func_get_args();
 			return $this->pl_cache_object->get($args);
 		}
@@ -43,13 +46,13 @@ $pls_widget_cache = new PLS_Widget_Cache();
  */
 class PLS_Widget_Cache {
 
-	function __construct() {
+	public function __construct() {
 		// WP Widget Cache ties into the wp_head hook, but Blueprint caches the page header
 		// so wp_head might not get invoked. Hook into wp instead.
 		add_action('wp', array(__CLASS__,'widget_cache_redirect_callback'), 99999);
 	}
 
-	function widget_cache_redirect_callback()
+	public function widget_cache_redirect_callback()
 	{
 		global $wp_registered_widgets;
 
@@ -65,40 +68,36 @@ class PLS_Widget_Cache {
 		}
 	}
 
-	function widget_cache_redirected_callback()
+	public function widget_cache_redirected_callback()
 	{
 		global $wp_registered_widgets;
 
-		$params=func_get_args();											// get all the passed params
-		$id=array_pop($params);												// take off the widget ID
+		$params = func_get_args(); // get all the passed params
+		$id = array_pop($params);  // take off the widget ID
 		$params['widget_class'] = __CLASS__;
 		$params['cache_url'] = $_SERVER['REQUEST_URI']; // Cache per page
 
 		$cache = new PLS_Cache('Widget');
-		if('GET' === $_SERVER['REQUEST_METHOD'] && WP_DEBUG !== true && $html = $cache->get($params)) {
-			// Cache hit. Return the html.
+		if ('GET' === $_SERVER['REQUEST_METHOD'] && $html = $cache->get($params)) {
+			// Cache hit -- return the HTML...
 			echo $html;
-			return;
-
 		}
 		else {
-
-			// Cache miss. Render the HTML.
+			// Cache miss -- render the HTML...
 			$callback=$wp_registered_widgets[$id]['callback_wc_redirect'];		// find the real callback
 
 			// Just in case the callback isn't callable...
-			if(!is_callable($callback)) {
+			if (!is_callable($callback)) {
 				return;
 			}
 
 			// Let the widget render itself into an output buffer
-			// Cache it & echo the rendered html
+			// Cache it & echo the rendered HTML
 			ob_start();
 			call_user_func_array($callback, $params);
 			$html = ob_get_clean();
 			$cache->save($html, PLS_Cache::TTL_LOW);
 			echo $html;
-
 		}
 	}
 }

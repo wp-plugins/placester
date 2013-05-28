@@ -75,7 +75,7 @@ class Placester_Contact_Widget extends WP_Widget {
       global $post;
         
         if (!empty($post) && isset($post->post_type) && $post->post_type == 'property') {
-          $data = PL_Listing_Helper::get_listing_in_loop();
+          $data = PLS_Plugin_API::get_listing_in_loop();
         } else {
           $data = array();
         }
@@ -427,7 +427,7 @@ function ajax_placester_contact() {
       if (trim($_POST['email_confirmation']) == true) {
         wp_mail($email, 'Email confirmation was sent to ' . $_POST['email'] . ' from ' . home_url(), $message, $headers);
       } elseif ($email) {
-        $placester_Mail = wp_mail($email, 'Prospective client from ' . home_url(), $message, $headers);
+        $placester_Mail = wp_mail($email, 'Prospective client from ' . home_url(), $message, PLS_Plugin_API::merge_bcc_forwarding_addresses_for_sending($headers) );
       }
       
       $name = $_POST['name'];

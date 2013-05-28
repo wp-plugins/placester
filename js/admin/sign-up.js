@@ -203,7 +203,7 @@ jQuery(document).ready(function($) {
 					draggable: false,
 					modal: true,
 					position: 'center',
-					title: '<h3>' + args.title + '</h3>',
+					title: args.title,
 					width: args.width,
 					buttons: args.buttons
 				});

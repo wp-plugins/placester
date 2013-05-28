@@ -84,7 +84,7 @@ class PLS_SEO_Helper {
 		} elseif (is_tag() || is_author()) {
 			$description = tag_description();
 		} elseif ( is_singular('property') ) {
-			$listing = PL_Listing_Helper::get_listing_in_loop();
+			$listing = PLS_Plugin_API::get_listing_in_loop();
 			$description = @$listing['cur_data']['desc'];
 		} elseif( is_single() ) {
 			$descrip = strip_tags($post->post_content);
@@ -109,7 +109,7 @@ class PLS_SEO_Helper {
 		$address = '';
 		
 		if( is_singular('property') ) {
-			$listing = PL_Listing_Helper::get_listing_in_loop();
+			$listing = PLS_Plugin_API::get_listing_in_loop();
 		
 			// Single Property
 			$itemtype = 'http://schema.org/Offer';

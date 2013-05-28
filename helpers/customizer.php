@@ -67,8 +67,8 @@ class PL_Customizer_Helper
 		else {
 			// If the user is neither on hosted, nor using a placester theme, make sure NOT to register
 			// the accompanying scripts and stylesheets...
-			remove_action( 'customize_controls_enqueue_scripts', array( PL_Js_Helper, 'customizer') );
-			remove_action( 'customize_controls_enqueue_scripts', array( PL_Css_Helper, 'customizer' ) );
+			remove_action( 'customize_controls_enqueue_scripts', array( 'PL_Js_Helper', 'customizer') );
+			remove_action( 'customize_controls_enqueue_scripts', array( 'PL_Css_Helper', 'customizer' ) );
 			remove_action( 'customize_controls_print_footer_scripts', array(__CLASS__, 'load_partials') );
 		}
 

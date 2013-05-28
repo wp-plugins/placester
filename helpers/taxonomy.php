@@ -72,6 +72,69 @@ class PL_Taxonomy_Helper {
 		}
 	}
 
+	function get_preset_polygon_styles () {
+		$preset_styes = array(
+				'Red' => array(
+					'border-weight' => 3,
+					'border-opacity' => 1,
+					'fill-opacity' => 0.3,
+					'polygon_border' => '#FF0000',
+					'polygon_fill' => '#FF0000'
+					),
+				'Blue' => array(
+					'border-weight' => 3,
+					'border-opacity' => 1,
+					'fill-opacity' => 0.3,
+					'polygon_border' => '#0d2f94',
+					'polygon_fill' => '#0d2f94'
+					),
+				'Green' => array(
+					'border-weight' => 3,
+					'border-opacity' => 1,
+					'fill-opacity' => 0.3,
+					'polygon_border' => '#34940d',
+					'polygon_fill' => '#34940d'
+					),
+				'Yellow' => array(
+					'border-weight' => 3,
+					'border-opacity' => 1,
+					'fill-opacity' => 0.3,
+					'polygon_border' => '#d9ff00',
+					'polygon_fill' => '#d9ff00'
+					),
+				'Orange' => array(
+					'border-weight' => 3,
+					'border-opacity' => 1,
+					'fill-opacity' => 0.3,
+					'polygon_border' => '#d97b09',
+					'polygon_fill' => '#d97b09'
+					),
+				'Pink' => array(
+					'border-weight' => 3,
+					'border-opacity' => 1,
+					'fill-opacity' => 0.3,
+					'polygon_border' => '#c809d9',
+					'polygon_fill' => '#c809d9'
+					),
+				'Teal' => array(
+					'border-weight' => 3,
+					'border-opacity' => 1,
+					'fill-opacity' => 0.3,
+					'polygon_border' => '#09d9c8',
+					'polygon_fill' => '#09d9c8'
+					)
+			);
+		$options = '';
+		foreach ($preset_styes as $style_name => $presets) {
+			$options .= '<option ';
+			foreach ($presets as $style => $value) {
+				$options .= 'data-' . $style . '="'.$value.'"';
+			}
+			$options .= ' >' . $style_name . '</option>';
+		}
+		return $options;
+	}
+
 	function polygon_listings ($polygon, $additional_params = array()) {
 		$request = '';
 		foreach ($polygon as $key => $point) {
@@ -138,6 +201,10 @@ class PL_Taxonomy_Helper {
 			$id = wp_insert_term($_POST['create_taxonomy'], $polygon['tax']);
 			if (is_array($id)) {
 				$term = get_term($id['term_id'], $polygon['tax']);
+				$polygon['slug'] = $term->slug;
+			} else if ( is_wp_error($id) ) {
+				$existing_term_id = $id->get_error_data();
+				$term = get_term($existing_term_id, $polygon['tax']);
 				$polygon['slug'] = $term->slug;
 			}
 		}
@@ -266,10 +333,10 @@ class PL_Taxonomy_Helper {
 		?>
 		<?php foreach ($taxonomies as $slug => $label): ?>
 			<select class="poly_taxonmy_values" name="<?php echo $slug ?>" style="display: none;" id="<?php echo $slug ?>">
-					<option value="custom">Custom</option>
-				<?php foreach (self::get_taxonomy_items($slug) as $item): ?>
+				<?php foreach (self::get_taxonomy_items($slug, array('hide_empty' => false)) as $item): ?>
 					<option value="<?php echo $item['slug'] ?>"><?php echo $item['name'] ?></option>
 				<?php endforeach ?>
+				<option value="custom">Create New Area</option>
 			</select>
 		<?php endforeach ?>
 		<?php

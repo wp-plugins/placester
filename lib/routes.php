@@ -128,6 +128,10 @@ class PL_Router {
 		self::router('settings/client.php', PL_Membership_Helper::get_client_settings(), false);
 	}
 
+	public static function lead_capture() {
+		self::router('lead-capture/general.php', array(), false);
+	}
+
 	public static function support() {
 		self::router('support.php', array(), false);
 	}
