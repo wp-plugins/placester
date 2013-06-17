@@ -32,7 +32,7 @@ class PLS_Partials_Get_Listings_Ajax {
      * @return string The html and js.
      * @since 0.0.1
      */
-    public static function init() {
+    public static function init () {
         // Hook the callback for ajax requests
         add_action('wp_ajax_pls_listings_ajax', array(__CLASS__, 'get' ) );
         add_action('wp_ajax_nopriv_pls_listings_ajax', array(__CLASS__, 'get' ) );
@@ -41,13 +41,12 @@ class PLS_Partials_Get_Listings_Ajax {
         add_action( 'wp_ajax_nopriv_pls_listings_fav_ajax', array(__CLASS__,'get_favorites'));
     }
 
-    public static function get_favorites() {
+    public static function get_favorites () {
         $favorite_ids = PLS_Plugin_API::get_listings_fav_ids();
         self::get(array('property_ids' => $favorite_ids, 'allow_id_empty' => true));
     }
 
     public static function load ($args = array()) {
-      
         // Set "Sort By" (default to number of total images)
         $sort_by = ( isset($args['sort_by']) ? $args['sort_by'] : 'total_images' );
         
@@ -98,7 +97,6 @@ class PLS_Partials_Get_Listings_Ajax {
             'location.postal' => 'Zip',
             // 'zoning_types' => 'Zoning',
             // 'purchase_types' => 'Purchase Type',
-            // 'listing_types' => 'Listing Type',
             // 'property_type' => 'Property Type',
             'cur_data.beds' => 'Beds',
             'cur_data.baths' => 'Baths',
@@ -259,14 +257,14 @@ class PLS_Partials_Get_Listings_Ajax {
                     $property_ids = explode(',', $property_ids);
                 }
 
-                $api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => $property_ids, 'limit' => $_POST['limit'], 'offset' => $_POST['offset']));
+                $api_response = PLS_Plugin_API::get_listing_details(array('property_ids' => $property_ids, 'limit' => $_POST['limit'], 'offset' => $_POST['offset']));
             } 
             elseif (isset($search_query['neighborhood_polygons']) && !empty($search_query['neighborhood_polygons']) ) {
                 $api_response = PLS_Plugin_API::get_polygon_listings($search_query);
             }
             else {
                 $api_args = ( $saved_user_search ? $_POST : $search_query );
-                $api_response = PLS_Plugin_API::get_listings_list($api_args);
+                $api_response = PLS_Plugin_API::get_listings($api_args, true);
             }
         }
 
@@ -368,7 +366,7 @@ class PLS_Partials_Get_Listings_Ajax {
       
         $response['sEcho'] = @$_POST['sEcho'];
         $response['aaData'] = $listings; 
-        $api_total = isset( $api_response['total'] ) ? $api_response['total'] : 0; 
+        $api_total = isset($api_response['total']) ? $api_response['total'] : 0; 
         $response['iTotalRecords'] = $api_total;
         $response['iTotalDisplayRecords'] = $api_total;
 

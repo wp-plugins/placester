@@ -124,7 +124,7 @@ class PLS_Slideshow {
                             
                             // In this case, the slide's remaining key will correspond to it's property ID...
                             $property_id = key($slide);
-                            $api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => array($property_id)));
+                            $api_response = PLS_Plugin_API::get_listing_details(array('property_ids' => array($property_id)));
                             
                             if (!empty($api_response['listings']) && $api_response['listings'][0]['id'] === false ) {
                                 self::$listings_to_delete[] = $property_id;
@@ -181,15 +181,15 @@ class PLS_Slideshow {
                 }
             } 
             else {
-                if ( !empty( $args['post_id'] ) && !empty($args['post_meta_key']) ) {
-                    $api_response = PLS_Listing_Helper::get_featured_from_post( $args['post_id'], $args['post_meta_key'] );
+                if ( !empty($args['post_id']) && !empty($args['post_meta_key']) ) {
+                    $api_response = PLS_Listing_Helper::get_featured_from_post($args['post_id'], $args['post_meta_key']);
                 }
-                else if ($featured_option_id) {
+                elseif ($featured_option_id) {
                     $api_response = PLS_Listing_Helper::get_featured($featured_option_id);
                 } 
 
                 if (empty($api_response['listings'])) {
-                    $api_response = PLS_Plugin_API::get_property_list($listings);
+                    $api_response = PLS_Plugin_API::get_listings($listings);
                 }
                 
                 foreach ($api_response['listings'] as $index => $listing) {
@@ -314,7 +314,7 @@ class PLS_Slideshow {
      */
     private static function empty_slides_and_add_random_listings() {
         $slides = array();
-        $api_response = PLS_Plugin_API::get_property_list(array('limit' => 6, 'offset' => 10));
+        $api_response = PLS_Plugin_API::get_listings(array('limit' => 6, 'offset' => 10));
         
         foreach ($api_response['listings'] as $listing) {
           $slides[] = array(

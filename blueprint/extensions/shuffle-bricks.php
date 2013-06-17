@@ -111,11 +111,12 @@ class PLS_Shuffle_Bricks {
 
     // Retrieve featured listings
     public static function get_brick_listings ($listing_params, $featured_option_id) {
-        if ($featured_option_id) {
-            $brick_listings = PLS_Listing_Helper::get_featured($featured_option_id);
-        }
+        // Try to set to featured listings if param is set...
+        $brick_listings = $featured_option_id ? PLS_Listing_Helper::get_featured($featured_option_id) : array();
+
+        // If featured listings param is false OR there are no featured listings, chose some randomly...
         if (empty($brick_listings['listings'])) {
-            $brick_listings = PLS_Plugin_API::get_property_list($listing_params);
+            $brick_listings = PLS_Plugin_API::get_listings($listing_params);
         }
 
         return $brick_listings['listings'];

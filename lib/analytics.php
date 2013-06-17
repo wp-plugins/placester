@@ -94,23 +94,23 @@ class PL_Analytics {
 	}
 
 	public static function listing_search ($args = array()) {
-		error_log(var_export($args, true));
-		// return self::produce_data("listing_search", $args);
+		// error_log(var_export($args, true));
+		return self::produce_data("listing_search", $args);
 	}
 
 	public static function home_view () {
-		return self::produce_data("home_view");	
+		return self::produce_data("home_view");
 	}
 
 	public static function page_view () {
-		return self::produce_data("page_view");	
+		return self::produce_data("page_view");
 	}
 
 	public static function log_snippet_js ($data) {
 	  	ob_start();
 	  	?>
 	  		<script type="text/javascript">
-	  			if (PlacesterAnalytics) {
+	  			if (typeof PlacesterAnalytics !== 'undefined') {
 	    			PlacesterAnalytics.log("<?php echo $data; ?>");  
 	  			}
 	  		</script>

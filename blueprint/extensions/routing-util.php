@@ -4,7 +4,6 @@ PLS_Route::init();
 
 class PLS_Route {
 
-	
 	const CACHE_NONE = 0;
 	const CACHE_PER_PAGE = 1;
 
@@ -81,7 +80,7 @@ class PLS_Route {
 			// error_log("cache_type: {$cache_type}");
 			// error_log("Will cache: " . ($cache_on ? "YES" : "NO") . "\n");
 
-			if($cache_on) {     
+			if ($cache_on) {     
 				$cache = new PLS_Cache('Template');
 				$cache_args = array('template' => $located, 'uri' => trailingslashit($_SERVER['REQUEST_URI']));
 				// error_log(var_export($cache_args, true));
@@ -97,8 +96,8 @@ class PLS_Route {
 
 			load_template($located, $require_once);
 
-			// Capture/cache rendered html unless we're in debug mode
-			if($cache_on) {
+			// Capture/cache rendered HTML unless we're in debug mode
+			if ($cache_on) {
 				$result = ob_get_clean();
 				$cache->save($result);
 				echo $result;

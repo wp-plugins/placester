@@ -119,7 +119,7 @@ class PLS_Map {
 				self::make_marker($listing, $marker_args);
 			}
 		} elseif ($map_args['auto_load_listings']) {
-			$api_response = PLS_Plugin_API::get_property_list($map_args['request_params']);
+			$api_response = PLS_Plugin_API::get_listings($map_args['request_params']);
 			foreach ($api_response['listings'] as $listing) {
 				self::make_marker($listing, $marker_args);
 			}

@@ -2,7 +2,7 @@ function List () {}
 
 List.prototype.sEcho = 1;
 
-List.prototype.init = function ( params ) {
+List.prototype.init = function (params) {
 	var that = this;
 	//list settings
 	this.loading_class = params.loading_class || '.dataTables_processing';
@@ -19,10 +19,10 @@ List.prototype.init = function ( params ) {
 	this.total_results_id = params.total_results_id || '#pls_num_results';
 	this.limit_default = params.limit_default || 10;
 	this.limit_choices = params.limit_choices || [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]];
-	this.settings = params.settings || { "bFilter": false, "bProcessing": true, "bServerSide": true, "sServerMethod": "POST", 'sPaginationType': 'full_numbers', "sAjaxSource": info.ajaxurl, 'iDisplayLength': this.limit_default, 'aLengthMenu' : this.limit_choices };
+	this.settings = params.settings || { "bFilter": false, "bProcessing": true, "bServerSide": true, "sServerMethod": "POST", 'sPaginationType': 'full_numbers', "sAjaxSource": info.ajaxurl, 'iDisplayLength': this.limit_default, 'aLengthMenu': this.limit_choices };
   	this.results_as_total = 0;
   	this.fnCallback = params.fnCallback || false;
-  this.manual_callback = params.manual_callback || false;
+  	this.manual_callback = params.manual_callback || false;
 
 	//objects
 	this.listings = params.listings || alert('List: You need to include a listings object');
@@ -32,21 +32,20 @@ List.prototype.init = function ( params ) {
 	this.hide_on_empty = params.hide_on_empty || false;
 	this.empty_id = params.empty_id || false;
 
-	this.settings.fnServerData = function ( sSource, aoData, fnCallback ) {
+	this.settings.fnServerData = function (sSource, aoData, fnCallback) {
 		if (params.get_listings) {
 			params.get_listings( that, sSource, aoData, fnCallback )
 		} else {
 			that.get_listings( that, sSource, aoData, fnCallback )
-		};
+		}
 	}
 }
 
-List.prototype.get_listings = function ( self, sSource, aoData, fnCallback ) {
+List.prototype.get_listings = function (self, sSource, aoData, fnCallback) {
 	var that = self;
 	that.show_loading();
 	that.fnCallback = fnCallback;
 	that.listings.get();
-
 }
 
 List.prototype.update = function (ajax_response) {
@@ -63,52 +62,51 @@ List.prototype.update = function (ajax_response) {
 	}
 }
 
-List.prototype.total_results = function ( ajax_response ) {
+List.prototype.total_results = function (ajax_response) {
 	this.results_as_total = ajax_response.iTotalDisplayRecords;
 	jQuery(this.total_results_id).html(this.results_as_total);
 }
 
 List.prototype.update_favorites_through_cache = function () {
 	jQuery.post(info.ajaxurl, {action: 'get_favorites'}, function(data, textStatus, xhr) {
-	        if (data) {
-	            jQuery('#pl_add_remove_lead_favorites .pl_prop_fav_link').each(function(index) {
-	                var flag = false;
-	                for (var i = data.length - 1; i >= 0; i--) {
-	                    //this listing should be a favorite
-	                    if (jQuery(this).attr('href') == ('#' + data[i].id) ) {
-	                        if (jQuery(this).attr('id') == 'pl_add_favorite') {
-	                            jQuery(this).hide();
-	                        } else {
-	                            jQuery(this).show();
-	                        };
-	                        flag = true;
-	                    } 
-	                };
-	                //this listing shouldn't be a favorite
-	                if (!flag) {
-	                    if (jQuery(this).attr('id') == 'pl_add_favorite') {
-	                        jQuery(this).show();
-	                    } else {
-	                        jQuery(this).hide();
-	                    };
-	                };
-	            });     
-	        };
-	    }, 'json');
+        if (data) {
+            jQuery('#pl_add_remove_lead_favorites .pl_prop_fav_link').each(function(index) {
+                var flag = false;
+                for (var i = data.length - 1; i >= 0; i--) {
+                    //this listing should be a favorite
+                    if (jQuery(this).attr('href') == ('#' + data[i].id) ) {
+                        if (jQuery(this).attr('id') == 'pl_add_favorite') {
+                            jQuery(this).hide();
+                        } else {
+                            jQuery(this).show();
+                        }
+                        flag = true;
+                    } 
+                };
+                // this listing shouldn't be a favorite...
+                if (!flag) {
+                    if (jQuery(this).attr('id') == 'pl_add_favorite') {
+                        jQuery(this).show();
+                    } else {
+                        jQuery(this).hide();
+                    }
+                }
+            });     
+        }
+    }, 'json');
 }
 
-List.prototype.row_mouseover = function ( listing_id ) {
+List.prototype.row_mouseover = function (listing_id) {
 	jQuery(this.table_row_selector).find('[data-listing=' + listing_id + ']').trigger('mouseenter');
 }
 
-List.prototype.row_mouseleave = function ( listing_id ) {
+List.prototype.row_mouseleave = function (listing_id) {
 	jQuery(this.table_row_selector).find('[data-listing=' + listing_id + ']').trigger('mouseleave');
 }
 
 List.prototype.listeners = function () {
 	var that = this;
-	if ( this.map ) {
-
+	if (this.map) {
 		jQuery(this.table_row_selector).live({
 			mouseenter: function () {
 				jQuery(this).addClass('hover');
@@ -120,7 +118,6 @@ List.prototype.listeners = function () {
 			}
 		});
 	}
-
 }
 
 List.prototype.show_loading = function () {
@@ -139,7 +136,6 @@ List.prototype.show_empty = function () {
 		jQuery(this.pagination_id).hide();
 		jQuery(this.custom_search_results_id).hide();
 	}
-		
 
 	if (this.empty_id)
 		jQuery(this.empty_id).show();
@@ -153,7 +149,6 @@ List.prototype.hide_empty = function () {
 		jQuery(this.pagination_id).show();
 		jQuery(this.custom_search_results_id).show();
 	}
-		
 
 	if (this.empty_id)
 		jQuery(this.empty_id).hide();

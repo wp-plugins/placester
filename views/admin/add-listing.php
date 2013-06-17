@@ -9,6 +9,16 @@
 	<form action="<?php echo admin_url('/admin-ajax.php')?>" method="<?php echo isset($_GET['id']) ? 'PUT' : 'POST' ?>" enctype="multipart/form-data" id="add_listing_form">  
 		<?php if (isset($_GET['id'])): ?>
 			<input type="hidden" name="id" value="<?php echo $_GET['id'] ?>">
+			<?php
+				$curated_data = is_array($_POST['cur_data']) ? $_POST['cur_data'] : array();
+				$uncurated_data = is_array($_POST['uncur_data']) ? $_POST['uncur_data'] : array();
+
+				// Alter structure of $_POST (contains listing details) to match listing edit/creation structure...
+				$_POST['metadata'] = array_merge($curated_data, $uncurated_data);
+				
+				// These are no longer needed...
+				unset($_POST['cur_data'], $_POST['uncur_data']);
+			?>
 		<?php endif ?>
 		<div id="poststuff" class="metabox-holder has-right-sidebar">
 			<div id="side-info-column" class="inner-sidebar"> <!-- Right Sidebar -->
@@ -30,8 +40,7 @@
 						array('title' => 'Location',
 						  'content' => PL_Form::generate_form( 
 						  	PL_Config::bundler('PL_API_LISTINGS',
-						  		$keys = array('create',
-						  			 'args'),
+						  		$keys = array('create', 'args'),
 						  		$bundle = array('location')
 						  	), 
 						array('method'=>'POST',
@@ -361,19 +370,6 @@
 							 	'echo_form' => false
 						 	) 
 						 ) ) ) ?>
-					<?php /* PL_Router::load_builder_partial('admin-box.php',
-						 array('title' => 'Custom Details',
-						 	 'content' => PL_Form::generate_form(
-						 	 	 PL_Config::bundler('PL_API_LISTINGS',
-						 	 	 	 $keys = array('create', 'args'), 
-						 	 	 	 $bundle = array('custom_data')
-						 		),
-						 	array('method'=>'POST', 
-							 	'include_submit' => false, 
-							 	'wrap_form' => false, 
-							 	'echo_form' => false
-						 	) 
-						 ) ) ) */ ?>
 				</div>
 			</div>
 		</div>

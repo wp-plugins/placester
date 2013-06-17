@@ -16,6 +16,7 @@ $PL_CUSTOMIZER_THEMES = array(
 	'Premium' => array(
         'Bethesda' => 'bethesda',
         'Charlotte' => 'charlotte',
+        'Franklin' => 'franklin',
         'Ontario' => 'ontario',
         'Park City' => 'parkcity',
         'Plymouth' => 'plymouth'
@@ -28,8 +29,8 @@ $PL_CUSTOMIZER_THEME_LIST = array(
 	'columbus', 
 	'highland', 
 	'manchester', 
-	'tampa', 
-	'ventura', 
+	'tampa',
+	'ventura',
 	'bluestone', 
 	'slate', 
 	'toronto', 
@@ -37,7 +38,8 @@ $PL_CUSTOMIZER_THEME_LIST = array(
 	'charlotte', 
 	'ontario', 
 	'parkcity',
-	'plymouth' 
+	'plymouth',
+	'franklin'
 );
 
 global $PL_CUSTOMIZER_THEME_INFO;

@@ -29,8 +29,6 @@
 				</div>
 				<div class="global_filter_col form_item">
 					<form action="" id="global_filter_form">
-						<?php echo PL_Form::item('compound_type', PL_Config::PL_API_LISTINGS('create', 'args', 'compound_type'), 'POST'); ?>
-						<?php PL_Form::generate_form( PL_Config::bundler('PL_API_LISTINGS', array('create', 'args'), array('property_type-sublet','property_type-res_sale','property_type-res_rental','property_type-vac_rental','property_type-comm_sale','property_type-comm_rental')), array('method'=>'POST', 'include_submit' => false, 'wrap_form' => false, 'echo_form' => true) ); ?>
 						<?php PL_Form::generate_form( PL_Config::PL_API_LISTINGS('get', 'args'), array('method'=>'POST', 'include_submit' => false, 'wrap_form' => false, 'echo_form' => true, 'title' => false, 'id' => 'global_filter_form' ) ); ?>		
 					</form>
 				</div>

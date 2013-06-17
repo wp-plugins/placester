@@ -13,8 +13,9 @@ class PLS_Listing_Helper {
 	}
 
 	public static function listings_for_options() {
-		$api_response = PLS_Plugin_API::get_property_list($_POST);
+		$api_response = PLS_Plugin_API::get_listings($_POST);
 		$formatted_listings = '';
+
 		if ($api_response['listings']) {
 			foreach ($api_response['listings'] as $listing) {
 			    if ( !empty($listing['location']['unit']) ) {
@@ -28,54 +29,59 @@ class PLS_Listing_Helper {
 		else {
 			$formatted_listings .= "No Results. Broaden your search.";
 		}
+
 		echo json_encode($formatted_listings);
 		die();
 	}
 
 	public static function get_featured ($featured_option_id, $args = array()) {
+		$api_response = array('listings' => array());
 		$option_ids = pls_get_option($featured_option_id); 
-		if (!empty( $option_ids ) ) {
+		
+		if (!empty($option_ids)) {
 			$property_ids = array_keys($option_ids);
 
-			if( ! empty( $property_ids ) ) {
+			if (!empty($property_ids)) {
 				$args['property_ids'] = $property_ids;
 			}
-			$api_response = PLS_Plugin_API::get_listings_details_list( $args );
-      // remove listings without images
-	      foreach ($api_response['listings'] as $key => $listing) {
-	          if ( empty($listing['images']) ) {
-	            unset($api_response['listings'][$key]);
-	          }
-	      } 
-		  return $api_response;	
-		} else {
-			return array('listings' => array());
-		}
-	}
-	
-	// pass property IDs array
-	public static function get_featured_from_post ($post_id, $post_meta_key) {
-		$property_data = get_post_meta( $post_id, $post_meta_key );
-		
-		// Data comes in different forms
-		$property_ids = empty( $property_data ) ? array() : @json_decode( $property_data[0], true );
-		
-		if( empty( $property_ids ) && is_array( $property_data ) && isset( $property_data[0]['featured-listings-type'] ) ) {
-			$listings_array = $property_data[0]['featured-listings-type'];
-			if( is_array( $listings_array ) ) {
-				$property_ids = array_keys( $listings_array );
-			}
-			// $property_ids = implode(',', $property_ids );
-		} else if( is_array( $property_ids ) ) {
-			$property_ids = array_keys( $property_ids );
+			
+			$api_response = PLS_Plugin_API::get_listing_details($args);
+			
+			// Remove listings without images...
+			foreach ($api_response['listings'] as $key => $listing) {
+				if (empty($listing['images'])) {
+					unset($api_response['listings'][$key]);
+				}
+	      	}
 		} 
 		
-		if (! empty( $property_ids ) ) {
-			$api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => $property_ids));
-			return $api_response;
-		} else {
-			return array('listings' => array());
-		}
+		return $api_response;
+	}
+	
+	// Pass in property IDs array
+	public static function get_featured_from_post ($post_id, $post_meta_key) {
+		$api_response = array('listings' => array());
+		
+		// Data comes in different forms...
+		$property_data = get_post_meta($post_id, $post_meta_key);
+		$property_ids = empty($property_data) ? array() : @json_decode($property_data[0], true);
+		
+		if (empty($property_ids) && is_array($property_data) && isset($property_data[0]['featured-listings-type'])) {
+			$listings_array = $property_data[0]['featured-listings-type'];
+			if (is_array($listings_array)) {
+				$property_ids = array_keys($listings_array);
+			}
+			// $property_ids = implode(',', $property_ids );
+		} 
+		elseif (is_array($property_ids)) {
+			$property_ids = array_keys($property_ids);
+		} 
+		
+		if (!empty($property_ids)) {
+			$api_response = PLS_Plugin_API::get_listing_details(array('property_ids' => $property_ids));
+		} 
+		
+		return $api_response;
 	}
 
 	public static function get_compliance ($args) {
@@ -88,7 +94,7 @@ class PLS_Listing_Helper {
 	}
 
 	public static function get_search_count() {
-	    $response = PLS_Plugin_API::get_listings_list($_POST);
+	    $response = PLS_Plugin_API::get_listings($_POST, true);
 	    echo json_encode(array('count' => $response['total']));
 	    die();
 	}
@@ -110,7 +116,6 @@ class PLS_Listing_Helper {
 	                'baths' => '2',
 	                'avail_on' => '10/16/2015',
 	                'beds' => '3',
-	                // 'url' => PLS_Plugin_API::get_property_url(),
 	                'desc' => 'This is a sample listing. It isn\'t real or available for sale but it\'s a great representation of what you could have on your new real estate website. If you are the owner of this website you need to finish setting it up. Please login and enter an api key.',
 	                'lt_sz' => '2',
 	                'ngb_shop' => true,

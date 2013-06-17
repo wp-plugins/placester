@@ -1,6 +1,6 @@
 function Filters () {}
 
-Filters.prototype.init = function ( params ) {
+Filters.prototype.init = function (params) {
 	this.filters = {};
 	this.dom_id = params.dom_id || false;
 	this.list = params.list || false;
@@ -22,22 +22,26 @@ Filters.prototype.init = function ( params ) {
 
 Filters.prototype.listeners = function (callback) {
 	var that = this;
-	jQuery(this.listener.elements).live(this.listener.events, function(event) {
+	jQuery(this.listener.elements).on(this.listener.events, function(event) {
         event.preventDefault();
-        that.listings.get();
+
+        // Checks to see if a meaningful change to search criteria (i.e., not sort or pagination) triggered this call...
+        var search_criteria_changed = (this.className === that.className.replace('.', ''));
+        
+        that.listings.get(search_criteria_changed);
     });	
 }
 
 Filters.prototype.get_values = function () {
 	var result = [];
 	jQuery.each(jQuery(this.listener.elements).serializeArray(), function(i, field) {
-		result.push({'name' : field.name, 'value' : field.value});
+		result.push({'name': field.name, 'value': field.value});
     });
+
 	return result;
-	
 }
 
-Filters.prototype.set_values = function ( search_id ) {
+Filters.prototype.set_values = function (search_id) {
 	var that = this;
 	jQuery.post(info.ajaxurl, {action: 'get_saved_search_filter', search_id: search_id}, function(data, textStatus, xhr) {
 		jQuery(that.listener.elements).find('input, select').each(function(i) {
@@ -50,6 +54,5 @@ Filters.prototype.set_values = function ( search_id ) {
 	    if (typeof that.custom_update_callback == 'function') {
 			that.custom_update_callback(data);
 	    }
-
 	}, 'json');
 }

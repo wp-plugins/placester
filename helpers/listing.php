@@ -4,119 +4,83 @@ PL_Listing_Helper::init();
 
 class PL_Listing_Helper {
 
-	public static function init() {
-		add_action('wp_ajax_datatable_ajax', array(__CLASS__, 'datatable_ajax' ) );
-		add_action('wp_ajax_add_listing', array(__CLASS__, 'add_listing_ajax' ) );
-		add_action('wp_ajax_update_listing', array(__CLASS__, 'update_listing_ajax' ) );
-		add_action('wp_ajax_add_temp_image', array(__CLASS__, 'add_temp_image' ) );
-		add_action('wp_ajax_delete_listing', array(__CLASS__, 'delete_listing_ajax' ) );
+	public static function init () {
+		add_action('wp_ajax_datatable_ajax', array(__CLASS__, 'datatable_ajax'));
+		add_action('wp_ajax_add_listing', array(__CLASS__, 'add_listing_ajax'));
+		add_action('wp_ajax_update_listing', array(__CLASS__, 'update_listing_ajax'));
+		add_action('wp_ajax_add_temp_image', array(__CLASS__, 'add_temp_image'));
+		add_action('wp_ajax_delete_listing', array(__CLASS__, 'delete_listing_ajax'));
 	}
 	
-	public static function results($args = array(), $global_filters = true) {
+	public static function results ($args = array(), $global_filters = true) {
 		// Handle edge-case $args formatting and value...
 		if (!is_array($args)) 
-		  { $args = wp_parse_args($args); } 
+			{ $args = wp_parse_args($args); } 
 		elseif (empty($args)) 
-		  { $args = $_GET; }
+			{ $args = $_GET; }
+
+		/* REMOVE */
+		// if ($global_filters) {
+		// 	error_log("\n[[[BEFORE:]]]\n" . var_export($args, true));
+		// 	error_log("\n[[[FILTERS:]]]\n" . var_export(PL_Global_Filters::get_global_filters(), true));
+		// }
+
+		// If a list of specific property IDs was passed in, handle acccordingly...
+		if (!empty($args['property_ids']))
+			{ $args['listing_ids'] = $args['property_ids']; }
 
 		// Respect the ability for this function to return results that do NOT respect global filters..
-		if ($global_filters) {
-			$args = PL_Global_Filters::merge_global_filters($args);
-		}
+		if ($global_filters) 
+			{ $args = PL_Global_Filters::merge_global_filters($args); }
+
+		/* REMOVE */
+		// if ($global_filters) {
+		// 	error_log("\n[[[AFTER:]]]\n" . var_export($args, true));
+		// }
 
 		// Respect block address setting...
 		$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
 
-		$listings = PL_Listing::get($args);	
-		foreach ($listings['listings'] as $key => $listing) {
-			$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
-			$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
+		// Call the API with the given args...
+		$listings = PL_Listing::get($args);
+
+		// Make sure it contains listings, then process accordingly...
+		if (!empty($listings['listings'])) {
+			foreach ($listings['listings'] as $key => $listing) {
+				$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
+				$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
+			}
+		}
+
+		// Make sure result is structured accordingly if empty/false/invalid...
+		if (!is_array($listings) || !is_array($listings['listings'])) {
+			$listings = array('listings' => array(), 'total' => 0); 
 		}
 
 		return $listings;
 	}
 
-
-	public static function many_details($args) { 
-		extract(wp_parse_args($args, array('property_ids' => array(), 'limit' => '50', 'offset' => '0')));
-		$response = array();
-		$response['listings'] = array();
-
-		if (empty($property_ids)) {
-			return array('listings' => array(), 'total' => 0);
+	public static function details ($args) {
+		if (empty($args['property_ids'])) { 
+			return array('listings' => array(), 'total' => 0); 
 		}
-		
-		// Respect the offset and limit...
-		$use_property_ids = array_slice($property_ids, $offset, $limit);
 
-		// New args array for 'get' listings call...
-		$args_get = array();
-
-		// Respect block address setting
-		$args_get['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
-
-		// Transfer property IDs...
-		$args_get['listing_ids'] = $args['property_ids'];
-		
-		// Add options and pass below
-		// TODO: see if we could send the entire $args
-		if (isset($sort_by)) $args_get['sort_by'] = $sort_by;
-		if (isset($sort_type)) $args_get['sort_type'] = $sort_type;
-		if (isset($limit)) $args_get['limit'] = $limit;
-
-		// Try to retrieve details for all the listings...
-		$listings = PL_Listing::get($args_get);
-		
-		// Make sure it contains listings, then process accordingly...
-		if ( !empty($listings['listings']) ) {
-			foreach ($listings['listings'] as $listing) {
-				// Process with details method...
-				$listing = self::process_details($listing);
-
-				// Move on if no listing info is found...
-				if ( empty($listing) ) { continue; }
-
-				$listing['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
-				$listing['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
-				$response['listings'][] = $listing;
-			}	
-		}
-		
-		$response['total'] = count($response['listings']);
-		// ob_start(); var_dump($response); error_log(ob_get_clean());
-		return $response;
+		// Global filters should be ignored if a specific set of property IDs are requested...
+		return self::results($args, false);
 	}
 
-	public static function process_details( $listing = null ) {
-		// Sanity check...
-		if ( empty($listing) ) { return null; };
+	/* For backwards compatibility with older themes stuck on old versions of Blueprint */
+	public static function many_details ($args) { return self::details($args); }
 
-		//rename cur_data to metadata due to api weirdness;
-		$listing['metadata'] = $listing['cur_data'];
-		// unset($listing['cur_data']);
-		//set compound type using combination of zoning type, purchase type, and listing type
-		if (!empty($listing['zoning_types']) && !empty($listing['purchase_types']) ) {
-			//residential + commercial + rental + sale combos are handled in zoning / purhcase types
-			if ($listing['zoning_types'][0] == 'residential' && $listing['purchase_types'][0] == 'rental') {
-				$listing['compound_type'] = 'res_rental';
-			}
-			if ($listing['zoning_types'][0] == 'residential' && $listing['purchase_types'][0] == 'sale') {
-				$listing['compound_type'] = 'res_sale';
-			}
-			if ($listing['zoning_types'][0] == 'commercial' && $listing['purchase_types'][0] == 'rental') {
-				$listing['compound_type'] = 'comm_rental';
-			}
-			if ($listing['zoning_types'][0] == 'commercial' && $listing['purchase_types'][0] == 'sale') {
-				$listing['compound_type'] = 'comm_sale';
-			}
-		} elseif (!empty($listing['listing_types'])) {
-			if ($listing['listing_types'][0] == 'sublet')  {
-				$listing['compound_type'] = 'sublet';
-			}
-			if (!empty($listing['purchase_types']) && $listing['purchase_types'][0] == 'rental' && $listing['listing_types'][0] == 'vacation') {
-				$listing['compound_type'] = 'vac_rental';
-			}
-		}
+	public static function single_listing ($property_id = null) {
+		// Sanity check...
+		if (empty($property_id)) { return null; }
+
+		// Response is always bundled...
+		$listings = self::details(array('property_ids' => array($property_id)));
+
+		// If the listings key isn't empty, return it's first value (there should only be a single listing...)
+		$listing = empty($listings['listings']) ? null : $listings['listings'][0];
 
 		return $listing;
 	}
@@ -139,41 +103,33 @@ class PL_Listing_Helper {
 		return $listing_data;		
 	}
 
-	/* 
-	 * To be used specifically when a single listing's data is needed -- do NOT loop over calls to this function
-	 * to get N listings for performance reasons ('results()' and 'many_details()' in this class should be used).
-     *
-     * NOTE: Does NOT respect global filters!
-	 */
-	public static function get_single_listing ( $property_id = null ) {
-		// Sanity check...
-		if ( empty($property_id) ) { return null; }
-
-		// Response is always bundled...
-		$listings = PL_Listing::get( array('listing_ids' => array($property_id)) );
-
-		$listing = null;
-		if ( !empty($listings['listings']) ) {
-			// There should be only one result...
-			$listing = $listings['listings'][0];
-		}
-
-		return $listing;
-	}
-
-	public static function custom_attributes($args = array()) {
+	public static function custom_attributes ($args = array()) {
 		$custom_attributes = PL_Custom_Attributes::get(array('attr_class' => '2'));
 		return $custom_attributes;
 	}
 
-	public static function datatable_ajax() {
+	public static function datatable_ajax () {
 		$response = array();
 		//exact addresses should be shown. 
 		$_POST['address_mode'] = 'exact';
 
 		// Sorting
 		// Controls the order of columns returned to the datatable
-		$columns = array('images','location.address', 'location.locality', 'location.region', 'location.postal', 'zoning_types', 'purchase_types', 'property_type', 'cur_data.beds', 'cur_data.baths', 'cur_data.price', 'cur_data.sqft', 'cur_data.avail_on');
+		$columns = array(
+			'total_images',
+			'location.address',
+			'location.locality',
+			'location.region',
+			'location.postal',
+			'zoning_types',
+			'purchase_types',
+			'property_type',
+			'cur_data.beds',
+			'cur_data.baths',
+			'cur_data.price',
+			'cur_data.sqft',
+			'cur_data.avail_on'
+		);
 		$_POST['sort_by'] = $columns[$_POST['iSortCol_0']];
 		$_POST['sort_type'] = $_POST['sSortDir_0'];
 		
@@ -185,49 +141,34 @@ class PL_Listing_Helper {
 		$_POST['limit'] = $_POST['iDisplayLength'];
 		$_POST['offset'] = $_POST['iDisplayStart'];		
 
-		// We need to check for and parse listing_types
-		$listing_type_string = $_POST['listing_types'][0];
-		if( !empty( $listing_type_string ) ) {
-	      switch( $listing_type_string) {
-	        case "Residential Sale":
-	          $_POST['zoning_types'][] = 'residential';
-	          $_POST['purchase_types'][] = 'sale';
-	          // empty listing_types so it doesn't negate our search
-	          $_POST['listing_types'] = false;
-	          break;
-	        case "Residential Rental":
-	          $_POST['zoning_types'][] = 'residential';
-	          $_POST['purchase_types'][] = 'rental';
-	          $_POST['listing_types'] = false;
-	          break;
-	        case "Commercial Sale":
-	          $_POST['zoning_types'][] = 'commercial';
-	          $_POST['purchase_types'][] = 'sale';
-	          $_POST['listing_types'] = false;
-	          break;
-	        case "Commercial Rental":
-	          $_POST['zoning_types'][] = 'commercial';
-	          $_POST['purchase_types'][] = 'rental';
-	          $_POST['listing_types'] = false;
-	          break;
-	        case "Vacation Rental":
-	          $_POST['listing_types'][] = 'vac_rental';
-	          $_POST['zoning_types'] = false;
-	          $_POST['purchase_types'] = false;
-	          break;
-	        case "Sublet":
-	          $_POST['listing_types'][] = 'sublet';
-	          $_POST['zoning_types'] = false;
-	          $_POST['purchase_types'] = false;
-	          break;
+		// We need to check for and parse compound_type...
+		if ( !empty($_POST['compound_type']) ) {
+	      switch ($_POST['compound_type']) {
+	        case "res_sale":
+	          	$_POST['zoning_types'][] = 'residential';
+	          	$_POST['purchase_types'][] = 'sale';
+	          	break;
+	        case "res_rental":
+	          	$_POST['zoning_types'][] = 'residential';
+	          	$_POST['purchase_types'][] = 'rental';
+	          	break;
+	        case "comm_sale":
+	          	$_POST['zoning_types'][] = 'commercial';
+	          	$_POST['purchase_types'][] = 'sale';
+	          	break;
+	        case "comm_rental":
+	          	$_POST['zoning_types'][] = 'commercial';
+	          	$_POST['purchase_types'][] = 'rental';
+	          	break;
+	        case "vac_rental":
+	        case "park_rental":
+	        case "sublet":
 	        default:
-	          // if we get here, we have a custom type to deal with
-	          // let's leave listing_types alone for now
-	          $_POST['zoning_types'] = false;
-	          $_POST['purchase_types'] = false;
+	          	$_POST['zoning_types'] = false;
+	          	$_POST['purchase_types'] = false;
 	      }
 		}
-
+		
 		// Get listings from model
 		$api_response = PL_Listing::get($_POST);
 		
@@ -236,7 +177,7 @@ class PL_Listing_Helper {
 		foreach ($api_response['listings'] as $key => $listing) {
 			$images = $listing['images'];
 			$listings[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
-			$listings[$key][] = '<a class="address" href="'.ADMIN_MENU_URL.'?page=placester_property_add&id=' . $listing['id'] . '">' . $listing["location"]["address"] . ' ' . $listing["location"]["locality"] . ' ' . $listing["location"]["region"] . '</a><div class="row_actions"><a href="'.ADMIN_MENU_URL.'?page=placester_property_add&id=' . $listing['id'] . '" >Edit</a><span>|</span><a href=' . PL_Page_Helper::get_url($listing['id']) . '>View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$listing['id'].'">Delete</a></div>';
+			$listings[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '">' . $listing["location"]["address"] . ' ' . $listing["location"]["locality"] . ' ' . $listing["location"]["region"] . '</a><div class="row_actions"><a href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '" >Edit</a><span>|</span><a href=' . PL_Page_Helper::get_url($listing['id']) . '>View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$listing['id'].'">Delete</a></div>';
 			$listings[$key][] = $listing["location"]["postal"];
 			$listings[$key][] = implode($listing["zoning_types"], ', ') . ' ' . implode($listing["purchase_types"], ', ');
 			$listings[$key][] = $listing["property_type"];
@@ -254,11 +195,22 @@ class PL_Listing_Helper {
 		$response['iTotalDisplayRecords'] = $api_response['total'];
 		echo json_encode($response);
 
-		//wordpress echos out a 0 randomly. die prevents it.
+		// WordPress echos out a 0 randomly, 'die' prevents it...
 		die();
 	}
 	
-	public function add_listing_ajax() {
+	private static function prepare_post_array () {
+		foreach ($_POST as $key => $value) {
+			if (is_int(strpos($key, 'property_type'))) {
+				unset( $_POST[$key] );
+				if( $value !== 'false' && ! empty( $value ) ) {
+					$_POST['metadata']['prop_type'] = $value;
+				}
+			}
+		}
+	}
+
+	public static function add_listing_ajax () {
 		self::prepare_post_array();
 		
 		$api_response = PL_Listing::create($_POST);
@@ -271,7 +223,7 @@ class PL_Listing_Helper {
 		die();
 	}	
 
-	public static function update_listing_ajax() {
+	public static function update_listing_ajax () {
 		self::prepare_post_array();
 		
 		$api_response = PL_Listing::update($_POST);
@@ -281,20 +233,20 @@ class PL_Listing_Helper {
 			PL_Listing::get( array('listing_ids' => array($api_response['id'])) );
 		}
 		die();
-	}	
-	
-	private static function prepare_post_array() {
-		foreach ($_POST as $key => $value) {
-			if (is_int(strpos($key, 'property_type'))) {
-				unset( $_POST[$key] );
-				if( $value !== 'false' && ! empty( $value ) ) {
-					$_POST['metadata']['prop_type'] = $value;
-				}
-			}
-		}
 	}
 
-	public static function add_temp_image() {
+	public static function delete_listing_ajax () {
+		$api_response = PL_Listing::delete($_POST);
+		//api returns empty, with successful header. Return actual message so js doesn't explode trying to check empty.
+		if (empty($api_response)) { 
+			echo json_encode(array('response' => true, 'message' => 'Listing successfully deleted. This page will reload momentarily.'));
+		} elseif ( isset($api_response['code']) && $api_response['code'] == 1800 ) {
+			echo json_encode(array('response' => false, 'message' => 'Cannot find listing. Try <a href="'.admin_url().'?page=placester_settings">emptying your cache</a>.'));
+		}
+		die();
+	}
+
+	public static function add_temp_image () {
 		$api_response = array();
 		$response = array();
 		if (isset($_FILES['files'])) {
@@ -332,19 +284,8 @@ class PL_Listing_Helper {
 		die();
 	}
 
-	public static function delete_listing_ajax () {
-		$api_response = PL_Listing::delete($_POST);
-		//api returns empty, with successful header. Return actual message so js doesn't explode trying to check empty.
-		if (empty($api_response)) { 
-			echo json_encode(array('response' => true, 'message' => 'Listing successfully deleted. This page will reload momentarily.'));
-		} elseif ( isset($api_response['code']) && $api_response['code'] == 1800 ) {
-			echo json_encode(array('response' => false, 'message' => 'Cannot find listing. Try <a href="'.admin_url().'?page=placester_settings">emptying your cache</a>.'));
-		}
-		die();
-	}
-
 	// helper sets keys to values
-	public static function types_for_options() {
+	public static function types_for_options () {
 		$options = array();
 		$response = PL_Listing::aggregates(array('keys' => array('cur_data.prop_type')));
 		if(!$response) {
@@ -359,12 +300,14 @@ class PL_Listing_Helper {
 		return $options;	
 	}
 	
-	public static function locations_for_options($return_only = false, $allow_globals = true) {
+	public static function locations_for_options ($return_only = false, $allow_globals = true) {
 		$options = array();
 		$response = null;
 		
+		// Use merge (with no arguments) to get the existing filters properly formatted for API calls...
+		$global_filters = PL_Global_Filters::merge_global_filters();
+
 		// If global filters related to location are set, incorporate those and use aggregates API...
-		$global_filters = PL_Global_Filters::get_global_filters();
 		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['location']) ) {
 			// TODO: Move these to a global var or constant...
 			$global_filters['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
@@ -427,20 +370,14 @@ class PL_Listing_Helper {
 	public static function polygon_locations ($return_only = false) {
 		$response = array();
 		$polygons = PL_Option_Helper::get_polygons();
-		if ($return_only) {
-			foreach ($polygons as $polygon) {
-				if ($polygon['tax'] == $return_only) {
-					$response[] = $polygon['name'];
-				}
-			}
-			return $response;	
-		} else {
-			foreach ($polygons as $polygon) {
+
+		foreach ($polygons as $polygon) {
+			if (!$return_only || $polygon['tax'] == $return_only) {
 				$response[] = $polygon['name'];
 			}
-			return $response;	
 		}
 		
+		return $response;
 	}
 
   /*
@@ -454,7 +391,7 @@ class PL_Listing_Helper {
     e. also consider calculating two groups of prices -- find the min and max of lower range, min and max of higher range, and build array accordingly.
     HOWEVER: That will all come later, as I'm just trying to solve the initial problem of the filter not working. -pek
   */
-	public static function pricing_min_options($type = 'min') {
+	public static function pricing_min_options ($type = 'min') {
 
 		$api_response = PL_Listing::get();
 		$prices = array();
@@ -490,17 +427,15 @@ class PL_Listing_Helper {
 		return $range;
 	}
 
-	public static function convert_default_country() {
+	public static function convert_default_country () {
 		$country_array = PL_Helper_User::get_default_country();
-		if ($country_array['default_country']) {
-			return $country_array['default_country'];
-		} else {
-			return 'US';
-		}
+		$country = (isset($country_array['default_country']) ? $country_array['default_country'] : 'US');
+		return $country;
 	}
 
 	public static function supported_countries () {
-		return array("AD" => "Andorra (AD)",
+		return array(
+			"AD" => "Andorra (AD)",
 			"AE" => "United Arab Emirates (AE)",
 			"AF" => "Afghanistan (AF)",
 			"AG" => "Antigua &amp; Barbuda (AG)",
@@ -748,8 +683,7 @@ class PL_Listing_Helper {
 			"YT" => "Mayotte (YT)",
 			"ZA" => "South Africa (ZA)",
 			"ZM" => "Zambia (ZM)",
-			"ZW" => "Zimbabwe (ZW)");
+			"ZW" => "Zimbabwe (ZW)"
+		);
 	}
-
-//end of class
-}
+} // end of class

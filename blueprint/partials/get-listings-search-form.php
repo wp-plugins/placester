@@ -95,10 +95,10 @@ class PLS_Partials_Listing_Search_Form {
         'pls_empty_value' => array()
     );
 
-    $args = wp_parse_args( $args, $defaults );
+    $args = wp_parse_args($args, $defaults);
 
     $cache_id = $args;
-    if($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $cache_id['$_POST'] = $_POST;
     }
 
@@ -174,7 +174,7 @@ class PLS_Partials_Listing_Search_Form {
     for ( $i = $current_month; $i < $current_month + 12; $i++ ) {
         $form_options['available_on'][date( 'd-m-Y', mktime( 0, 0, 0, $i, 1 ) )] = date( 'F Y', mktime( 0, 0, 0, $i, 1 ) );
     }
-
+    
     /** Get the property type options */
     $get_type_response = PLS_Plugin_API::get_type_list();
     // error_log("GET_TYPE_RESPONSE\n" . serialize($get_type_response) . "\n");
@@ -599,7 +599,7 @@ class PLS_Partials_Listing_Search_Form {
         
         $form_html['min_beds'] = pls_h( 
             'select',
-            array( 'name' => 'metadata[min_beds]', 'data-placeholder' => 'donkey' ) + $form_opt_attr['min_beds'],
+            array( 'name' => 'metadata[min_beds]' ) + $form_opt_attr['min_beds'],
                 /** Get the list of options with the empty valued element selected. */
                 pls_h_options( $form_options['min_beds'], $selected_min_beds  )
             );
@@ -1221,7 +1221,6 @@ class PLS_Partials_Listing_Search_Form {
       'listing_types' => 'Any',
       'zoning_types' => 'Any',
       'purchase_types' => 'Any',
-      'property_type' => 'Property Type',
       'available_on' => 'Any',
       'cities' => 'All',
       'states' => 'All',
@@ -1231,7 +1230,7 @@ class PLS_Partials_Listing_Search_Form {
       'county' => 'All',
       'min_sqft' => 'All',
       'max_sqft' => 'All'
-  );
+    );
 
     $empty_values = apply_filters( pls_get_merged_strings( array( "pls_listings_search_form_default_values", $context ), '_', 'pre', false ), $empty_values, $defaults );
     $empty_values = wp_parse_args($empty_values, $defaults);

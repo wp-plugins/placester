@@ -8,7 +8,7 @@ class PL_Options {
 	}
 
 	public static function set ($option, $value) {
-		if (get_option($option, NULL) !== NULL) {
+		if (get_option($option, null) !== null) {
 			return update_option($option, $value);
 		} else {
 			return add_option($option, $value);

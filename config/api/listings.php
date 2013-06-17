@@ -9,18 +9,19 @@ $PL_API_LISTINGS = array(
 		),
 		'args' => array(
 			'listing_ids'  => array(),
-			'listing_types' => array(
-				'label' => 'Listing Types',
-				'group' => 'listing types',
+			'compound_type' => array(
+				'label' => 'Listing Type',
+				'group' => 'Basic Details',
 				'type' => 'select',
 				'options' => array(
-					'false' => 'Any',
-					'Sublet' => 'Sublet',
-					'Residential Sale' => 'Residential Sale',
-					'Vacation Rental' => 'Vacation Rental',
-					'Residential Rental' => 'Residential Rental',
-					'Commercial Rental' => 'Commercial Rental',
-					'Commercial Sale' => 'Commercial Sale',
+					'false' => 'Not Set',
+					'res_sale' => 'Residential Sale',
+					'res_rental' => 'Residential Rental',
+					'vac_rental' => 'Vacation Rental',
+					'park_rental' => 'Parking',
+					'comm_rental' => 'Commercial Rental',
+					'comm_sale' => 'Commercial Sale',
+					'sublet' => 'Sublet'
 				)
 			),
 			'zoning_types' => array(
@@ -151,7 +152,7 @@ $PL_API_LISTINGS = array(
 					)
 	            ),
                 'max_baths' => array(),// => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Baths'),
-                'min_baths' => array(),//=> array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Baths'),
+                'min_baths' => array(),// => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Baths'),
                 'half_baths' => array(
                 	'label' => 'Half Baths',
 	                'type' => 'select',
@@ -227,7 +228,7 @@ $PL_API_LISTINGS = array(
                 'ngb_pubsch' => array(),
 			),
 			'agency_only' => array('type' => 'checkbox', 'group' => 'advanced', 'label' => 'My Offices Listings'),
-			'non_import' => array('type' => 'checkbox',  'group' => 'advanced', 'label' => 'Non MLS Listigns'),
+			'non_import' => array('type' => 'checkbox',  'group' => 'advanced', 'label' => 'Non MLS Listings'),
 			'custom' => array(
 				'type' => 'bundle',
 				'group' => '',
@@ -254,6 +255,7 @@ $PL_API_LISTINGS = array(
 		),
 		'returns' => array(
 			'id' => false,
+			'compound_type' => false,
 			'property_type' => array(),
 			'zoning_types' => array(),
 			'purchase_types' => array(),

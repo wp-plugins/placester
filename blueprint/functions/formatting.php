@@ -610,7 +610,8 @@ class PLS_Format {
         "bld_sz" => "Building Size",
         "max_cont" => "Maximum Contiguous",
         "min_div" => "Minimum Divisible",
-        "lst_dte" => "List Date"
+        "lst_dte" => "List Date",
+        "dom" => "Days on Market"
       );
 
     $local_values_dictionary = array(

@@ -13,10 +13,10 @@ class PLS_Partials {
     // Links in all the hooks and includes
     public static function init () {
         // All the includes
-        include_once( trailingslashit(PLS_PAR_DIR) . 'custom-property-details.php');
-        include_once( trailingslashit(PLS_PAR_DIR) . 'get-listings-ajax.php');
-        include_once( trailingslashit(PLS_PAR_DIR) . 'get-listings-search-form.php');
-        include_once( trailingslashit(PLS_PAR_DIR) . 'get-listings.php');
+        include_once(trailingslashit(PLS_PAR_DIR) . 'custom-property-details.php');
+        include_once(trailingslashit(PLS_PAR_DIR) . 'get-listings-ajax.php');
+        include_once(trailingslashit(PLS_PAR_DIR) . 'get-listings-search-form.php');
+        include_once(trailingslashit(PLS_PAR_DIR) . 'get-listings.php');
 
         // This hook allows for listing/property detail pages to be rendered correctly across themes
         add_filter('the_content', array( __CLASS__ ,'custom_property_details_html_filter'), 11);

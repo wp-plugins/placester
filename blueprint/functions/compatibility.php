@@ -21,7 +21,7 @@ class PLS_Plugin_API {
      * didn't throw any exceptions, false otherwise.
      * @since 0.0.1
      */
-    private static function _try_for_exceptions() {
+    private static function _try_for_exceptions () {
         // Don't proceed if there's an issue with the plugin...
         if (pls_has_plugin_error()) {
             return false;
@@ -69,11 +69,11 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_Taxonomy_Helper","get_polygon_links"), $params, array() );
     }
 
-    public static function get_taxonomies_by_type($params = array()) {
+    public static function get_taxonomies_by_type ($params = array()) {
         return self::try_call_func( array("PL_Taxonomy_Helper","get_polygons_by_type"), $params, array() );
     }
 
-    public static function get_taxonomies_by_slug($params = array()) {
+    public static function get_taxonomies_by_slug ($params = array()) {
         return self::try_call_func( array("PL_Taxonomy_Helper","get_polygons_by_slug"), $params, array() );
     }
 
@@ -85,7 +85,7 @@ class PLS_Plugin_API {
      * Leads (Membership + People) Funcs
      */
 
-    public static function get_listings_fav_ids() {
+    public static function get_listings_fav_ids () {
         return self::try_call_func( array("PL_Membership", "get_favorite_ids"), array(), false );
     }
 
@@ -97,11 +97,11 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_Membership", "placester_favorite_link_toggle"), $args, false );
     }
 
-    public static function get_save_search_link() {
+    public static function get_save_search_link () {
         return self::try_call_func( array("PL_Membership_Helper", "get_save_search_link"), array(), "" );
     }
 
-    public static function get_person_details() {
+    public static function get_person_details () {
         return self::try_call_func( array("PL_People_Helper", "person_details"), array(), array() );
     }
 
@@ -129,7 +129,7 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_Saved_Search", "get_saved_search_button"));   
     }
 
-    public static function merge_bcc_forwarding_addresses_for_sending ( $headers ) {
+    public static function merge_bcc_forwarding_addresses_for_sending ($headers) {
         return self::try_call_func( array("PL_Lead_Capture_Helper", "merge_bcc_forwarding_addresses_for_sending"), $headers);   
     }
     
@@ -137,7 +137,7 @@ class PLS_Plugin_API {
      * Miscellaneous
      */
 
-    public static function get_api_key() {
+    public static function get_api_key () {
         $api_key = null;
 
         if (function_exists('placester_get_api_key')) {
@@ -159,7 +159,7 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_Walkscore","get_score"), $params, array() );
     }
 
-    public static function get_translations() {
+    public static function get_translations () {
         return self::try_call_func( array("PL_Custom_Attribute_Helper", "get_translations"), array(), array() );
     }
 
@@ -167,11 +167,11 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_Pages", "create_once"), $page_list, false );
     }    
 
-    public static function get_user_details() {
+    public static function get_user_details () {
         return self::try_call_func( array("PL_Helper_User", "whoami"), array(), false );
     }
 
-    public static function get_company_details() {
+    public static function get_company_details () {
         $details = self::get_user_details();
         $company_info = array();
 
@@ -194,7 +194,7 @@ class PLS_Plugin_API {
      * Listings
      */
 
-    public static function get_listing_in_loop() {
+    public static function get_listing_in_loop () {
         return self::try_call_func( array("PL_Listing_Helper", "get_listing_in_loop") );
     }
 
@@ -202,7 +202,7 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_Listing_Helper", "basic_aggregates"), $keys, array() );
     }
     
-    public static function get_property_url( $id = false ) {
+    public static function get_property_url ($id = false) {
         // Make sure $id is set...
         if (!$id) { return false; }
 
@@ -236,7 +236,7 @@ class PLS_Plugin_API {
      * @static
      * @return array The property_type(s) used on current site
      */
-    public static function get_type_list() {
+    public static function get_type_list () {
         return self::try_call_func( array("PL_Listing_Helper","types_for_options"), array(), false );
     }
     
@@ -257,11 +257,11 @@ class PLS_Plugin_API {
      * has a API key, FALSE otherwise.
      * @since 0.0.1
      */
-    public static function get_location_list($return_only = false) {
+    public static function get_location_list ($return_only = false) {
         return self::try_call_func( array("PL_Listing_Helper","locations_for_options"), $return_only, false );
     }
 
-    public static function get_location_list_polygons($return_only = false) {
+    public static function get_location_list_polygons ($return_only = false) {
         return self::try_call_func( array("PL_Listing_Helper","polygon_locations"), $return_only, array() );
     }
 
@@ -271,51 +271,41 @@ class PLS_Plugin_API {
      * @return list of property details
      * @since 0.0.1
      */
-    public static function get_listings_list ($args) {
-        // See if it"s cached...
+    public static function get_listings ($args, $caching_on = false, $global_filters = true) {
+        // Default value...
+        $val = false;
+
+        // See if it's cached...
         $cache = new PLS_Cache("Get Listings List");
-        if ($return = $cache->get($args)) {
-            return $return;
+        $val = $cache->get($args);
+        if ($val && $caching_on) {
+            return $val;
         }
 
-        $return = self::_try_for_exceptions(array("PL_Listing_Helper", "results"), $args, true );
-        if ($return)  {
-            $cache->save($return, PLS_Cache::TTL_LOW);
-            return $return;
+        $val = self::_try_for_exceptions(array("PL_Listing_Helper", "results"), $args, $global_filters);
+        if ($val && $caching_on)  {
+            $cache->save($val, PLS_Cache::TTL_LOW);
         }
 
-        return false;
+        return $val;
     }
 
-    public static function get_listings_details_list ($args) {
-        // See if it"s cached...
+    public static function get_listing_details ($args) {
+        // Default value...
+        $val = false;
+
+        // See if it's cached...
         $cache = new PLS_Cache("Listings Details List");
-        if ($return = $cache->get($args)) {
-            return $return;
+        if ($val = $cache->get($args)) {
+            return $val;
         }
 
-        $return = self::_try_for_exceptions(array("PL_Listing_Helper", "many_details"), $args, true );
-        if ($return)  {
-            $cache->save($return, PLS_Cache::TTL_LOW);
-            return $return;
+        $val = self::_try_for_exceptions(array("PL_Listing_Helper", "details"), $args);
+        if ($val) {
+            $cache->save($val, PLS_Cache::TTL_LOW);
         }
 
-        return false;
-    }
-
-    /**
-     * Return an object containing a list of properties.
-     * 
-     * @static
-     * @param string $params The parameter array. Details can be found in the 
-     * attached link.
-     * @return mixed False if plugin data cannot be accessed, or the url 
-     * otherwise.
-     * @link http://docs.placester.com/rest/api/v1/properties/get.html
-     * @since 0.0.1
-     */
-    public static function get_property_list( $params = array() ) {
-        return self::try_call_func( array("PL_Listing_Helper","results"), $params, false );
+        return $val;
     }
 
     /**
@@ -327,7 +317,7 @@ class PLS_Plugin_API {
      * @uses PLS_Plugin_API::get_property_list_fields();
      * @since 0.0.1
      */
-    public static function get_valid_property_list_fields( &$args ) {
+    public static function get_valid_property_list_fields (&$args) {
 
         /** Get the list of arguments accepted by the api function. */
         $api_valid_args = self::get_property_list_fields();
@@ -372,7 +362,7 @@ class PLS_Plugin_API {
      * @static
      * @return array The allowed arguments array>
      */
-    public static function get_property_list_fields( $field = '' ) {
+    public static function get_property_list_fields ($field = '') {
 
         $return = array(
             'only_verified' => '',
@@ -442,7 +432,7 @@ class PLS_Plugin_API {
         return $return;
     }
 
-    public static function get_type_values( $type ) {
+    public static function get_type_values ($type) {
         // Define the supported types
         $supported_types = array( 
             'property' => array(

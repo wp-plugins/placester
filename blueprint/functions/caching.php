@@ -31,7 +31,7 @@ class PLS_Cache {
 		return false;
 	}
 	
-	public function save ( $result, $duration = 172800 ) {
+	public function save ($result, $duration = 172800) {
 		if( ! is_null( $this->pl_cache_object ) ) {
 			$this->pl_cache_object->save( $result, $duration );
 		}

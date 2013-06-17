@@ -87,7 +87,7 @@ class PLS_Partial_Get_Listings {
             }
 
             if ($listings_raw === false || ( isset($listings_raw['listings']) && empty($listings_raw['listings']) )) {
-              $listings_raw = PLS_Plugin_API::get_listings_list($request_params);
+              $listings_raw = PLS_Plugin_API::get_listings($request_params, true);
             }
         }
       

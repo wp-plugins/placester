@@ -31,10 +31,10 @@ Class PL_HTTP extends WP_Http {
 			/* Value is an array... */
 	        if (is_array($value)) {
 	        	/* Value-array has is empty... */
-	            if ( empty($value) && $allow_empty_values ) {
+	            if (empty($value) && $allow_empty_values) {
 	                $str .= self::add_amp($str) . urlencode($key) . '[]=';
 	            }
-
+	            
 	            /* Value-array HAS values... */
 	            foreach ($value as $k => $v) {
 	            	// Check if key is an int, set $k_show accordingly...
