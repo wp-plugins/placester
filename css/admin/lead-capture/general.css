@@ -1,0 +1,29 @@
+.message_keywords {
+	margin-left: 10px;
+	float: left;
+}
+.message_keywords p {
+	font-size: 14px;
+	font-weight: bold;
+}
+.message_keywords span {
+	margin-right: 5px;
+	font-weight: bold;
+}
+.email_validation {
+	font-weight: bold;
+	font-size: 14px;
+	margin-left: 10px;
+}
+.form-row {
+	position: relative;
+}
+.pls-loading-overlay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: url('../../../images/preview_load_spin.gif') no-repeat center;
+	background-color: white;
+	opacity:0.4;
+	filter:alpha(opacity=40);
+}
