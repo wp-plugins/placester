@@ -13,10 +13,10 @@ $PL_MY_LIST_FORM = array(
 		'type' => 'checkbox'
 	),
 	'basic' => array(
-			'label' => 'Basic filters',
-			'group' => 'Show Filters',
-			'type' => 'checkbox'
-		),
+		'label' => 'Basic filters',
+		'group' => 'Show Filters',
+		'type' => 'checkbox'
+	),
 	'advanced' => array(
 		'label' => 'Advanced filters',
 		'group' => 'Show Filters',

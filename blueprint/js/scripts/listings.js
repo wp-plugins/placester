@@ -72,7 +72,9 @@ Listings.prototype.get = function (search_criteria_changed) {
 
 	// If this param exists/was passed and is set to true, it indicates a meaningful change to the search criteria
 	// (i.e., not just a change in sort, or data pagination)
-	if (typeof search_criteria_changed !== "undefined" && search_criteria_changed === true) {
+	var search_changed = (typeof search_criteria_changed !== "undefined" && search_criteria_changed === true);
+
+	if (search_changed) {
 		// Since search criteria changed, set the datatable back to the first page of 
 		// results but do NOT trigger a new data fetch as it would interfere with the 
 		// one we're currently attempting...
@@ -217,6 +219,19 @@ Listings.prototype.get = function (search_criteria_changed) {
 			that.active_filters = [];
     	}
 	});
+	
+	// if (search_changed && typeof PlacesterAnalytics !== 'undefined') {
+	// 	var search_data = {action: "analytics_data", event: "listing_search"};
+	// 	search_data.filters = this.filter.get_values();
+
+	// 	console.log(search_data);
+	// 	jQuery.post(info.ajaxurl, search_data, function (response) {
+	// 		if (response && response.hash) { 
+	// 			PlacesterAnalytics.log(response.hash);
+	// 			// console.log("Sent this hash: ", response.hash);
+	// 		}	
+	// 	}, 'json');
+	// }
 }
 
 Listings.prototype.generate_search_hash = function () {

@@ -17,8 +17,7 @@ class PLS_Partials_Property_Details {
 		    	$listing_data['location']['full_address'] = $listing_data['location']['address'] . ' ' . $listing_data['location']['locality'] . ' ' . $listing_data['location']['region'];
 		    	
 		    	// This has to happen here to ensure it's not filtered out by whatever might be filtering this output...
-		    	$event = PL_Analytics::listing_view($listing_data['id']);
-		    	echo PL_Analytics::log_snippet_js($event);
+		    	echo PLS_Plugin_API::log_snippet_js('listing_view', array('prop_id' => $listing_data['id']));
 
 		        ob_start();
 		        ?>

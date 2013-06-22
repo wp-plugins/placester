@@ -491,6 +491,7 @@ class PLS_Partials_Listing_Search_Form {
         }
     }
 
+    // Set min_beds/max_beds form element
     $form_options['min_beds'] = array(
           'pls_empty_value' => __( $pls_empty_value['min_beds'], pls_get_textdomain() ),
           '0' => '0',
@@ -511,6 +512,24 @@ class PLS_Partials_Listing_Search_Form {
           '15' => '15'
     );
 
+    $user_bed_start = pls_get_option('pls-option-bed-min') ? pls_get_option('pls-option-bed-min') : 0;
+    $user_bed_end = pls_get_option('pls-option-bed-max') ? pls_get_option('pls-option-bed-max') : 15;
+    $user_bed_inc = pls_get_option('pls-option-bed-inc') ? pls_get_option('pls-option-bed-inc') : 1;
+
+    if (is_numeric($user_bed_start) && is_numeric($user_bed_end) && is_numeric($user_bed_inc)) {
+        $range = range($user_bed_start, $user_bed_end, $user_bed_inc);
+        $form_options['min_beds'] = array();
+        foreach ($range as $bed_value) {
+            $form_options['min_beds'][$bed_value] = $bed_value;
+        }
+        $form_options['min_beds'] = array('pls_empty_value' => $pls_empty_value['min_beds']) + $form_options['min_beds'];
+    }
+
+    /** Set the max beds array too. */
+    $form_options['max_beds'] = $form_options['min_beds'];
+
+
+    // Set min_baths/max_baths form element
     $form_options['min_baths'] = array(
           'pls_empty_value' => __( $pls_empty_value['min_baths'], pls_get_textdomain() ),
           '0' => '0',
@@ -526,21 +545,22 @@ class PLS_Partials_Listing_Search_Form {
           '10' => '10'
     );
 
-    $user_bed_start = pls_get_option('pls-option-bed-min') ? pls_get_option('pls-option-bed-min') : 0;
-    $user_bed_end = pls_get_option('pls-option-bed-max');
-    $user_bed_inc = pls_get_option('pls-option-bed-inc');
+    $user_bath_start = pls_get_option('pls-option-bath-min') ? pls_get_option('pls-option-bath-min') : 0;
+    $user_bath_end = pls_get_option('pls-option-bath-max') ? pls_get_option('pls-option-bath-max') : 10;
+    $user_bath_inc = pls_get_option('pls-option-bath-inc') ? pls_get_option('pls-option-bath-inc') : 1;
 
-    if (is_numeric($user_bed_start) && is_numeric($user_bed_end) && is_numeric($user_bed_inc)) {
-        $range = range($user_bed_start, $user_bed_end, $user_bed_inc);
-        $form_options['min_beds'] = array();
-        foreach ($range as $bed_value) {
-            $form_options['min_beds'][$bed_value] = $bed_value;
+    if (is_numeric($user_bath_start) && is_numeric($user_bath_end) && is_numeric($user_bath_inc)) {
+        $range = range($user_bath_start, $user_bath_end, $user_bath_inc);
+        $form_options['min_baths'] = array();
+        foreach ($range as $bath_value) {
+            $form_options['min_baths'][$bath_value] = $bath_value;
         }
+        $form_options['min_baths'] = array('pls_empty_value' => $pls_empty_value['min_baths']) + $form_options['min_baths'];
     }
 
-    /** Set the max beds/baths array. */
-    $form_options['max_beds'] = $form_options['min_beds'];
+    /** Set the max baths array too. */
     $form_options['max_baths'] = $form_options['min_baths'];
+
 
     /** Define an array for extra attributes. */
     $form_opt_attr = array();

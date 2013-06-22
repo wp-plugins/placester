@@ -190,6 +190,10 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_Compliance", "mls_message"), $context, false );
     }
 
+    public static function log_snippet_js ($event, $attributes) {
+        return self::_try_for_exceptions( array("PL_Analytics", "log_snippet_js"), $event, $attributes );
+    }
+
     /*
      * Listings
      */
