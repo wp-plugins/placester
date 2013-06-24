@@ -16,6 +16,7 @@ function Listings (params) {
 	this.search_hash = false;
 	this.sort_by = params.list ? params.list.sort_by : false;
 	this.sort_type = params.list ? params.list.sort_type : false;
+	this.disable_saved_search = params.disable_saved_search || false;
 }
 
 Listings.prototype.pending = false;
@@ -118,7 +119,7 @@ Listings.prototype.get = function (search_criteria_changed) {
 		var fnSettings = this.list.datatable.fnSettings();
 		that.active_filters.push({"name": "iDisplayLength", "value": fnSettings._iDisplayLength});
 		that.active_filters.push({"name": "iDisplayStart", "value": fnSettings._iDisplayStart});
-		this.list.sEcho++
+		this.list.sEcho++;
 		that.active_filters.push({"name": "sEcho", "value":  this.list.sEcho});			
 		// aoData;
 	} else if (this.list) {
@@ -167,28 +168,31 @@ Listings.prototype.get = function (search_criteria_changed) {
 	// Check submitted filters for multiples of same filter(*) to add "[*_match]=in"
 	that.active_filters = that.check_multiple_search_filters(that.active_filters);
 
-	// Saved search functionality
-	var hash = that.generate_search_hash();
-	var current_hash = jQuery.address.value();
+	if (that.disable_saved_search === false) {
 
-	// Don't display in preview screens, nor in widget pages
-	if ( window.location.href.indexOf('post_type=pl_general_widget') === -1 
-		 && window.location.href.indexOf( 'post.php?post=' ) === -1
-		 && window.location.href.indexOf( '/pl_general_widget/' ) === -1 ) {
-		//the hash has never been set, and it's not empty, or its different from the previous hash. Go look it up.
-		if (current_hash !== '/' && ( that.search_hash === hash || that.search_hash === false || that.from_back_button) ) {
-			that.active_filters.push({"name": "saved_search_lookup", "value": current_hash});	
-			that.search_hash = current_hash;
-	
-			//if there are filters active, set them too
-			if (that.filter) {
-				that.filter.set_values( current_hash );
+		// Saved search functionality
+		var hash = that.generate_search_hash();
+		var current_hash = jQuery.address.value();
+
+		// Don't display in preview screens, nor in widget pages
+		if( window.location.href.indexOf( 'post_type=pl_general_widget' ) === -1 && 
+				window.location.href.indexOf( 'post.php?post=' ) === -1 &&
+				window.location.href.indexOf( '/pl_general_widget/' ) === -1) {
+			//the hash has never been set, and it's not empty, or its different from the previous hash. Go look it up.
+			if (current_hash !== '/' && ( that.search_hash === hash || that.search_hash === false || that.from_back_button) ) {
+				that.active_filters.push( { "name": "saved_search_lookup", "value" : current_hash } );	
+				that.search_hash = current_hash;
+		
+				//if there are filters active, set them too
+				if (that.filter) {
+					that.filter.set_values( current_hash );
+				}
+		
+			} else {
+				that.active_filters.push( { "name": "saved_search_lookup", "value" : '/' + hash } );	
+				jQuery.address.value(hash);
+				that.search_hash = '/' + hash;
 			}
-	
-		} else {
-			that.active_filters.push({"name": "saved_search_lookup", "value": '/' + hash});	
-			jQuery.address.value(hash);
-			that.search_hash = '/' + hash;
 		}
 	}
   	// console.log(that.active_filters);

@@ -2,19 +2,19 @@
 	// Build theme link data object...
 	$themes = array(
 		"Columbus" => array(
-			"download_link" => "http://plcstr.com/12hJFnI",
+			"download_link" => "http://plcstr.com/16taGJs",
 			"info_link" => "https://placester.com/wordpress-themes/#columbus"
 		),
 		"Manchester" => array(
-			"download_link" => "http://plcstr.com/19eIO0I",
+			"download_link" => "http://plcstr.com/14S94cX",
 			"info_link" => "https://placester.com/wordpress-themes/#manchester"
 		),
 		"Tampa" => array(
-			"download_link" => "http://plcstr.com/14Q3Qyo",
+			"download_link" => "http://plcstr.com/14jjoIw",
 			"info_link" => "https://placester.com/wordpress-themes/#tampa"
 		),
 		"Ventura" => array(
-			"download_link" => "http://plcstr.com/19qMCIS",
+			"download_link" => "http://plcstr.com/10eIMQw",
 			"info_link" => "https://placester.com/wordpress-themes/#ventura"
 		)		
 	);

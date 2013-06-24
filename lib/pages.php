@@ -39,16 +39,16 @@ class PL_Pages {
 		$page_details['name'] = $api_listing['id'];
 		$page_details['content'] = '';
 		$page_details['taxonomies'] = array(
-										'zip' => $api_listing['location']['postal'], 
-										'city' => $api_listing['location']['locality'],
-										'state' => $api_listing['location']['region'],
-										'neighborhood' => $api_listing['location']['neighborhood'],
-										'street' => $api_listing['location']['address'],
-										'beds' => (string) $api_listing['cur_data']['beds'],
-										'baths' => (string) $api_listing['cur_data']['beds'],
-										'half-baths' => (string) $api_listing['cur_data']['half_baths'],
-										'mlsid' => (string) $api_listing['rets']['mls_id']
-									);
+			'zip' => $api_listing['location']['postal'], 
+			'city' => $api_listing['location']['locality'],
+			'state' => $api_listing['location']['region'],
+			'neighborhood' => $api_listing['location']['neighborhood'],
+			'street' => $api_listing['location']['address'],
+			'beds' => (string) $api_listing['cur_data']['beds'],
+			'baths' => (string) $api_listing['cur_data']['beds'],
+			'half-baths' => (string) $api_listing['cur_data']['half_baths'],
+			'mlsid' => (string) $api_listing['rets']['mls_id']
+		);
 		// pls_dump($page_details['taxonomies']);
 		return self::manage($page_details);
 	}
