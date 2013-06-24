@@ -2,20 +2,20 @@
 
 class PL_Compliance {
 										
-	public static function mls_message ($args) {
+	function mls_message ($args) {
 
 		extract(wp_parse_args($args, array(
-				'context' => false,
-				'agent_name' => false,
-				'office_name' => false,
-				'office_phone' => false,
-				'agent_license' => false,
-				'co_agent_name' => false,
-				'co_office_name' => false,
-				'provider_id' => false
-				)
-			)
-		);
+										'context' => false,
+										'agent_name' => false,
+										'office_name' => false,
+										'office_phone' => false,
+										'agent_license' => false,
+										'co_agent_name' => false,
+										'co_office_name' => false,
+										'provider_id' => false
+										)
+									)
+								);
 
 		$whoami = PL_Helper_User::whoami();
 		//if this account has multiple providers. Accounts with just one appear in "provider"
@@ -42,20 +42,20 @@ class PL_Compliance {
 			}
 			
 			// check for co_agent_name and co_office_name being set to "n/a," which we do not want
-			if ($co_agent_name) {
+			if( $co_agent_name ) {
 				$co_agent_name = trim( $co_agent_name );
 				if( strtolower( $co_agent_name ) == 'n/a' ) {
 					$co_agent_name = false;
 				}
 			}
-			if ($co_office_name) {
+			if( $co_office_name ) {
 				$co_office_name = trim( $co_office_name );
 				if( strtolower( $co_office_name ) == 'n/a' ) {
 					$co_office_name = false;
 				}
 			}
 
-			if ($context == 'listings') {
+			if ( $context == 'listings') {
 				$response['last_import'] = date_format(date_create($provider['last_import']), "jS F, Y g:i A.");
 				if (isset($provider['disclaimer_on']['listings']) && !empty($provider['disclaimer_on']['listings'])) {
 					$response['disclaimer'] = $provider['disclaimer'];	
@@ -76,8 +76,7 @@ class PL_Compliance {
 					$response['office_phone'] = $office_phone;
 				}
 
-			} 
-			elseif ($context == 'search') {
+			} elseif ( $context == 'search') {
 				$response['last_import'] = date_format(date_create($provider['last_import']), "jS F, Y g:i A.");
 				if (isset($provider['disclaimer_on']['search']) && !empty($provider['disclaimer_on']['search'])) {
 					$response['disclaimer'] = $provider['disclaimer'];	
@@ -97,8 +96,7 @@ class PL_Compliance {
 					$response['office_phone'] = $office_phone;
 				}
 				// listings_widget is for the proper placester listings widget; property_details for hard-coded listing details page sidebar -pek
-			} 
-			elseif ( $context == 'inline_search' || $context == 'listings_widget' || $context == 'property_details' ) {
+			} elseif ( $context == 'inline_search' || $context == 'listings_widget' || $context == 'property_details' ) {
 				if (isset($provider['disclaimer_on']['inline_search']) && !empty($provider['disclaimer_on']['inline_search'])) {
 					$response['disclaimer'] = $provider['disclaimer'];	
 				}
