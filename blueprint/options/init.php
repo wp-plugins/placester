@@ -68,6 +68,12 @@ PLS_Style::add(array(
 				"id" => "pls-google-analytics",
 				"type" => "text"));
 
+		PLS_Style::add(array( 
+				"name" => "Mixpanel Analytics ID",
+				"desc" => "Add your Mixpanel tracking ID code here.",
+				"id" => "pls-mixpanel-id",
+				"type" => "text"));
+
 		PLS_Style::add(array(
 				"name" => "Display Theme Debug Messages",
 				"desc" => "Display the theme debug panel at the bottom of all non-admin pages. Great for debugging issues with the themes.",

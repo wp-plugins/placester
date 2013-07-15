@@ -304,12 +304,13 @@ class Placester_Blueprint {
         add_theme_support( 'pls-search-options');
         add_theme_support( 'pls-color-options');
         add_theme_support( 'pls-user-options');
+        add_theme_support( 'pls-slideshow-options');
 
         // Required for WordPress
         add_theme_support( 'automatic-feed-links' );
         
         /** Add theme support for sidebars - this doesn't turn all sidebars on. */
-        add_theme_support( 'pls-sidebars', array( 'primary', 'listings-search', 'footer-widgets', 'single-property', 'rental-search', 'sales-search', 'blog-index', 'single-post', 'neighborhoods', 'single-neighborhood', 'contact', 'testimonials', 'agents', 'services' ) );
+        add_theme_support( 'pls-sidebars', array( 'primary', 'home', 'listings-search', 'footer-widgets', 'single-property', 'rental-search', 'sales-search', 'blog-index', 'single-post', 'neighborhoods', 'single-neighborhood', 'contact', 'testimonials', 'agents', 'services' ) );
         
         // Add Default Sidebars
         add_theme_support( 'pls-main-sidebar' );

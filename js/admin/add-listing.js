@@ -85,8 +85,10 @@ jQuery(document).ready(function($) {
             		} else {
                 		alert('Error - Upload Failed. Your image needs to be smaller then 1MB and gif, jpg, or png.');
             		}
-            		var id = '#' + file.orig_name.replace(/( )|(\.)|(\))|(\()/g,'');
-	            	$(id).parentsUntil('#image_container_remove').remove();
+            		if (file.orig_name) {
+                		var id = '#' + file.orig_name.replace(/( )|(\.)|(\))|(\()/g,'');
+    	            	$(id).parentsUntil('#image_container_remove').remove();
+            		}
             		return false;
             	} else {
 	            	mixpanel.track('Add Property - Image - Upload Complete');

@@ -51,7 +51,7 @@ class PLS_Widget_Feedburner_Widget extends WP_Widget {
 
         <input type="hidden" value="<?php echo pls_get_option('pls-feedburner-uri') ?>" name="uri"/>
         <input type="hidden" name="loc" value="en_US"/>
-        <input type="submit" value="SUBSCRIBE" class="button-primary" />
+        <input type="submit" value="Subscribe" class="button-primary" />
 
       </form>
 

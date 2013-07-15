@@ -40,7 +40,7 @@ class PLS_Widget_YouTube extends WP_Widget {
 
 			?>
 				<div class="video-widget-inner">
-					<iframe width="290" height="163" src="https://www.youtube.com/embed/<?php echo $yt_id; ?>" frameborder="0" allowfullscreen></iframe>
+					<iframe width="290" height="163" src="//www.youtube.com/embed/<?php echo $yt_id; ?>" frameborder="0" allowfullscreen></iframe>
 					<p><?php echo $desc; ?></p>
 					<a href="<?php echo $rm_url; ?>"><?php echo $rm_text; ?></a>
 				</div>

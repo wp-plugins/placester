@@ -20,8 +20,11 @@ class PL_Form {
 		$form_group = array();
 		foreach ($items as $key => $attributes) {
 			if ( isset($attributes['type']) && isset($attributes['group']) ) {
-			 	$form_group[$attributes['group']][] = self::item($key, $attributes, $method, false, $section_prefix);
-			 } elseif ( !isset($attributes['type']) && is_array($attributes) ) {
+				$form_group[$attributes['group']][] = self::item($key, $attributes, $method, $parent, $section_prefix);
+			} elseif ( !isset($attributes['type']) && is_array($attributes) ) {
+				if ($parent) {
+					$key = $parent.'['.$key.']';
+				}
 				foreach ($attributes as $child_item => $attribute) {
 					if ( isset($attribute['group']) ) {
 						$form_group[$attribute['group']][] = self::item($child_item, $attribute, $method, $key, $section_prefix);	
@@ -58,9 +61,12 @@ class PL_Form {
 		
 	}
 
-	public static function item($item, $attributes, $method, $parent = false, $section_prefix = '') {
+	public static function item($item, $attributes, $method, $parent = false, $section_prefix = '', $echo = false) {
+		$op = '';
 		extract(self::prepare_item($item, $attributes, $method, $parent), EXTR_SKIP);
-		ob_start();
+		if (!$echo) {
+			ob_start();
+		}
 		if ($type == 'checkbox') {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
@@ -73,7 +79,7 @@ class PL_Form {
 			$cols = ! empty( $attributes['cols'] ) ? $attributes['cols'] : 20;
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
-					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
+					<label class="textarea" for="<?php echo $id ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
 					<textarea id="<?php echo $id ?>" name="<?php echo $name ?>" rows="<?php echo $rows; ?>" cols="<?php echo $cols; ?>"><?php echo $value ?></textarea>
 				</section>
 			<?php
@@ -83,7 +89,7 @@ class PL_Form {
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<select name="<?php echo $name ?>" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
 						<?php foreach ($options as $key => $text): ?>
-							<option id="<?php echo $key ?>" value="<?php echo $key ?>" <?php echo ($key == $value ? 'selected' : '' ) ?>><?php echo $text ?></option>
+							<option value="<?php echo $key ?>" <?php echo ($key == $value ? 'selected' : '' ) ?>><?php echo $text ?></option>
 						<?php endforeach ?>
 					</select>
 				</section>
@@ -94,16 +100,16 @@ class PL_Form {
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<select name="<?php echo $name ?>[]" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
 						<?php foreach ($options as $key => $text): ?>
-							<option id="<?php echo $key ?>" value="<?php echo $key ?>" <?php echo ((is_array($value) && in_array($key, $value) ) ? 'selected' : '' ) ?>><?php echo $text ?></option>
+							<option value="<?php echo $key ?>" <?php echo ((is_array($value) && in_array($key, $value) ) ? 'selected' : '' ) ?>><?php echo $text ?></option>
 						<?php endforeach ?>
 					</select>
 				</section>
 			<?php	
-		} elseif( $type == 'text' ) {
+		} elseif( $type == 'text' || $type == 'numeric' ) {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
-					<input id="<?php echo $id ?>" type="<?php echo $type ?>" name="<?php echo $name ?>" value="<?php echo $value ?>" />
+					<input id="<?php echo $id ?>" type="text" name="<?php echo $name ?>" value="<?php echo $value ?>" />
 				</section>
 			<?php
 		} elseif ( $type == 'date') {
@@ -121,20 +127,20 @@ class PL_Form {
 				</section>
 			<?php
 		} elseif ( $type == 'bundle' ) {
-				$bundle = '';
-				foreach (self::prepare_custom_item($options, $method) as $key => $form_items) {
-					$bundle .= "<section class='form_group' id='".$key."'>";
-					if (self::$args['title']) {
-						$bundle .= "<h3>" . ucwords($key) . "</h3>";
-					}
-					if (is_array($form_items)) {
-						$bundle .= implode($form_items, '');	
-					} else {
-						$bundle .= $form_items;	
-					}
-					$bundle .= "</section>";
+			$bundle = '';
+			foreach (self::prepare_custom_item($options, $method, $parent) as $key => $form_items) {
+				$bundle .= "<section class='form_group' id='".$id.'-'.preg_replace('/[^a-z]/i', '_', $key)."'>";
+				if (self::$args['title']) {
+					$bundle .= "<h3>" . ucwords($key) . "</h3>";
 				}
-			 echo $bundle;
+				if (is_array($form_items)) {
+					$bundle .= implode($form_items, '');	
+				} else {
+					$bundle .= $form_items;	
+				}
+				$bundle .= "</section>";
+			}
+			echo $bundle;
 		} elseif ($type == 'radio') {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>" >
@@ -147,8 +153,7 @@ class PL_Form {
 					<?php endforeach; ?>	
 				</section>
 			<?php	
-		}
-		 elseif ( $type == 'custom_data' ) {
+		} elseif ( $type == 'custom_data' ) {
 			?>
 				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="">Category Name</label>
@@ -161,7 +166,10 @@ class PL_Form {
 				</section>
 			<?php
 		}
-		return trim(ob_get_clean());
+		if (!$echo) {
+			$op = trim(ob_get_clean());
+		}
+		return $op;
 	}
 
 	private function prepare_item($item, $attributes, $method, $parent) {
@@ -185,11 +193,15 @@ class PL_Form {
 		$id = $item;
 		if($parent) {
 			$name = $parent . '[' . $item . ']';
-			$id = $parent . '-' . $item; //finding brackets in ids is tricky for js
+			$id = str_replace(array('[',']'), array('-',''), $parent) . '-' . $item; // brackets are not valid in the id
 		}
+		
+		// support description text
+		$description = '';
+		if (!empty($attributes['description'])) { $description = $attributes['description'];}
 
 		// get options, if there are any.
-		if (isset($attributes['bound']) && is_array(($attributes['bound']))) {
+		if (isset($attributes['bound']) && is_array($attributes['bound'])) {
 			// Deal with params...
 			$params = ( isset($attributes['bound']['params']) ? $attributes['bound']['params'] : array() ) ;
 			// If "params" is a single element, encapsulate in an array...
@@ -205,17 +217,25 @@ class PL_Form {
 		}
 
 		if ($method == 'GET') {
-			if ($parent) {
-				$value = isset($_GET[$parent][$item]) ? $_GET[$parent][$item] : null;
-			} else {
-				$value = isset($_GET[$item]) ? $_GET[$item] : null;	
+			$_data = &$_GET;
+		} 
+		else {
+			$_data = &$_POST;
+		}
+		if ($parent) {
+			$chain = explode('[',$parent);
+			$value = ''; 
+			array_push($chain, $item);
+			$i=count($chain);
+			foreach($chain as $link) {
+				$link = trim($link, ' ]');
+				if (!isset($_data[$link])) break;
+				$_data = &$_data[$link];
+				$i--;
+				if (!$i) $value = $_data;
 			}
 		} else {
-			if ($parent) {
-				$value = isset($_POST[$parent][$item]) ? $_POST[$parent][$item] : null;
-			} else {
-				$value = isset($_POST[$item]) ? $_POST[$item] : null;	
-			}
+			$value = isset($_data[$item]) ? $_data[$item] : null;	
 		}
 
 		if (!$value && isset($attributes['bound']) && isset($attributes['bound']['default']) ) {
@@ -229,36 +249,37 @@ class PL_Form {
 		// extra check for blank arrays
 		$value = ( is_array( $value ) && count( $value ) === 0 ) ? null : $value;
 
-		return array('name' => $name, 'value' => $value, 'text' => $text, 'options' => $options, 'id' => $id, 'type' => $attributes['type'], 'css' => $css);
+		return array('name' => $name, 'value' => $value, 'text' => $text, 'options' => $options, 'id' => $id, 'type' => $attributes['type'], 'css' => $css, 'description' => $description);
 	}
 
-	public function prepare_custom_item($options, $method) {
+	public function prepare_custom_item($options, $method, $parent) {
 		$custom_items = array();
+		$form_types = PL_Config::PL_API_CUST_ATTR('get');
+		$form_types = $form_types['args']['attr_type']['options'];
 		foreach ($options as $key => $option) {
-			$form_types = PL_Config::PL_API_CUST_ATTR('get');
-			$form_types = $form_types['args']['attr_type']['options'];
 			$attributes = array('label' => $option['name'], 'type' => $form_types[$option['attr_type']]);
-			$custom_items[$option['cat']][] = self::item($option['key'], $attributes, $method, 'metadata');
-		} 
+			$custom_items[$option['cat']][] = self::item($option['key'], $attributes, $method, $parent);
+		}
 		return $custom_items;
 	}
 
 	private function process_defaults ($args){
 		/** Define the default argument array. */
 		$defaults = array(
-        	'url' => false,
-        	'method' => 'GET',
-        	'id' => 'pls_search_form',
-        	'title' => false,
-        	'include_submit' => true,
-        	'wrap_form' => true,
-        	'echo_form' => true
-        );
+			'url' => false,
+			'method' => 'GET',
+			'parent' => false,
+			'id' => 'pls_search_form',
+			'title' => false,
+			'include_submit' => true,
+			'wrap_form' => true,
+			'echo_form' => true
+		);
 
 		/** Merge the arguments with the defaults. */
-        $args = wp_parse_args( $args, $defaults );
-        self::$args = $args;
-        return $args;
+		$args = wp_parse_args( $args, $defaults );
+		self::$args = $args;
+		return $args;
 	}
 
 // class end

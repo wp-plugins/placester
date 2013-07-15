@@ -611,7 +611,18 @@ class PLS_Format {
         "max_cont" => "Maximum Contiguous",
         "min_div" => "Minimum Divisible",
         "lst_dte" => "List Date",
-        "dom" => "Days on Market"
+        "dom" => "Days on Market",
+        "construction_type" => "Construction Type",
+        "design" => "Construction Type",
+        "floor_desc" => "Construction Type",
+        "heating_desc" => "Construction Type",
+        "parking_description" => "Parking Description",
+        "sewer_desc" => "Sewer Description",
+        "water_desc" => "Water Description",
+        "cooling_desc" => "Cooling Description",
+        "front_exposure" => "Front Exposure",
+        "roof_desc" => "Roof Description",
+        "view" => "View"
       );
 
     $local_values_dictionary = array(
@@ -690,7 +701,7 @@ class PLS_Format {
     
     if ( !empty($post->post_excerpt) ) {
       // 1st priority: excerpt
-      $excerpt = $post->post_excerpt;
+      $excerpt = strip_shortcodes($post->post_excerpt);
     } elseif ( !empty($post->post_content) ) {
       // 2nd priority: content
       $content = strip_shortcodes($post->post_content);
@@ -718,6 +729,15 @@ class PLS_Format {
     } else {
       return $content;
     }
+  }
+
+  static public function get_lat_lng_of_address ($address) {
+		$url = 'http://maps.googleapis.com/maps/api/geocode/json?address='.$address.'&sensor=false';
+		$source = file_get_contents($url);
+		$obj = json_decode($source);
+		$lat_lng_array['lat'] = $obj->results[0]->geometry->location->lat;
+		$lat_lng_array['lng'] = $obj->results[0]->geometry->location->lng;
+		return $lat_lng_array;
   }
 
 //end of class

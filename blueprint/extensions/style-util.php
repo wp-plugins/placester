@@ -37,7 +37,7 @@ class PLS_Style {
         require_if_theme_supports("pls-user-options", PLS_Route::locate_blueprint_option('user.php'));
         require_if_theme_supports("pls-search-options", PLS_Route::locate_blueprint_option('search.php'));    
         require_if_theme_supports("pls-color-options", PLS_Route::locate_blueprint_option('colors.php'));    
-        require_if_theme_supports("pls-color-options", PLS_Route::locate_blueprint_option('slideshow.php'));    
+        require_if_theme_supports("pls-slideshow-options", PLS_Route::locate_blueprint_option('slideshow.php'));    
         require_if_theme_supports("pls-typography-options", PLS_Route::locate_blueprint_option('typography.php'));
         require_if_theme_supports("pls-header-options", PLS_Route::locate_blueprint_option('header.php'));
         require_if_theme_supports("pls-navigation-options", PLS_Route::locate_blueprint_option('navigation.php'));   

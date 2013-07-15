@@ -20,7 +20,7 @@ url_script_vars['widget_original_src'] = thisScriptTag.src.substring(0, path_bef
 (function( url_script_vars ) {
 	var jsonp_handler = function () {
 	   jsonp_event_listener( url_script_vars );
-	}
+	};
 	
 	if( window.addEventListener ){
 		window.addEventListener( 'load', jsonp_handler );
@@ -55,35 +55,25 @@ function callback( json ) {
 		var iframe = document.createElement('iframe');
 		iframe.src = json.widget_url;
 
-		if( json.widget_class !== undefined ) {
-			iframe.className = json.widget_class;
-		}
-		
-		for( var key in json ) {
-			// skip unnecessary keys
-			if( key !== 'post_id' && key !== 'pl_post_type' && key !== 'widget_url') {
-				iframe.src += '&' + key + '=' + encodeURIComponent( json[key] );
-			}
-		}
-		
 		iframe.width = json.width;
 		iframe.height = json.height;
 		
-		var before_iframe =  document.createElement( 'div' );
-		before_iframe.innerHTML = json.pl_template_before_block || '';
-		var after_iframe =  document.createElement( 'div' );
-		after_iframe.innerHTML = json.pl_template_after_block || '';
+		var css =  document.createElement( 'style' );
+		css.innerHTML = json.css || '';
+		var widget =  document.createElement( 'div' );
+		widget.className = 'pls_embedded_widget_wrapper ' + (json.widget_class || '');
+		widget.appendChild(iframe);
+		widget.innerHTML = (json.before_widget || '') + widget.innerHTML + (json.after_widget || '');
+		widget.insertBefore(css, widget.childNodes[0]);
 		
 		// insert the iframe next to the script
-		script_element.parentNode.insertBefore( after_iframe, script_element );
-		script_element.parentNode.insertBefore( iframe, after_iframe );
-		script_element.parentNode.insertBefore( before_iframe, iframe );
+		script_element.parentNode.insertBefore( widget, script_element );
 		
-		if( undefined !== json.pl_template_before_block ) {
-			pl_regex_matcher( json.pl_template_before_block );
+		if( undefined !== json.before_widget ) {
+			pl_regex_matcher( json.before_widget );
 		}
-		if( undefined !== json.pl_template_after_block ) {
-			pl_regex_matcher( json.pl_template_after_block );
+		if( undefined !== json.after_widget ) {
+			pl_regex_matcher( json.after_widget );
 		}
 	}
 	

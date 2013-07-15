@@ -43,6 +43,18 @@ function pls_register_sidebars() {
       );
   }
 
+  if ( get_theme_support( 'pls-home-sidebar' ) ) {
+      $sidebars[] = array(
+        'id' => 'home',
+        'name' =>  'Home Page',
+        'description' => 'The home page widget area, most often used as a sidebar on pages that do not have a custom sidebar.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s widget-%2$s">',
+        'after_widget' => '</section>',
+        'before_title' => '<h3 class="widget-title">',
+        'after_title' => '</h3>'
+      );
+  }
+
   if ( get_theme_support( 'pls-listings-search-sidebar' ) ) {
       $sidebars[] = array(
         'id' => 'listings-search',

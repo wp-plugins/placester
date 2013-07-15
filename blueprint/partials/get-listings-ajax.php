@@ -180,8 +180,10 @@ class PLS_Partials_Get_Listings_Ajax {
     }
 
   	public static function get ($args = array()) {
-        // Saved Search init...
-  		$saved_user_search = false;
+		// Saved Search init...
+		$saved_user_search = false;
+		$_POST['sEcho'] = empty($_POST['sEcho']) ? 0 : $_POST['sEcho'];
+
         if (isset($_POST['saved_search_lookup']) ) {
             if (strpos($_POST['saved_search_lookup'], 'pl_ss_') !== false) {
             	$user_lookup = $_POST['saved_search_lookup'];
@@ -364,7 +366,7 @@ class PLS_Partials_Get_Listings_Ajax {
         $response['sFirst'] = 'Previous';
         $response['sPrevious'] = 'Next';
       
-        $response['sEcho'] = @$_POST['sEcho'];
+        $response['sEcho'] = $_POST['sEcho'];
         $response['aaData'] = $listings; 
         $api_total = isset($api_response['total']) ? $api_response['total'] : 0; 
         $response['iTotalRecords'] = $api_total;

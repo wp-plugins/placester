@@ -132,52 +132,52 @@ div#delete_response_message.green {
  */
 
 .paging_full_numbers { 
-  margin-top: 12px; 
-  text-align: right;
-  float: right;
-  padding-bottom: 10px;
+    margin-top: 12px; 
+    text-align: right;
+    float: right;
+    padding-bottom: 10px;
 }
 
 .dataTables_info {
-  padding-top: 12px;
-  float: right;
-  margin-right: 10px;
-  font-size: 12px;
-  font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
-  font-style: italic;
+    padding-top: 12px;
+    float: right;
+    margin-right: 10px;
+    font-size: 12px;
+    font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+    font-style: italic;
 }
 
 .paging_full_numbers .first,
 .paging_full_numbers .last {
-  display: none;
+    display: none;
 }
 
 .paging_full_numbers span a.paginate_button,
 .paging_full_numbers span a.paginate_active {
-  text-decoration: none;
-  padding: 3px 6px;
-  -moz-border-radius: 5px;
-  -khtml-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  border: 1px solid;
-  margin-right: 3px;
-  font-weight: bold;
-  font-size: 11px;
+    text-decoration: none;
+    padding: 3px 6px;
+    -moz-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid;
+    margin-right: 3px;
+    font-weight: bold;
+    font-size: 11px;
 }
 
 .paging_full_numbers span a.paginate_button {
-  border-color: #E3E3E3;
-  background: #EEE;
-  color: #21759B;
-  cursor: pointer;
+    border-color: #E3E3E3;
+    background: #EEE;
+    color: #21759B;
+    cursor: pointer;
 }
 
 .paging_full_numbers span a.paginate_active { 
-  color: #555;
-  background: #DFDFDF;
-  border-color: lightGrey;
-  cursor: auto;
+    color: #555;
+    background: #DFDFDF;
+    border-color: lightGrey;
+    cursor: auto;
 }
 
 .widefat thead tr th span {

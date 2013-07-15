@@ -85,6 +85,8 @@ function pls_testimonials_save_meta_boxes( $post_id ) {
 			)
 	);
 
+	$testimonial_support = get_theme_support( 'pls-post-type-testimonial' );
+	
 	if( ! empty( $testimonial_support[0]['testimonial_featured'] ) ) {
 		// This is purely my personal preference for saving checkboxes
 		$testimonial_featured = ( isset( $_POST['testimonial_featured'] ) && $_POST['testimonial_featured'] ) ? 'on' : 'off';

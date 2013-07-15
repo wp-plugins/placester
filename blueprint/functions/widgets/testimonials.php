@@ -26,7 +26,8 @@ class PLS_Widget_Testimonials extends WP_Widget {
     extract($args);
 
     $title = empty( $instance['title'] ) ? ' ' : apply_filters( 'widget_title', $instance['title'] );
-    $number_of_posts = $instance['number_of_posts'];
+    $number_of_posts = isset($instance['number_of_posts']) ? $instance['number_of_posts'] : 5;
+    $widget_id = isset($instance['widget_id']) ? $instance['widget_id'] : 1;
 
     if ( !post_type_exists('testimonial')) {
       return false;

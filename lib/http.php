@@ -14,9 +14,9 @@ Class PL_HTTP extends WP_Http {
 	private static function _get_object () {
 		// Enforces a singleton paradigm...
 		if ( is_null(self::$http) )
-			$http = new PL_Http();
+			self::$http = new PL_Http();
 
-		return $http;
+		return self::$http;
 	}
 
 	public static function add_amp ($str) {
@@ -155,11 +155,14 @@ Class PL_HTTP extends WP_Http {
 		}
 
 		unset($request['action']);
-		$wp_upload_dir = wp_upload_dir();
+		if ( !(($wp_upload_dir = wp_upload_dir()) && false===$wp_upload_dir['error']) ) {
+			return array('message' => $wp_upload_dir['error']);
+		}
 		$file_location = trailingslashit($wp_upload_dir['path']) . $file_name;
 		// pls_dump($file_location);
-		move_uploaded_file($file_tmpname, $file_location);
-		
+		if (!move_uploaded_file($file_tmpname, $file_location)) {
+			return array('message' => "Unable to upload the file to $file_location.\n\nIs its parent directory writable by the server?");
+		}
 		$ssl_verify = apply_filters('https_ssl_verify', true);
 		
 		$ch = curl_init();
@@ -171,9 +174,13 @@ Class PL_HTTP extends WP_Http {
 		curl_setopt($ch, CURLOPT_URL, $url );
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, ( $ssl_verify === true ) ? 2 : false );
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $ssl_verify );
-		// use a local cert to make sure we have a valid one
-		curl_setopt($ch, CURLOPT_CAINFO, trailingslashit(PL_PARENT_DIR) . 'config/cacert.pem');
-		// most important: curl assumes @field as file field
+		
+		// Use a local cert to make sure we have a valid one when not on the hosted network...
+		if (!defined("HOSTED_PLUGIN_KEY")) {
+			curl_setopt($ch, CURLOPT_CAINFO, trailingslashit(PL_PARENT_DIR) . "config/cacert.pem");
+		}
+
+		// Most importantly, cURL assumes @field as file field...
 		$post_array = array(
 			"file"=>"@".$file_location
 		);

@@ -263,19 +263,22 @@ class PL_Listing_Helper {
 				if (isset($image['size']) && is_array($image['size']) && (count($image['size']) == 1))  {
 					$image['size'] = implode($image['size']);
 				}
-				
-				$api_response = PL_Listing::temp_image($_POST, $image['name'], $image['type'], $image['tmp_name']);
+				if (!in_array($image['type'], array('image/jpeg','image/jpg','image/png','image/gif'))) {
+					$api_response['message'] = "Unsupported file type - the image file must be a jpeg, jpg, png or gif file.".$image['type'];
+				}
+				else {
+					$api_response = PL_Listing::temp_image($_POST, $image['name'], $image['type'], $image['tmp_name']);
+				}
 				$api_response = wp_parse_args( $api_response, array('filename'=>'','url'=>'','message'=>'') ); 
-
-				// If no image URL is returned, the call failed -- only pass along the error message...
+				// If no image URL is returned, the call failed -- so pass along the error message...
 				if (empty($api_response['url'])) {
 					$response[$key]['message'] = $api_response['message'];
 				}
 				else {
-					$response[$key]['name'] = $api_response['filename'];
-					$response[$key]['orig_name'] = $image['name'];
 					$response[$key]['url'] = $api_response['url'];
 				}
+				$response[$key]['name'] = $api_response['filename'];
+				$response[$key]['orig_name'] = $image['name'];
 			}
 		}		
 		header('Vary: Accept');

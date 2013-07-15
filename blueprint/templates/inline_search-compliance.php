@@ -15,27 +15,27 @@
 <div class="compliance-wrapper">
 	<?php if ($compliance_message['img']): ?>
 		<img src="<?php echo $compliance_message['img'] ?>" alt="">
-	<?php endif ?>
+	<?php endif; ?>
 	<?php if ($compliance_message['agent_name']): ?>
 		<p class="inline-compliance">Listing Agent: <?php echo $compliance_message['agent_name'] ?></p>
-    <?php endif ?>
+    <?php endif; ?>
     <?php if (!empty($compliance_message['agent_license'])): ?>
         <p class="inline-compliance">DRE#: <?php echo $compliance_message['agent_license'] ?></p>
-    <?php endif ?>
+    <?php endif; ?>
     <?php if (!empty($compliance_message['office_name'])): ?>
         <p class="inline-compliance">Courtesy of: <?php echo $compliance_message['office_name'] ?></p>
-    <?php endif ?>
+    <?php endif; ?>
     <?php if (!empty($compliance_message['office_phone'])): ?>
-        <p class="inline-compliance">Agent Phone: <?php echo $compliance_message['office_phone'] ?></p>
-    <?php endif ?>
+        <p class="inline-compliance">Office Phone: <?php echo $compliance_message['office_phone'] ?></p>
+    <?php endif; ?>
     <?php if (!empty($compliance_message['co_agent_name'])): ?>
         <p class="inline-compliance">Co-Listing Agent: <?php echo $compliance_message['co_agent_name'] ?></p>
-    <?php endif ?>
+    <?php endif; ?>
     <?php if (!empty($compliance_message['co_office_name'])): ?>
         <p class="inline-compliance">Co-Listing Office: <?php echo $compliance_message['co_office_name'] ?></p>
-    <?php endif ?>
+    <?php endif; ?>
 	<?php if ($compliance_message['disclaimer']): ?>
 		<p class="disclaimer"><?php echo $compliance_message['disclaimer'] ?></p>
-	<?php endif ?>
+	<?php endif; ?>
 </div>
 <div class="clear"></div>
