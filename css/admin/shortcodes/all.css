@@ -1,0 +1,217 @@
+.sc-meta-section {
+	margin-top: 1em;
+	border-top: 2px solid #afafaf;
+	padding-top: 1em;
+}
+
+#poststuff .sc-meta-section h3 {
+	margin-bottom: .4em;
+	background: none;
+	padding-left: 0;
+}
+
+.sc-meta-section .pl_widget_block {
+	width: 100%;
+}
+
+.pl-sc-wrap section,
+.sc-meta-section .pl_widget_block section,
+.sc-meta-section #pl_static_listing_block section { /* required to override featured listings css */
+	overflow: hidden;
+	margin-bottom: 0;
+}
+
+.pl-sc-wrap .pl-sc-meta-box label {
+	display: block;
+	float: left;
+	width: 20em;
+	height: 2em;
+	line-height: 2em;
+	white-space: pre-wrap;
+}
+
+.pl-sc-wrap label.textarea {
+	float: none;
+	margin: .8em 0 .2em 0;
+	width: auto;
+	height: auto;
+	line-height: 1.2em;
+	font-weight: bold;
+}
+
+.pl-sc-wrap label.textarea span.description {
+	font-weight: normal;
+}
+
+.inside section {
+	line-height: 2em;
+}
+
+.sc-meta-section input,
+.sc-meta-section select,
+.sc-meta-section #pl_static_listing_block input, 	/* required to override featured listings css */
+.sc-meta-section #pl_static_listing_block select {
+    float: left;
+	margin: 0 .5em .5em 0;
+	height: 2em;
+}
+
+/* CodeMirror for template */
+.CodeMirror {
+	height: auto;
+	min-height: 4em;
+}
+
+.CodeMirror-foldmarker {
+	color: blue;
+	text-shadow: #b9f 1px 1px 2px, #b9f -1px -1px 2px, #b9f 1px -1px 2px, #b9f -1px 1px 2px;
+	font-family: arial;
+	line-height: .3;
+	cursor: pointer;
+}
+
+.CodeMirror-foldgutter {
+	width: .7em;
+}
+
+.CodeMirror-foldgutter-open,.CodeMirror-foldgutter-folded {
+	color: #555;
+	cursor: pointer;
+}
+
+.CodeMirror-foldgutter-open:after {
+	content: "\25BE";
+}
+
+.CodeMirror-foldgutter-folded:after {
+	content: "\25B8";
+}
+
+.embed-link {
+    margin-top: 8px;
+    padding: 0 10px 0 4px;
+}
+
+.pl-sc-wrap .inside strong {
+    color: #777777;
+    padding-right: 3px;
+}
+
+.span8,
+.span6,
+.span4,
+.span2 {
+	float: left;
+	overflow: hidden;
+	margin-right: 2%;
+}
+.span8 {
+	width: 78%;
+}
+
+.span6 {
+	width: 58%;
+}
+
+.span4 {
+	width: 38%;
+}
+
+.span2 {
+	width: 18%;
+}
+
+/* preview pane */
+
+#preview-wrapper {
+	position: relative;
+}
+
+.preview_load_spinner {
+	position: absolute;
+	width: 100%;
+	height: 250px;
+	overflow: hidden;
+	z-index: 50;
+}
+
+.preview_load_spinner img {
+	display: block;
+	position: relative;
+	top: 50%;
+	left: 50%;
+	width: 30px;
+	height: 30px;
+	margin: -15px 0 0 -15px;
+}
+
+#preview_meta_widget {
+	width: 100%;
+	height: 250px;
+	overflow: hidden;
+}
+
+#pl-review-wrapper {
+	padding-top: 10px;
+}
+
+
+/* Shortcode list */
+
+.pl-sc-wrap .column-shortcode {
+	width: 50%;
+}
+
+
+/* Shortcode editor */
+
+
+.pl_template_block, 
+.edit-sc-template-edit {
+	float: left;
+	margin-right: 1em;
+}
+
+
+/* Template Editor */
+
+
+#pl_sc_tpl_edit .edit-box {
+	clear: both;
+	display: block;
+	width: 100%;
+	overflow: hidden;
+}
+
+.sc-meta-section a {
+	display: block;
+}
+
+#pl_sc_tpl_edit .pl_template_block {
+	float: none;
+}
+
+#subshortcodes {
+	float: left;
+}
+
+#subshortcodes div {
+	clear: both;
+}
+
+.subcode {
+	margin-right: .8em;
+}
+
+.before_widget a,
+.after_widget a {
+	text-decoration: none;
+}
+
+
+/* Featured Listings */
+
+#options-filters .button {
+	height: auto;
+}
+
