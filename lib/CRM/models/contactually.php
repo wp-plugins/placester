@@ -30,62 +30,62 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 			"id" => array(
 				"label" => "ID",
 				"data_format" => "string",
-				"searchable" => true,
-				"type" => "text"
+				"searchable" => false
 			),
 			"first_name" => array(
 				"label" => "First Name",
 				"data_format" => "string",
 				"searchable" => true,
+				"group" => "Search",
 				"type" => "text"
 			),
 			"last_name" => array(
 				"label" => "Last Name",
 				"data_format" => "string",
 				"searchable" => true,
+				"group" => "Search",
 				"type" => "text"
 			),
 			"email_addresses" => array(
 				"label" => "E-mail(s)",
 				"data_format" => "array",
-				"searchable" => true,
-				"type" => "text"
+				"searchable" => false
 			),
 			"phone_numbers" => array(
 				"label" => "Phone(s)",
 				"data_format" => "array",
-				"searchable" => true,
-				"type" => "text"
+				"searchable" => false
 			),
 			"company" => array(
 				"label" => "Company",
 				"data_format" => "string",
 				"searchable" => true,
+				"group" => "Search",
 				"type" => "text"
 			),
 			"user_bucket" => array(
 				"label" => "User Bucket",
 				"data_format" => "object",
 				"searchable" => true,
+				"group" => "Search",
 				"type" => "text"
 			),
 			"tags" => array(
 				"label" => "Tags",
 				"data_format" => "array",
 				"searchable" => true,
+				"group" => "Search",
 				"type" => "text"
 			),
 			"last_contacted" => array(
 				"label" => "Last Contacted",
 				"data_format" => "datetime",
-				"searchable" => false,
-				"type" => "text"
+				"searchable" => false
 			),
 			"hits" => array(
 				"label" => "Hits",
 				"data_format" => "string",
-				"searchable" => false,
-				"type" => "text"
+				"searchable" => false
 			)
 		);
 	}
@@ -131,12 +131,6 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		}
 
 		return $labels;
-	}
-
-	public function generateContactSearchForm () {
-		// $form_args = array("method" => "POST", "title" => true, "include_submit" => false, "id" => "contacts_grid_search")
-		// PL_Form::generate_form($this->contactFieldMeta(), $form_args);
-		return "";
 	}
 
 	public function formatContactData ($value, $format) {
@@ -185,13 +179,35 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 
 			// Pages are indexed from 1, so an offset of 0 must translate to the first page and so on...
 			$filters["page"] = round(($offset + $limit)/$limit);
+			unset($filters["offset"]);
+		}
+
+		// Transform field-related filters into CRM-specific search term string...
+		$term_str = "";
+		$new_filters = array();
+		foreach ($filters as $key => $value) {
+			// These filters don't need transformation -- copy them as is...
+			if ($key == "limit" || $key == "page") {
+				$new_filters[$key] = $value;
+			}
+			else {
+				$term_str .= ( empty($term_str) ? "{$key}:{$value}" : " and {$key}:{$value}" );
+			}
+		}
+		
+		// If search term string isn't empty/is valid, add it as a filter...
+		if (!empty($term_str)) {
+			$new_filters["term"] = $term_str;
 		}
 
 		// This is a GET request, so mark all filters as query string params...
-		$args = array("query_params" => $filters);
+		$args = array("query_params" => $new_filters);
+
+		// If search term string is set, use a different endpoint...
+		$endpoint = ( isset($new_filters["term"]) ? "contacts/search" : "contacts" );
 
 		// Make API Call...
-		$response = $this->callAPI("contacts", "GET", $args);
+		$response = $this->callAPI($endpoint, "GET", $args);
 
 		// error_log(var_export($response, true));
 

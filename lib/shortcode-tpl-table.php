@@ -6,7 +6,6 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 
 	private $base_page;
 	private $per_page = 20;
-	protected $_column_headers = array();
 	private static $_items = array();
 	private static $_viewcnt = array('in_use'=>0, 'inactive'=>0, 'built_in'=>0);
 
@@ -135,23 +134,23 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 	public function get_views() {
 		$status_links = array();
 
-		$count = count($this::$_items);
+		$count = count(self::$_items);
 		$class = empty($_REQUEST['s']) && empty($_REQUEST['status']) ? ' class="current"' : '';
 		$status_links['all'] = '<a href="'.$this->base_page.'"'.$class.'>'.sprintf(_nx('All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $count, 'templates'), number_format_i18n($count)).'</a>';
 
-		if ($this::$_viewcnt['in_use']) {
+		if (self::$_viewcnt['in_use']) {
 			$class = !empty($_REQUEST['status']) && $_REQUEST['status']=='in_use' ? ' class="current"' : '';
-			$status_links['in_use'] = '<a href="'.$this->base_page.'&status=in_use"'.$class.'>'.sprintf(_nx('In Use <span class="count">(%s)</span>', 'In Use <span class="count">(%s)</span>', $this::$_viewcnt['in_use'], 'templates'), number_format_i18n($this::$_viewcnt['in_use'])).'</a>';
+			$status_links['in_use'] = '<a href="'.$this->base_page.'&status=in_use"'.$class.'>'.sprintf(_nx('In Use <span class="count">(%s)</span>', 'In Use <span class="count">(%s)</span>', self::$_viewcnt['in_use'], 'templates'), number_format_i18n(self::$_viewcnt['in_use'])).'</a>';
 		}
 
-		if ($this::$_viewcnt['inactive']) {
+		if (self::$_viewcnt['inactive']) {
 			$class = empty($class) && !empty($_REQUEST['status']) && $_REQUEST['status']=='inactive' ? ' class="current"' : '';
-			$status_links['inactive'] = '<a href="'.$this->base_page.'&status=inactive"'.$class.'>'.sprintf(_nx('Not In Use <span class="count">(%s)</span>', 'Not In Use <span class="count">(%s)</span>', $this::$_viewcnt['inactive'], 'templates'), number_format_i18n($this::$_viewcnt['inactive'])).'</a>';
+			$status_links['inactive'] = '<a href="'.$this->base_page.'&status=inactive"'.$class.'>'.sprintf(_nx('Not In Use <span class="count">(%s)</span>', 'Not In Use <span class="count">(%s)</span>', self::$_viewcnt['inactive'], 'templates'), number_format_i18n(self::$_viewcnt['inactive'])).'</a>';
 		}
 
-		if ($this::$_viewcnt['built_in']) {
+		if (self::$_viewcnt['built_in']) {
 			$class = empty($class) && !empty($_REQUEST['status']) && $_REQUEST['status']=='builtin' ? ' class="current"' : '';
-			$status_links['built_in'] = '<a href="'.$this->base_page.'&type=default"'.$class.'>'.sprintf(_nx('Built In <span class="count">(%s)</span>', 'Built In <span class="count">(%s)</span>', $this::$_viewcnt['built_in'], 'templates'), number_format_i18n($this::$_viewcnt['built_in'])).'</a>';
+			$status_links['built_in'] = '<a href="'.$this->base_page.'&type=default"'.$class.'>'.sprintf(_nx('Built In <span class="count">(%s)</span>', 'Built In <span class="count">(%s)</span>', self::$_viewcnt['built_in'], 'templates'), number_format_i18n(self::$_viewcnt['built_in'])).'</a>';
 		}
 
 		return $status_links;

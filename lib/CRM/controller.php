@@ -100,7 +100,15 @@ class PL_CRM_Controller {
 		$crm_obj = self::getCRMInstance($crm_id);
 
 		// Set (i.e., store) credentials/API key for this CRM so that it can be activated...
-		return ( is_null($crm_obj) ? false : $crm_obj->setAPIkey($api_key) );
+		$result = false;
+		if (!is_null($crm_obj)) {
+			$crm_obj->setAPIkey($api_key);
+			
+			// Activate the newly integrated API key by default...
+			$result = self::setActiveCRM($crm_id);
+		}
+
+		return $result;
 	}
 
 	/* The opposite of integration -- remove key/credentials associated with the passed CRM... */
@@ -226,22 +234,37 @@ class PL_CRM_Controller {
 	 * Serve up view(s)...
 	 */
 
-	public static function mainView () {
+	public static function getView () {
 		// Check if a CRM is active...
 		$active_crm = self::getActiveCRM();
+		
+		// Render HTML...
+		$html = ( empty($active_crm) ? self::settingsView() : self::browseView($active_crm) );
 
-		ob_start();
-			if (is_null($active_crm)) {
-				// Set this var for use in the login view...
-				$crm_list = self::$registeredCRMList;
-				include("views/login.php");
-			}
-			else {
-				// Set this var for us in the browse view...
+		return $html;
+	}
+
+	public static function settingsView () {
+		ob_start();	
+			// Set this var for use in the settings view...
+			$crm_list = self::$registeredCRMList;
+			include("views/settings.php");
+		$html = ob_get_clean();
+
+		return $html;
+	}
+
+	public static function browseView ($active_crm_id = null) {
+		// Get active CRM's id...
+		$active_crm = empty($active_crm_id) ? self::getActiveCRM() : $active_crm_id;
+
+		if (!empty($active_crm)) {
+			ob_start();
+				// Set this var for use in the browse view...
 				$crm_info = self::$registeredCRMList[$active_crm];
 				include("views/browse.php");
-			}
-		$html = ob_get_clean();
+			$html = ob_get_clean();
+		}
 
 		return $html;
 	}

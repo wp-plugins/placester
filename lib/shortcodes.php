@@ -361,36 +361,15 @@ class PL_Shortcodes
 	 * Get the body for a shortcode's output from a template
 	 */
 	public static function get_active_snippet_body ($shortcode, $template_name = '') {
-		// Get snippet ID currently associated with this shortcode...
-		$option_key = ('pls_' . $shortcode);
-		$snippet_name = get_option($option_key, self::$defaults[$shortcode][0]);
-
-		// Determine if snippet is custom (in DB) or default (stored in flat-file)
-		$snippet_DB_key = ('pls_' . $shortcode . '_' . $snippet_name);
-		$type = ( get_option($snippet_DB_key) ? 'custom' : 'default' );
-
-		// assign a template as a shortcode arg
-		if( ! empty( $template_name ) ) {
-			$snippet_name = $template_name;
-			if( isset( self::$defaults[$shortcode] ) && in_array( $template_name, self::$defaults[$shortcode] ) ) {
-				$type = 'default';
-			} else {
-				$type = 'custom';
-			}
-		}
-
 		ob_start();
-		switch ($type) {
-			case 'custom' :
-				$template = PL_Shortcode_CPT::load_custom_template($snippet_name);
-				echo html_entity_decode($template['snippet_body'], ENT_QUOTES);
-				break;
-			case 'default' :
-			default :
-				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $snippet_name . '.php');
-				if (file_exists($filename)) {
-					include $filename;
-				}
+		if (!$template_name || !($template = PL_Shortcode_CPT::load_template($template_name, $shortcode)) || empty($template['snippet_body'])) {
+			// Get default template ID associated with this shortcode...
+			$option_key = 'pls_' . $shortcode;
+			$snippet_name = get_option($option_key, self::$defaults[$shortcode][0]);
+			$template = PL_Shortcode_CPT::load_template($snippet_name, $shortcode);
+		}
+		if (!empty($template['snippet_body'])) {
+			echo html_entity_decode($template['snippet_body'], ENT_QUOTES);
 		}
 		return ob_get_clean();
 	}

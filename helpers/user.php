@@ -19,6 +19,9 @@ class PL_Helper_User {
 		add_action( 'wp_ajax_start_subscription_trial', array(__CLASS__, 'start_subscription_trial') );
 		add_action( 'wp_ajax_update_user', array(__CLASS__, 'ajax_update_user') );
 		add_action( 'wp_ajax_update_google_places', array(__CLASS__, 'update_google_places') );
+
+		add_action( 'wp_ajax_demo_data_on', array(__CLASS__, 'toggle_listing_demo_data' ) );
+		add_action( 'wp_ajax_demo_data_off', array(__CLASS__, 'toggle_listing_demo_data' ) );
 	}
 
 	public static function ajax_subscriptions() {
@@ -199,4 +202,32 @@ class PL_Helper_User {
 		}
 		die();
 	}
+
+	/*
+	 * Functionality to toggle listing demo data on and off...
+	 */
+
+	public static function toggle_listing_demo_data($state = false) {
+		// Determine the new state of this flag...
+		switch ($_POST["action"]) {
+			case "demo_data_on":
+				$state = true;
+				$msg = "You're site is now set to use demo data";
+				break;
+			case "demo_data_off":
+				$state = false;
+				$msg = "Demo data successfully turned off";
+				break;
+		}
+		
+		// Conditionally toggle on or off...
+		PL_Option_Helper::set_demo_data_flag($state);
+
+		// Clear cache to get rid of all remnants of existing listings...
+		PL_Cache::clear();
+
+		echo json_encode(array("message" => $msg));
+		die();
+	}
+	
 }	

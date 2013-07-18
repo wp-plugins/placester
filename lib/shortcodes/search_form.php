@@ -6,20 +6,20 @@
 
 class PL_Form_CPT extends PL_SC_Base {
 
-	protected static $pl_post_type = 'pl_form';
+	protected $pl_post_type = 'pl_form';
 
-	protected static $shortcode = 'search_form';
+	protected $shortcode = 'search_form';
 
-	protected static $title = 'Search Form';
+	protected $title = 'Search Form';
 
-	protected static $help = 
+	protected $help =
 		'<p>
-		You can insert your "activated" Search Form snippet by using the [search_form] shortcode in a page or a post. 
-		This control is intended to be used alongside the [search_listings] shortcode to display the search 
+		You can insert your "activated" Search Form snippet by using the [search_form] shortcode in a page or a post.
+		This control is intended to be used alongside the [search_listings] shortcode to display the search
 		form\'s results.
 		</p>';
 
-	protected static $options = array(
+	protected $options = array(
 		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
 		'width'				=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
 		'height'			=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
@@ -30,7 +30,7 @@ class PL_Form_CPT extends PL_SC_Base {
 	);
 
 	//TODO build from the api
-	protected static $subcodes = array(
+	protected $subcodes = array(
 		'bedrooms'			=> array('help' => 'Drop list to select an exact number of bedrooms.'),
 		'min_beds'			=> array('help' => 'Drop list to select the minimum number of bedrooms.'),
 		'max_beds'			=> array('help' => 'Drop list to select the maximum number of bedrooms.'),
@@ -51,67 +51,68 @@ class PL_Form_CPT extends PL_SC_Base {
 		'max_price_rental'	=> array('help' => 'Drop list to select the maximum rental price.'),
 	);
 
-	protected static $template = array(
-		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'css' => 'mime_html', 'default' => '
-<div class="my-searchform-body">
-	<div class="my-searchform-item">
-		<label>Bedrooms:</label>[bedrooms]
-	</div>
-	<div class="my-searchform-item">
-		<label>Bathrooms:</label>[bathrooms]
-	</div>
-</div>',
-			'description'	=> '
-You can use any valid HTML in this field to format the subcodes.' ),
+	protected $template = array(
+		'snippet_body'	=> array(
+			'type' => 'textarea',
+			'label' => 'HTML',
+			'css' => 'mime_html',
+			'default' => '
+<div class="search-item">
+	<label>Min Beds:</label>[min_beds]
+</div>
+<div class="search-item">
+	<label>Min Baths:</label>[min_baths]
+</div>
+<div class="search-item">
+	<label>Min Price:</label>[min_price]
+</div>
+<div class="search-item">
+	<label>Max Price:</label>[max_price]
+</div>
+<div class="search-item">
+	<label>City:</label>[cities]
+</div>
+<div class="search-item	">
+	<label>Property Type:</label>[property_type]
+</div>
+			',
+			'description'	=> 'You can use any valid HTML in this field to format the subcodes.'
+		),
 
-		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'css' => 'mime_css', 'default' => '
-/* sample div used to wrap the slideshow plus any additonal html */
-.my-searchform {
-	margin: 5px 0;
-	border: 1px solid #000;
-	padding: 10px;
-}
-/* format the body of our form */
-.my-searchform-body {
-}				
-/* format our form items */
-.my-searchform-item {
-	float: left;
-	width: 50%;
-}				
-/* line up the drop lists */
-.my-searchform label {
-	display: block;
-	float: left;
-	width: 10em;
-}
-/* inner block element created by the plugin */
-.my-searchform #pls_listings_search_results {
-	display: block;
-	position: relative;
-	margin: 0;
-	padding: 0;
-	left: 0;
-	top: 0;
-	width: 100%;
-}
-/* inner form element inside pls_listings_search_results created by the plugin */
-.my-searchform .pls_search_form_listings {
-	float: none;
-	width: 100%;
-}',
-			'description'	=> '
-You can use any valid CSS in this field to customize the form, which will also inherit the CSS from the theme.' ),
+		'css' => array(
+			'type' => 'textarea',
+			'label' => 'CSS',
+			'css' => 'mime_css',
+			'default' => '
+form.pls_search_form_listings .search-item { float: left; margin-bottom: 20px; width: 30%; display: inline-block; margin-left: 2.9%; }
+@media (max-width: 979px) { form.pls_search_form_listings .search-item { margin-bottom: 5px; } }
+form.pls_search_form_listings .search-item label { float: left; width: 100%; }
+@media (min-width: 768px) and (max-width: 979px) { form.pls_search_form_listings .search-item { margin-left: 2%; } }
+@media (max-width: 767px) { form.pls_search_form_listings .search-item { margin-left: 2%; width: 47%; } }
+@media (max-width: 420px) { form.pls_search_form_listings .search-item { margin-left: 2%; width: 97%; } }
+form.pls_search_form_listings .search-item select, form.pls_search_form_listings .search-item .chzn-container { width: 80% !important; }
+			',
+			'description' => 'You can use any valid CSS in this field to customize the form, which will also inherit the CSS from the theme.'
+		),
 
-		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the form', 'default' => '<div class="my-searchform">',
-			'description'	=> '
-You can use any valid HTML in this field and it will appear before the form.
-For example, you can wrap the whole form with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.' ),
+		'before_widget'	=> array(
+			'type' => 'textarea',
+			'label' => 'Add content before the form',
+			'default' => '<div class="my-searchform">',
+			'description' => 'You can use any valid HTML in this field and it will appear before the form. For example, you can wrap the whole form with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.'
+		),
 
 		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the form', 'default' => '<div style="clear:both"></div></div>',
-			'description'	=> '
-You can use any valid HTML in this field and it will appear after the form.' ),
+			'description' => 'You can use any valid HTML in this field and it will appear after the form.'
+		),
 	);
+
+
+
+
+	public static function init() {
+		parent::_init(__CLASS__);
+	}
 }
 
-PL_Form_CPT::init(__CLASS__);
+PL_Form_CPT::init();

@@ -546,12 +546,18 @@ class PL_Shortcode_CPT {
 			}
 
 			// get builtin/default templates
-			$sc_attrs = self::get_shortcode_attrs($shortcode);
-			if (!empty($sc_attrs['default_tpls']) && in_array($id, $sc_attrs['default_tpls'])) {
-				ob_start();
+			$tpls = self::get_builtin_templates($shortcode);
+			if (in_array($id, $tpls)) {
+				$template = array();
 				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $id . '.php');
+				ob_start();
 				include $filename;
-				$default['snippet_body'] = ob_get_clean();
+				$raw = ob_get_clean();
+				// support old style built in templates
+				if (empty($template)) {
+					$template['snippet_body'] = $raw;
+				}
+				return array_merge($template, array('shortcode'=>$shortcode, 'title'=>$id));
 			}
 		}
 		return $default;
@@ -659,10 +665,8 @@ class PL_Shortcode_CPT {
 
 		$tpl_type_map = array();
 
-
 		// add default templates
-		$sc_args = self::get_shortcode_attrs($shortcode);
-		$default_tpls = !empty($sc_args['default_tpls']) ? $sc_args['default_tpls'] : array();
+		$default_tpls = self::get_builtin_templates($shortcode);
 		foreach ($default_tpls as $name) {
 			$tpl_type_map[$name] = array('type'=>'default', 'title'=>$name, 'id'=>$name);
 		}
@@ -675,6 +679,21 @@ class PL_Shortcode_CPT {
 			$tpl_type_map[$id] = array('type'=>'custom', 'title'=>$name, 'id'=>$id);
 		}
 		return $tpl_type_map;
+	}
+
+	/**
+	 * Return the list of built-in templates for the given shortcode.
+	 * List includes default templates and user created ones
+	 * @param string $shortcode
+	 * @return array
+	 */
+	public static function get_builtin_templates($shortcode) {
+		// sanity check
+		if (empty(self::$shortcodes[$shortcode])) {
+			return array();
+		}
+
+		return self::$shortcodes[$shortcode]->get_builtin_templates();
 	}
 
 	/**

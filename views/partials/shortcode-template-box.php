@@ -70,7 +70,7 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 						else {
 							$_POST[$pl_shortcode][$field] = !empty( $values[$field] ) ? $values[$field] : '';
 						}
-						$f_args['css'] .= (empty($f_args['css'])?'':' ').$field;
+						$f_args['css'] = (!empty($f_args['css'])?$f_args['css'].' ':'').$field;
 						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'pl-sc-tpl-edit', true);
 					}?>
 					</div>

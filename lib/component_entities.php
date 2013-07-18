@@ -410,9 +410,7 @@ class PL_Component_Entity {
 		$listing = self::$listing;
 
 		if( $tag === 'ls_index' ) {
-			if( ! empty( self::$slideshow_caption_index ) ) {
-				return self::$slideshow_caption_index;
-			}
+			return self::$slideshow_caption_index;
 		} else if( $tag === 'ls_url' ) {
 			return $listing['cur_data']['url'];
 

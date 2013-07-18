@@ -148,10 +148,9 @@ class PL_Shortcodes_Table extends WP_List_Table {
 		$orderstr = $orderby == 'title' ? "ORDER BY $wpdb->posts.post_title $order" : '';
 		$this->items = $wpdb->get_results("
 				SELECT $wpdb->posts.ID, $wpdb->posts.post_status, $wpdb->posts.post_title AS title, $wpdb->postmeta.meta_key, $wpdb->postmeta.meta_value AS type
-				FROM $wpdb->posts, $wpdb->postmeta
-				WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id $where
-				AND $wpdb->postmeta.meta_key = 'shortcode'
-				AND $wpdb->posts.post_type = 'pl_general_widget'
+				FROM $wpdb->posts LEFT JOIN $wpdb->postmeta
+				ON $wpdb->posts.ID = $wpdb->postmeta.post_id AND $wpdb->postmeta.meta_key = 'shortcode'
+				WHERE $wpdb->posts.post_type = 'pl_general_widget' $where
 				AND $wpdb->posts.post_status $status
 				$orderstr");
 

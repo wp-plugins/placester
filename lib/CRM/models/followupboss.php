@@ -30,9 +30,7 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 			"id" => array(
 				"label" => "ID",
 				"data_format" => "string",
-				"searchable" => false,
-				"group" => "Search",
-				"type" => "text"
+				"searchable" => false
 			),
 			"firstName" => array(
 				"label" => "First Name",
@@ -51,16 +49,12 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 			"emails" => array(
 				"label" => "E-mail(s)",
 				"data_format" => "array",
-				"searchable" => false,
-				"group" => "Search",
-				"type" => "text"
+				"searchable" => false
 			),
 			"phones" => array(
 				"label" => "Phone(s)",
 				"data_format" => "array",
-				"searchable" => false,
-				"group" => "Search",
-				"type" => "text"
+				"searchable" => false
 			),
 			"stage" => array(
 				"label" => "Stage",
@@ -79,9 +73,7 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 			"lastActivity" => array(
 				"label" => "Last Activity",
 				"data_format" => "datetime",
-				"searchable" => false,
-				"group" => "Search",
-				"type" => "text"
+				"searchable" => false
 			),
 			"contacted" => array(
 				"label" => "Contacted",
@@ -132,26 +124,6 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 		}
 
 		return $labels;
-	}
-
-	public function generateContactSearchForm () {
-		// Get all "searchable" contact fields...
-		$search_fields = array();
-		foreach ($this->contactFieldMeta() as $field => $meta) {
-			if (isset($meta["searchable"]) && $meta["searchable"] === true) {
-				$search_fields[$field] = $meta;
-			}
-		}
-
-		$form_args = array(
-			"method" => "POST", 
-			"title" => true, 
-			"include_submit" => false, 
-			"echo_form" => false, 
-			"id" => "contacts_grid_search"
-		);
-
-		return PL_Form::generate_form($search_fields, $form_args);
 	}
 
 	public function formatContactData ($value, $format) {

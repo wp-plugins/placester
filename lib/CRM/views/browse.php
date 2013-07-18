@@ -18,14 +18,14 @@
 <div class="crm-browse-box">
 	<div class="browse-header">
 		<h2>Your site's CRM is integrated with <?php echo $display_name; ?></h2>
-		<a href="#" class="deactivate-button button-secondary">CRM Settings</a>
+		<a href="#" class="settings-button button-secondary">CRM Settings</a>
 	</div>
 
 	<!-- <div class="browse-logo">
 		<img src="<?php // echo $logo_img; ?>" />
 	</div> -->
 
-	<div class="">
+	<div class="crm-search-box">
 		<?php echo $crm_obj->generateContactSearchForm(); ?>
 	</div>
 

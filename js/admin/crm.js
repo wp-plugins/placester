@@ -42,12 +42,11 @@ jQuery(document).ready(function($) {
 		return api_key;
 	}
 
-	function overlaySpinner (id) {
-		var attrID = id ? id : 'spinner';
+	function createSpinner () {
 		var barCount = 8;
 
 		// Construct spinner components...
-		var spinnerElem = '<div id="' + attrID + '" class="spinningBars">';
+		var spinnerElem = '<div id="loading-spinner" class="spinningBars">';
 	   	for (var i = 1; i <= barCount; i++) {
 	   		spinnerElem += ('<div class="bar' + i + '"></div>');
 	   	}
@@ -104,7 +103,7 @@ jQuery(document).ready(function($) {
 	var view = $('#main-crm-container');
 
 	// Get the main view initially...
-	call_CRM_AJAX('mainView', {}, function (result) {
+	call_CRM_AJAX('getView', {}, function (result) {
 		view.html(result);
 
 		// If contacts grid exists, initialize it...
@@ -129,13 +128,15 @@ jQuery(document).ready(function($) {
 			return;
 		}
 
-		// Specify call to return the "activate" CRM partial for display purposes...
-		retSpec = {method: 'getPartial', args: {partial: 'activate', partial_args: {id: CRMid, api_key: APIkey}}};
+		// Specify call to return altered view that results from CRM integration...
+		retSpec = {method: 'browseView'};
 
 		call_CRM_AJAX('integrateCRM', {crm_id: CRMid, api_key: APIkey, return_spec: retSpec}, function (result) {
-			// Refesh the view so that this CRM can be activated, now that integration is completed...
-			var elem = $('#' + CRMid + '-box .action-box');
-			elem.html(result);
+			// Refesh the view so that this CRM can being integrated...
+			view.html(result);
+
+			// Activating a CRM will return a grid for the contacts that needs to be initialized...
+			intializeContactsGrid();
 		});
 	});
 
@@ -148,7 +149,7 @@ jQuery(document).ready(function($) {
 		var CRMid = id.replace('activate_', '');
 
 		// Specify call to return altered view that results from CRM activation...
-		retSpec = {method: 'mainView'};
+		retSpec = {method: 'browseView'};
 
 		call_CRM_AJAX('setActiveCRM', {crm_id: CRMid, return_spec: retSpec}, function (result) {
 			// Refresh view to reflect CRM activation...
@@ -181,10 +182,37 @@ jQuery(document).ready(function($) {
 		event.preventDefault();
 		showLoading($(this).parent());
 
-		// Specify call to return altered view that results from CRM deactivation...
-		retSpec = {method: 'mainView'};
+		// Extract CRM id from clicked element's actual id...
+		var id = $(this).attr('id')
+		var CRMid = id.replace('deactivate_', '');
+
+		// Specify call to return the "activate" CRM partial for display purposes...
+		retSpec = {method: 'getPartial', args: {partial: 'activate', partial_args: {id: CRMid}}};
 
 		call_CRM_AJAX('resetActiveCRM', {return_spec: retSpec}, function (result) {
+			// Refesh the view so that this CRM can be activated, now that integration is completed...
+			var elem = $('#' + CRMid + '-box .action-box');
+			elem.html(result);
+		});
+	});
+
+	view.on('click', '.browse-button', function (event) { 
+		event.preventDefault();
+		showLoading($(this).parent());
+
+		call_CRM_AJAX('browseView', {}, function (result) {
+			view.html(result);
+
+			// If contacts grid exists, initialize it...
+			intializeContactsGrid();
+		});
+	});
+
+	view.on('click', '.settings-button', function (event) {
+		event.preventDefault();
+		showLoading($(this).parent());
+
+		call_CRM_AJAX('settingsView', {}, function (result) {
 			// Refresh view to reflect CRM deactivation...
 			view.html(result);
 		});
@@ -196,7 +224,6 @@ jQuery(document).ready(function($) {
     });
 
     view.on('click', '#contacts_grid tbody tr', function (event) {
-    	// console.log("Clicked on a contact grid row...");
     	var userID =  $(this).children('td:first-child').text();
 
     	// Retrieve details on the clicked contact and display them...
