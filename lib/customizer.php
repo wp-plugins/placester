@@ -3,13 +3,12 @@
 class PL_Customizer 
 {
 	private static $def_setting_opts = array(
-			                          'default'   => '',
-			                          'type'      => 'option',
-			                          'transport' => 'refresh' 
-			                        );
+      	'default'   => '',
+      	'type'      => 'option',
+      	'transport' => 'refresh' 
+    );
 
 	private static $priority = 0;
-
 
 	private function get_setting_opts( $args = array() )
 	{
@@ -18,7 +17,7 @@ class PL_Customizer
 		return $merged_opts;
 	}
 
-	private function get_priority( $section = '' ) 
+	private static function get_priority( $section = '' ) 
 	{
   		$new_priority = 10; // Default priority in case no other can be found...
   		global $PL_CUSTOMIZER_ONBOARD_SECTIONS;
@@ -30,137 +29,139 @@ class PL_Customizer
 	  	return $new_priority;
 	}
 
-	private function get_control_opts( $id, $opts, $sect_id, $is_custom = false )
+	private static function get_control_opts( $id, $opts, $sect_id, $is_custom = false )
 	{
 		$args = array(
-                        'settings' => $id,
-                        'label'    => $opts['name'],
-                        'section'  => $sect_id
-                     );
+            'settings' => $id,
+            'label'    => $opts['name'],
+            'section'  => $sect_id
+     	);
 
-		if ( !$is_custom ) {
+		if (!$is_custom) {
 			$args['type'] = $opts['type'];
 		}
 
 		return $args;
 	}
 
-	public function register_components( $wp_customize, $excluded = null ) 
+	public static function register_components( $wp_customize, $excluded = array() ) 
 	{
-		$theme_opts_key = $wp_customize->get_stylesheet();
-	    $last_section_id = '';
-
 	    global $PL_CUSTOMIZER_ONBOARD_OPTS;
-	    $options = $PL_CUSTOMIZER_ONBOARD_OPTS;
+	    $sections = $PL_CUSTOMIZER_ONBOARD_OPTS;
 
-	    foreach ($options as $opt) 
+	    $theme_opts_key = $wp_customize->get_stylesheet();
+
+	    foreach ($sections as $section) 
 	    {
-	    	// Skip over excluded options...
-	    	if ( $excluded && $opt['name'] && in_array($opt['name'], $excluded) ) {
+	    	// Skip over excluded sections...
+	    	if ( is_array($excluded) && in_array($section['id'], $excluded) ) {
 	    		continue;
 	    	}
 
-	    	// Take care of defining some common vars used many of the cases below...
-	    	if ( isset($opt['id']) ) {
-	    		$setting_id = "{$theme_opts_key}[{$opt['id']}]";
-	    		$control_id = "{$opt['id']}_ctrl";
+            $args_section = array( 'title' => __($section['name'],''), 'description' => $section['name'] ); 
+            $args_section['priority'] = self::get_priority( $section['id'] );
+    		
+    		// Check for optional keys...
+        	if ( isset($section['desc']) ) {
+        		$args_section['subtitle'] = $section['desc'];	
+        	}
+        	if ( isset($section['class']) ) {
+        		$args_section['class'] = $section['class'];
+        	}
+
+            $id_base = $section['id'];
+            $section_id = strtolower( str_replace( ' ', '_', $id_base ) );
+            // $wp_customize->add_section( $section_id, $args_section );
+            $wp_customize->add_section( new PL_Customize_Section( $wp_customize, $section_id, $args_section ) );
+
+            // Add dummy control to sections with no components to render so that they will appear...
+            if ( isset($section['class']) && $section['class'] == 'no-pane' ) {
+            	$wp_customize->add_setting( 'dummy_setting', array() );
+            	$wp_customize->add_control( "dummy_ctrl_{$section_id}", array('settings' => 'dummy_setting', 'section' => $section_id, 'type' => 'none') );
+            	
+            	// No components to render, so move on to the next section...
+            	continue;
+        	}
+
+            foreach ($section['components'] as $component)
+            {
+            	// Take care of defining some common vars used many of the cases below...
+		    	if ( isset($component['id']) ) {
+		    		$setting_id = "{$theme_opts_key}[{$component['id']}]";
+		    		$control_id = "{$component['id']}_ctrl";
+		    	}
+
+		    	$custom_args = array();
+		    	if ( isset($component['transport']) ) {
+		    		$custom_args['transport'] = $component['transport'];
+		    	}
+
+		        switch ($component['type']) 
+		        {
+		            // Handle the standard (i.e., 'built-in') controls...
+		            case 'text':
+		            case 'checkbox':
+		            	$wp_customize->add_setting( $setting_id, self::get_setting_opts($custom_args) );
+		                
+		                $args_control = self::get_control_opts( $setting_id, $component, $section_id );
+		                $wp_customize->add_control( $control_id, $args_control);
+		                break;
+
+		            case 'textarea':
+			            $wp_customize->add_setting( $setting_id, self::get_setting_opts($custom_args) );
+
+		                $args_control = self::get_control_opts( $setting_id, $component, $section_id, true );
+		                $wp_customize->add_control( new PL_Customize_TextArea_Control($wp_customize, $control_id, $args_control) );
+		                break;
+
+		            case 'typography':
+		            	$typo_setting_keys = array('size', 'face', 'style', 'color');
+		            	$typo_setting_ids = array();
+		            	
+		            	foreach ($typo_setting_keys as $key) {
+		            		$wp_customize->add_setting( "{$setting_id}[{$key}]", self::get_setting_opts() );
+		            		$typo_setting_ids[$key] = "{$setting_id}[{$key}]";
+		            	}
+		            	
+		            	$args_control = self::get_control_opts( $typo_setting_ids, $component, $section_id, true );
+		                $wp_customize->add_control( new PL_Customize_Typography_Control($wp_customize, $control_id, $args_control) );
+		            	break;
+
+		            case 'upload':
+		            	$wp_customize->add_setting( $setting_id, self::get_setting_opts() );
+
+		            	$args_control = self::get_control_opts( $setting_id, $component, $section_id, true );
+		                $wp_customize->add_control( new WP_Customize_Upload_Control($wp_customize, $control_id, $args_control) );
+		            	break;
+
+		            case 'background':
+		            	$setting_id .= '[color]';
+		            	$wp_customize->add_setting( $setting_id, self::get_setting_opts() );
+
+		            	$args_control = self::get_control_opts( $setting_id, $component, $section_id, true );
+		            	$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, $control_id, $args_control) );
+		            	break;	
+
+		            case 'custom':
+		            	// Register PL component...
+		            	self::register_pl_control( $wp_customize, $component['name'], $section_id );
+		            	break;
+
+		            default:
+		                break;
+		        } 
 	    	}
-
-	    	$custom_args = array();
-	    	if ( isset($opt['transport']) ) {
-	    		$custom_args['transport'] = $opt['transport'];
-	    	}
-
-	        switch ( $opt['type'] ) 
-	        {
-	            case 'heading':
-	                $args_section = array( 'title' => __($opt['name'],''), 'description' => $opt['name'] ); 
-	                $args_section['priority'] = self::get_priority( $opt['id'] );
-            		// Check for optional keys...
-                	if ( isset($opt['desc']) ) {
-                		$args_section['subtitle'] = $opt['desc'];	
-                	}
-                	if ( isset($opt['class']) ) {
-                		$args_section['class'] = $opt['class'];
-                	}
-
-	                $id_base = isset($opt['id']) ? $opt['id'] : $opt['name'];
-	                $section_id = strtolower( str_replace( ' ', '_', $id_base ) );
-	                // $wp_customize->add_section( $section_id, $args_section );
-	                $wp_customize->add_section( new PL_Customize_Section( $wp_customize, $section_id, $args_section ) );
-
-	                // Add dummy control to certain sections so that they will appear...
-	                if ( isset($opt['class']) && $opt['class'] == 'no-pane' ) {
-	                	$wp_customize->add_setting( 'dummy_setting', array() );
-	                	$wp_customize->add_control( "dummy_ctrl_{$section_id}", array('settings' => 'dummy_setting', 'section' => $section_id, 'type' => 'none') );
-	            	}
-
-	                $last_section_id = $section_id;
-	                break;
-
-	            // Handle the standard (i.e., 'built-in') controls...
-	            case 'text':
-	            case 'checkbox':
-	            	$wp_customize->add_setting( $setting_id, self::get_setting_opts($custom_args) );
-	                
-	                $args_control = self::get_control_opts( $setting_id, $opt, $last_section_id );
-	                $wp_customize->add_control( $control_id, $args_control);
-	                break;
-
-	            case 'textarea':
-		            $wp_customize->add_setting( $setting_id, self::get_setting_opts($custom_args) );
-
-	                $args_control = self::get_control_opts( $setting_id, $opt, $last_section_id, true );
-	                $wp_customize->add_control( new PL_Customize_TextArea_Control($wp_customize, $control_id, $args_control) );
-	                break;
-
-	            case 'typography':
-	            	$typo_setting_keys = array('size', 'face', 'style', 'color');
-	            	$typo_setting_ids = array();
-	            	
-	            	foreach ($typo_setting_keys as $key) {
-	            		$wp_customize->add_setting( "{$setting_id}[{$key}]", self::get_setting_opts() );
-	            		$typo_setting_ids[$key] = "{$setting_id}[{$key}]";
-	            	}
-	            	
-	            	$args_control = self::get_control_opts( $typo_setting_ids, $opt, $last_section_id, true );
-	                $wp_customize->add_control( new PL_Customize_Typography_Control($wp_customize, $control_id, $args_control) );
-	            	break;
-
-	            case 'upload':
-	            	$wp_customize->add_setting( $setting_id, self::get_setting_opts() );
-
-	            	$args_control = self::get_control_opts( $setting_id, $opt, $last_section_id, true );
-	                $wp_customize->add_control( new WP_Customize_Upload_Control($wp_customize, $control_id, $args_control) );
-	            	break;
-
-	            case 'background':
-	            	$setting_id .= '[color]';
-	            	$wp_customize->add_setting( $setting_id, self::get_setting_opts() );
-
-	            	$args_control = self::get_control_opts( $setting_id, $opt, $last_section_id, true );
-	            	$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, $control_id, $args_control) );
-	            	break;	
-
-	            case 'custom':
-	            	// Register PL component...
-	            	self::register_pl_control( $wp_customize, $opt['name'], $last_section_id );
-	            	break;
-
-	            default:
-	                break;
-	        } 
 	    }
 
 	}
 
-	public function register_pl_control( $wp_customize, $name, $section_id ) 
+	public static function register_pl_control( $wp_customize, $name, $section_id ) 
 	{
 		// Dummy setting must be associated with non-option sections in order for them to appear/function properly...
 	    $dummy_setting_id = 'dummy_setting';
 	    $wp_customize->add_setting( 'dummy_setting', array() );
 
-		switch ( $name ) 
+		switch ($name) 
 		{
 			case 'theme-select':
 				$switch_theme_ctrl_id = 'switch_theme_ctrl';
@@ -169,11 +170,9 @@ class PL_Customizer
 				break;
 			
 			case 'integration':
-				if ( PL_Option_Helper::api_key() && !PL_Integration_Helper::idx_prompt_completed() ) {
-			        $int_ctrl_id = 'integration_ctrl';
-			        $int_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $section_id, 'type' => 'none');
-			        $wp_customize->add_control( new PL_Customize_Integration_Control($wp_customize, $int_ctrl_id, $int_args_ctrl) );
-				}
+		        $int_ctrl_id = 'integration_ctrl';
+		        $int_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $section_id, 'type' => 'none');
+		        $wp_customize->add_control( new PL_Customize_Integration_Control($wp_customize, $int_ctrl_id, $int_args_ctrl) );
 				break;
 			
 			case 'demo-data':

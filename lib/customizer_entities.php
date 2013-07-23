@@ -1,8 +1,5 @@
 <?php
 
-// Can't nest class definitions in PHP, so these have to be placed in a global function...
-function define_custom_controls() 
-{	
 	class PL_Customize_TextArea_Control extends WP_Customize_Control 
     {
         public $type = 'textarea';
@@ -85,7 +82,7 @@ function define_custom_controls()
 					</div>
 
 					<div class="row" id="customizer_mls_request_buttons">
-						<input type="button" id="customize_integration_no" class="bt-norm" value="Manually enter listings." />
+						<input type="button" id="customize_integration_no" class="bt-norm" value="Manually enter listings" />
 						<input type="button" id="customize_integration_submit" class="bt-norm bt-green" value="Request IDX Integration" />
 					</div>
 					
@@ -441,6 +438,5 @@ function define_custom_controls()
    		  <?php
    		}
    }
-}
 
 ?>

@@ -1,15 +1,15 @@
 <?php $compliance_message = wp_kses_post($_POST['compliance_message']); ?>
 <?php $compliance_message = wp_parse_args($compliance_message, array(
-																'agent_name' => false,
-																'office_name' => false,
-																'office_phone' => false,
-																'img' => false,
-																'disclaimer' => false,
-																'agent_license' => false,
-																'co_agent_name' => false,
-																'co_office_name' => false
-																)
-															);
+		'agent_name' => false,
+		'office_name' => false,
+		'office_phone' => false,
+		'img' => false,
+		'disclaimer' => false,
+		'agent_license' => false,
+		'co_agent_name' => false,
+		'co_office_name' => false
+		)
+	);
 ?>
 <div class="clear"></div>
 <div class="compliance-wrapper">

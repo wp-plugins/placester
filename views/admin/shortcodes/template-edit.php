@@ -14,13 +14,23 @@ if ($action == 'delete' && $ID) {
 	wp_redirect(admin_url('admin.php?page=placester_shortcodes_templates'));
 	die;
 }
-if ($action == 'copy' && $ID) {
-	if ($tpl = PL_Shortcode_CPT::load_custom_template($ID)) {
-		$tpl['title'] = 'Copy of '.$tpl['title'];
-		PL_Shortcode_CPT::save_custom_template(0, $tpl);
+if ($action == 'copy') {
+	$shortcode = (empty($_REQUEST['shortcode'])?'':$_REQUEST['shortcode']);
+	$default = empty($_REQUEST['default']) ? '' : $_REQUEST['default'];
+	$template = array();
+	if ($ID) {
+		$template = PL_Shortcode_CPT::load_custom_template($ID);
 	}
-	wp_redirect(admin_url('admin.php?page=placester_shortcodes_templates'));
-	die;
+	elseif ($default && $shortcode) {
+		$template = PL_Shortcode_CPT::load_template($default, $shortcode);
+	}
+	if (!empty($template['shortcode'])) {
+		$template['title'] = 'Copy of '.$template['title'];
+		$action = 'edit';
+	}
+	else {
+		$action = '';
+	}
 }
 if ($action == 'edit' && !empty($_POST['save']) && !empty($_POST['shortcode'])) {
 	$data = array_merge($_POST, $_POST[$_POST['shortcode']]);

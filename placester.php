@@ -4,7 +4,7 @@ Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
 Author: Placester.com
-Version: 1.1.14
+Version: 1.1.15
 Author URI: https://www.placester.com/
 */
 
@@ -27,7 +27,7 @@ Author URI: https://www.placester.com/
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define('PL_PLUGIN_VERSION','1.1.14');
+define('PL_PLUGIN_VERSION','1.1.15');
 
 define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
 define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
@@ -126,12 +126,11 @@ include_once('lib/shortcode-cpt.php');
 include_once('lib/component_entities.php');
 include_once('lib/shortcodes.php');
 include_once('lib/customizer.php');
-include_once('lib/customizer_entities.php');
 include_once('lib/social_networks.php');
 include_once('lib/analytics.php');
 include_once('lib/bootup.php');
 include_once('lib/global-filters.php');
-
+include_once('lib/listing-customizer.php');
 
 //models
 include_once('models/listing.php');
@@ -237,17 +236,17 @@ function placester_admin_menu() {
         'All Custom Shortcodes' => '',
         'Create Custom Shortcode' => '_shortcode_edit',
         'Shortcode Templates' => '_templates',
-        'Create Shortcode Template' => '_template_edit'
+        'Create Shortcode Template' => '_template_edit',
+    	'Listing Page Customizer' => '_listing_customizer',
     );
-
     foreach ($shortcode_subpages as $name => $page_url) {
     	// Leave parent slug empty to add pages without adding them to the menu...
-    	$hook = add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_shortcodes' . $page_url, array('PL_Router','shortcodes' . $page_url));
+    	$hook = add_submenu_page( 'placester', 'Shortcodes - '.$name, $name, 'edit_pages', 'placester_shortcodes' . $page_url, array('PL_Router','shortcodes' . $page_url));
     	PL_Helper_Header::add_sub_page('placester_shortcodes', 'placester_shortcodes' . $page_url, $hook);
     	PL_Shortcodes::admin_buffer_op($hook);
     }
-    add_submenu_page('placester', '', 'Shortcodes', 'edit_pages', 'placester_shortcodes', array('PL_Router','shortcodes'));
-
+    add_submenu_page('placester', 'Shortcodes', 'Shortcodes', 'edit_pages', 'placester_shortcodes', array('PL_Router','shortcodes'));
+    
     // TODO: Integrate shortcode and social pages into existing menu control structure...
     add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
     add_submenu_page( 'placester', 'IDX / MLS', 'IDX / MLS', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );

@@ -157,11 +157,10 @@ jQuery(document).ready(function($) {
 	});
 
 	$('#navlist li:not(.no-pane)').on('click', function (event) {
-
-		//pass pane opened event to mixpanel
-		mixpanel.track("Customizer - Pane Opened", {'type' : $(this).attr('id'), 'theme' : $('#theme_choices').val() });
-
 		event.preventDefault();
+
+		// Pass pane opened event to mixpanel
+		mixpanel.track("Customizer - Pane Opened", {'type' : $(this).attr('id'), 'theme' : $('#theme_choices').val() });
 
 		// If activated menu section is clicked OR preview is refreshing/loading, do nothing...
 		if ( $(this).hasClass('active') || customizer_global.refreshing ) { return; }
@@ -213,6 +212,10 @@ jQuery(document).ready(function($) {
  /*
   * Handles integration pane...
   */
+
+  	$('#customize_integration_no').on('click', function() { 
+  		$('#logo').trigger('click');
+  	});
 
 	$('#customize_integration_submit').on('click', function() {
 
@@ -419,8 +422,6 @@ jQuery(document).ready(function($) {
 
 		// Remove any latent error messages if they exist...
 		container.find('#message.error').remove();
-
-
 
 		// Check if user is trying to activate a Premium theme, and act accordingly...
 		var type = $('option:selected').parent().attr('label');

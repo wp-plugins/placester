@@ -133,7 +133,23 @@ class PL_Js_Helper {
 				'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
 			));
 		}
-
+		
+		// Listing customizer
+		if ($hook == 'placester_page_placester_shortcodes_listing_customizer') {
+			self::register_enqueue_if_not('listing-customizer', trailingslashit(PL_JS_URL) . 'admin/listing-customizer.js', array('jquery'));
+			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_URL) . 'lib/codemirror/codemirror.js');
+			self::register_enqueue_if_not('codemirror-foldcode', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/foldcode.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-foldgutter', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/foldgutter.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-brace-fold', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/brace-fold.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-xml-fold', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/xml-fold.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-xml', trailingslashit(PL_JS_URL) . 'lib/codemirror/mode/xml/xml.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-css', trailingslashit(PL_JS_URL) . 'lib/codemirror/mode/css/css.js', array('codemirror'));
+		
+			wp_localize_script('listing-customizer', 'autosaveL10n', array(
+				'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
+			));
+		}
+		
 		if ($hook == 'placester_page_placester_crm') {
 			self::register_enqueue_if_not('crm', trailingslashit(PL_JS_URL) . 'admin/crm.js', array('jquery'));
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));	

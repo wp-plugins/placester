@@ -42,12 +42,12 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 		'desc'			=> array('help' => 'Property description'),
 		'image'			=> array('help' => 'Property thumbnail image'),
 		'mls_id'		=> array('help' => 'MLS #'),
-		//'map'			=> array('help' => ''),
 		'listing_type'	=> array('help' => 'Type of listing'),
-		'img_gallery'	=> array('help' => 'Image gallery'),
-		//'amenities'		=> array('help' => ''),
+		//'gallery'		=> array('help' => 'Image gallery'),
+		//'amenities'	=> array('help' => 'List of amenties'),
 		'price_unit'	=> array('help' => 'Unit price'),
 		'compliance'	=> array('help' => 'MLS compliance statement'),
+		'favorite_link_toggle' => array('help' => 'Link to add/remove from favorites'),
 	);
 
 	protected $template = array(
@@ -72,7 +72,7 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 	</p>
 </div>
 			',
-			'description' => 'You can use any valid HTML in this field to format the subcodes.'
+			'description' => 'You can use any valid HTML in this field to format the template tags.'
 		),
 
 		'css' => array(

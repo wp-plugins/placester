@@ -20,39 +20,28 @@ $PL_CUSTOMIZER_THEMES = array(
         'Fremont' => 'fremont',
         'Ontario' => 'ontario',
         'Park City' => 'parkcity',
-        'Plymouth' => 'plymouth'
+        'Plymouth' => 'plymouth',
+        'Toronto' => 'toronto'
 	)
 );
 
-// For quick reference to check if current active theme is supported...
+// Construct a reference to quickly access the list of themes supported by the customizer...
 global $PL_CUSTOMIZER_THEME_LIST;
-$PL_CUSTOMIZER_THEME_LIST = array(
-	'columbus', 
-	'highland', 
-	'manchester', 
-	'tampa',
-	'ventura',
-	'bluestone', 
-	'slate', 
-	'toronto', 
-	'bethesda', 
-	'charlotte', 
-	'ontario', 
-	'parkcity',
-	'plymouth',
-	'franklin',
-	'fremont'
-);
+$PL_CUSTOMIZER_THEME_LIST = array();
+
+foreach ($PL_CUSTOMIZER_THEMES as $group => $themes) {
+	$PL_CUSTOMIZER_THEME_LIST = array_merge($PL_CUSTOMIZER_THEME_LIST, array_values($themes));
+}
 
 global $PL_CUSTOMIZER_THEME_INFO;
 $PL_CUSTOMIZER_THEME_INFO = array(
-	'bluestone'  => array(
+	'bluestone' => array(
 		'pls-site-title' => 'header h1 a',
 		'pls-site-subtitle' => 'header h2',
 		'pls-user-email' => '.agent-email a',
 		'pls-user-phone' => '.agent-phone'	
 	),
-	'slate' 	 => array(
+	'slate' => array(
 		'pls-site-title' => 'header h1 a',
 		'pls-site-subtitle' => 'header h2',
 		'pls-user-email' => '.agent-email a',
@@ -70,13 +59,13 @@ $PL_CUSTOMIZER_THEME_INFO = array(
 		'pls-user-email' => '.widget-pls-agent .email a',
 		'pls-user-phone' => 'header #header-phone, .widget-pls-agent .phone',
 	),
-	'columbus' 	 => array(
+	'columbus' => array(
 		'pls-site-title' => 'header h1 a',
 		'pls-site-subtitle' => 'header h2',
 		'pls-user-email' => 'header .h-email a, footer .f-email a, .widget-pls-agent .email',
 		'pls-user-phone' => 'header .h-phone, footer .f-phone, .widget-pls-agent .phone'	
 	),
-	'highland'	 => array(
+	'highland' => array(
 		'pls-site-title' => 'header h1 a',
 		'pls-site-subtitle' => 'header h2',
 		'pls-user-email' => 'header .phone a, footer .phone a, .widget-pls-agent .email',
@@ -94,7 +83,7 @@ $PL_CUSTOMIZER_THEME_INFO = array(
 		'pls-user-email' => '.widget-pls-agent .email',
 		'pls-user-phone' => 'header .user-phone, .widget-pls-agent .phone'
 	),
-	'tampa' 	 => array(
+	'tampa' => array(
 		'pls-site-title' => 'header h1 a',
 		'pls-site-subtitle' => 'header h2',
 		'pls-user-email' => 'header .email a, footer .contact a, .widget-pls-agent .agent a',
@@ -113,6 +102,5 @@ $PL_CUSTOMIZER_THEME_INFO = array(
 		'pls-user-phone' => 'header .phone li.phone-bg-mid, footer #footer-contact p.info strong, .widget-pls-agent .phone'	
 	)
 );
-
 
 ?>

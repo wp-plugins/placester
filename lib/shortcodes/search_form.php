@@ -76,7 +76,7 @@ class PL_Form_CPT extends PL_SC_Base {
 	<label>Property Type:</label>[property_type]
 </div>
 			',
-			'description'	=> 'You can use any valid HTML in this field to format the subcodes.'
+			'description'	=> 'You can use any valid HTML in this field to format the template tags.'
 		),
 
 		'css' => array(

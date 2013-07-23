@@ -80,8 +80,10 @@ $options_class = $filters_class = '';
 						<?php endif;?>
 					<?php endforeach;?>
 					<div class="edit-sc-template-edit">
-						<a id="edit_sc_template_create" href="" id="create-new-template-link">(create new)</a>
-						<a id="edit_sc_template_edit" href="" id="create-new-template-link" style="display:none;">(edit)</a>
+						<a id="edit_sc_template_edit" href="" class="create-new-template-link" style="display:none;"><button class="button-secondary action">Edit</button></a>
+						<a id="edit_sc_template_duplicate" href="" class="duplicate-new-template-link"><button class="button-secondary action">Duplicate</button></a>
+						<a id="edit_sc_template_copy" href="" class="create-new-template-link"><button class="button-secondary action">Copy</button></a>
+						<a id="edit_sc_template_create" href="" class="create-new-template-link"><button class="button-secondary action">Create</button></a>
 					</div>
 				</div>
 			</section><!-- /edit-sc-choose-template -->

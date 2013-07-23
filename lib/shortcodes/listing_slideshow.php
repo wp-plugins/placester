@@ -57,7 +57,7 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 	<p class="caption-subtitle"><span class="price">[ls_beds] beds</span>, <span class="baths">[ls_baths] baths</span></p>
 	<a class="button details" href="[ls_url]"><span></span></a>
 </div>',
-			'description' => 'You can use any valid HTML in this field to format the subcodes, but you must ensure that it is contained in a block similar to:
+			'description' => 'You can use any valid HTML in this field to format the template tags, but you must ensure that it is contained in a block similar to:
 <div id="caption-[ls_index]" class="orbit-caption">...</div>.'
 		),
 

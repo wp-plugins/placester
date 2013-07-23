@@ -73,6 +73,9 @@ class PLS_Widget_Facebook extends WP_Widget {
       <?php
       $post_item = ob_get_clean();
       
+      if (!isset($widget_id)) {
+        $widget_id = 1;
+      }
       /** Wrap the post in an article element and filter its contents. */
       $post_item = apply_filters( 'pls_widget_facebook_post_inner', $post_item, $fb_post, $instance, $widget_id );
       

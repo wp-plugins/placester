@@ -1,156 +1,242 @@
-<style type="text/css">
-  section.lu {
-    margin-bottom: 0px;
-    padding: 0px;
-    font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif;
-    font-weight: 300;
-  }
-  div.lu-left {
-    float: left;
-  }
-  div.lu-left img {
-    /*border: 1px solid #999999;*/
-  }
-  div.lu-right {
-    width: 350px;
-    margin-left: 15px;
-    float: left;
-  }
-  #content div.head_add h4 {
-    margin: 0px 0px 6px 0px;
-    padding: 0px;
-    font-size: 18px;
-    font-weight: bold;
-  }
-  #content div.head_add h4 a {
-    color: black;
-    text-decoration: none; 
-  }
-  #content div.head_add h4 a:visited {
-    color: black; 
-  }
-  #content div.head_add h4 a:hover {
-    color: #0066ff; 
-  }
-  #content div.lu-right p.price {
-    /*padding: 5px 8px 5px 8px;*/
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-  #content div.lu-right p.price span {
-    font-weight: bold; 
-  }
-  #content div.lu-right p.mls {
-    padding: 0px;
-    color: #666666;
-    font-size: 12px;
-    margin-bottom: 0px;
-    clear: both; 
-  }
-  #content div.lu-right p.desc {
-    margin-bottom: 10px;
-    padding: 0px;
-    font-size: 14px;
-    line-height: 17px;
-    max-height: 52px;
-    clear: both;
-    overflow: hidden;
-  }
-  #content div.lu-right .lu-details {
-    margin-top: 0px; 
-  }
-  #content div.lu-right ul {
-    margin: 0px;
-    padding: 0px 0px 0px 4px;
-    width: 240px; 
-  }
-  #content div.lu-right ul li {
-    list-style: none;
-    float: left;
-    margin-right: 10px;
-    font-size: 14px;
-    font-weight: bold;
-  }
-  #content div.lu-right ul li span {
-    color: black;
-    font-weight: 300;
-  }
-  #content div.lu-right .details {
-    font-size: 15px;
-  }
-  
-  /*#work_please { margin: 0px !important;}*/
-  
-  /* Styles that we need to override... */
-  #content .sorting_1 {
-    padding: 0px 24px 24px 0px;
-  }
-  .dataTables_info {
-    font-family: "Helvetica Neue";
-    font-size: 13px;
-    margin: -21px 0px 21px 0px;
-  }
-  .dataTables_paginate {
-    padding-bottom: 15px;
-  }
-  .dataTables_paginate * {
-    font-family: "Helvetica Neue";
-    font-size: 14px;
-    padding-right: 9px;
-    color: #888;
-    cursor: pointer;
-  }
-  .dataTables_paginate .previous {
-    margin: 0px 18px 0px 180px;
-  }
-  .dataTables_paginate .next {
-    margin: 0px 180px 0px 18px;
-  }
-  .dataTables_paginate span a {
-    padding: 0px 10px 0px 10px;
-  }
-  .dataTables_paginate span a.paginate_active {
-    font-weight: bold;
-  }
-  #placester_listings_list {
-    margin: 0px -1px 0px 0px !important;
-  }
-  #placester_listings_list_length{
-    clear: both;
-    padding-top: 15px;
-  }
-</style>
+<?php
 
-<section class="lu">
-	
-  <div class="head_add">
-    <h4><a href="[url]">[address] [locality], [region]</a></h4>
-  </div>
+$template = array(
 
-  <div>    
-  	<div class="lu-left">
-  		[image]
-  	</div><!--lu-left-->
+'css' => '
+.pl-tpl-sl-twentyeleven {
+	font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif;
+}
+.pl-tpl-sl-twentyeleven .listing-item {
+	display: block !important;
+	float: none !important;
+	clear: both !important;
+	margin: 0 !important;
+	border: none !important;
+	padding: 5px 0 !important;
+	width: 100% !important;
+	font-size: 14px !important;
+	font-weight: 300 !important;
+	overflow: hidden !important;
+}
+/* heading */
+.pl-tpl-sl-twentyeleven .listing-head {
+	overflow: hidden;
+}
+.pl-tpl-sl-twentyeleven h4 {
+	margin: 0 0 6px 0 !important;
+	padding: 0 !important;
+	background: none !important;
+	font-size: 18px !important;
+	font-weight: bold !important;
+}
+.pl-tpl-sl-twentyeleven h4 a {
+	color: inherit !important;
+	text-decoration: none !important;
+}
+.pl-tpl-sl-twentyeleven h4 a:visited {
+	color: inherit !important;
+}
+/* image block */
+.pl-tpl-sl-twentyeleven .listing-thumbnail {
+	float: left;
+	margin-right: 20px;
+	width: 180px;
+}
+.pl-tpl-sl-twentyeleven .listing-thumbnail img {
+	display: block !important;
+    -moz-box-sizing: border-box !important;
+	margin: 0 0 10px 0 !important;
+	border: 0  !important;
+    border-radius: 0 !important;
+    box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.25) !important;
+    background: none repeat scroll 0 0 #F2F2F2 !important;
+	padding: 0 !important;
+	width: 180px !important;
+	height: 120px !important;
+}
+/* details block */
+.pl-tpl-sl-twentyeleven .listing-item-details {
+}
+.pl-tpl-sl-twentyeleven .listing-item-details p {
+	float: none !important;
+	border: none !important;
+	margin: 0 0 .1em 0 !important;
+	padding: 0 !important;
+	background: none !important;
+	line-height: 1.2em !important;
+}
+.pl-tpl-sl-twentyeleven .listing-item-details ul {
+	float: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	min-width: 100px;
+	list-style-type: none !important;
+	list-style-image: none !important;
+	overflow: hidden !important;
+}
+.pl-tpl-sl-twentyeleven .listing-item-details ul li {
+	float: left !important;
+	margin: 0 .8em 0.1em 0 !important;
+	padding: 0 !important;
+	list-style-type: none !important;
+	list-style-image: none !important;
+	line-height: 1.2em !important;
+	font-size: 14px !important;
+	font-weight: bold !important;
+}
+.pl-tpl-sl-twentyeleven .listing-item-details ul li:before {
+	content: none !important;
+}
+.pl-tpl-sl-twentyeleven .listing-item-details ul li span {
+	font-weight: 300;
+}
+.pl-tpl-sl-twentyeleven .basic-details {
+}
+.pl-tpl-sl-twentyeleven p.price {
+	margin-bottom: .8em !important;
+	font-size: 14px !important;
+}
+.pl-tpl-sl-twentyeleven p.price span {
+	font-weight: bold;
+}
+.pl-tpl-sl-twentyeleven p.mls {
+	font-size: 12px !important;
+}
+/* description ands compliance */
+.pl-tpl-sl-twentyeleven p.desc,
+.pl-tpl-sl-twentyeleven p.compliance {
+	margin-bottom: 5px !important;
+	max-height: 52px !important;
+	max-width: 370px !important;
+	line-height: 17px !important;
+	font-size: 14px !important;
+	overflow: hidden !important;
+}
+.pl-tpl-sl-twentyeleven .actions {
+	display: block !important;
+	clear: both !important;
+	float: right !important;
+	margin: -10px 0 0 0 !important;
+	padding: 0 !important;
+	font-size: 15px !important;
+	text-decoration: none !important;
+}
+.pl-tpl-sl-twentyeleven #pl_add_remove_lead_favorites,
+.pl-tpl-sl-twentyeleven .pl_add_remove_lead_favorites,
+.pl-tpl-sl-twentyeleven .view-details {
+	display: inline-block !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+.pl-tpl-sl-twentyeleven .view-details a {
+	margin-left: 2em;
+}
+		
+/* controls */
+.pl-tpl-sl-twentyeleven .sort_item {
+	float: left;
+	margin: 0 2em 0 0;
+	padding: 0;
+}
+.pl-tpl-sl-twentyeleven .sort_item label {
+	display: inline;
+	padding: 0;
+	line-height: 20px;
+	font-size: 14px;
+}
+.pl-tpl-sl-twentyeleven .sort_item select {
+	margin: 0;
+}
+.pl-tpl-sl-twentyeleven .dataTables_length {
+	float: right;
+	margin: 0 0 0 0;
+	padding: 0;
+}
+.pl-tpl-sl-twentyeleven .dataTables_length label {
+	line-height: 20px;
+	font-size: 14px;
+}
+.pl-tpl-sl-twentyeleven .dataTables_paginate a {
+	margin: 0 1em 0 0;
+	font-weight: 500;
+}
+.pl-tpl-sl-twentyeleven .dataTables_paginate a.paginate_active {
+	font-weight: 300;
+}
 
-  	<div class="lu-right">
-      <div class="lu-details">
-        <ul>
-          <li>[beds]<span> Bed(s)</span></li>
-          <li>[baths]<span> Bath(s)</span></li>
-          <li>[sqft]<span> Sqft</span></li>
-        </ul>
+/* table formatting */
+.pl-tpl-sl-twentyeleven #container {
+	width: 100% !important;
+}
+.pl-tpl-sl-twentyeleven table {
+	margin: 0 !important;
+	border: 0 !important;
+	width: 100% !important;
+}
+.pl-tpl-sl-twentyeleven table tr {
+	float: none !important;
+	border: none !important;
+	margin: 0 !important;
+	background: transparent !important;
+}
+.pl-tpl-sl-twentyeleven table td {
+	border: 1px solid #dfdfdf !important;
+	border-width: 0 0 1px 0 !important;
+	padding: 0 !important;
+	background: transparent !important;
+}
+/* styling for alternate rows */
+.pl-tpl-sl-twentyeleven table tr.odd td {
+}
+.pl-tpl-sl-twentyeleven table tr.even td {
+}
+',
 
-        <p class="mls">MLS #: [mls_id]</p>
-      </div><!--lu-details-->
-    	
-      <p class="price">Price: <span>[price]</span></p>
+'snippet_body' => '
+<section class="listing-item">
 
-  		<p class="desc">[desc]</p>
+	<div class="listing-head">
+		<h4><a href="[url]">[address] [locality], [region]</a></h4>
+	</div>
 
-  		<div class="clearfix"></div>
+	<div class="listing-body">
 
-  		<a class="details" href="[url]">View Listing Details</a>
-  	</div><!--lu-right-->	
-  </div>
+		<div class="listing-thumbnail">
+			[image]
+		</div>
+		
+		<div class="listing-item-details">
+		
+			<div class="basic-details">
+				<ul>
+					<li>[beds]<span> Bed(s)</span></li>
+					<li>[baths]<span> Bath(s)</span></li>
+					<li>[sqft]<span> Sqft</span></li>
+				</ul>
 
-</section><!--LU-->
+				<p class="mls">MLS #: [mls_id]</p>
+				<p class="price">Price: <span>[price]</span></p>
+			</div>
+
+			<p class="desc">[desc]</p>
+			<p class="compliance">[compliance]</p>
+		
+		</div><!--listing-item-details-->
+		<div class="actions">
+			[favorite_link_toggle]
+			<div class="view-details"> 
+				<a href="[url]">View Listing Details</a>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+
+	</div>
+
+</section><!--listing-item-->
+',
+
+'before_widget' => '<div class="pl-tpl-sl-twentyeleven">',
+
+'after_widget' => '</div>',
+
+);

@@ -7,7 +7,7 @@
 PL_Customizer_Helper::init();
 class PL_Customizer_Helper 
 {
-	public static function init() {
+	public static function init () {
 		add_action ('admin_menu', array(__CLASS__, 'themedemo_admin') );
 		add_action( 'customize_register', array(__CLASS__, 'PL_customize_register'), 1 );
 		add_action( 'customize_controls_print_footer_scripts', array(__CLASS__, 'load_partials') );
@@ -17,25 +17,31 @@ class PL_Customizer_Helper
 		add_action( 'wp_ajax_change_theme', array(__CLASS__, 'change_theme') );
 	}
 
-	public static function is_onboarding() 
+	public static function is_onboarding () 
 	{
 		return ( defined('HOSTED_PLUGIN_KEY') && isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' );
 	}
 
-	public static function themedemo_admin() 
+	public static function themedemo_admin () 
 	{
 	    // add the Customize link to the admin menu
 	    add_theme_page( 'Customize', 'Customize', 'edit_theme_options', 'customize.php' );
 	}
 
-	public static function PL_customize_register( $wp_customize ) 
+	public static function load_customizer_entities () {
+		// Uses constant file path defined in plugin init file (i.e., placester.php)
+		$script_path = trailingslashit(PL_LIB_DIR) . 'customizer_entities.php';
+		include_once($script_path);
+	}
+
+	public static function PL_customize_register ($wp_customize) 
 	{
 		// A simple check to ensure function was called properly...
 		if ( !isset($wp_customize) ) { return; }
 
 		// Check to see if the current active theme is present in the list of those supported by our customizer..
 		global $PL_CUSTOMIZER_THEME_LIST;
-		$theme_supported = in_array( get_stylesheet(), $PL_CUSTOMIZER_THEME_LIST );
+		$theme_supported = in_array(wp_get_theme()->Template, $PL_CUSTOMIZER_THEME_LIST);
 
 		// Check to see if the plugin is running on the hosted environment...
 		$on_hosted = defined('HOSTED_PLUGIN_KEY');
@@ -43,14 +49,26 @@ class PL_Customizer_Helper
 		// error_log('On Hosted: ' . $on_hosted);
 		// error_log('Current theme supported: ' . $theme_supported);
 
-		if ( $on_hosted || $theme_supported ) {
-			// This is a global function, as PHP does not allow nested class declaration...
-			define_custom_controls();
+		if ($on_hosted || $theme_supported) {
+			// Load defined customizer entities/classes... 
+			self::load_customizer_entities();
+			
+			$excluded_opts = array();
 
 			// If NOT in hosted environment (but theme is supported), do not render the 'Theme Selection' pane...
-			$excluded_opts = null;
 			if ( !$on_hosted ) {
-				$excluded_opts = array( 'Theme Selection', 'theme-select' );
+				$excluded_opts []= 'theme';
+			}
+
+			// Conditionally display integration pane...
+			if ( !PL_Option_Helper::api_key() || PL_Integration_Helper::idx_prompt_completed() ) {
+				$excluded_opts []= 'mls';
+			}
+
+			// Make sure a directory full of theme skins exist for the current theme -- otherwise, the pane should be excluded...
+			$theme_skin_dir = (trailingslashit(PL_THEME_SKIN_DIR) . trailingslashit(wp_get_theme()->Template));
+			if (!file_exists($theme_skin_dir)) {
+				$excluded_opts []= 'colors';
 			}
 
 			// Load the customizer with necessary flags...
@@ -76,35 +94,33 @@ class PL_Customizer_Helper
 		remove_action( 'wp_head', 'placester_info_bar' );
 	}
 
-	public static function inject_postMessage_hooks() 
+	public static function inject_postMessage_hooks () 
 	{
-	  global $wp_customize;
-	  global $PL_CUSTOMIZER_THEME_INFO;
+	  	global $wp_customize;
+	  	global $PL_CUSTOMIZER_THEME_INFO;
 
-	  // Gets the theme that the customizer is currently set to display/preview...
-	  $theme_opts_key = $wp_customize->get_stylesheet();
-	  // error_log($theme_opts_key);
-	  $postMessage_settings = isset($PL_CUSTOMIZER_THEME_INFO[$theme_opts_key]) ? $PL_CUSTOMIZER_THEME_INFO[$theme_opts_key] : array();
-	  // error_log(serialize($PL_CUSTOMIZER_THEME_INFO));
+	  	// Gets the theme that the customizer is currently set to display/preview...
+	  	$theme_opts_key = $wp_customize->get_stylesheet();
+	  	// error_log($theme_opts_key);
+	  	$postMessage_settings = isset($PL_CUSTOMIZER_THEME_INFO[$theme_opts_key]) ? $PL_CUSTOMIZER_THEME_INFO[$theme_opts_key] : array();
+	  	// error_log(serialize($PL_CUSTOMIZER_THEME_INFO));
 
-	  ?>
-	    <script type="text/javascript">
-	    ( function( $ ){
-	    <?php foreach ($postMessage_settings as $id => $selector): ?>
-	      wp.customize('<?php echo "{$theme_opts_key}[{$id}]"; ?>', function( value ) {
-	        value.bind(function(to) {
-	          //if (to) {	
-	            $('<?php echo $selector; ?>').text(to);
-	          //}
-	        });
-	      });
-	    <?php endforeach; ?>  
-	    } )( jQuery )
-	    </script>
-	  <?php
+	  	?>
+	    	<script type="text/javascript">
+			    (function( $ ){
+			    <?php foreach ($postMessage_settings as $id => $selector): ?>
+			      	wp.customize('<?php echo "{$theme_opts_key}[{$id}]"; ?>', function (value) {
+			        	value.bind(function (to) {
+			            	$('<?php echo $selector; ?>').text(to);
+			        	});
+			      	});
+			    <?php endforeach; ?>
+			    })(jQuery);
+	    	</script>
+	  	<?php
 	}
 
-	public static function load_partials() {
+	public static function load_partials () {
 	  ?>
 	    <!-- Spinner for Theme Preview overlay -->
 	    <img id="preview_load_spinner" src="<?php echo plugins_url('/placester/images/preview_load_spin.gif'); ?>" alt="Theme Preview is Loading..." />
@@ -125,7 +141,7 @@ class PL_Customizer_Helper
 	  <?php
 	}
 
-	public static function load_custom_styles() {
+	public static function load_custom_styles () {
 		if ( isset($_POST['color']) )  {
 		  	// This needs to be defined (ref'd by the template file we're about to load...)
 		  	$color = $_POST['color'];
@@ -142,7 +158,7 @@ class PL_Customizer_Helper
 		die();
 	}
 
-	public static function load_theme_info() {
+	public static function load_theme_info () {
 		if ( isset($_POST['theme']) ) {
 			$theme_name = $_POST['theme'];
 			// switch_theme( $theme_name, $theme_name);
@@ -166,7 +182,7 @@ class PL_Customizer_Helper
 		die();
 	}
 
-	public static function change_theme() {
+	public static function change_theme () {
 		if ( isset ($_POST['new_theme']) ) {
 			$new_theme = $_POST['new_theme'];
 

@@ -115,13 +115,16 @@ jQuery(document).ready(function($){
 			var selected_tpl_type = selected.parent().prop('label');
 			
 			if (selected_tpl_type=='Default') {
-				$('#edit_sc_template_create').attr("href", pl_sc_template_url+'&shortcode='+shortcode+'&action=copy&default='+selected_tpl).show();
+				$('#edit_sc_template_duplicate').hide();
+				$('#edit_sc_template_copy').attr("href", pl_sc_template_url+'&shortcode='+shortcode+'&action=copy&default='+selected_tpl).show();
 				$('#edit_sc_template_edit').hide();
 			}
 			else {
-				$('#edit_sc_template_create').hide();
-				$('#edit_sc_template_edit').attr("href", pl_sc_template_url+'&id='+selected_tpl).show();
+				$('#edit_sc_template_duplicate').attr("href", pl_sc_template_url+'&shortcode='+shortcode+'&action=copy&id='+selected_tpl).show();
+				$('#edit_sc_template_copy').hide();
+				$('#edit_sc_template_edit').attr("href", pl_sc_template_url+'&action=edit&id='+selected_tpl).show();
 			}
+			$('#edit_sc_template_create').attr("href", pl_sc_template_url+'&shortcode='+shortcode).show();
 		}
 	}
 

@@ -54,7 +54,7 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 	</div>
 </div>
 ',
-			'description' => 'You can use any valid HTML in this field to format the subcodes.' 
+			'description' => 'You can use any valid HTML in this field to format the template tags.' 
 		),
 
 		'css' => array(

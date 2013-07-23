@@ -127,14 +127,10 @@ class PL_Router {
 		self::router('shortcodes/template-edit.php', array());
 	}
 	
-	public static function shortcodes_property_details () {
-		self::router('shortcodes/property-details.php', array());
+	public static function shortcodes_listing_customizer () {
+		self::router('listing-customizer/template-edit.php', array());
 	}
 	
-	public static function shortcodes_options () {
-		self::router('shortcodes/options.php', array());
-	}
-
 	public static function crm () {
 		self::router('crm.php', array());
 	}

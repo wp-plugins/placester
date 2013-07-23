@@ -95,63 +95,63 @@ var wizard_global = {
  */
 
 function loadState (state) {
-  var tooltip = jQuery('#tooltip');
+    var tooltip = jQuery('#tooltip');
 
-  // Retrieve associated state object...
-  var stateObj = wizard_global.states[state];
+    // Retrieve associated state object...
+    var stateObj = wizard_global.states[state];
   
-  // Populate tooltip w/given state's copy... (no need to do this for initial state, rendered in response)
-  if ( state != wizard_global.initial_state ) {
-    var header = wizard_global.state_num + '. ' + stateObj.header;
-    tooltip.find('h4').text(header);
-    tooltip.find('p.desc').html(stateObj.content);
-    tooltip.find('.link a').text(stateObj.link_text);
-  }
-  
-  // Position tooltip + make sure it is visible...
-  var top = ( 'top' in stateObj ) ? stateObj.top : (wizard_global.top_default * wizard_global.state_num) + 'px';
-  tooltip.css('top', top);
+    // Populate tooltip w/given state's copy... (no need to do this for initial state, rendered in response)
+    if ( state != wizard_global.initial_state ) {
+        var header = wizard_global.state_num + '. ' + stateObj.header;
+        tooltip.find('h4').text(header);
+        tooltip.find('p.desc').html(stateObj.content);
+        tooltip.find('.link a').text(stateObj.link_text);
+    }
 
-  var left = ( 'left' in stateObj ) ? stateObj.left : wizard_global.left_default + 'px';
-  tooltip.css('left', left);
+    // Position tooltip + make sure it is visible...
+    var top = ( 'top' in stateObj ) ? stateObj.top : (wizard_global.top_default * wizard_global.state_num) + 'px';
+    tooltip.css('top', top);
+
+    var left = ( 'left' in stateObj ) ? stateObj.left : wizard_global.left_default + 'px';
+    tooltip.css('left', left);
   
-  tooltip.show();
+    tooltip.show();
 }
 
 function moveToNextState () {
-  var currStateObj = wizard_global.states[wizard_global.active_state];
-  wizard_global.active_state = currStateObj.next_state;
-  ++wizard_global.state_num;
+    var currStateObj = wizard_global.states[wizard_global.active_state];
+    wizard_global.active_state = currStateObj.next_state;
+    ++wizard_global.state_num;
 }
 
 function openStatePane () {
-  // Just mimic related menu-item click...
-  jQuery('#' + wizard_global.active_state).trigger('click');
+    // Just mimic related menu-item click...
+    jQuery('#' + wizard_global.active_state).trigger('click');
 
-  // Set active state to the next state + hide the tooltip...
-  moveToNextState();
-  jQuery('#tooltip').hide();
+    // Set active state to the next state + hide the tooltip...
+    moveToNextState();
+    jQuery('#tooltip').hide();
 }
 
 function generateMenuOverlay () {
-  var tooltip = jQuery('#tooltip');
+    var tooltip = jQuery('#tooltip');
 
-  // Check for existence -- create and bind event if not there...
-  if ( jQuery('#menu-overlay').length == 0 ) {
-    jQuery('#menu-nav').prepend('<div id="menu-overlay"></div>');
-    jQuery('#menu-overlay').on('click', function () { 
-      // If a pane is not already open (i.e., tooltip IS visible), move open active state's pane...
-      if ( tooltip.css('display') != 'none' ) {
-        openStatePane();
-      }
-      else if ( jQuery('#pane').css('display') != 'none' ) {
-        // Make "move to next step" glow/light-up!!!
-      }
-      else {
-        tooltip.show();
-      }
-    });
-  }
+    // Check for existence -- create and bind event if not there...
+    if ( jQuery('#menu-overlay').length == 0 ) {
+        jQuery('#menu-nav').prepend('<div id="menu-overlay"></div>');
+        jQuery('#menu-overlay').on('click', function () { 
+            // If a pane is not already open (i.e., tooltip IS visible), move open active state's pane...
+            if ( tooltip.css('display') != 'none' ) {
+                openStatePane();
+            }
+            else if ( jQuery('#pane').css('display') != 'none' ) {
+                // Make "move to next step" glow/light-up!!!
+            }
+            else {
+                tooltip.show();
+            }
+        });
+    }
 }
 
 /*
@@ -159,78 +159,81 @@ function generateMenuOverlay () {
  */
 
 jQuery(document).ready(function($) {
-  // Append "next/skip" to existing panes...
-  $('#pane').prepend('<a class="wizard-next" href="#">Move to Next Step</a>');
+    // Append "next/skip" to existing panes...
+    $('#pane').prepend('<a class="wizard-next" href="#">Move to Next Step</a>');
 
-  // Main tooltip element...
-  var tooltip = $('#tooltip');
+    // Main tooltip element...
+    var tooltip = $('#tooltip');
 
-  // Set altered to true as we're guiding them anyways...
-  customizer_global.stateAltered = true;
-  $('#confirm').fadeTo(100, 1);
+    // Set altered to true as we're guiding them anyways...
+    customizer_global.stateAltered = true;
+    $('#confirm').fadeTo(100, 1);
 
 	// Bind main action of clicking tooltip link...
 	$('#tooltip .link a').on('click', function (event) {
 		event.preventDefault();
 
 		// Initial state's link has been clicked...
-		if ( wizard_global.active_state == wizard_global.initial_state ) {
-      // Get rid of welcome overlay & hide tooltip
-      tooltip.hide();
-      $('#welcome-overlay').remove();
+		if (wizard_global.active_state == wizard_global.initial_state) {
+            // Get rid of welcome overlay & hide tooltip
+            tooltip.hide();
+            $('#welcome-overlay').remove();
 
-      // Insert menu overlay (to prevent clicking other menu items directly...)
-      // Commented out for now to test usability
-      // generateMenuOverlay();
+            // Insert menu overlay (to prevent clicking other menu items directly...)
+            // Commented out for now to test usability
+            // generateMenuOverlay();
 
-      // Tack on tooltip display elements needed going forward...
-      tooltip.addClass('arrow');
-      tooltip.find('a.close').show();
+            // Tack on tooltip display elements needed going forward...
+            tooltip.addClass('arrow');
+            tooltip.find('a.close').show();
 
-      // Bring the tooltip back into focus with the next state loaded...
-			moveToNextState();
-			
-  	  // Added to bring MLS popup directly after "Let's get started"
-  	  if( wizard_global.active_state === 'mls' ) {
-  		  openStatePane();
-  	  } else {
-  		  loadState(wizard_global.active_state);
-  	  }
+            // Bring the tooltip back into focus with the next state loaded...
+    		moveToNextState();
+    			
+      	     // Added to bring MLS popup directly after "Let's get started"
+            if (wizard_global.active_state === 'mls') {
+                openStatePane();
+            } 
+            else {
+                loadState(wizard_global.active_state);
+            }
 
-      // Instrument...
-      mixpanel.track("Customizer - Intro Dismissed");
+            // Instrument...
+            mixpanel.track("Customizer - Intro Dismissed");
 		}
 		else {
-      // console.log('Here!');
-		  openStatePane();	
+            // console.log('Here!');
+            openStatePane();	
 		}
 	});
 
-  // Handle close tooltip close...
-  $('#tooltip a.close').on('click', function (event) {
-    event.preventDefault();
-    tooltip.hide();
-  });
+    // Handle close tooltip close...
+    $('#tooltip a.close, #navlist li').on('click', function (event) {
+        event.preventDefault();
+        tooltip.hide();
 
-  // Load the next state...
-  $('a.wizard-next').on('click', function (event) {
-    event.preventDefault();
+        // TODO: If pane is opened while tooltip is still visible, alter state accordingly...
+    });
 
-    // Mimic hide-pane functionality...
-    $('#logo').trigger('click');
+    // Load the next state...
+    $('a.wizard-next').on('click', function (event) {
+        event.preventDefault();
 
-    // Load the activate state (which was bumped to next when the last pane appeared)...
-    loadState(wizard_global.active_state);
-  });
+        // Mimic hide-pane functionality...
+        $('#logo').trigger('click');
 
-  // Detect any submission/input button clicks from inside the pane...
-  // $('.control-container input[type=button]').on('click', function (event) {
+        // Load the activate state (which was bumped to next when the last pane appeared)...
+        loadState(wizard_global.active_state);
+    });
 
-  // });
+    // Bind move-to-next-state event to custom buttons...
+    $('#customize_integration_no').on('click', function (event) {
+        loadState(wizard_global.active_state);
+    });
 
-  // Custom additional handler for submit theme that prevents the beforeunload prompt...
-  $('#submit_theme').on('click', function (event) {
-    customizer_global.stateAltered = false;
-  });
+    // Custom additional handler for submit theme that prevents the beforeunload prompt...
+    $('#submit_theme').on('click', function (event) {
+        customizer_global.stateAltered = false;
+    });
 
 });

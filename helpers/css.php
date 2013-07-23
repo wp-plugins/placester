@@ -104,6 +104,12 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('placester-widget-chosen', trailingslashit(PL_JS_URL) . 'lib/chosen/chosen.css');
 		}
 		
+		if ( $hook == 'placester_page_placester_shortcodes_listing_customizer') {
+			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_URL) . 'lib/codemirror/codemirror.css');
+			self::register_enqueue_if_not('placester-widget', trailingslashit(PL_CSS_ADMIN_URL) . 'shortcodes/all.css');
+			self::register_enqueue_if_not('placester-widget-chosen', trailingslashit(PL_JS_URL) . 'lib/chosen/chosen.css');
+		}
+		
 		if ($hook == 'placester_page_placester_crm') {
 			self::register_enqueue_if_not('crm', trailingslashit(PL_CSS_ADMIN_URL) . 'crm.css');	
 		}
@@ -113,10 +119,7 @@ class PL_Css_Helper {
 		self::register_enqueue_if_not('customizer-css', trailingslashit(PL_CSS_URL) . 'customizer.css');
 		self::register_enqueue_if_not('onboard-css', trailingslashit(PL_CSS_URL) . 'onboard.css');
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) . 'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
-
-		if ( PL_Bootup::is_theme_switched() && !PL_Customizer_Helper::is_onboarding() ) {
-			self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) . 'global.css');
-	    }
+		self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) . 'global.css');
 	}
 
 	private static function register_enqueue_if_not($name, $path, $dependencies = array()) {
