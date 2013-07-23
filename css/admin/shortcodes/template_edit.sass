@@ -1,0 +1,357 @@
+/////////////////////////////////////////////////////////////////
+// Imported Libraries
+/////////////////////////////////////////////////////////////////
+
+.metabox-holder #pl-controls-metabox-id .inside
+  @import bootstrap
+  @import code-mirror
+
+/////////////////////////////////////////////////////////////////
+// VARIABLES / MIXINS
+/////////////////////////////////////////////////////////////////
+
+$light-black: #696969
+$arial: Arial
+
+@mixin box-sizing
+  box-sizing: border-box
+  -webkit-box-sizing: border-box
+  -moz-box-sizing: border-box
+
+@mixin no-box-shadow
+  box-shadow: none !important
+  -moz-box-shadow: none !important
+  -webkit-box-shadow: none !important
+
+@mixin border-radius($radius)
+  border-radius: #{$radius}px !important
+  -moz-border-radius: #{$radius}px !important
+  -webkit-border-radius: #{$radius}px !important
+
+
+// Drop Down Styling
+@mixin chosen-container($width)
+  width: #{$width}px !important
+  font-size: 12px !important
+  // Main View
+  .chzn-single
+    padding: 3px 7px 3px 12px !important
+    height: 25px !important
+    color: #999 !important
+    &:hover
+      text-decoration: none !important
+    +no-box-shadow  
+  // Chosen Drop Down
+  .chzn-drop
+    width: #{$width - 2}px !important
+    .chzn-search
+      input
+        width: #{$width - 10}px !important
+    .chzn-results
+      width: #{$width - 6}px !important
+      li
+        border: none !important
+        .group-result
+          display: block !important
+
+.chzn-drop
+  .chzn-search
+    input
+      display: none !important
+      width: 100% !important
+      height: 25px !important
+      margin: 0 !important
+.chzn-results
+  margin: 0 !important
+  li
+    padding: 5px 5px 5px 8px !important
+
+/////////////////////////////////////////////////////////////////
+// Base placester-widget CSS
+/////////////////////////////////////////////////////////////////
+
+.iframe-link, .shortcode-link
+  margin-top: 8px
+  padding: 0 10px 0 4px
+
+.inside strong
+  color: #777
+  padding-right: 3px
+
+#pl-previewer-metabox-id
+  position: fixed
+  width: 278px
+
+#preview-meta-widget
+  width: 250px
+  height: 250px
+  border: 1px solid gray
+  overflow: hidden
+  margin: 9px auto 0 auto
+
+#pl-controls-metabox-id
+  min-height: 430px
+
+.pl_template_block
+  width: 400px
+
+#pl_location_tax
+  clear: both
+
+#widget-meta-wrapper
+  .shortcode_container input.save_snippet
+    font-weight: normal
+    color: #464646
+    background: #21759b url(../images/button-grad.png) repeat-x scroll left top
+    text-shadow: none
+  section h3
+    font-size: 14px
+    padding-left: 0
+
+#minor-publishing-actions, #edit-slug-box, div.wrap a.add-new-h2
+  display: none
+
+.misc-pub-section
+  display: none
+  a.edit-timestamp
+    display: none
+  &.curtime
+    display: block
+
+#pl_static_listing_block
+  clear: both
+
+#zzpost_types_list
+  width: 400px
+  margin: 15px 3px
+
+#post_types_list
+  // a
+  //   line-height: 19px
+  //   vertical-align: top
+  //   margin: 0px 5px
+  // .post_types_list_wrapper span
+  //   font-size: 1.5em
+  //   color: #464646
+  //   &.pl_type_separator
+  //     font-size: 12px
+  //     line-height: 19px
+  //     vertical-align: top
+  .selected_type
+    line-height: 20px
+    font-weight: bold
+
+#message a
+  display: none
+
+#pl-review-wrapper
+  text-align: center
+  padding-top: 10px
+
+/*
+ *@media screen and ($width-name : $target-width) {
+ *   #preview-wrapper {
+ *	position: static;
+ *	float: left;
+ *   }
+ *}
+
+#general_widget_zoning_types, #general_widget_purchase_types
+  display: none
+
+#general_widget_pl_template_before_block label, #general_widget_pl_template_after_block label
+  display: block
+  margin-bottom: 5px
+
+/* frontend
+
+#full-search .form-grp:first-child
+  margin-top: 0px
+
+.pls_embedded_widget_wrapper .pls_search_form_listings
+  margin-bottom: 0px
+
+
+
+/////////////////////////////////////////////////////////////////
+// Shortcode SASS
+/////////////////////////////////////////////////////////////////
+
+input[type="text"]
+  height: 32px
+  padding: 0 5px
+  font:
+    weight: 400
+    size: 13px
+    family: Arial
+
+input[type="text"], .CodeMirror
+  border: 1px solid #b0b0b0
+  // color: $light-black !important
+  +no-box-shadow
+  +border-radius(3)
+
+.added-kv-pair
+  margin: 10px 0
+  padding: 5px 0
+  height: 20px
+  font-size: 13px
+  button.delete-option
+    float: right
+  .unified-row
+    border-bottom: 1px solid #eee
+    margin-left: 0
+    padding-right: 10px
+    box-sizing: content-box
+    -moz-box-sizing: content-box
+    -webkit-box-sizing: content-box
+
+.no-left-margin
+  margin-left: 0 !important
+
+
+button.green, input[type="submit"].green
+  text-align: center
+  color: white
+  text-decoration: none
+  padding: 8px 16px
+  background: #86B229
+  background: -moz-linear-gradient(top, #a0cc42 0%, #86b229 50%, #6e9910)
+  background: -webkit-gradient(linear, left top, left bottom, from(#a0cc42), color-stop(0.5, #86b229), to(#6e9910))
+  border-radius: 5px
+  -moz-border-radius: 5px
+  -webkit-border-radius: 5px
+  border: 1px solid #6F961C
+  text-shadow: 0px 2px 1px rgba(0, 0, 0, 0.4), 0px 1px 0px rgba(255, 255, 255, 0.3)
+  font-size: 15px
+
+// Active Line
+.CodeMirror-activeline
+  color: #000
+.CodeMirror-activeline-background
+  background: rgba(93, 190, 254, 0.2) !important
+
+// Matching Highlighted
+.cm-matchhighlight
+  background-color: #d9d9d9
+
+.CodeMirror-lines
+  color: #888
+  font-size: 13px
+  line-height: 15px
+
+/////////////////////////////////////////////////////////////////
+// EDIT SHORTCODE STYLING
+/////////////////////////////////////////////////////////////////
+
+#edit-sc-metabox-inner
+  padding: 20px
+  *
+    font-family: $arial
+  input[type="text"]
+    +box-sizing
+
+  .section-label
+    margin-top: 9px
+    font:
+      family: $arial
+      size: 15px
+
+  button.delete-option
+    padding: 5px 5px 6px 5px
+    line-height: 5px
+
+  .section-label
+    padding-top: 10px
+
+  // Choose Type
+  #edit-sc-choose-type
+    margin: 5px 0
+    .chzn-container
+      +chosen-container(200)
+
+  // Choose Template
+  #edit-sc-choose-template
+    margin: 5px 0
+    .chzn-container
+      +chosen-container(260)
+    #create-new-template-link
+      font-size: 14px
+      line-height: 33px
+
+  // Choose Options
+  #edit-sc-options-listing-list
+    margin: 10px 0
+    .chzn-container
+      +chosen-container(140)
+    
+    // Added Options Single
+    // .added-options-single
+  
+  // Choose Filters
+  #edit-sc-filters-listing-list
+    margin: 10px 0
+    .chzn-container
+      +chosen-container(140)
+
+  #add-new-option, #add-new-filter
+    font-size: 11px
+    padding: 6px
+
+  #sc-add-option-value, #sc-add-filter-value
+    input
+      width: 84%
+
+  #save-sc
+    margin-top: 20px
+    button
+      float: right
+
+
+/////////////////////////////////////////////////////////////////
+// EDIT SHORTCODE STYLING
+/////////////////////////////////////////////////////////////////
+
+#edit-template-metabox-inner
+  padding: 20px
+  *
+    font-family: $arial
+
+  // edit HTML / CSS
+  #edit-html-css
+    
+    p
+      margin: 20px 0 5px
+
+    .CodeMirror
+      height: 200px
+
+    textarea
+      width: 100%
+      resize: vertical
+      min-height: 75px
+      +box-sizing
+    #before-widget, #after-widget
+      display: none
+      &.is-visible
+        display: inherit
+
+    a#toggle-before-widget, a#toggle-after-widget
+      display: block
+      margin: 10px 0
+
+    #save-template
+      float: right
+      margin-top: 20px
+      
+  // Sub Shortcodes
+  #subshortcodes
+    border: 1px solid #eee
+    padding: 10px
+    +box-sizing
+    input[type="text"], select
+      +box-sizing
+      width: 100%
+    select
+      min-height: 200px
+      font-size: 12px
