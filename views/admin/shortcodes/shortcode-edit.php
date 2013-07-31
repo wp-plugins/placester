@@ -39,7 +39,7 @@ if ($post_ID) {
 		$embed_sc_js = htmlentities('<script id="plwidget-'.$post_ID.'" src="'. PL_PARENT_URL . 'js/fetch-widget.js?id='.$post_ID.'" style="width:'.$post['width'].'px;height:'.$post['height'].'px" ></script>');
 		$embed_sc_str = '['.$post['shortcode']." id='".$post_ID."']";
 		$embed_sc_long_str = PL_Shortcode_CPT::generate_shortcode_str($post['shortcode'], $post);
-		$iframe = '<iframe src="'.admin_url('admin-ajax.php').'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='.rawurlencode($embed_sc_str).'" width="'.$post['width'].'px" height="'.$post['height'].'px"></iframe>';
+		$iframe = '<iframe src="'.admin_url('admin-ajax.php').'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='.rawurlencode($embed_sc_long_str).'" width="'.$post['width'].'px" height="'.$post['height'].'px"></iframe>';
 		$post = array($post['shortcode']=>$post, 'shortcode'=>$post['shortcode'], 'post_title'=>$post['post_title'], 'post_content'=>$post['post_content']);
 	}
 }

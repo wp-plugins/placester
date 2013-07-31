@@ -132,10 +132,11 @@ class PL_Shortcodes
 		add_shortcode('pl_filter', array(__CLASS__, 'pl_filter_shortcode_handler'));
 		
 		// Register hooks to customize the html for the wrapper functions
+		/* we dont want to do this here		
 		add_filter('pls_listings_search_form_outer_shortcode', array(__CLASS__, 'searchform_shortcode_context'), 10, 6);
 		add_filter('pls_listings_list_ajax_item_html_shortcode', array(__CLASS__, 'listings_shortcode_context'), 10, 3);
 		add_filter('property_details_filter', array(__CLASS__, 'prop_details_shortcode_context'), 10, 2);
-
+		*/
 
 		// Ensure all of shortcodes are set to some snippet...
 		foreach (self::$codes as $code) {
@@ -370,7 +371,7 @@ class PL_Shortcodes
 	 * Get the body for a shortcode's output from a template
 	 */
 	public static function get_active_snippet_body ($shortcode, $template_name = '') {
-		ob_start();
+		$html = '';
 		if (!$template_name || !($template = PL_Shortcode_CPT::load_template($template_name, $shortcode)) || empty($template['snippet_body'])) {
 			// Get default template ID associated with this shortcode...
 			$option_key = 'pls_' . $shortcode;
@@ -378,9 +379,9 @@ class PL_Shortcodes
 			$template = PL_Shortcode_CPT::load_template($snippet_name, $shortcode);
 		}
 		if (!empty($template['snippet_body'])) {
-			echo html_entity_decode($template['snippet_body'], ENT_QUOTES);
+			$html = html_entity_decode($template['snippet_body'], ENT_QUOTES);
 		}
-		return ob_get_clean();
+		return $html;
 	}
 
 	public static function init_bootloader () {

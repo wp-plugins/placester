@@ -3,10 +3,10 @@
 	if( is_array( $pls_whoami ) ) {
 		extract( $pls_whoami ); 
 	}
-	extract(array('places_api_key' => PL_Option_Helper::get_google_places_key() ) ) ; 
-	extract(array('error_logging' => PL_Option_Helper::get_log_errors())); 
-	extract(array('block_address' => PL_Option_Helper::get_block_address())); 
-	extract(array('enable_community_pages' => PL_Option_Helper::get_community_pages_enabled()));
+	$places_api_key = PL_Option_Helper::get_google_places_key(); 
+	$error_logging = PL_Option_Helper::get_log_errors(); 
+	$block_address = PL_Option_Helper::get_block_address(); 
+	$enable_community_pages = PL_Option_Helper::get_community_pages();
 	$demo_data_flag = PL_Option_Helper::get_demo_data_flag(); 
 ?>
 	<div class="wrap">

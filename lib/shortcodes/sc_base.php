@@ -35,7 +35,7 @@ abstract class PL_SC_Base {
 	//	),
 	);
 	// subclass should use this for a list of shortcode filter subcodes
-	protected $filters = array(
+	private $filters = array(
 		//		'<field_name>'		=> array(
 		//			'type'		=> '[text|select|subgrp]'		// type of form control
 		//														// text:	text field
@@ -57,7 +57,7 @@ abstract class PL_SC_Base {
 	// TODO: build dynamically
 	protected $default_tpls = array('twentyten', 'twentyeleven');
 	// default layout for template
-	protected $template = array(							// defines template fields
+	protected $template = array(								// defines template fields
 		//		'snippet_body'	=> array(
 		//		'type'		=> 'textarea',
 		//		'label'		=> '<Pretty Form Name>',
@@ -90,9 +90,6 @@ abstract class PL_SC_Base {
 	 * @return multitype:
 	 */
 	public function get_args() {
-		if (empty($this->filters)) {
-			$this->filters = $this->_get_filters();
-		}
 		if (empty($this->default_tpls)) {
 			$this->default_tpls = $this->_get_builtin_templates();
 		}
@@ -102,7 +99,7 @@ abstract class PL_SC_Base {
 				'title'			=> $this->title,
 				'help'			=> $this->help,
 				'options'		=> $this->options,
-				'filters'		=> $this->filters,
+				'filters'		=> $this->_get_filters(),
 				'subcodes'		=> $this->subcodes,
 				'default_tpls'	=> $this->default_tpls,
 				'template'		=> $this->template,
@@ -160,9 +157,11 @@ abstract class PL_SC_Base {
 	}
 
 	/**
-	 * Return array of filters used to configure this shortcode.
+	 * Return array of filters used to configure this shortcode type.
 	 */
-	protected function _get_filters() {return array();}
+	protected function _get_filters() {
+		$this->filters;
+	}
 
 	/**
 	 * Return array of filters used to configure this custom shortcode
@@ -187,7 +186,7 @@ abstract class PL_SC_Base {
 	 */
 	public function get_options($id) {
 		$options = array();
-		if (($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) && $post['post_status']=='publish') {
+		if ($id && ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) && $post['post_status']=='publish') {
 			$postmeta = get_post_meta($id);
 			foreach($this->options as $attr=>$vals) {
 				if ($attr == 'context') {
@@ -221,7 +220,12 @@ abstract class PL_SC_Base {
 				if (!empty($class_options[$option])
 					&& $class_options[$option]['type'] != 'featured_listing_meta'
 					) {
-					$sc_args .= ' '.$option."='".$value."'";
+					if (is_array($value)) {
+						$sc_args .= ' '.$option."='".implode(',',$value)."'";
+					}
+					else {
+						$sc_args .= ' '.$option."='".$value."'";
+					}
 				}
 			}
 		}
@@ -230,10 +234,10 @@ abstract class PL_SC_Base {
 
 		// prepare filters
 		$subcodes = '';
-		$class_filters = $this->filters;
-		foreach($class_filters as $f_id => $f_atts) {
-			if (!empty($args[$f_id])) {
-				if(count($f_atts) && empty($f_atts['type'])) {
+		$class_filters = $this->_get_filters();
+		foreach($class_filters as $f_id => $f_atts) { 
+			if (empty($class_options[$f_id]) && !empty($args[$f_id])) {
+				if (count($f_atts) && empty($f_atts['type'])) {
 					// probably group filter
 					if (is_array($args[$f_id])) {
 						foreach( $f_atts as $key => $value ) {
@@ -243,7 +247,16 @@ abstract class PL_SC_Base {
 						}
 					}
 				}
+				elseif (!empty($f_atts['type']) && $f_atts['type']=='bundle') {
+					// custom data which is a group also
+					foreach( $args[$f_id] as $key => $value ) {
+						if (!empty($args[$f_id][$key]) && $args[$f_id][$key]!='false') {
+							$subcodes .= " [pl_filter group='" . $f_id. "' filter='" . $key . "' value='" . $args[$f_id][$key] . "'] ";
+						}
+					}
+				}
 				else {
+					// single items
 					if (!empty($f_atts['type']) && $f_atts['type']=='multiselect') {
 						if (is_array($args[$f_id])) {
 							$subcodes .= " [pl_filter filter='" . $f_id . "' value='". implode(',', $args[$f_id]) . "'] ";

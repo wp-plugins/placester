@@ -28,16 +28,10 @@ var customizer_global = {
 // the DOM manipulation is completed is NOT shown to the user...
 jQuery(window).load( function () {
 	jQuery('#customize-controls').css('display', 'block');
-
-	// If there's a theme arg in the query string, user just switched themes so make
-	// sure to have the theme selection pane appear upon page load...
-	if ( window.location.href.indexOf('theme_change=true') != -1 ) {
-		jQuery('li#theme').trigger('click');
-	}  
 });
 
 window.onbeforeunload = function () {
-	if ( customizer_global.stateAltered ) {
+	if (customizer_global.stateAltered) {
 		mixpanel.track("Customizer - Leaving with unsaved changes");
 		return 'You have unsaved changes that will be lost!';
 	}
@@ -46,16 +40,13 @@ window.onbeforeunload = function () {
 // Generate AJAX spinner...
 function newSpinner (id) {
 	var attrID = id ? id : 'spinner';
-	var spinnerElem = '<div id="' + attrID + '" class="spinningBars">'
-					  + '<div class="bar1"></div>'
-					  + '<div class="bar2"></div>'
-					  + '<div class="bar3"></div>'
-					  + '<div class="bar4"></div>' 
-					  + '<div class="bar5"></div>'
-					  + '<div class="bar6"></div>'
-					  + '<div class="bar7"></div>'
-					  + '<div class="bar8"></div>'
-					  + '</div>';
+	var barCount = 8;
+
+	var spinnerElem = '<div id="' + attrID + '" class="spinningBars">';
+	for (var i = 1; i <= barCount; i++) {
+   		spinnerElem += ('<div class="bar' + i + '"></div>');
+   	}
+	spinnerElem += '</div>';
 
 	return spinnerElem;				   
 }
@@ -94,7 +85,7 @@ jQuery(document).ready(function($) {
   * Trigger preview re-load + display loading overlay for input changes...
   */
 
-	function setPreviewLoading() {
+	function setPreviewLoading () {
 		if ( !customizer_global.refreshing ) {
 		  	$('#customize-preview').fadeTo(800, 0.3);
 			$('#preview_load_spinner').fadeTo(700, 1);
@@ -103,8 +94,8 @@ jQuery(document).ready(function($) {
 		}  
 	}
 
-	function refreshPreview() {
-		var ctrl = $('#customize-control-pls-google-analytics_ctrl input[type=text]');
+	function refreshPreview () {
+		var ctrl = $('#customize-control-pls-custom-css_ctrl textarea');
 		var currVal = ctrl.val()
 		var newVal = currVal + '3';
 		
@@ -127,7 +118,7 @@ jQuery(document).ready(function($) {
 			var conf = $('#confirm');
 			conf.fadeTo(600, 1, function() {
 				conf.fadeTo(600, 0.3, function() {
-						conf.fadeTo(600, 1);
+					conf.fadeTo(600, 1);
 				});
 			});
 
@@ -218,7 +209,6 @@ jQuery(document).ready(function($) {
   	});
 
 	$('#customize_integration_submit').on('click', function() {
-
 		$.post(ajaxurl, {action: "start_subscription_trial", source: "wci"}, function (result) {
 			// Instrument...
 			mixpanel.track("Registration - Trial Started",  {'source' : 'Customizer'});
@@ -230,7 +220,6 @@ jQuery(document).ready(function($) {
 	});
 
 	$('#customize_integration_phone_submit').on('click', function () {
-
 		// In case this is visible...
 		$('#message.error').remove();
 
@@ -251,13 +240,12 @@ jQuery(document).ready(function($) {
 			$('#custmizer_mls_phone_validation').prepend('<div id="message" class="error"><h3>' + msg + '</h3></div>');
 			$('#pls_integration_form #phone').addClass('invalid');
 		}
-
 	});
 
 	function phone_success() {
 		mixpanel.track("Customizer - Phone - Saved");
-		// Show integration video + hide the form...
 		
+		// Show integration video + hide the form...
 		$('#mls_submitted').show();
 		$('#pls_integration_form').hide();
 		$('#mls_content h1').html('Congratulations!');
@@ -274,7 +262,7 @@ jQuery(document).ready(function($) {
   */
 
   	// Logic to determine whether to hide or show pagination buttons based on change...
-	function paginationHideShow(oldIdx, newIdx, maxIdx) {
+	function paginationHideShow (oldIdx, newIdx, maxIdx) {
 		var prev = $('#pagination a.prev');
 		var next = $('#pagination a.next');
 		
@@ -289,7 +277,7 @@ jQuery(document).ready(function($) {
 		else { /* No action necessary...*/ }				
 	}
 
-	function initPagination() {
+	function initPagination () {
 		var themeSelect = $('#theme_choices');
 		if ( themeSelect.length > 0 ) {
 			var newInd = themeSelect.get(0).selectedIndex; // Current index is "new" index when initially setting this...
@@ -298,8 +286,22 @@ jQuery(document).ready(function($) {
 		}
 	}
 
-	function activateTheme() {
+	function handleDummyData () {
+		new_href = window.location.protocol + "//" + window.location.host + window.location.pathname;
+		window.location.href = new_href;
+	}
+	// Bind this local function to a var that can be accessed globally -- will be consumed by theme-switch.js code...
+	dummy_data_close_handler = handleDummyData;
+
+	function activateTheme () {
 		var data = { action: 'change_theme', new_theme: $('#theme_choices').val() };
+		var curr_href = window.location.href;
+
+		// Let AJAX endpoint know if customizer is in onboarding mode...
+		var onboarding = (curr_href.indexOf('onboard=true') != -1);
+		if (onboarding) {
+			data.onboarding = true;
+		}
 
 		// Show spinner to indicate theme activation is in progress...
 		var infoElem = $('#theme_info');
@@ -310,20 +312,18 @@ jQuery(document).ready(function($) {
 		submitElem.attr('disabled', 'disabled');
 		submitElem.addClass('bt-disabled');
 
-		//pass pane opened event to mixpanel
+		// Pass pane opened event to mixpanel
 		mixpanel.track("Customizer - Theme Changed", {'theme' : $('#theme_choices').val() });
 
 		$.post(ajaxurl, data, function (response) {
 	        if ( response && response.success ) {
+        		// Append a query arg that indicates theme is changing if it doesn't already exist...
+	           	if ( curr_href.indexOf('theme_changed=true') == -1 ) {
+	            	curr_href += ( onboarding ? '&theme_changed=true' : '?theme_changed=true' );
+	            }
+
 	            // Reload customizer to display new theme...
-	            var curr_href = window.location.href;
-        
-	           	if ( curr_href.indexOf('onboard=true') != -1 && curr_href.indexOf('theme_changed=true') == -1 ) {
-	            	window.location.href = curr_href + '&theme_changed=true';
-	            }
-	            else {
-	            	window.location.reload(true);
-	            }
+	            window.location.href = curr_href;
 	        }
 	        else {
 	        	// If theme switch fails, hide progress so user can try again...
@@ -337,7 +337,7 @@ jQuery(document).ready(function($) {
 	    },'json');
 	}
 
-	function valPremTheme(container) {
+	function valPremTheme (container) {
 		// Show spinner to indicate theme premium theme validation is in progress...
 		var infoElem = $('#theme_info');
 		infoElem.prepend(newSpinner());
@@ -355,23 +355,23 @@ jQuery(document).ready(function($) {
 
 		// Check user's subscription status and act accordingly...
 		$.post(ajaxurl, {action: 'subscriptions'}, function (response) {
-		  // console.log(response);
+		  	// console.log(response);
 
-		  // Regardless of the response, remove loading bar...
-		  var infoElem = $('#theme_info');
-    	  infoElem.find('#spinner').remove();
-	      infoElem.css('opacity', '1');
+		  	// Regardless of the response, remove loading bar...
+		  	var infoElem = $('#theme_info');
+    	  	infoElem.find('#spinner').remove();
+	      	infoElem.css('opacity', '1');
 
-		  if (response && response.plan && response.plan == 'pro') {
-		  	success_callback();
-		  } 
-		  else if (response && response.eligible_for_trial) {
-		  	// console.log('prompt free trial');
-		  	prompt_free_trial('Start your 15 day Free Trial to Activate a Premium Theme', success_callback, failure_callback, 'wc');
-		  } 
-		  else {
-		  	failure_callback();
-		  };
+		  	if (response && response.plan && response.plan == 'pro') {
+		  		success_callback();
+		  	} 
+		  	else if (response && response.eligible_for_trial) {
+		  		// console.log('prompt free trial');
+		  		prompt_free_trial('Start your 15 day Free Trial to Activate a Premium Theme', success_callback, failure_callback, 'wc');
+		  	}
+		  	else {
+		  		failure_callback();
+		  	};
 		},'json');	
 	}
 
@@ -414,7 +414,6 @@ jQuery(document).ready(function($) {
 			    initPagination();
 	        }
 	    },'json');
-
 	});
 
 	$('#submit_theme').on('click', function (event) {
@@ -474,130 +473,8 @@ jQuery(document).ready(function($) {
 
 
  /*
-  * Handle custom controls...
-  */	
-
-  	/* --- Blog Post --- */
-/*
-	function toggleInvalid (item, invalid) {
-        if (invalid) {
-		  	item.addClass('invalid');
-		  	item.prev().addClass('invalid');
-		}
-		else {
-			item.removeClass('invalid');
-			item.prev().removeClass('invalid');
-		}
-	}
-
-  	$('#submit_blogpost').on('click', function (event) {
-  		var title = $('#blogpost_title');
-  		var content = $('#blogpost_content');
-  		var tags = $('#blogpost_tags');
-
-  		if ( !title.val() || !content.val()  ) {
-  			$('#blogpost_message').show();
-
-  			if ( !title.val() ) { toggleInvalid(title, true); }
-			if ( !content.val() ) { toggleInvalid(content, true); }  			
-
-  			return;
-  		}
-  		else {
-  			$('#blogpost_message').hide();
-
-  			toggleInvalid(title, false);
-  			toggleInvalid(content, false);
-  		}
-
-  		var data = {
-    	  	action: 'publish_post',
-	        title: title.val(),
-	        content: content.val(),
-	        tags: tags.val()
-	    };
-
-	    // console.log(data);
-	    // return;
-
-	    $.post(ajaxurl, data, function (response) {
-	        if ( response && response.new_post_id ) {
-	        	alert('Post created successfully!');
-	            // console.log(response.new_post_id);
-	            setTimeout( function () { refreshPreview(); }, 300 );
-
-	            // Reset blog post form fields...
-	            title.val('');
-	            content.val('');
-	            tags.val('');
-	        }
-	    },'json');
-  	});
-*/
-	
-	/* --- Create a Listing --- */
-
-/*
-  	$('#submit_listing').on('click', function (event) {
-		// $('#loading_overlay').show();
-
-       	// Hide all previous validation issues
-       	$('#listing_message').hide();
-
-       	// Prep form values for submission
-        var form_values = {}
-        form_values['action'] = 'add_listing';
-        
-        // Get each of the form values, set key/values in array based off name attribute
-        $.each($('#create_listing :input').serializeArray(), function (i, field) {
-    		form_values[field.name] = field.value;
-        });
-       
-
-        // console.log(form_values); 
-        // return;
-        
-        $.post(ajaxurl, form_values, function (response) {
-			// $('#loading_overlay').hide();
-			if (response && response['validations']) {
-				var item_messages = [];
-
-				for (var key in response['validations']) 
-				{
-					var item = response['validations'][key];
-
-					if (typeof item == 'object') {
-						for (var k in item) {
-							if (typeof item[k] == 'string') {
-								var message = '<p class="red">' + response['human_names'][key] + ' ' + item[k] + '</p>';
-							} else {
-								var message = '<p class="red">' + response['human_names'][k] + ' ' + item[k].join(',') + '</p>';
-							}
-							// $("#" + key + '-' + k).prepend(message);
-							item_messages.push(message);
-						}
-					} 
-					else {
-						var message = '<p class="red">'+item[key].join(',') + '</p>';
-						// $("#" + key).prepend(message);
-						item_messages.push(message);
-					}
-				} 
-
-				// Populate and show error messages...
-				$('#listing_message').html( '<h3>' + response['message'] + '</h3>' + item_messages.join(' ') );
-				$('#listing_message').show();
-			} 
-			else if (response && response['id']) {
-				alert('Listing successfully created!');
-				setTimeout( function () { refreshPreview(); }, 1200 ); 
-				// $('#manage_listing_message').html('<div id="message" class="updated below-h2"><p>Listing successfully created!</p></div>');
-			}
-		}, 'json');
-    });
-*/
-
-	/* -- Custom CSS -- */
+  * Handle color palette/skin selection...
+  */
 
 	function initCustomCSS () {
 		var ctrl = $('#customize-control-pls-custom-css_ctrl'); 
@@ -627,16 +504,6 @@ jQuery(document).ready(function($) {
 	}
 
 	$('#color_select').on('change', function (event) {
-		// Check for wp JS object (we need this to update styling) and for current theme support--exit if either are false...
-		var supportedThemeList = ['columbus','ventura','tampa','highland','manchester','bluestone','slate','ontario','charlotte','toronto','parkcity'];
-		if (!_wpCustomizeSettings || supportedThemeList.indexOf(_wpCustomizeSettings.theme.stylesheet) == -1 ) {
-			var errMsg = $('#color_message.error');
-			errMsg.html('<h3>Sorry, this feature is currently not available for this theme</h3>');
-			errMsg.show();
-
-			return;
-		}
-
 		// Just in case...
 		$('#color_message.error').hide();
 

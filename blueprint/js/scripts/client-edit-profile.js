@@ -7,6 +7,7 @@ jQuery(document).ready(function($) {
 		$("#edit_profile").dialog({		
 			autoOpen: false,
 			draggable: false,
+			dialogClass: "edit_profile_dialog",
 			modal: true,
 			width: 700,
 			title: "<h2>Update Contact Info</h2>",

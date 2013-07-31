@@ -1,6 +1,6 @@
 <?php
 /**
- * Displays main shortcode edit meta box used in the shortcode edit view
+ * Displays main shortcode edit meta box used in the shortcode edit view for shortcodes related to property listings
  */
 
 // get list of shortcodes w/ attrs
@@ -9,6 +9,63 @@ if (empty($pl_shortcodes_attr)) {
 }
 
 $options_class = $filters_class = '';
+
+// build list of sort options which will be the same for any sc that uses a sort list 
+$sort_list = array();
+foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {
+	if (!empty($sct_args['filters'])) {
+		foreach($sct_args['filters'] as $f_key=>$f_args) {
+			$skip = false;
+			switch($f_key) {
+				case 'metadata':
+					$key = 'cur_data';
+					break;
+				case 'custom':
+					$key = 'uncur_data';
+					break;
+				case 'rets':
+					$skip = true;
+					break;
+				default:
+					$key = $f_key;
+			}
+			if (!$skip) {
+				if (!empty($f_args['type'])) {
+					if ($f_args['type']=='bundle') {
+						if (isset($f_args['bound']) && is_array($f_args['bound'])) {
+							$params = ( isset($f_args['bound']['params']) ? $f_args['bound']['params'] : array() ) ;
+							// If "params" is a single element, encapsulate in an array...
+							if ( isset($params) && !is_array($params) ) {
+								$params = array($params);
+							}
+							$bundle_list = call_user_func_array(array($f_args['bound']['class'], $f_args['bound']['method']), $params);
+							foreach($bundle_list as $f_bargs) {
+								$sort_list[$key.'.'.$f_bargs['key']] = $f_bargs['name'];
+							}
+						}
+					}
+					elseif ($f_args['type']!='checkbox') {
+						$sort_list[$key] = $f_args['label'];
+					}
+				}
+				if (empty($f_args['type'])) {
+					// group of options
+					foreach($f_args as $f_bkey=>$f_bargs) {
+						if (!empty($f_bargs['type'])) {
+							if ($f_bargs['type']!='checkbox') {
+								if (strpos($f_bkey, 'min_')===false && strpos($f_bkey, 'max_')===false) {
+									$sort_list[$key.'.'.$f_bkey] = $f_bargs['label'];
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		break;
+	}
+}
+
 ?>
 <div class="postbox">
 
@@ -20,13 +77,13 @@ $options_class = $filters_class = '';
 		<div>
 
 			<!-- Type -->
-			<section class="post_types_list_wrapper row-fluid">
+			<div class="post_types_list_wrapper row-fluid">
 
 				<div class="span2">
 					<label class="section-label" for="pl_sc_shortcode_type">Type:</label>
 				</div>
 
-				<div class="span9">
+				<div class="span8">
 
 					<select id="pl_sc_shortcode_type" name="shortcode" class="">
 
@@ -54,14 +111,14 @@ $options_class = $filters_class = '';
 
 				</div>
 
-			</section><!-- /.post_types_list_wrapper -->
+			</div><!-- /.post_types_list_wrapper -->
 
 			<!-- Template / Layout -->
-			<section id="choose_template" style="display:none;">
+			<div id="choose_template" class="row-fluid" style="display:none;">
 				<div class="span2">
 					<label class="section-label" for="pl_template">Template:</label>
 				</div>
-				<div>
+				<div class="span8">
 					<?php foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ): ?>
 						<?php if(!empty($sct_args['options']['context'])):?>
 							<div class="pl_template_block <?php echo $pl_shortcode; ?>" id="<?php echo $sct_args['shortcode'];?>_template_block" style="display: none;">
@@ -80,13 +137,13 @@ $options_class = $filters_class = '';
 						<?php endif;?>
 					<?php endforeach;?>
 					<div class="edit-sc-template-edit">
-						<a id="edit_sc_template_edit" href="" class="create-new-template-link" style="display:none;"><button class="button-secondary action">Edit</button></a>
-						<a id="edit_sc_template_duplicate" href="" class="duplicate-new-template-link"><button class="button-secondary action">Duplicate</button></a>
-						<a id="edit_sc_template_copy" href="" class="create-new-template-link"><button class="button-secondary action">Copy</button></a>
-						<a id="edit_sc_template_create" href="" class="create-new-template-link"><button class="button-secondary action">Create</button></a>
+						<a id="edit_sc_template_edit" href="" class="create-new-template-link" style="display:none;">Edit</a>
+						<a id="edit_sc_template_duplicate" href="" class="duplicate-new-template-link">Duplicate</a>
+						<a id="edit_sc_template_copy" href="" class="create-new-template-link">Copy</a>
+						<a id="edit_sc_template_create" href="" class="create-new-template-link">Create</a>
 					</div>
 				</div>
-			</section><!-- /edit-sc-choose-template -->
+			</div><!-- /edit-sc-choose-template -->
 
 		</div><!-- /#post_types_list -->
 
@@ -103,7 +160,7 @@ $options_class = $filters_class = '';
 				foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {?>
 					<div class="pl_widget_block <?php echo $pl_shortcode;?>">
 					<?php
-					foreach($sct_args['options'] as $field => $f_args) {
+					foreach($sct_args['options'] as $field => &$f_args) {
 						if ($field == 'context') {
 							// template field already handled
 							continue;
@@ -119,11 +176,22 @@ $options_class = $filters_class = '';
 								, $pl_shortcode);
 							continue;
 						}
+						elseif ($field == 'sort_by_options') {
+							// save the full list of sort by names so we can use on the front end
+							$f_args['options'] += $sort_list;
+							asort($f_args['options']);
+							update_option('pl_'.$pl_shortcode.'_formval_'.$field, $f_args['options']);
+						}
+						elseif ($field == 'sort_by') {
+							// should have the same options as sort_by_options
+							$f_args['options'] = $sct_args['options']['sort_by_options']['options'];
+						}				
 						$value = isset( $values[$pl_shortcode][$field] ) ? $values[$pl_shortcode][$field] : $f_args['default'];
 						$_POST[$pl_shortcode][$field] = $value;
 						$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $pl_shortcode;
 						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'sc_edit_', true);
-					}?>
+					}
+					?>
 					</div>
 					<?php
 				}
@@ -146,7 +214,8 @@ $options_class = $filters_class = '';
 						}
 						?>
 						<div class="pl_widget_block <?php echo $pl_shortcode?>">
-						<?php PL_Form::generate_form($sct_args['filters'],
+						<?php
+							PL_Form::generate_form($sct_args['filters'],
 								array('method' => "POST",
 									'title' => true,
 									'wrap_form' => false,
@@ -155,7 +224,8 @@ $options_class = $filters_class = '';
 									'parent' => $pl_shortcode,
 									'echo_form' => true,
 								),
-								'sc_edit_');?>
+								'sc_edit_');
+						?>
 						</div>
 						<?php
 					}

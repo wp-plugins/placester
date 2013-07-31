@@ -71,7 +71,9 @@ class PLS_Widget_Agents extends WP_Widget {
          <?php 
 
          $single_agent = ob_get_clean();
-
+         
+         if (!isset($widget_id)) { $widget_id = 1; }
+         
          /** Wrap the post in an article element and filter its contents. */
          $single_agent = apply_filters( 'pls_widget_agents_post_inner', $single_agent, $post_item, $instance, $widget_id );
          

@@ -4,7 +4,7 @@ Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
 Author: Placester.com
-Version: 1.1.15
+Version: 1.1.16
 Author URI: https://www.placester.com/
 */
 
@@ -27,10 +27,40 @@ Author URI: https://www.placester.com/
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define('PL_PLUGIN_VERSION','1.1.15');
+define('PL_PLUGIN_VERSION','1.1.16');
 
 define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
 define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
+
+define( 'PL_LIB_DIR', trailingslashit(PL_PARENT_DIR) . 'lib/' );
+define( 'PL_LIB_URL', trailingslashit(PL_PARENT_URL) . 'lib/' );
+
+define( 'PL_HLP_DIR', trailingslashit(PL_PARENT_DIR) . 'helpers/' );
+define( 'PL_HLP_URL', trailingslashit(PL_PARENT_URL) . 'helpers/' );
+
+define( 'PL_JS_DIR', trailingslashit(PL_PARENT_DIR) . 'js/' );
+define( 'PL_JS_URL', trailingslashit(PL_PARENT_URL) . 'js/' );
+
+define( 'PL_JS_ADMIN_DIR', trailingslashit(PL_JS_DIR) . 'admin/' );
+define( 'PL_JS_ADMIN_URL', trailingslashit(PL_JS_URL) . 'admin/' );
+
+define( 'PL_JS_LIB_DIR', trailingslashit(PL_JS_DIR) . 'lib/' );
+define( 'PL_JS_LIB_URL', trailingslashit(PL_JS_URL) . 'lib/' );
+
+define( 'PL_JS_PUB_DIR', trailingslashit(PL_JS_DIR) . 'public/' );
+define( 'PL_JS_PUB_URL', trailingslashit(PL_JS_URL) . 'public/' );
+
+define( 'PL_CSS_DIR', trailingslashit(PL_PARENT_DIR) . 'css/' );
+define( 'PL_CSS_URL', trailingslashit(PL_PARENT_URL) . 'css/' );
+
+define( 'PL_CSS_ADMIN_DIR', trailingslashit(PL_CSS_DIR) . 'admin/' );
+define( 'PL_CSS_ADMIN_URL', trailingslashit(PL_CSS_URL) . 'admin/' );
+
+define( 'PL_CSS_CLIENT_DIR', trailingslashit(PL_CSS_DIR) . 'client/' );
+define( 'PL_CSS_CLIENT_URL', trailingslashit(PL_CSS_URL) . 'client/' );
+
+define( 'PL_IMG_DIR', trailingslashit(PL_PARENT_DIR) . 'images/' );
+define( 'PL_IMG_URL', trailingslashit(PL_PARENT_URL) . 'images/' );
 
 define( 'PL_VIEWS_DIR', trailingslashit(PL_PARENT_DIR) . 'views/' );
 define( 'PL_VIEWS_URL', trailingslashit(PL_PARENT_URL) . 'views/' );
@@ -46,33 +76,6 @@ define( 'PL_VIEWS_PART_URL', trailingslashit(PL_VIEWS_URL) . 'partials/' );
 
 define( 'PL_VIEWS_SHORT_DIR', trailingslashit(PL_VIEWS_DIR) . 'shortcodes/' );
 define( 'PL_VIEWS_SHORT_URL', trailingslashit(PL_VIEWS_URL) . 'shortcodes/' );
-
-define( 'PL_JS_DIR', trailingslashit(PL_PARENT_DIR) . 'js/' );
-define( 'PL_JS_URL', trailingslashit(PL_PARENT_URL) . 'js/' );
-
-define( 'PL_LIB_DIR', trailingslashit(PL_PARENT_DIR) . 'lib/' );
-define( 'PL_LIB_URL', trailingslashit(PL_PARENT_URL) . 'lib/' );
-
-define( 'PL_HLP_DIR', trailingslashit(PL_PARENT_DIR) . 'helpers/' );
-define( 'PL_HLP_URL', trailingslashit(PL_PARENT_URL) . 'helpers/' );
-
-define( 'PL_JS_LIB_DIR', trailingslashit(PL_JS_DIR) . 'lib/' );
-define( 'PL_JS_LIB_URL', trailingslashit(PL_JS_URL) . 'lib/' );
-
-define( 'PL_JS_PUB_DIR', trailingslashit(PL_JS_DIR) . 'public/' );
-define( 'PL_JS_PUB_URL', trailingslashit(PL_JS_URL) . 'public/' );
-
-define( 'PL_CSS_DIR', trailingslashit(PL_PARENT_DIR) . 'css/' );
-define( 'PL_CSS_URL', trailingslashit(PL_PARENT_URL) . 'css/' );
-
-define( 'PL_IMG_DIR', trailingslashit(PL_PARENT_DIR) . 'images/' );
-define( 'PL_IMG_URL', trailingslashit(PL_PARENT_URL) . 'images/' );
-
-define( 'PL_CSS_ADMIN_DIR', trailingslashit(PL_CSS_DIR) . 'admin/' );
-define( 'PL_CSS_ADMIN_URL', trailingslashit(PL_CSS_URL) . 'admin/' );
-
-define( 'PL_CSS_CLIENT_DIR', trailingslashit(PL_CSS_DIR) . 'client/' );
-define( 'PL_CSS_CLIENT_URL', trailingslashit(PL_CSS_URL) . 'client/' );
 
 define( 'PL_THIRD_PARTY_DIR', trailingslashit(PL_PARENT_DIR) . 'third-party/' );
 define( 'PL_THIRD_PARTY_URL', trailingslashit(PL_PARENT_URL) . 'third-party/' );
@@ -175,7 +178,7 @@ include_once('third-party/mixpanel/mixpanel.php');
 
 // Register hook to load blueprint from plugin if the active theme has yet to do so...
 add_action( 'after_setup_theme', 'load_blueprint_from_plugin', 18 );
-function load_blueprint_from_plugin() {
+function load_blueprint_from_plugin () {
     if (!class_exists('Placester_Blueprint')) {
         // Load script that contains main blueprint class, and instantiate an object...
         require_once('blueprint/blueprint.php');
@@ -185,7 +188,7 @@ function load_blueprint_from_plugin() {
 }
 
 // This takes care of what a theme's functions.php file normally handles...
-function plugin_blueprint_settings() {
+function plugin_blueprint_settings () {
     remove_theme_support('pls-default-css');
     remove_theme_support('pls-default-style');
     remove_theme_support('pls-default-960');
@@ -196,13 +199,9 @@ function plugin_blueprint_settings() {
 
 // Build plugin settings tabs/UI...
 add_action('admin_menu', 'placester_admin_menu');
-function placester_admin_menu() {
-    // Add separator
-    global $menu;
-    $menu['3a'] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
-
+function placester_admin_menu () {
     // Add Placester Menu
-    add_menu_page('Placester', 'Placester', 'edit_pages', 'placester', array('PL_Router','my_listings'), plugins_url('images/icons/logo_16.png', __FILE__ ), '3b' /* position between 3 and 4 */ );
+    add_menu_page('Placester', 'Placester', 'edit_pages', 'placester', array('PL_Router','my_listings'), plugins_url('images/icons/logo_16.png', __FILE__ ), '3.5' /* position between 3 and 4 */ );
 
     // Avoid submenu to start with menu function
     global $submenu;
@@ -228,7 +227,7 @@ function placester_admin_menu() {
 
     foreach ($settings_subpages as $name => $page_url) {
         // Leave parent slug empty to add pages without adding them to the menu...
-        add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
+        add_submenu_page( 'placester', $name, $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
     }
 
     global $shortcode_subpages;
@@ -237,7 +236,7 @@ function placester_admin_menu() {
         'Create Custom Shortcode' => '_shortcode_edit',
         'Shortcode Templates' => '_templates',
         'Create Shortcode Template' => '_template_edit',
-    	'Listing Page Customizer' => '_listing_customizer',
+    	'Listing Details Customizer' => '_listing_customizer',
     );
     foreach ($shortcode_subpages as $name => $page_url) {
     	// Leave parent slug empty to add pages without adding them to the menu...
@@ -257,14 +256,14 @@ function placester_admin_menu() {
 
 register_activation_hook(__FILE__, 'placester_activate');
 // register_deactivation_hook( __FILE__, 'placester_deactivate' );
-function placester_activate() {
+function placester_activate () {
     $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
     $metrics->track('Activation');
     PL_WordPress_Helper::report_url();
 }
 
 add_action('admin_notices', 'on_first_activation');
-function on_first_activation() {
+function on_first_activation () {
     if (!get_option('placester_activation_redirect', false)) {
         ?>
             <script type="text/javascript">    
@@ -278,7 +277,7 @@ function on_first_activation() {
 }
 
 add_action('wp_head', 'placester_info_bar');
-function placester_info_bar() {
+function placester_info_bar () {
     if ( PL_Option_Helper::get_demo_data_flag() && current_user_can('manage_options') ) {
         PL_Router::load_builder_partial('infobar.php');
     }

@@ -87,23 +87,26 @@ class PLS_Partials_Get_Listings_Ajax {
         // Now we need to pass the 'limit' parameter from defaults into the search_query to honor corresponding theme option...
         $query_limit = (int) $query_limit;
         // If limit is invalid or greater than API's upper limit, adjust accordingly... 
+        // TODO: this seems to break the prop# form option
         $search_query['limit'] = ( (is_int($query_limit) && $query_limit <= 50) ? $query_limit : 50 );
         
-        $sort_by_options = array(
-            'total_images' => 'Total Images',
-            'location.address' => 'Address',
-            'location.locality' => 'City',
-            'location.region' => 'State',
-            'location.postal' => 'Zip',
-            // 'zoning_types' => 'Zoning',
-            // 'purchase_types' => 'Purchase Type',
-            // 'property_type' => 'Property Type',
-            'cur_data.beds' => 'Beds',
-            'cur_data.baths' => 'Baths',
-            'cur_data.price' => 'Price',
-            'cur_data.sqft' => 'Square Feet',
-            // 'cur_data.avail_on' => 'Date Available'
-        );
+		if (empty($sort_by_options) || !is_array($sort_by_options)) {
+            $sort_by_options = array(
+                'total_images' => 'Total Images',
+                'location.address' => 'Address',
+                'location.locality' => 'City',
+                'location.region' => 'State',
+                'location.postal' => 'Zip',
+                // 'zoning_types' => 'Zoning',
+                // 'purchase_types' => 'Purchase Type',
+                // 'property_type' => 'Property Type',
+                'cur_data.beds' => 'Beds',
+                'cur_data.baths' => 'Baths',
+                'cur_data.price' => 'Price',
+                'cur_data.sqft' => 'Square Feet',
+                // 'cur_data.avail_on' => 'Date Available'
+            );
+        }
         $sort_type_options = array('desc' => 'Descending','asc' => 'Ascending');
 
         // /** Filter the "Sort by"  and sort type options. */
@@ -184,6 +187,10 @@ class PLS_Partials_Get_Listings_Ajax {
 		$saved_user_search = false;
 		$_POST['sEcho'] = empty($_POST['sEcho']) ? 0 : $_POST['sEcho'];
 
+		if (!empty($_POST['location']) && !empty($_POST['location']['address']) && empty($_POST['location']['address_match'])) {
+			$_POST['location']['address_match'] = 'like';
+		}
+		
         if (isset($_POST['saved_search_lookup']) ) {
             if (strpos($_POST['saved_search_lookup'], 'pl_ss_') !== false) {
             	$user_lookup = $_POST['saved_search_lookup'];

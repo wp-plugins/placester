@@ -17,7 +17,7 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 				"id" => "contactually",
 				"class" => "PL_CRM_Contactually",
 				"display_name" => "Contactually",
-				"referral_url" => "https://www.contactually.com/invite/placester",
+				"referral_url" => "http://plcstr.com/14gAEUf",
 				"cred_lookup_url" => "https://www.contactually.com/settings/integrations",
 				"logo_img" => "contactually-logo.png"
 			);

@@ -1,4 +1,8 @@
-	<?php extract(PL_Integration_Helper::get()) ?>
+	<?php 
+		$integration_obj = PL_Integration_Helper::get();
+		// error_log(var_export($integration_obj, true));
+		extract($integration_obj); 
+	?>
 	<div class="wrap">
 		<?php if (!empty($integration_status['integration'][0]['id'])): ?>
 			<div class="header-wrapper">
@@ -82,9 +86,9 @@
 			<div class="clear"></div>
 			<!-- <h3 class="get_started">Fill out the form to get started</h3> -->
 			
-		  <?php if ( PL_Option_Helper::api_key() ): ?>
-			<?php PL_Router::load_builder_partial('integration-form.php', array('submit' => true)); ?>
-		  <?php endif; ?>
+		  	<?php if (PL_Option_Helper::api_key()): ?>
+				<?php PL_Router::load_builder_partial('integration-form.php', array('submit' => true)); ?>
+		  	<?php endif; ?>
 	
 			<div class="clear"></div>	
 		<?php endif ?>	

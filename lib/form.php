@@ -89,7 +89,7 @@ class PL_Form {
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<select name="<?php echo $name ?>" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
 						<?php foreach ($options as $key => $text): ?>
-							<option value="<?php echo $key ?>" <?php echo ($key == $value ? 'selected' : '' ) ?>><?php echo $text ?></option>
+							<option value="<?php echo $key ?>" <?php echo ($key == $value ? 'selected="selected"' : '' ) ?>><?php echo $text ?></option>
 						<?php endforeach ?>
 					</select>
 				</section>
@@ -100,7 +100,7 @@ class PL_Form {
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<select name="<?php echo $name ?>[]" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
 						<?php foreach ($options as $key => $text): ?>
-							<option value="<?php echo $key ?>" <?php echo ((is_array($value) && in_array($key, $value) ) ? 'selected' : '' ) ?>><?php echo $text ?></option>
+							<option value="<?php echo $key ?>" <?php echo ((is_array($value) && in_array($key, $value) ) ? 'selected="selected"' : '' ) ?>><?php echo $text ?></option>
 						<?php endforeach ?>
 					</select>
 				</section>
@@ -127,6 +127,7 @@ class PL_Form {
 				</section>
 			<?php
 		} elseif ( $type == 'bundle' ) {
+			$parent = empty($parent) ? $item : $parent . '['.$item.']';
 			$bundle = '';
 			foreach (self::prepare_custom_item($options, $method, $parent) as $key => $form_items) {
 				$bundle .= "<section class='form_group' id='".$id.'-'.preg_replace('/[^a-z]/i', '_', $key)."'>";

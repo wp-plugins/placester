@@ -14,8 +14,8 @@ class PL_Js_Helper {
 	public static function admin ($hook) {
 		// Inject premium themes logic into the themes admin page when visiting from any site on the hosted env...
 		if ($hook == 'themes.php' && defined('HOSTED_PLUGIN_KEY')) {
-			self::register_enqueue_if_not('premium', trailingslashit(PL_JS_URL) . 'admin/premium.js', array('jquery'));
-			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+			self::register_enqueue_if_not('premium', trailingslashit(PL_JS_ADMIN_URL) . 'premium.js', array('jquery'));
+			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_ADMIN_URL) . 'free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 
 			// Print global JS var containing premium theme list...
 			global $PL_CUSTOMIZER_THEMES;
@@ -31,8 +31,9 @@ class PL_Js_Helper {
 			echo ob_get_clean();
 			
 			// Launch dialog after theme is switched...
-			if ( PL_Bootup::is_theme_switched() ) {
-	    		self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+			if ( isset($_GET['activated']) && $_GET['activated'] == 'true' ) {
+				PL_Bootup::theme_switch_user_prompt();
+				self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_ADMIN_URL) . 'theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 	    	}
 
 			// Don't load any other scripts...
@@ -43,75 +44,70 @@ class PL_Js_Helper {
 		if (strpos($hook, 'placester_page_placester_') === false) { return; }
 
 		// Load JS available to all of the plugin's pages...
-		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) . 'admin/global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+		self::register_enqueue_if_not('global', trailingslashit(PL_JS_ADMIN_URL) . 'global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 
 		// If no API key is set, load the following JS files for use by the wizard on ANY plugin settings page...
 		if (!PL_Option_Helper::api_key()) {
-			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_URL) . 'admin/sign-up.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_ADMIN_URL) . 'sign-up.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 
 		if ($hook == 'placester_page_placester_properties') {
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
-			self::register_enqueue_if_not('my-listings', trailingslashit(PL_JS_URL) . 'admin/my-listings.js', array('jquery', 'jquery-ui-datepicker'));
+			self::register_enqueue_if_not('my-listings', trailingslashit(PL_JS_ADMIN_URL) . 'my-listings.js', array('jquery', 'jquery-ui-datepicker'));
 		}
 
 		if ($hook == 'placester_page_placester_property_add') {
 			self::register_enqueue_if_not('blueimp-iframe', trailingslashit(PL_JS_LIB_URL) . 'blueimp/js/jquery.iframe-transport.js', array('jquery'));
 			self::register_enqueue_if_not('blueimp-file-upload', trailingslashit(PL_JS_LIB_URL) . 'blueimp/js/jquery.fileupload.js', array('jquery'));
-			self::register_enqueue_if_not('add-listing', trailingslashit(PL_JS_URL) . 'admin/add-listing.js', array('jquery', 'jquery-ui-datepicker'));
+			self::register_enqueue_if_not('add-listing', trailingslashit(PL_JS_ADMIN_URL) . 'add-listing.js', array('jquery', 'jquery-ui-datepicker'));
 		}
 
 		if ($hook == 'placester_page_placester_theme_gallery') {
-			self::register_enqueue_if_not('theme-gallery', trailingslashit(PL_JS_URL) . 'admin/theme-gallery.js', array('jquery'));
-			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+			self::register_enqueue_if_not('theme-gallery', trailingslashit(PL_JS_ADMIN_URL) . 'theme-gallery.js', array('jquery'));
+			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_ADMIN_URL) . 'free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 
 		if ($hook == 'placester_page_placester_integrations') {
-			self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) . 'admin/integration.js', array('jquery'));
-			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+			self::register_enqueue_if_not('integration', trailingslashit(PL_JS_ADMIN_URL) . 'integration.js', array('jquery'));
+			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_ADMIN_URL) . 'free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 
 		if ($hook == 'placester_page_placester_lead_capture') {
-			self::register_enqueue_if_not('lead-capture', trailingslashit(PL_JS_URL) . 'admin/lead-capture/general.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+			self::register_enqueue_if_not('lead-capture', trailingslashit(PL_JS_ADMIN_URL) . 'lead-capture/general.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 
 		if ($hook == 'placester_page_placester_settings') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/general.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_ADMIN_URL) . 'settings/general.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 
 		if ($hook == 'placester_page_placester_settings_polygons') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/polygon.js', array('jquery'));
-			self::register_enqueue_if_not('new-colorpicker', trailingslashit(PL_JS_URL) . 'lib/colorpicker/js/colorpicker.js', array('jquery'));
+			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_ADMIN_URL) . 'settings/polygon.js', array('jquery'));
+			self::register_enqueue_if_not('new-colorpicker', trailingslashit(PL_JS_LIB_URL) . 'colorpicker/js/colorpicker.js', array('jquery'));
 			self::register_enqueue_if_not('google-maps', 'http://maps.googleapis.com/maps/api/js?sensor=false', array('jquery'));
-			self::register_enqueue_if_not('text-overlay', trailingslashit(PL_JS_URL) . 'lib/google-maps/text-overlay.js', array('jquery'));
+			self::register_enqueue_if_not('text-overlay', trailingslashit(PL_JS_LIB_URL) . 'google-maps/text-overlay.js', array('jquery'));
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
 		}
 
 		if ($hook == 'placester_page_placester_settings_property_pages') {
-			self::register_enqueue_if_not('settings-property', trailingslashit(PL_JS_URL) . 'admin/settings/property.js', array('jquery'));
+			self::register_enqueue_if_not('settings-property', trailingslashit(PL_JS_ADMIN_URL) . 'settings/property.js', array('jquery'));
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
 		}
 		
-		// if ($hook == 'placester_page_placester_settings_international') {
-		// 	self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/international.js', array('jquery'));
-		// 	self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));	
-		// }
-		
-		// if ($hook == 'placester_page_placester_settings_neighborhood') {
-		// 	self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));
-		// }
+		if ($hook == 'placester_page_placester_settings_international') {
+			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_ADMIN_URL) . 'settings/international.js', array('jquery'));	
+		}
 
 		if ($hook == 'placester_page_placester_settings_filtering') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/filtering.js', array('jquery'));
+			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_ADMIN_URL) . 'settings/filtering.js', array('jquery'));
 		}
 
 		if ($hook == 'placester_page_placester_settings_client') {
-			self::register_enqueue_if_not('settings-client', trailingslashit(PL_JS_URL) . 'admin/settings/client.js', array('jquery'));
+			self::register_enqueue_if_not('settings-client', trailingslashit(PL_JS_ADMIN_URL) . 'settings/client.js', array('jquery'));
 		}
 
 		// Shortcodes and Shortcode Templates
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
-			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_URL) . 'admin/shortcodes/all.js', array('jquery-ui-datepicker'));
+			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_ADMIN_URL) . 'shortcodes/all.js', array('jquery-ui-datepicker'));
 			self::register_enqueue_if_not('datatable', trailingslashit(PLS_JS_URL) . 'libs/datatables/jquery.dataTables.js' , array('jquery'), NULL, true);
 			self::register_enqueue_if_not('featured-listing', trailingslashit(OPTIONS_FRAMEWORK_DIRECTORY) . 'js/featured-listing.js', array('jquery'));
 			
@@ -120,14 +116,14 @@ class PL_Js_Helper {
 			));
 		}
 		if ($hook == 'placester_page_placester_shortcodes_template_edit') {
-			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_URL) . 'admin/shortcodes/all.js', array('jquery'));
-			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_URL) . 'lib/codemirror/codemirror.js');
-			self::register_enqueue_if_not('codemirror-foldcode', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/foldcode.js', array('codemirror'));
-			self::register_enqueue_if_not('codemirror-foldgutter', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/foldgutter.js', array('codemirror'));
-			self::register_enqueue_if_not('codemirror-brace-fold', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/brace-fold.js', array('codemirror'));
-			self::register_enqueue_if_not('codemirror-xml-fold', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/xml-fold.js', array('codemirror'));
-			self::register_enqueue_if_not('codemirror-xml', trailingslashit(PL_JS_URL) . 'lib/codemirror/mode/xml/xml.js', array('codemirror'));
-			self::register_enqueue_if_not('codemirror-css', trailingslashit(PL_JS_URL) . 'lib/codemirror/mode/css/css.js', array('codemirror'));
+			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_ADMIN_URL) . 'shortcodes/all.js', array('jquery'));
+			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_LIB_URL) . 'codemirror/codemirror.js');
+			self::register_enqueue_if_not('codemirror-foldcode', trailingslashit(PL_JS_LIB_URL) . 'codemirror/addon/fold/foldcode.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-foldgutter', trailingslashit(PL_JS_LIB_URL) . 'codemirror/addon/fold/foldgutter.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-brace-fold', trailingslashit(PL_JS_LIB_URL) . 'codemirror/addon/fold/brace-fold.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-xml-fold', trailingslashit(PL_JS_LIB_URL) . 'codemirror/addon/fold/xml-fold.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-xml', trailingslashit(PL_JS_LIB_URL) . 'codemirror/mode/xml/xml.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-css', trailingslashit(PL_JS_LIB_URL) . 'codemirror/mode/css/css.js', array('codemirror'));
 				
 			wp_localize_script('shortcodes-admin', 'autosaveL10n', array(
 				'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
@@ -136,14 +132,14 @@ class PL_Js_Helper {
 		
 		// Listing customizer
 		if ($hook == 'placester_page_placester_shortcodes_listing_customizer') {
-			self::register_enqueue_if_not('listing-customizer', trailingslashit(PL_JS_URL) . 'admin/listing-customizer.js', array('jquery'));
-			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_URL) . 'lib/codemirror/codemirror.js');
-			self::register_enqueue_if_not('codemirror-foldcode', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/foldcode.js', array('codemirror'));
-			self::register_enqueue_if_not('codemirror-foldgutter', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/foldgutter.js', array('codemirror'));
-			self::register_enqueue_if_not('codemirror-brace-fold', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/brace-fold.js', array('codemirror'));
-			self::register_enqueue_if_not('codemirror-xml-fold', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/xml-fold.js', array('codemirror'));
-			self::register_enqueue_if_not('codemirror-xml', trailingslashit(PL_JS_URL) . 'lib/codemirror/mode/xml/xml.js', array('codemirror'));
-			self::register_enqueue_if_not('codemirror-css', trailingslashit(PL_JS_URL) . 'lib/codemirror/mode/css/css.js', array('codemirror'));
+			self::register_enqueue_if_not('listing-customizer', trailingslashit(PL_JS_ADMIN_URL) . 'listing-customizer.js', array('jquery'));
+			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_LIB_URL) . 'codemirror/codemirror.js');
+			self::register_enqueue_if_not('codemirror-foldcode', trailingslashit(PL_JS_LIB_URL) . 'codemirror/addon/fold/foldcode.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-foldgutter', trailingslashit(PL_JS_LIB_URL) . 'codemirror/addon/fold/foldgutter.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-brace-fold', trailingslashit(PL_JS_LIB_URL) . 'codemirror/addon/fold/brace-fold.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-xml-fold', trailingslashit(PL_JS_LIB_URL) . 'codemirror/addon/fold/xml-fold.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-xml', trailingslashit(PL_JS_LIB_URL) . 'codemirror/mode/xml/xml.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-css', trailingslashit(PL_JS_LIB_URL) . 'codemirror/mode/css/css.js', array('codemirror'));
 		
 			wp_localize_script('listing-customizer', 'autosaveL10n', array(
 				'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
@@ -151,17 +147,17 @@ class PL_Js_Helper {
 		}
 		
 		if ($hook == 'placester_page_placester_crm') {
-			self::register_enqueue_if_not('crm', trailingslashit(PL_JS_URL) . 'admin/crm.js', array('jquery'));
+			self::register_enqueue_if_not('crm', trailingslashit(PL_JS_ADMIN_URL) . 'crm.js', array('jquery'));
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));	
 		}
 	}
 
 	public static function admin_menu_url () {
 		?>
-		<script type="text/javascript">
-			var adminurl = '<?php echo ADMIN_MENU_URL; ?>';
-			var siteurl = '<?php echo site_url(); ?>';
-		</script>
+			<script type="text/javascript">
+				var adminurl = '<?php echo ADMIN_MENU_URL; ?>';
+				var siteurl = '<?php echo site_url(); ?>';
+			</script>
 		<?php
 	}
 
@@ -181,16 +177,17 @@ class PL_Js_Helper {
 	}
 
 	public static function customizer() {
-		self::register_enqueue_if_not('customizer', trailingslashit(PL_JS_PUB_URL) . 'customizer.js', array('jquery'));
+		self::register_enqueue_if_not('customizer', trailingslashit(PL_JS_ADMIN_URL) . 'customizer/customizer.js', array('jquery'));
 		if ( PL_Customizer_Helper::is_onboarding() ) {
-			self::register_enqueue_if_not('onboard', trailingslashit(PL_JS_PUB_URL) . 'onboard.js', array('jquery'));
+			self::register_enqueue_if_not('onboard', trailingslashit(PL_JS_ADMIN_URL) . 'customizer/onboard.js', array('jquery'));
 		}
 
-		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) . 'admin/global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
-		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+		self::register_enqueue_if_not('global', trailingslashit(PL_JS_ADMIN_URL) . 'global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_ADMIN_URL) . 'free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 
-		if ( PL_Bootup::is_theme_switched() && !PL_Customizer_Helper::is_onboarding() ) {
-			self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+		if ( isset($_GET['theme_changed']) && $_GET['theme_changed'] == 'true' && !PL_Customizer_Helper::is_onboarding() ) {
+			PL_Bootup::theme_switch_user_prompt();
+			self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_ADMIN_URL) . 'theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 	}
 

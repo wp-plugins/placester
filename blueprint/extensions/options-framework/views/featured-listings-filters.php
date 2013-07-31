@@ -8,9 +8,11 @@
 			<label for="featured-listing-city-filter">City</label>
 			<select id="featured-listing-city-filter" name="location[locality]">
 				<?php $cities = PLS_Plugin_API::get_location_list('locality');
-					foreach ($cities as $key => $v) {
-						echo '<option value="' . $key . '">' . $v . '</option>';
-					} 
+					if (!empty($cities)) {
+						foreach ($cities as $key => $v) {
+							echo '<option value="' . $key . '">' . $v . '</option>';
+						}
+					}
 				?>
 			</select>
 		</div>
@@ -19,9 +21,11 @@
 			<label for="featured-listing-zip-filter">Zip Code</label>
 			<select id="featured-listing-zip-filter" name="location[postal]">
 				<?php $zip = PLS_Plugin_API::get_location_list('postal');
-					foreach ($zip as $key => $v) {
-						echo '<option value="' . $key . '">' . $v . '</option>';
-					} 
+					if (!empty($zip)) {
+						foreach ($zip as $key => $v) {
+							echo '<option value="' . $key . '">' . $v . '</option>';
+						}
+					}
 				?>
 			</select>
 		</div>

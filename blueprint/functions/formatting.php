@@ -733,6 +733,8 @@ class PLS_Format {
 
   static public function get_lat_lng_of_address ($address) {
 		$url = 'http://maps.googleapis.com/maps/api/geocode/json?address='.$address.'&sensor=false';
+		$url = str_replace(',', '', $url);
+		$url = str_replace(' ', '+', $url);
 		$source = file_get_contents($url);
 		$obj = json_decode($source);
 		$lat_lng_array['lat'] = $obj->results[0]->geometry->location->lat;

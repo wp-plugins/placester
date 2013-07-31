@@ -97,8 +97,17 @@ $PL_API_LISTINGS = array(
 						'method' => 'locations_for_options',
 						'params' => array('county', false)
 					)
-				)
+				),
+				'address'  => array(
+					'label' => 'Street',
+					'type' => 'text',
+					'group' => 'location'
+				),
 				
+			),
+			'rets' => array(
+				'aid' => array('type' => 'text', 'group' => 'basic', 'label' => 'Agent ID'),
+				'oid' => array('type' => 'text', 'group' => 'basic', 'label' => 'Office ID'),
 			),
 			// binds to keys / values of all attributes (cur + uncur)
 			'metadata' => array(
@@ -181,24 +190,14 @@ $PL_API_LISTINGS = array(
                 'price'  => array(),// => array('type' => 'text', 'group' => 'basic'),
                 'max_price' => array(
                 	'label' => 'Max Price',
-	                'type' => 'select',
+	                'type' => 'text',
 	                'group' => 'basic',
-					'bound' => array(
-						'class' => 'PL_Listing_Helper',
-						'method' => 'pricing_min_options',
-						'params' => 'max'
-					)
 					
 	            ),
                 'min_price' => array(
                 	'label' => 'Min Price',
-	                'type' => 'select',
-	                'group' => 'basic',
-					'bound' => array(
-						'class' => 'PL_Listing_Helper',
-						'method' => 'pricing_min_options',
-						'params' => 'min'
-					)
+	                'type' => 'text',
+	                'group' => 'basic'
 					
 	            ),
                 'sqft' => array(),// => array('type' => 'text', 'group' => 'basic'),
@@ -380,7 +379,7 @@ $PL_API_LISTINGS = array(
                 'avail_on' => array('type' => 'date', 'group' => 'basic details', 'label' => 'Available On'),
                 'desc' => array('type' => 'textarea', 'group' => 'description', 'label' => 'Description'),
                 //rentals
-                'lse_trms' => array('type' => 'select', 'options' => array('false' => 'Not Set', 'per_mnt' => 'Per Month','per_ngt' => 'Per Month', 'per_wk' => 'Per Week', 'per_yr' => 'Per Year'), 'group' => 'Transaction Details','label' => 'Lease Terms'),
+                'lse_trms' => array('type' => 'select', 'options' => array('false' => 'Not Set', 'per_mnt' => 'Per Month','per_ngt' => 'Per Night', 'per_wk' => 'Per Week', 'per_yr' => 'Per Year'), 'group' => 'Transaction Details','label' => 'Lease Terms'),
                 'lse_type' => array('type' => 'select', 'options' => array('false' => 'Not Set', 'ind_grs' => 'Full Service','ind_grs' => 'Industrial Gross', 'mod_grs' => 'Modified Gross', 'mod_net' => 'Modified Net', 'na' => 'N/A', 'other' => 'Other' ), 'group' => 'Transaction Details','label' => 'Lease Type'),
                 'sublse' => array('type' => 'checkbox', 'group' => 'Transaction Details','label' => 'Sublease'),
                 'rate_unit' => array('type' => 'select', 'options' => array('false' => 'Not Set', 'amt_mnt' => 'Amount/Month','amt_yr' => 'Amount/Year', 'sf_mnt' => 'Sqft/Month', 'sf_yr' => 'Sqft/Year'), 'group' => 'Transaction Details','label' => 'Rental Rate'),

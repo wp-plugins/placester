@@ -96,7 +96,6 @@ class PL_Helper_User {
 		return $response;
 	}
 
-
 	/*
 	 * Returns rendered HTML for use in dialogs regarding plugin activation
 	 */
@@ -117,89 +116,77 @@ class PL_Helper_User {
 		die();
 	}
 
-
 	/*
 	 * Get/Setter callbacks for generic plugin settings
 	 */
 
 	public static function ajax_log_errors() {
-		if ( $_POST['report_errors'] == 'true') {
-			$report_errors = 1;
-		} else {
-			$report_errors = 0;
+		$report_errors = ($_POST['report_errors'] == 'true') ? true : false;
+		$result = PL_Option_Helper::set_log_errors($report_errors);
+
+		if ($result) {
+			$action = ($report_errors ? 'on' : 'off');
+			$message = "You successfully turned {$action} error reporting";
+		} 
+		else {
+			$message = 'There was an error -- please try again';
 		}
-		$api_response = PL_Option_Helper::set_log_errors($report_errors);
-		if ($api_response) {
-			if ($report_errors) {
-				echo json_encode(array('result' => true, 'message' => 'You successfully turned on error reporting'));
-			} else {
-				echo json_encode(array('result' => true, 'message' => 'You successfully turned off errror reporting'));
-			}
-		} else {
-			echo json_encode(array('result' => false, 'message' => 'There was an error. Please try again.'));
-		}
+
+		echo json_encode(array('result' => $result, 'message' => $message));
 		die();
 	}
 
 	public static function ajax_block_address() {
-		if ( $_POST['use_block_address'] == 'true') {
-			$block_address = 1;
-		} else {
-			$block_address = 0;
+		$block_address = ($_POST['use_block_address'] == 'true') ? true : false;
+		$result = PL_Option_Helper::set_block_address($block_address);
+
+		if ($result) {
+			// All stored property pages must be erased, as their addresses will likely change...
+			PL_Pages::delete_all();
+
+			$action = ($block_address ? 'on' : 'off');
+			$message = "You successfully turned {$action} block addresses";
+		} 
+		else {
+			$message = 'There was an error -- please try again.';
 		}
-		$api_response = PL_Option_Helper::set_block_address($block_address);
-		if ($api_response) {
-			PL_Pages::delete_all();		
-			if ($block_address) {
-				echo json_encode(array('result' => true, 'message' => 'You successfully turned on block addresses'));
-			} else {
-				echo json_encode(array('result' => true, 'message' => 'You successfully turned off block addresses'));
-			}
-		} else {
-			echo json_encode( array('result' => false, 'message' => 'There was an error. Please try again.') );
-		}
+
+		echo json_encode(array('result' => $result, 'message' => $message));
 		die();
 	}
 
 	public static function set_default_country() {
-		if (isset($_POST['country'])) {
-			$response = PL_Option_Helper::set_default_country($_POST['country']);
-			if ($response) {
-				echo json_encode(array('result' => true, 'message' => 'You successfully saved the default country'));
-			} else {
-				echo json_encode(array('result' => true, 'message' => 'Thats already your default country'));
-			}
-		} else {
-			echo json_encode( array('result' => false, 'message' => 'There was an error. Country was not provided') );
+		if (!empty($_POST['country'])) {
+			$result = PL_Option_Helper::set_default_country($_POST['country']);
+			$message = ($result ? 'You successfully saved the default country' : 'That\'s already your default country');
+		} 
+		else {
+			$message = 'There was an error -- country was not provided';
 		}
+
+		echo json_encode(array('result' => $result, 'message' => $message));
 		die();
 	}
 
 	public static function get_default_country() {
 		$response = PL_Option_Helper::get_default_country();
-		if (empty($response)) {
-			return array('default_country' => 'US');
-		} 
-		return array('default_country' => $response);
+		if (empty($response)) 
+			{ $response ='US'; }
 		
+		return array('default_country' => $response);
 	}
 	
 	public static function enable_community_pages() {
-		$enable_pages = 1; 
-		if( $_POST['enable_pages'] === 'false' || ! $_POST['enable_pages'] ) {
-			$enable_pages = 0;
+		$enable_pages = true; 
+		if ($_POST['enable_pages'] === 'false' || !$_POST['enable_pages']) { 
+			$enable_pages = false; 
 		}
 		 
 		$updated = PL_Option_Helper::set_community_pages($enable_pages);
-		$result = true;
-		if( ! $updated || ! $enable_pages ) $result = false;
-
-		// TODO: some bad caching occurs here, do fix 
-		if( $result ) {
-			echo json_encode(array('result' => true, 'message' => 'You successfully enabled community pages'));
-		} else {
-			echo json_encode(array('result' => false, 'message' => 'You successfully disabled community pages'));
-		}
+		$result = (!$updated || !$enable_pages) ? false : true;
+		$action = ($result ? 'enabled' : 'disabled');
+		
+		echo json_encode(array('result' => $result, 'message' => "You successfully {$action} community pages"));
 		die();
 	}
 

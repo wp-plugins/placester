@@ -1,5 +1,5 @@
 <?php
-global $listing_customizer_subpages, $page_now, $plugin_page;
+global $shortcode_subpages, $page_now, $plugin_page;
 
 $action = 'edit';
 $ID = 'pl_listing_template__1';
@@ -36,6 +36,7 @@ $tpl_args = PL_Listing_Customizer::get_args();
 
 ?>
 <div class="wrap pl-sc-wrap">
+	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Listing Details Customizer'); ?>
 
 	<div id="pl_sc_tpl_edit">
 		<?php if ( $notice ) : ?>

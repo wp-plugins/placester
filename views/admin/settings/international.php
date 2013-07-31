@@ -7,7 +7,7 @@
 			<select name="" class="set_default_country" id="set_default_country_select">
 				<?php foreach (PL_Listing_Helper::supported_countries() as $key => $value): ?>
 					<?php if ($key === $default_country): ?>
-						<option value="<?php echo $key ?>" selected><?php echo $value ?></option>		
+						<option value="<?php echo $key ?>" selected="selected"><?php echo $value ?></option>		
 					<?php else: ?>
 						<option value="<?php echo $key ?>"><?php echo $value ?></option>	
 					<?php endif ?>

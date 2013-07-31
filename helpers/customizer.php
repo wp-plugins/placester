@@ -61,7 +61,7 @@ class PL_Customizer_Helper
 			}
 
 			// Conditionally display integration pane...
-			if ( !PL_Option_Helper::api_key() || PL_Integration_Helper::idx_prompt_completed() ) {
+			if ( !PL_Option_Helper::api_key() || PL_Integration_Helper::idx_prompt_completed() || PL_Integration_Helper::integration_pending() ) {
 				$excluded_opts []= 'mls';
 			}
 
@@ -189,7 +189,12 @@ class PL_Customizer_Helper
 			// Assume stylesheet and template name are the same for now...
 			switch_theme( $new_theme, $new_theme );
 
-			echo json_encode(array('success' => 'true'));
+			// Automatically add dummy post and menu data when the theme is switched from the customizer in onboarding mode...
+			if (isset($_POST['onboarding'])) {
+				PL_Bootup::add_dummy_data();
+			}
+
+			echo json_encode(array('success' => true));
 		}
 
 		die();

@@ -17,7 +17,7 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 				"id" => "followupboss",
 				"class" => "PL_CRM_Followupboss",
 				"display_name" => "Follow Up Boss",
-				"referral_url" => "https://app.followupboss.com/signup?p=placester",
+				"referral_url" => "http://plcstr.com/14gAU5y",
 				"cred_lookup_url" => "https://app.followupboss.com/settings/user",
 				"logo_img" => "follow-up-boss-color.png"
 			);

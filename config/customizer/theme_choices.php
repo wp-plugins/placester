@@ -57,7 +57,7 @@ $PL_CUSTOMIZER_THEME_INFO = array(
 		'pls-site-title' => 'header a#site-title',
 		'pls-site-subtitle' => '#search-label p',
 		'pls-user-email' => '.widget-pls-agent .email a',
-		'pls-user-phone' => 'header #header-phone, .widget-pls-agent .phone',
+		'pls-user-phone' => 'header #header-phone, .widget-pls-agent .phone'
 	),
 	'columbus' => array(
 		'pls-site-title' => 'header h1 a',

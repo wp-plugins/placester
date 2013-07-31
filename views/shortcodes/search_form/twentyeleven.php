@@ -76,76 +76,73 @@ $template = array(
 ',
 	
 'snippet_body' => '
-<form class="pls_search_form_listings">
-	<!-- <div> -->
-	<h3>Search Listings</h3>
+<!-- <div> -->
+<h3>Search Listings</h3>
 
-	<div class="form-grp">
-		<h6>Location</h6>
-		<div class="select-grp">
-			<label>City</label>
-			[cities]
-		</div>
-		<div class="select-grp">
-			<label>State</label>
-			[states]
-		</div>
-		<div class="select-grp">
-			<label>Zipcode</label>
-			[zips]
-		</div>
+<div class="form-grp">
+	<h6>Location</h6>
+	<div class="select-grp">
+		<label>City</label>
+		[cities]
 	</div>
-
-	<div class="form-grp">
-		<h6>Listing Type</h6>
-		<div id="purchase_type_container" class="select-grp">
-			<label>Transaction Type</label>
-			[purchase_types]
-		</div>
-		<div class="select-grp">
-			<label>Property Type</label>
-			[property_type]
-		</div>
-		<div class="select-grp">
-			<label>Zoning Type</label>
-			[zoning_types]
-		</div>
+	<div class="select-grp">
+		<label>State</label>
+		[states]
 	</div>
-
-	<div class="form-grp">
-		<h6>Price Range</h6>
-		<div id="min_price_container" class="select-grp">
-			<label>Price From</label>
-			[min_price]
-		</div>
-		<div id="max_price_container" class="select-grp">
-			<label>Price To</label>
-			[max_price]
-		</div>
+	<div class="select-grp">
+		<label>Zipcode</label>
+		[zips]
 	</div>
+</div>
 
-	<div class="form-grp">
-		<h6>Details</h6>
-		<div class="select-grp">
-			<label>Bed(s)</label>
-			[bedrooms]
-		</div>
-		<div class="select-grp">
-			<label>Bath(s)</label>
-			[bathrooms]
-		</div>
+<div class="form-grp">
+	<h6>Listing Type</h6>
+	<div id="purchase_type_container" class="select-grp">
+		<label>Transaction Type</label>
+		[purchase_types]
 	</div>
-
-	<!-- </div> -->
-	<div class="clr"></div>
-
-	<input type="submit" name="submit" value="Search Now!" id="search-button">
-
-	<div class="search_results">
-		<span id="pls_num_results"></span> listings match your search
+	<div class="select-grp">
+		<label>Property Type</label>
+		[property_type]
 	</div>
+	<div class="select-grp">
+		<label>Zoning Type</label>
+		[zoning_types]
+	</div>
+</div>
 
-</form>
+<div class="form-grp">
+	<h6>Price Range</h6>
+	<div id="min_price_container" class="select-grp">
+		<label>Price From</label>
+		[min_price]
+	</div>
+	<div id="max_price_container" class="select-grp">
+		<label>Price To</label>
+		[max_price]
+	</div>
+</div>
+
+<div class="form-grp">
+	<h6>Details</h6>
+	<div class="select-grp">
+		<label>Bed(s)</label>
+		[bedrooms]
+	</div>
+	<div class="select-grp">
+		<label>Bath(s)</label>
+		[bathrooms]
+	</div>
+</div>
+
+<!-- </div> -->
+<div class="clr"></div>
+
+<input type="submit" name="submit" value="Search Now!" id="search-button">
+
+<div class="search_results">
+	<span id="pls_num_results"></span> listings match your search
+</div>
 ',
 
 'before_widget' => '<div class="pl-tpl-sf-twentyeleven">',

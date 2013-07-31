@@ -15,6 +15,10 @@ $curr_type = '';
 <section class="shortcode_ref">
 	<select class="snippet_list <?php echo $class;?>"
 	<?php if( ! empty( $select_name ) ) { echo 'name="'. $select_name . '"'; } ?>>
+		<option value="" class=""
+			<?php echo $value == '' ? 'selected="selected"' : '' ?>>
+			none
+		</option>
 		<?php $count = count($pl_snippet_list);?>
 		<?php for ($i=0; $i<=$count; ): ?>
 
