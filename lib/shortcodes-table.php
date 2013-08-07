@@ -385,13 +385,13 @@ class PL_Shortcodes_Table extends WP_List_Table {
 
 				case 'type':
 					?>
-					<td <?php echo $attributes ?>><strong><?php echo $post->shortcode?></strong><br/><?php echo '['.$post->type.']'?></td>
+					<td <?php echo $attributes ?>><strong><?php echo $post->shortcode?></strong><br /><?php echo '['.$post->type.']'?></td>
 					<?php
 					break;
 
 				case 'shortcode':
 					?>
-					<td <?php echo $attributes ?>><?php echo $shortcode_str;?><br/><?php echo $embed_str;?></td>
+					<td <?php echo $attributes ?>><?php echo $shortcode_str;?><br /><?php echo $embed_str;?></td>
 					<?php
 					break;
 

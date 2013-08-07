@@ -5,9 +5,12 @@ $template = array(
 'css' => '
 /*
 This template has no html body because it uses the built in listing renderer.
-It can be used as a guide for making a custom template that styles output created by the built in renderer. 
+It can be used as a guide for making a custom template that styles output created by the built in renderer.
 */
 .pl-tpl-sl-twentyten {
+}
+.pl-tpl-sl-twentyten .clear {
+	clear: both;
 }
 .pl-tpl-sl-twentyten form {
 	clear: both;
@@ -21,11 +24,12 @@ It can be used as a guide for making a custom template that styles output create
 	clear: both !important;
 	margin: 0 !important;
 	border: none !important;
-	padding: 10px 0 5px 0 !important;
+	padding: 10px 0 25px 0 !important;
 	background: none !important;
 	font-weight: 300 !important;
 	overflow: hidden !important;
 	font-size: 14px;
+	position: relative;
 }
 /* thumbnail */
 .pl-tpl-sl-twentyten .listing-thumbnail {
@@ -95,9 +99,10 @@ It can be used as a guide for making a custom template that styles output create
 	font-weight: bold !important;
 	font-family: Georgia,"Bitstream Charter",serif !important;
 }
-.pl-tpl-sl-twentyten p.listing-description {
+.pl-tpl-sl-twentyten p.listing-description,
+.pl-tpl-sl-twentyten .compliance-wrapper p {	
 	float: left !important;
-	margin: 0 !important;
+	margin: 0 0 .2em 0 !important;
 	max-height: 52px !important;
 	max-width: 370px !important;
 	line-height: 17px !important;
@@ -105,12 +110,19 @@ It can be used as a guide for making a custom template that styles output create
 	font-family: Georgia,"Bitstream Charter",serif !important;
 	overflow: hidden !important;
 }
+.pl-tpl-sl-twentyten .compliance-wrapper {
+	float: right;
+}
+.pl-tpl-sl-twentyten .compliance-wrapper p {
+	font-size: .8em;	
+}
 .pl-tpl-sl-twentyten .actions {
-	float: right !important;
-	clear: none !important;
+	float: none !important;
+	position: absolute;
+	bottom: 0;
+	right: 0;
 	margin: 0 !important;
 	padding: 0 !important;
-	width: auto !important;
 }
 .pl-tpl-sl-twentyten a.more-link {
 	float: right !important;
@@ -120,7 +132,7 @@ It can be used as a guide for making a custom template that styles output create
 .pl-tpl-sl-twentyten .pl_add_remove_lead_favorites {
 	float: right !important;
 }
-		
+
 /* controls */
 .pl-tpl-sl-twentyten .sort_item {
 	float: left;
@@ -138,7 +150,7 @@ It can be used as a guide for making a custom template that styles output create
 }
 .pl-tpl-sl-twentyten .dataTables_length {
 	float: right;
-	margin: 0 0 0 0;
+	margin: -24px 0 0 0;
 	padding: 0;
 }
 .pl-tpl-sl-twentyten .dataTables_length label {
@@ -150,7 +162,7 @@ It can be used as a guide for making a custom template that styles output create
 	font-weight: 500;
 }
 .pl-tpl-sl-twentyten .dataTables_paginate a.paginate_active {
-	font-weight: 300;
+	font-weight: 800;
 }
 
 /* table formatting */
@@ -185,6 +197,6 @@ It can be used as a guide for making a custom template that styles output create
 
 'before_widget' => '<div class="pl-tpl-sl-twentyten">',
 
-'after_widget' => '</div>',
+'after_widget' => '<div class="clear"></div></div>',
 
 );

@@ -39,7 +39,7 @@ $template = array(
 	margin: 0 !important;
 	padding: 0 !important;
 	width: auto !important;
-}		
+}
 ',
 
 'snippet_body' => '

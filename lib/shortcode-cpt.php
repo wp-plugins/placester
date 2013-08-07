@@ -356,7 +356,7 @@ class PL_Shortcode_CPT {
 								update_post_meta($id, $key, 'true');
 							}
 							break;
-						case 'numeric':
+						case 'int':
 							if( !empty($args) && !empty($args[$option])) {
 								$args[$option] = (int)$args[$option];
 							}
@@ -547,6 +547,10 @@ class PL_Shortcode_CPT {
 
 			// get builtin/default templates
 			$tpls = self::get_builtin_templates($shortcode);
+			if (!in_array($id, $tpls)) {
+				// use twenty ten if there's no template or it's not found
+				$id = 'twentyten';
+			}	
 			if (in_array($id, $tpls)) {
 				$template = array();
 				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $id . '.php');

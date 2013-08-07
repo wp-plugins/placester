@@ -37,7 +37,8 @@ class PL_Form {
 		foreach ($form_group as $group => $elements) {
 			if (empty($group)) { $section_id = 'custom'; } else {$section_id = $group; }
 			$form = apply_filters( 'pl_form_section_before', $form, $section_index, $section_count );
-			$form .= "<section class='form_group' id='".str_replace(" ","_",$section_id)."'>";
+			$gid = str_replace(" ","_",$section_id);
+			$form .= '<section class="form_group form_group_'.$gid.'" id="'.$gid.'">';
 			if (!empty($group)) {
 				$form .= $title ? "<h3>" . ucwords($group) . "</h3>" : '';
 			}
@@ -70,7 +71,7 @@ class PL_Form {
 		if ($type == 'checkbox') {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
-					<input id="<?php echo $id ?>" type="<?php echo $type ?>" name="<?php echo $name ?>" value="true" <?php echo $value ? 'checked' : '' ?>/>
+					<input id="<?php echo $id ?>" type="<?php echo $type ?>" name="<?php echo $name ?>" value="true" <?php echo $value ? 'checked' : '' ?> />
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 				</section>
 			<?php	
@@ -89,7 +90,7 @@ class PL_Form {
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<select name="<?php echo $name ?>" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
 						<?php foreach ($options as $key => $text): ?>
-							<option value="<?php echo $key ?>" <?php echo ($key == $value ? 'selected="selected"' : '' ) ?>><?php echo $text ?></option>
+							<option value="<?php echo htmlentities($key) ?>" <?php echo ($key == $value ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text) ?></option>
 						<?php endforeach ?>
 					</select>
 				</section>
@@ -100,23 +101,23 @@ class PL_Form {
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<select name="<?php echo $name ?>[]" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
 						<?php foreach ($options as $key => $text): ?>
-							<option value="<?php echo $key ?>" <?php echo ((is_array($value) && in_array($key, $value) ) ? 'selected="selected"' : '' ) ?>><?php echo $text ?></option>
+							<option value="<?php echo htmlentities($key) ?>" <?php echo ((is_array($value) && in_array($key, $value) ) ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text) ?></option>
 						<?php endforeach ?>
 					</select>
 				</section>
 			<?php	
-		} elseif( $type == 'text' || $type == 'numeric' ) {
+		} elseif( $type == 'text' || $type == 'int' ) {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
-					<input id="<?php echo $id ?>" type="text" name="<?php echo $name ?>" value="<?php echo $value ?>" />
+					<input id="<?php echo $id ?>" class="form_item_<?php echo $type ?>" type="text" name="<?php echo $name ?>" value="<?php echo htmlentities($value) ?>" data-attr_type="<?php echo $type ?>" />
 				</section>
 			<?php
 		} elseif ( $type == 'date') {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
-					<input id="<?php echo $id ?>_picker" class="trigger_datepicker" type="text" name="<?php echo $name ?>" <?php echo !empty($value) ? 'value="'.$value.'"' : ''; ?> />
+					<input id="<?php echo $id ?>_picker" class="form_item_date" type="text" name="<?php echo $name ?>" <?php echo !empty($value) ? 'value="'.$value.'"' : ''; ?> />
 				</section>
 			<?php
 		} elseif( $type == 'image' ) {
@@ -130,7 +131,7 @@ class PL_Form {
 			$parent = empty($parent) ? $item : $parent . '['.$item.']';
 			$bundle = '';
 			foreach (self::prepare_custom_item($options, $method, $parent) as $key => $form_items) {
-				$bundle .= "<section class='form_group' id='".$id.'-'.preg_replace('/[^a-z]/i', '_', $key)."'>";
+				$bundle .= '<section class="form_subgroup" id="'.$id.'-'.preg_replace('/[^a-z]/i', '_', $key).'">';
 				if (self::$args['title']) {
 					$bundle .= "<h3>" . ucwords($key) . "</h3>";
 				}

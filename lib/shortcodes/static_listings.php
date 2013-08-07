@@ -22,8 +22,8 @@ class PL_Static_Listing_CPT extends PL_Search_Listing_CPT {
 
 	protected $options = array(
 		'context'				=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
-		'width'					=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
-		'height'				=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
+		'width'					=> array( 'type' => 'int', 'label' => 'Width(px)', 'default' => 250 ),
+		'height'				=> array( 'type' => 'int', 'label' => 'Height(px)', 'default' => 250 ),
 		'widget_class'			=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
 		'sort_by_options'		=> array( 'type' => 'multiselect', 'label' => 'Items in "Sort By" list', 
 			'options'	=> array(	// options we always want to show even if they are not part of the filter set
@@ -42,7 +42,7 @@ class PL_Static_Listing_CPT extends PL_Search_Listing_CPT {
 		'hide_sort_direction'	=> array( 'type' => 'checkbox', 'label' => 'Hide "Sort Direction" dropdown', 'default' => false ),
 		'hide_num_results'		=> array( 'type' => 'checkbox', 'label' => 'Hide "Show # entries" dropdown', 'default' => false ),
 		// TODO: sync up with js list			
-		'query_limit'			=> array( 'type' => 'numeric', 'label' => 'Number of results to display', 'default' => 10 ),
+		'query_limit'			=> array( 'type' => 'int', 'label' => 'Number of results to display', 'default' => 10 ),
 	);
 
 

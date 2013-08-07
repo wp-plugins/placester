@@ -30,30 +30,36 @@ class PL_Component_Entity {
 		foreach ($featured_templates as $template => $type) {
 			add_filter( 'pls_listing_featured_listings_' . $template, array(__CLASS__,'featured_listings_templates'), 10, 3 );
 		}
-
+		add_filter( 'pls_listing_featured_listings_shortcode', array(__CLASS__,'featured_listings_templates'), 10, 3 );
+		
 		$search_form_templates = PL_Shortcode_CPT::template_list('search_form', true);
 		foreach ($search_form_templates as $id => $attr) {
 			add_filter( 'pls_listings_search_form_inner_' . $id, array(__CLASS__,'search_form_inner_template'), 10, 5 );
 			add_filter( 'pls_listings_search_form_outer_' . $id, array(__CLASS__,'search_form_outer_template'), 10, 7 );
 		}
-
+		add_filter( 'pls_listings_search_form_inner_shortcode', array(__CLASS__,'search_form_inner_template'), 10, 5 );
+		add_filter( 'pls_listings_search_form_outer_shortcode', array(__CLASS__,'search_form_outer_template'), 10, 7 );
+		
 		$listing_slideshow_templates = PL_Shortcode_CPT::template_list('listing_slideshow', true);
 		foreach ($listing_slideshow_templates as $id => $attr) {
 			add_filter( 'pls_slideshow_single_caption_' . $id, array( __CLASS__, 'listing_slideshow_templates' ), 10, 5 );
 			// add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
 			// add_filter( 'pls_slideshow_data_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 3 );
 		}
-
+		add_filter( 'pls_slideshow_single_caption_shortcode', array( __CLASS__, 'listing_slideshow_templates' ), 10, 5 );
+		
 		$search_listings_templates = PL_Shortcode_CPT::template_list('search_listings', true);
 		foreach ($search_listings_templates as $id => $attr) {
 			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $id, array(__CLASS__,'search_listings_templates'), 10, 3 );
 		}
-
+		//add_filter( 'pls_listings_list_ajax_item_html_search_listings_shortcode', array(__CLASS__,'search_listings_templates'), 10, 3 );
+		
 		$static_listings_templates = PL_Shortcode_CPT::template_list('static_listings', true);
 		foreach ($static_listings_templates as $id => $attr) {
 			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $id, array(__CLASS__, 'search_listings_templates'), 10, 3 );
 		}
-
+		//add_filter( 'pls_listings_list_ajax_item_html_static_listings_shortcode', array(__CLASS__, 'search_listings_templates'), 10, 3 );
+		
 		$neighborhood_templates = PL_Shortcode_CPT::template_list('pl_neighborhood', true);
 		foreach ($neighborhood_templates as $id => $attr) {
 			add_filter( 'pls_neighborhood_html_' . $id, array(__CLASS__, 'neighborhood_templates'), 10, 4 );
@@ -75,7 +81,7 @@ class PL_Component_Entity {
 				unset($atts['id']);
 			}
 		}
-		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
+		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'limit' => 0, 'sort_type' => ''));
 		
 		// add template formatting
 		$header = $footer = '';
@@ -946,6 +952,10 @@ class PL_Component_Entity {
 		if( is_array( $filters ) ) {
 			foreach( $filters as $top_key => $top_value ) {
 				if( is_array( $top_value ) ) {
+					if ($top_key == 'custom') {
+						// we store custom data as custom but it uses filter name metadata
+						$top_key = 'metadata';
+					}
 					foreach( $top_value as $key => $value ) {
 						echo 'listings.default_filters.push( { "name": "' . $top_key . '[' .  $key . ']", "value" : "'. $value . '" } );';
 					}
@@ -996,7 +1006,7 @@ class PL_Component_Entity {
 		if (empty($template['snippet_body'])) {
 			return $form;
 		}
-		return do_shortcode($template['snippet_body']);
+		return PL_Form_CPT::do_templatetags($template['snippet_body'], $form_html);
 	}
 
 	/**

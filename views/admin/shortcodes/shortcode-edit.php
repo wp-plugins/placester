@@ -16,7 +16,7 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 if (empty($action)) {
 	// show a transiton spinner page because while the page is loading
 	// TODO: load the settings options after page load instead.
-	PL_Router::router('shortcodes/loading.php', array('location'=>site_url($_SERVER['REQUEST_URI'].'&action=edit')));
+	PL_Router::router('shortcodes/loading.php', array('location'=>add_query_arg(array('action'=>'edit'))));
 	return;
 }
 
@@ -67,6 +67,14 @@ if (!empty($_POST['publish'])) {
 			else {
 				$data[$key] = $val;
 			}
+			if (!empty($data['custom'])) {
+				// remove min/max selectors
+				foreach($data['custom'] as $key=>$val) {
+					if (strpos($key, 'limit_')===0 && isset($data['custom'][$val.substr($key,6)])) {
+						unset($data['custom'][$key]);	
+					}
+				}
+			}
 		}
 		if (PL_Shortcode_CPT::save_shortcode($post_ID, $_POST['shortcode'], $data)) {
 			wp_redirect(admin_url('admin.php?page=placester_shortcodes'));
@@ -109,13 +117,16 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 		<?php if ( $message ) : ?>
 		<div id="message" class="updated"><p><?php echo $message; ?></p></div>
 		<?php endif; ?>
+		<script type="text/javascript">
+			var form_data = <?php echo json_encode($post) ?>;
+		</script>
 		<form name="sc_edit_form" action="<?php echo $form_link?>" method="post">
 			<?php wp_nonce_field($nonce_action); ?>
 			<input type="hidden" name="user_ID" value="<?php echo $user_ID; ?>" />
 			<input type="hidden" name="action" value="<?php echo esc_attr( $form_action ) ?>" />
 			<input type="hidden" name="originalaction" value="<?php echo esc_attr( $form_action ) ?>" />
 			<input type="hidden" name="ID" value="<?php echo esc_attr($post_ID) ?>" />
-
+			
 			<div id="poststuff">
 				<div id="post-body" class="metabox-holder columns-2">
 					<div id="post-body-content">

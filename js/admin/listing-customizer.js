@@ -17,8 +17,12 @@ jQuery(document).ready(function($){
 	$('#pl_sc_tpl_edit input[type="submit"]').click(function() {
 		_changesMade = false;
 	});
+	$('.subcode').click(function(e) {
+		e.preventDefault();
+		$(this).next('.subcode-help').toggle();
+	});
 	// Add CodeMirror support to edit boxes
-	$('#pl_template_block textarea').each(function() {
+	$('.pl_template_block textarea').each(function() {
 		var cm = CodeMirror.fromTextArea(document.getElementById($(this).attr('id')), {
 		    mode: $(this).closest('section').hasClass('mime_css')?"text/css":"text/html",
 		    lineNumbers: true,

@@ -236,7 +236,7 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 
 				case 'shortcode':
 					?>
-					<td <?php echo $attributes ?>><strong><?php echo $template['shortcode_name']?></strong><br/><?php echo '['.$template['shortcode'].']'?></td>
+					<td <?php echo $attributes ?>><strong><?php echo $template['shortcode_name']?></strong><br /><?php echo '['.$template['shortcode'].']'?></td>
 					<?php
 					break;
 

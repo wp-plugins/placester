@@ -48,7 +48,9 @@ class PL_Js_Helper {
 
 		// If no API key is set, load the following JS files for use by the wizard on ANY plugin settings page...
 		if (!PL_Option_Helper::api_key()) {
+			global $i_am_a_placester_theme;
 			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_ADMIN_URL) . 'sign-up.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+			wp_localize_script('sign-up', 'pl_signup_data', array('placester_theme' => $i_am_a_placester_theme, 'mls_int' => false));
 		}
 
 		if ($hook == 'placester_page_placester_properties') {

@@ -70,35 +70,34 @@ $tpl_args = PL_Listing_Customizer::get_args();
 								<div class="inside">
 							
 									<!-- Template Contents -->
-									<section id="pl_template_block" class="row-fluid lc-meta-section">
+									<section class="row-fluid lc-meta-section">
 							
 										<!-- Template HTML/CSS -->
 										<div class="span8">
-							
-											<?php
-											foreach($tpl_args['template'] as $field => $f_args) {
-												if ($action!='edit') {
-													$_POST[$field] = !empty($f_args['default']) ? $f_args['default'] : '';
-												}
-												else {
-													$_POST[$field] = !empty( $template[$field] ) ? $template[$field] : '';
-												}
-												$f_args['css'] = (!empty($f_args['css'])?$f_args['css'].' ':'').$field;
-												PL_Form::item($field, $f_args, 'POST', '', 'pl-lc-tpl-edit', true);
-											}?>
-							
+											<div class="pl_template_block">
+												<?php
+												foreach($tpl_args['template'] as $field => $f_args) {
+													if ($action!='edit') {
+														$_POST[$field] = !empty($f_args['default']) ? $f_args['default'] : '';
+													}
+													else {
+														$_POST[$field] = !empty( $template[$field] ) ? $template[$field] : '';
+													}
+													$f_args['css'] = (!empty($f_args['css'])?$f_args['css'].' ':'').$field;
+													PL_Form::item($field, $f_args, 'POST', '', 'pl-lc-tpl-edit', true);
+												}?>
+											</div>
 										</div>
-							
+											
 										<!-- Search Sub-Shortcodes -->
 										<div id="subshortcodes" class="span2">
 											<h3>Template Tags</h3>
 											<?php $subcodes = '';?>
 											<?php foreach($tpl_args['subcodes'] as $subcode=>$atts): ?>
-												<?php $subcodes .= '<span class="subcode">[' . $subcode . ']</span>';?>
+												<?php $subcodes .= '<h4 class="subcode"><a href="#">[' . $subcode . ']</a></h4>';?>
 												<?php if (!empty($atts['help'])):?>
-													<?php $subcodes .= '<br /><span class="description subcode-help">'. $atts['help'] .'</span>';?>
+													<?php $subcodes .= '<div class="description subcode-help">'. $atts['help'] .'</div>';?>
 												<?php endif;?>
-												<?php $subcodes .= '<br />';?>
 											<?php endforeach;?>
 											<p>Use the following tags to customize your template. When the template is rendered in a web page, the tag will be replaced with the corresponding attribute of the property listing:<br /><?php echo $subcodes?></p>
 										</div>

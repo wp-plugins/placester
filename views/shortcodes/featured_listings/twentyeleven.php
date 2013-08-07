@@ -113,9 +113,9 @@ $template = array(
 .pl-tpl-fl-twentyeleven p.mls {
 	font-size: 12px !important;
 }
-/* description ands compliance */
+/* description and compliance */
 .pl-tpl-fl-twentyeleven p.desc,
-.pl-tpl-fl-twentyeleven p.compliance {
+.pl-tpl-fl-twentyeleven .compliance-wrapper p {
 	margin-bottom: 5px !important;
 	max-height: 52px !important;
 	max-width: 370px !important;
@@ -123,11 +123,14 @@ $template = array(
 	font-size: 14px !important;
 	overflow: hidden !important;
 }
+.pl-tpl-fl-twentyeleven .compliance-wrapper p {
+	font-size: .8em !important;
+}
 .pl-tpl-fl-twentyeleven .actions {
 	display: block !important;
 	clear: both !important;
 	float: right !important;
-	margin: -10px 0 0 0 !important;
+	margin: 0 !important;
 	padding: 0 !important;
 	font-size: 15px !important;
 	text-decoration: none !important;
@@ -140,7 +143,7 @@ $template = array(
 	padding: 0 !important;
 }
 .pl-tpl-fl-twentyeleven .view-details a {
-	margin-left: 2em;
+	margin-left: 2em !important;
 }
 ',
 
@@ -156,9 +159,9 @@ $template = array(
 		<div class="listing-thumbnail">
 			[image]
 		</div>
-		
+
 		<div class="listing-item-details">
-		
+
 			<div class="basic-details">
 				<ul>
 					<li>[beds]<span> Bed(s)</span></li>
@@ -171,12 +174,12 @@ $template = array(
 			</div>
 
 			<p class="desc">[desc]</p>
-			<p class="compliance">[compliance]</p>
-		
+			[compliance]
+
 		</div><!--listing-item-details-->
 		<div class="actions">
 			[favorite_link_toggle]
-			<div class="view-details"> 
+			<div class="view-details">
 				<a href="[url]">View Listing Details</a>
 			</div>
 		</div>

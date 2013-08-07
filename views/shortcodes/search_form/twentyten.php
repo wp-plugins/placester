@@ -1,5 +1,5 @@
 <?php
- 
+
 $template = array(
 
 'css' => '
@@ -76,7 +76,7 @@ $template = array(
 	font-family: "Helvetica Neue";
 }
 ',
-	
+
 'snippet_body' => '
 <!-- <div> -->
 <h3>Search Listings</h3>

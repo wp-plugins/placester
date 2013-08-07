@@ -1,11 +1,11 @@
 <p class="message"><b>Note:</b><i> Changing your Placester API Key will completely switch all the listings on your website and delete all your current listing pages. <strong>This might not be what you want.</strong></i></p>
 <p>Use this to switch Please enter a valid Placester.com api key. Here's how to find one:</p>
-<ul class="existing_placester_steps">
-	<li>1. Login to Placester.com <a href="https://placester.com/user/login">here</a></li>
-	<li>2. Navigate to your user api keys <a href="https://placester.com/user/apikeys">here</a></li>
-	<li>3. Copy your api key</li>
-	<li>4. Paste it in the box below</li>
-</ul>
+<ol class="existing_placester_steps">
+	<li>Login to Placester.com <a href="https://placester.com/user/login">here</a></li>
+	<li>Navigate to your user api keys <a href="https://placester.com/user/apikeys">here</a></li>
+	<li>Copy your api key</li>
+	<li>Paste it in the box below</li>
+</ol>
 <div>
 	<div id="api_key_form">
   <div id="api_key_message"></div>

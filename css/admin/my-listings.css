@@ -53,11 +53,10 @@
   float: left;
   padding: 5px;
 }
-section.pls_search_form {
-  height: 36px;
-}
-.form_group {
-  float: left;
+
+.form_group,
+.form_subgroup {
+  float: none;
   clear: both;
   margin: 10px 0;
 }
@@ -79,6 +78,7 @@ section.pls_search_form {
 }
 
 .form_group h3 {
+  clear: both;
   float: left;
   width: 100px;
   margin: 10px 10px 10px 0;
