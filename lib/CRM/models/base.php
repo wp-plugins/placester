@@ -115,7 +115,7 @@ abstract class PL_CRM_Base {
 
 	abstract public function formatContactData ($value, $format);
 
-	abstract public function getContacts ($filters);
+	abstract public function getContacts ($filters = array());
 
 	abstract public function getContact ($id);
 

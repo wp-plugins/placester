@@ -231,7 +231,7 @@ jQuery(document).ready(function($) {
 						result = result.html;
 					}
 				}
-				$('#signup_wizard').dialog('close');
+				if ($('#signup_wizard').is(':data(dialog)')) $('#signup_wizard').dialog('close');
 				$('#signup_wizard').html(result);
 				$('#signup_wizard').dialog({
 					autoOpen: true,

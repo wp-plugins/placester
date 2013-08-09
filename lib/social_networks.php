@@ -47,7 +47,7 @@ class PL_Social_Networks {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_post_metaboxes' ) );
 		add_action( 'save_post', array( __CLASS__, 'save_post_social_messages' ) );
 		
-		add_action( 'admin_menu', array( __CLASS__, 'add_social_settings_page' ) );
+		// add_action( 'admin_menu', array( __CLASS__, 'add_social_settings_page' ) );
 		
 		add_action( 'pls_add_future_post', array( __CLASS__, 'publish_post_scheduled_delay' ), 10, 2 );
 		

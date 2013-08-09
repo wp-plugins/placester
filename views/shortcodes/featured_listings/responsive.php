@@ -2,6 +2,7 @@
 $template = array(
 
 'css' => '
+.pl-tpl-sl-responsive .clear { clear: both; }
 .clearfix { *zoom: 1; }
 .clearfix:before { display: table; line-height: 0; content: ""; }
 .clearfix:after { display: table; line-height: 0; content: ""; clear: both; }
@@ -83,7 +84,8 @@ $template = array(
 /* Print */
 @media print { .visible-print { display: inherit !important; }
   .hidden-print { display: none !important; } }
-',
+.pl-tpl-footer .compliance-wrapper {margin: .2em 0;}
+.pl-tpl-footer .compliance-wrapper p {margin: 0 !important; padding: 0 !important; line-height: 1.2em; font-size: .8em;}',
 
 'snippet_body' => '
 <!-- Listing -->
@@ -106,8 +108,9 @@ $template = array(
 	</div>
 </div>
 ',
-s
+
 'before_widget'	=> '<div class="pl-tpl-fl-responsive non-row-wrapper">',
 
-'after_widget' => '</div>',
+'after_widget' => '<div class="pl-tpl-footer">[compliance]</div></div>',
+
 );

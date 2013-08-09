@@ -407,6 +407,14 @@ abstract class PL_SC_Base {
 		return ob_get_clean();
 	}
 
+	public static function wrap( $shortcode, $content = '' ) {
+		ob_start();
+		do_action( $shortcode . '_pre_header' );
+		echo $content;
+		do_action( $shortcode . '_post_footer' );
+		return ob_get_clean();
+	}
+	
 	private static function _option_explode($option) {
 		// TODO: regex?
 		$options = array_map('trim', explode(',', $option));

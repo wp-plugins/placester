@@ -131,9 +131,9 @@ form.pls_search_form_listings .search-item select, form.pls_search_form_listings
 		self::$singleton = parent::_init(__CLASS__);
 	}
 
-	public static function do_templatetags($content, $data) {
-		self::$form_data = $data;
-		return PL_SC_Base::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+	public static function do_templatetags($content, &$data) {
+		self::$form_data = &$data;
+		return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
 	}
 
 	public static function templatetag_callback($m) {
@@ -154,7 +154,7 @@ form.pls_search_form_listings .search-item select, form.pls_search_form_listings
 			if (!empty($attr['strict_match']) && $attr['strict_match']=='false')  {
 				$field .= self::form_item($attr['attribute'].'_match', array('type'=>'hidden'), 'like', $attr['group']);
 			}
-			return $field;
+			return self::wrap( 'search_form_sub', $field );
 		}
 		else {
 			return $m[0];

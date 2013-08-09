@@ -9,6 +9,22 @@ It can be used as a guide for making a custom template that styles output create
 */
 .pl-tpl-fl-twentyten {
 }
+.pl-tpl-fl-twentyten .clear {
+	clear: both;
+}
+.pl-tpl-fl-twentyten form {
+	clear: both;
+	padding: 1em 0 0 0;
+}
+.pl-tpl-fl-twentyten p {
+	display: block !important;
+	float: none !important;
+	border: none !important;
+	margin: 0 0 .1em 0 !important;
+	padding: 0 !important;
+	background: none !important;
+	line-height: 1.2em !important;
+}
 
 /* style each listing... */
 .pl-tpl-fl-twentyten .listing-item {
@@ -40,15 +56,6 @@ It can be used as a guide for making a custom template that styles output create
 	height: 120px !important;
 }
 /* defaults for text */
-.pl-tpl-fl-twentyten .listing-item-details p {
-	display: block !important;
-	float: none !important;
-	border: none !important;
-	margin: 0 0 .1em 0 !important;
-	padding: 0 !important;
-	background: none !important;
-	line-height: 1.2em !important;
-}
 .pl-tpl-fl-twentyten .listing-item-details a {
 	margin: 0 !important;
 	padding: 0 !important;
@@ -66,6 +73,7 @@ It can be used as a guide for making a custom template that styles output create
 	padding: 0 !important;
 }
 .pl-tpl-fl-twentyten p.h4 {
+	max-width: 570px !important;
 	font-size: 18px !important;
 }
 .pl-tpl-fl-twentyten .h4 a {
@@ -93,8 +101,9 @@ It can be used as a guide for making a custom template that styles output create
 	font-weight: bold !important;
 	font-family: Georgia,"Bitstream Charter",serif !important;
 }
+/* description and compliance */
 .pl-tpl-fl-twentyten p.listing-description,
-.pl-tpl-fl-twentyten .compliance-wrapper p {	
+.pl-tpl-fl-twentyten .listing-item .compliance-wrapper p {	
 	float: left !important;
 	margin: 0 0 .2em 0 !important;
 	max-height: 52px !important;
@@ -104,11 +113,15 @@ It can be used as a guide for making a custom template that styles output create
 	font-family: Georgia,"Bitstream Charter",serif !important;
 	overflow: hidden !important;
 }
-.pl-tpl-fl-twentyten .compliance-wrapper {
+.pl-tpl-fl-twentyten .listing-item .compliance-wrapper p,
+.pl-tpl-fl-twentyten .pl-tpl-footer .compliance-wrapper p {
+	font-size: .8em !important;
+}
+.pl-tpl-fl-twentyten .listing-item .compliance-wrapper {
 	float: right;
 }
-.pl-tpl-fl-twentyten .compliance-wrapper p {
-	font-size: .8em;	
+.pl-tpl-fl-twentyten .listing-item .clear {
+	clear: none;
 }
 .pl-tpl-fl-twentyten .actions {
 	float: none !important;
@@ -126,12 +139,18 @@ It can be used as a guide for making a custom template that styles output create
 .pl-tpl-fl-twentyten .pl_add_remove_lead_favorites {
 	float: right !important;
 }
+
+/* compliance -shortcode- in the footer */
+.pl-tpl-fl-twentyten .pl-tpl-footer .compliance-wrapper {
+	margin: .5em 0;
+	padding: 0;
+}
 ',
 
 'snippet_body' => '',
 
 'before_widget' => '<div class="pl-tpl-fl-twentyten">',
 
-'after_widget' => '</div>',
+'after_widget' => '<div class="pl-tpl-footer">[compliance]</div></div>',
 
 );

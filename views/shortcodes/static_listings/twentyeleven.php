@@ -9,6 +9,17 @@ $template = array(
 .pl-tpl-stl-twentyeleven .clear {
 	clear: both;
 }
+.pl-tpl-stl-twentyeleven p {
+	display: block !important;
+	float: none !important;
+	border: none !important;
+	margin: 0 0 .1em 0 !important;
+	padding: 0 !important;
+	background: none !important;
+	line-height: 1.2em !important;
+}
+		
+/* style each listing... */
 .pl-tpl-stl-twentyeleven .listing-item {
 	display: block !important;
 	float: none !important;
@@ -18,7 +29,6 @@ $template = array(
 	padding: 5px 0 !important;
 	width: 100% !important;
 	font-size: 14px !important;
-	font-weight: 300 !important;
 	overflow: hidden !important;
 }
 /* heading */
@@ -58,16 +68,6 @@ $template = array(
 	height: 120px !important;
 }
 /* details block */
-.pl-tpl-stl-twentyeleven .listing-item-details {
-}
-.pl-tpl-stl-twentyeleven .listing-item-details p {
-	float: none !important;
-	border: none !important;
-	margin: 0 0 .1em 0 !important;
-	padding: 0 !important;
-	background: none !important;
-	line-height: 1.2em !important;
-}
 .pl-tpl-stl-twentyeleven .listing-item-details ul {
 	float: none !important;
 	margin: 0 !important;
@@ -107,7 +107,7 @@ $template = array(
 }
 /* description and compliance */
 .pl-tpl-stl-twentyeleven p.desc,
-.pl-tpl-stl-twentyeleven .compliance-wrapper p {
+.pl-tpl-stl-twentyeleven .listing-item .compliance-wrapper p {
 	margin-bottom: 5px !important;
 	max-height: 52px !important;
 	max-width: 370px !important;
@@ -115,8 +115,12 @@ $template = array(
 	font-size: 14px !important;
 	overflow: hidden !important;
 }
-.pl-tpl-stl-twentyeleven .compliance-wrapper p {
+.pl-tpl-stl-twentyeleven .listing-item .compliance-wrapper p,
+.pl-tpl-stl-twentyeleven .pl-tpl-footer .compliance-wrapper p {
 	font-size: .8em !important;
+}
+.pl-tpl-stl-twentyeleven .listing-item .clear {
+	clear: none;
 }
 .pl-tpl-stl-twentyeleven .actions {
 	display: block !important;
@@ -138,6 +142,12 @@ $template = array(
 	margin-left: 2em !important;
 }
 
+/* compliance -shortcode- in the footer */
+.pl-tpl-stl-twentyeleven .pl-tpl-footer .compliance-wrapper {
+	margin: .5em 0;
+	padding: 0;
+}
+
 /* controls */
 .pl-tpl-stl-twentyeleven .sort_item {
 	float: left;
@@ -155,7 +165,7 @@ $template = array(
 }
 .pl-tpl-stl-twentyeleven .dataTables_length {
 	float: right;
-	margin: 0 0 0 0;
+	margin: -24px 0 0 0;
 	padding: 0;
 }
 .pl-tpl-stl-twentyeleven .dataTables_length label {
@@ -199,7 +209,7 @@ $template = array(
 ',
 
 'snippet_body' => '
-<section class="listing-item">
+<div class="listing-item">
 
 	<div class="listing-head">
 		<h4><a href="[url]">[address] [locality], [region]</a></h4>
@@ -238,11 +248,11 @@ $template = array(
 
 	</div>
 
-</section><!--listing-item-->
+</div><!--listing-item-->
 ',
 
 'before_widget' => '<div class="pl-tpl-stl-twentyeleven">',
 
-'after_widget' => '<div class="clear"></div></div>',
+'after_widget' => '<div class="pl-tpl-footer">[compliance]</div></div>',
 
 );
