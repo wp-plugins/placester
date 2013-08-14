@@ -56,7 +56,7 @@ function pls_cpt_testimonial_meta_box( $post ) {
 	<?php if( ! empty( $testimonial_support[0]['testimonial_featured'] ) ) { ?>
 	<p>
 		<input type="checkbox" id="testimonial_featured" name="testimonial_featured" <?php checked( $testimonial_featured, 'on' ); ?> />  
-		<label for="testimonial_featured">Should this testimonial be featured on the home page?</label>
+		<label for="testimonial_featured">Should this testimonial be featured?</label>
 	</p>
 	<?php } ?>
 	<?php if( ! empty( $testimonial_support[0]['testimonial_giver'] ) ) { ?>

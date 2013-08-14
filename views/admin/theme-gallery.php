@@ -2,21 +2,21 @@
 	// Build theme link data object...
 	$themes = array(
 		"Columbus" => array(
-			"download_link" => "http://plcstr.com/16taGJs",
+			"download_link" => "http://plcstr.com/14Ka7ic",
 			"info_link" => "https://placester.com/wordpress-themes/#columbus"
 		),
 		"Manchester" => array(
-			"download_link" => "http://plcstr.com/14S94cX",
+			"download_link" => "http://plcstr.com/1237uEg",
 			"info_link" => "https://placester.com/wordpress-themes/#manchester"
 		),
 		"Tampa" => array(
-			"download_link" => "http://plcstr.com/14jjoIw",
+			"download_link" => "http://plcstr.com/16Jco9m",
 			"info_link" => "https://placester.com/wordpress-themes/#tampa"
 		),
 		"Ventura" => array(
-			"download_link" => "http://plcstr.com/10eIMQw",
+			"download_link" => "http://plcstr.com/17LXH4m",
 			"info_link" => "https://placester.com/wordpress-themes/#ventura"
-		)		
+		)	
 	);
 
 /*** Temporary solution to theme AJAX functionality not yet working on v3 of the corporate site ***/

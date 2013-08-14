@@ -63,7 +63,7 @@ Neighborhood.prototype.init = function () {
 	    			}
 	    			
 	    		};
-	    		if( that.map.center_map ) {
+	    		if( that.map.center_map_on_polygons ) {
 	    			that.map.center_on_polygons();
 	    		}
 	    	} else {

@@ -45,7 +45,28 @@ class PL_Listing_Customizer {
 		'price_unit'	=> array('help' => 'Unit price'),
 		'compliance'	=> array('help' => 'MLS compliance statement'),
 		'favorite_link_toggle' => array('help' => 'Link to add/remove from favorites'),
-	);
+		'custom'		=> array('help' => 'Use to display a custom listing attribute.<br />
+Format is as follows:<br />
+<code>[custom group=\'group_name\' attribute=\'some_attribute_name\' type=\'text\' value=\'some_value\']</code><br />
+where:<br />
+<code>group</code> - The group identifier if the listing attribute is part of a group. Possible values are <code>location</code>, <code>rets</code>, <code>metadata</code>, <code>uncur_data</code>.<br />
+<code>attribute</code> - (required) The unique identifier of the listing attribute.<br />
+<code>type</code> - (optional, default is \'text\') Can be <code>text</code>, <code>currency</code>, <code>list</code>. Used to indicate how the attribute should be formatted.<br />
+<code>value</code> - (optional) Indicates text to be displayed if the listing attribute is empty.<br />
+'),
+		'if'			=> array('help' => 'Use to conditionally display some content depending on the value of a listing\'s attribute.<br />
+Format is as follows:<br />
+<code>[if group=\'group_name\' attribute=\'some_attribute_name\' value=\'some_value\']some HTML that will be displayed if the condition is true[/if]</code><br />
+where:<br />
+<code>group</code> - The group identifier if the listing attribute is part of a group. Possible values are <code>location</code>, <code>rets</code>, <code>metadata</code>, <code>uncur_data</code>.<br />
+<code>attribute</code> - (required) The unique identifier of the listing attribute.<br />
+<code>value</code> - (optional) By default the condition is true if the attribute has any value other than being empty. If you wish to test if the attribute matches a specific value, then set that value in this parameter.<br />
+For example, to only display bedroom and bathroom details if the property is residential:<br />
+<code>[if attribute=\'compound_type\' value=\'res_sale\']Beds: [beds] Baths: [baths][/if]</code><br />
+To add some text to your listings:<br />
+<code>[if group=\'rets\' attribute=\'aid\' value=\'MY_MLS_AGENT_ID\']&lt;span&gt;Featured Listing&lt;/span&gt;[/if]</code>'),
+);
+
 	// tags allowed inside text boxes
 	protected static $allowable_tags = "<a><p><script><div><span><section><label><br><h1><h2><h3><h4><h5><h6><scr'+'ipt><style><article><ul><ol><li><strong><em><button><aside><blockquote><footer><header><form><nav><input><textarea><select>";
 	// built in templates
@@ -53,14 +74,6 @@ class PL_Listing_Customizer {
 	protected static $default_tpls = array();
 	// default layout for template
 	protected static $template = array(							// defines template fields
-		'css'	=> array(
-			'type'			=> 'textarea',
-			'label'			=> 'CSS',
-			'description'	=> '
-You can use any valid CSS in this field to customize the listing, which will also inherit the CSS from the theme.',
-			'css'			=> 'mime_css', 						// used for CodeMirror
-			'default'		=> '',
-		),
 		'snippet_body'		=> array(
 			'type'			=> 'textarea',
 			'label'			=> 'Page Body',
@@ -70,7 +83,27 @@ If you leave this section empty the page will be rendered using the default temp
 			'css'			=> 'mime_html', 					// used for CodeMirror
 			'default'		=> '',
 		),
+
+		'after_widget'	=> array(
+				'type' => 'textarea',
+				'label' => 'Add content after the listing',
+				'css' => 'mime_html',
+				'default' => '[compliance]',
+				'description' => 'You can use any valid HTML in this field and it will appear after the listing. 
+It is recommended that you include the [compliance] shortcode to display the compliance statement from your MLS.'
+		),
+
+		'css'	=> array(
+			'type'			=> 'textarea',
+			'label'			=> 'CSS',
+			'description'	=> '
+You can use any valid CSS in this field to customize the listing, which will also inherit the CSS from the theme.',
+			'css'			=> 'mime_css', 						// used for CodeMirror
+			'default'		=> '',
+		),
+
 	);
+
 	protected static $active_template = array();
 
 
@@ -216,6 +249,11 @@ If you leave this section empty the page will be rendered using the default temp
 				remove_all_filters('the_content');
 				add_filter('the_content', array( __CLASS__ ,'custom_property_details_html_filter'));
 			}
+			
+			if (!empty($tpl['after_widget'])) {
+				// Hook in to render our after listing template
+				add_filter('the_content', array( __CLASS__ ,'custom_property_details_after_widget_filter'));
+			}
 		}
 	}
 
@@ -249,7 +287,12 @@ If you leave this section empty the page will be rendered using the default temp
 			</script>
 		";
 
-		return PL_Shortcodes::single_listing_template(self::$active_template['snippet_body'], $listing_data).$js;
+		PL_Component_Entity::$listing = $listing_data;
+		return PL_Component_Entity::do_templatetags(array('PL_Component_Entity', 'listing_templatetag_callback'), array_keys(self::$subcodes), self::$active_template['snippet_body']).$js;
+	}
+
+	public static function custom_property_details_after_widget_filter($content) {
+		return $content.do_shortcode(self::$active_template['after_widget']);
 	}
 }
 

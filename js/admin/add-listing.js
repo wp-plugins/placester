@@ -130,7 +130,7 @@ jQuery(document).ready(function($) {
        	$('.red').remove();
        	$('#message').remove();
        	//set default values required for the form to work. 
-        var form_values = {}
+        var form_values = {};
         form_values['request_url'] = $(this).attr('url');
         if ($('#add_listing_form').attr('method') == 'POST') {
         	form_values['action'] = 'add_listing';	
@@ -139,7 +139,7 @@ jQuery(document).ready(function($) {
         };
         
         //get each of the form values, set key/values in array based off name attribute
-        $.each($('#add_listing_form :input[value]').serializeArray(), function(i, field) {
+        $.each($('#add_listing_form :input').serializeArray(), function(i, field) {
     		form_values[field.name] = field.value;
         });
         //set context of the form.

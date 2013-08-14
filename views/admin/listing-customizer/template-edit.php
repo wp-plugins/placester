@@ -99,7 +99,7 @@ $tpl_args = PL_Listing_Customizer::get_args();
 													<?php $subcodes .= '<div class="description subcode-help">'. $atts['help'] .'</div>';?>
 												<?php endif;?>
 											<?php endforeach;?>
-											<p>Use the following tags to customize your template. When the template is rendered in a web page, the tag will be replaced with the corresponding attribute of the property listing:<br /><?php echo $subcodes?></p>
+											<p>Use the following tags to customize the Page Body of your template. When the template is rendered in a web page, the tag will be replaced with the corresponding attribute of the property listing:<br /><?php echo $subcodes?></p>
 										</div>
 							
 									</section><!-- /Template Contents -->

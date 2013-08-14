@@ -445,6 +445,9 @@ class Placester_Blueprint {
         /** Load the scripts functions. */
         require_once( trailingslashit ( PLS_JS_DIR ) . 'scripts.php' );
 
+        /** Load the admin functions. */
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'wp-defaults.php' );
+
         /** Load the menus if supported. */
         require_if_theme_supports( 'pls-menus', trailingslashit ( PLS_FUNCTIONS_DIR ) . 'menus.php' );
 

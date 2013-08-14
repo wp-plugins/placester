@@ -10,13 +10,16 @@
 function Map () {}
 
 Map.prototype.init = function ( params ) {
+
+	$=jQuery;
+
 	if (!params)
 		alert('Your map object must have some options defined, specifically a map type');
 
 
 	//where ever you go, know who you are.
 	var that = this;
-
+	
 	this.map = false;
 	this.type = params.type || alert('You must define a map type for the method to work properly');
 	this.infowindows = [];
@@ -25,7 +28,7 @@ Map.prototype.init = function ( params ) {
 	this.bounds = [];
 	this.list = params.list || false;
 	this.dom_id = params.dom_id || 'map_canvas';
-	this.center_map = params.center_map === false ? false : true;
+	this.center_map_on_polygons = params.center_map_on_polygons === false ? false : true;
 
 	//map states
 	this.is_loaded = false;
@@ -52,7 +55,7 @@ Map.prototype.init = function ( params ) {
 	this.full_callback = params.full_callback || false;
     this.disable_info_window = params.disable_info_window === true ? true : false;
     this.infotemplate = params.infotemplate || false;
-  
+
 	//marker settings
 	this.marker = {};
 	this.marker.icon = params.marker || false;
@@ -75,7 +78,7 @@ Map.prototype.init = function ( params ) {
 	// map/list interaction
 	Map.prototype.marker_click = params.marker_click || function ( listing_id ) {
 		that.was_marker_click = true;
-		console.log(that);
+		// console.log(that);
 	}
 	Map.prototype.marker_mouseover = params.marker_mouseover || function ( listing_id ) {
 		if (listing_id) {
@@ -89,6 +92,22 @@ Map.prototype.init = function ( params ) {
 			var marker = this.markers_hash[listing_id];
 			marker.setIcon(null);
 		}
+	}
+
+	Map.prototype.responsive_map = params.responsive_map || function () {
+		map = this;
+		map_id = "#" + map.dom_id;
+
+		$(window).resize(function() {
+			// get height/width of the map's container
+			map_height = $(map_id).parent().height();
+			map_width = $(map_id).parent().width();
+            // map's height/width responds to container
+            $(map_id).height(map_height);
+            $(map_id).width(map_width);
+            // re-center map on intended point
+            map.center();
+		});
 	}
 
 	this.init = function() {
@@ -112,6 +131,9 @@ Map.prototype.init = function ( params ) {
 			that.lifestyle_polygon.init();
 		}
 
+		if (that.responsive_map) {
+			that.responsive_map();
+		};
 	}
 
 	this.once_idle = function () {
@@ -182,9 +204,9 @@ Map.prototype.update = function ( ajax_response ) {
 		}
 		
 		// if filter by bounds, don't move the map, it's confusing
-		if ( this.always_center && this.type == 'neighborhood' && this.selected_polygon) {
+		if ( this.always_center && this.type == 'neighborhood' && this.selected_polygon ) {
 			this.center_on_selected_polygon();
-		} else if (this.always_center && this.markers.length > 0 ) {
+		} else if ( this.always_center && this.markers.length > 0 ) {
 			this.center();	
 		}
 
@@ -198,8 +220,10 @@ Map.prototype.update = function ( ajax_response ) {
 		}
 
 		//displaying map status bars
-		if ( this.status_window && this.listings.active_filters && this.map )
+		if ( this.status_window && this.listings.active_filters && this.map ) {
 			this.status_window.update();
+		}
+			
 
 	} else {
 		this.show_empty();
@@ -322,9 +346,13 @@ Map.prototype.center = function () {
 	var that = this;
 	var listener = false;
 	
-	//only reposition the map if it's not the first load (this.bounds) and the dev wants (this.filter_by_bounds)
-	if ( !this.filter_by_bounds || !this.bounds || this.selected_polygon ) {
+	if ( !that.center_map_on_polygons || that.type == 'single_listing' ) {
+		// center map based on lat/lng, not on polygons
+		var bounds = new google.maps.LatLng(this.lat, this.lng);
+		this.map.setCenter(bounds);
 
+	} else if ( !this.filter_by_bounds || !this.bounds || this.selected_polygon ) {
+		//only reposition the map if it's not the first load (this.bounds) and the dev wants (this.filter_by_bounds)
 		clearTimeout(listener);
 
 		var bounds = new google.maps.LatLngBounds();
@@ -356,6 +384,7 @@ Map.prototype.center = function () {
 
 
 Map.prototype.center_on_polygons = function () {
+	
 	var bounds = new google.maps.LatLngBounds();
 	for (var i = this.polygons_verticies.length - 1; i >= 0; i--) {
 		bounds.extend(this.polygons_verticies[i]);
@@ -364,6 +393,7 @@ Map.prototype.center_on_polygons = function () {
 }
 
 Map.prototype.center_on_selected_polygon = function () {
+	
 	var bounds = new google.maps.LatLngBounds();
 	for (var i = this.selected_polygon.vertices.length - 1; i >= 0; i--) {
 		var vertice = this.selected_polygon.vertices[i];
@@ -427,12 +457,11 @@ Map.prototype.listeners = function ( ) {
 				//trigger a reload on any movement
 				google.maps.event.addListener(that.map, 'dragend', function() {
 					
-					console.log(that.status_window.update_map_on_drag);
+					// console.log(that.status_window.update_map_on_drag);
 					if ( that.status_window && !that.status_window.update_map_on_drag ) {
 						that.status_window.on_load();
 						return;
 					}
-						
 
 					if ( timeout === false ) {
 						that.listings.get();

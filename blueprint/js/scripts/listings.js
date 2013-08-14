@@ -313,10 +313,16 @@ Listings.prototype.check_search_form_count = function () {
 	    "url": info.ajaxurl,
 	    "success": function ( response ) {
 	        if (response) {
-				// remove spinner
-				jQuery("#pls_search_count_spinner").remove();
 				// add listings count
 				jQuery('#pls_num_results_found').html(response.count);
+
+				// Safari fix
+				jQuery('#pls_num_results_found').hide();
+				jQuery('#pls_num_results_found').get(0).offsetHeight;
+				jQuery('#pls_num_results_found').show();			
+				
+				// remove spinner
+				jQuery("#pls_search_count_spinner").remove();
 			}
 	    }
   	},'json');

@@ -45,7 +45,20 @@ Filters.prototype.set_values = function (search_id) {
 	var that = this;
 	jQuery.post(info.ajaxurl, {action: 'get_saved_search_filter', search_id: search_id}, function(data, textStatus, xhr) {
 		jQuery(that.listener.elements).find('input, select').each(function(i) {
-			if (data[this.name]) {
+			
+			if (this.name == 'purchase_types[]') {
+				// Special case for purchase types
+				if (data['purchase_types[0]']) {
+					jQuery(this).val(data['purchase_types[0]']);
+					jQuery(this).trigger("liszt:updated");	
+				};
+			} else if (this.name == 'zoning_types[]') {
+				// Special case for zoning types
+				if (data['zoning_types[0]']) {
+					jQuery(this).val(data['zoning_types[0]']);
+					jQuery(this).trigger("liszt:updated");
+				}
+			} else if (data[this.name]) {
 				jQuery(this).val(data[this.name]);
 				jQuery(this).trigger("liszt:updated");
 			}

@@ -195,6 +195,15 @@ class PL_Js_Helper {
 
 	public static function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {
 		if (!wp_script_is($name, 'registered')) {
+			if (!$version) {
+				$pos = strpos($path, PL_PARENT_URL);
+				if ($pos === 0) {
+					$fpath = PL_PARENT_DIR . substr($path, strlen(PL_PARENT_URL));
+					if (file_exists($fpath)) {
+						$version = filemtime($fpath);
+					}
+				}
+			}
 			wp_register_script($name, $path, $dependencies, $version, $in_footer);
 		}
 

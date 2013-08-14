@@ -701,12 +701,14 @@ class PLS_Format {
     
     if ( !empty($post->post_excerpt) ) {
       // 1st priority: excerpt
-      $excerpt = strip_shortcodes($post->post_excerpt);
+      // remove shortcodes, strip tags, and trim whitespace.
+      $excerpt_no_shortcodes = strip_shortcodes($post->post_excerpt);
+      $excerpt = trim(strip_tags($excerpt_no_shortcodes));
     } elseif ( !empty($post->post_content) ) {
       // 2nd priority: content
+      // remove shortcodes, strip tags, and trim whitespace.
       $content = strip_shortcodes($post->post_content);
-      $content = strip_tags($content);
-      $excerpt = $content;
+      $excerpt = trim(strip_tags($content));
     } else {
       return '';
     }

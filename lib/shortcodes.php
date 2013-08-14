@@ -365,8 +365,18 @@ class PL_Shortcodes
 		if( isset( $group ) ) {
 			$filter = $group . '[' . $filter . ']';
 		}
-		
-		return apply_filters('pl_filter_wrap_filter', '{ "name": "' . $filter . '", "value" : "' . $value . '"} ');
+		if (strpos($value, '||') !==false ) {
+			$values = explode('||', $value);
+			$filter .= '[]';
+			$jsfilter = '';
+			foreach ($values as $value) {
+				$jsfilter .= apply_filters('pl_filter_wrap_filter', "{ 'name': '" . $filter . "', 'value' : '" . $value . "'} ");
+			}
+			return $jsfilter;
+		}
+		else {
+			return apply_filters('pl_filter_wrap_filter', "{ 'name': '" . $filter . "', 'value' : '" . $value . "'} ");
+		}
 	}	
 	
 	public static function pl_filter_wrap_default_filters ($filter) {

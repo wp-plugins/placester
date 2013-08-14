@@ -260,6 +260,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
             	pls_h_label(
             		"Category:\n" .
 					wp_dropdown_categories( array(
+                                            'show_option_all' => "From All Categories",
 											'name' => $this->get_field_name("cat"),
 											'selected' => $instance['cat'],
 											'hide_empty' => 0,

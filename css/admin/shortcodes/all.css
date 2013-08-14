@@ -69,6 +69,7 @@
 }
 .sc-meta-section select[multiple] {
 	height: 12em;
+	min-width: 15em;
 }
 .sc-meta-section input[type="checkbox"] {
 	clear: both;
@@ -76,6 +77,9 @@
 }
 .sc-meta-section input.form_item_int {
 	width: 5em;
+}
+.sc-meta-section input.form_item_text {
+	width: 15em;
 }
 
 /* CodeMirror for template */

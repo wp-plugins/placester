@@ -134,7 +134,7 @@ jQuery(document).ready(function($){
 	}
 
 	/**
-	 * Any time we change a field on the shortcode edit page call this to save changes, which updates the preview window
+	 * Any time we change a field on the shortcode edit page call this to update the preview window
 	 */
 	function sc_update_preview() {
 
@@ -167,7 +167,7 @@ jQuery(document).ready(function($){
 					if (response.sc_long_str) {
 						var width = response.width ? response.width+'px' : '100%';
 						var height = response.height ? response.height+'px' : '100%';
-						$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='+response.sc_long_str+'" width="'+width+'" height="'+height+'"></iframe>');
+						$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='+encodeURIComponent(response.sc_long_str)+'" width="'+width+'" height="'+height+'"></iframe>');
 						$('#preview_meta_widget iframe').load( function() {
 							$('#pl_sc_edit .preview_load_spinner').hide();
 							$('#pl_sc_edit .pl_review_link').show();

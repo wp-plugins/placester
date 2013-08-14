@@ -52,7 +52,7 @@ remove_action('wp_head', 'placester_info_bar');
 
 		<div class="pls_embedded_widget_wrapper">
 			<?php
-			echo do_shortcode( $sc_str );
+			echo do_shortcode( html_entity_decode($sc_str) );
 			?>
 		<div>
 

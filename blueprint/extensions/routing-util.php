@@ -13,7 +13,7 @@ class PLS_Route {
 	// Hooks take care of everything, developer has full control over file system
 	public static function init()
 	{
-		if (current_theme_supports('pls-routing-util-templates') )  {
+		if ( current_theme_supports('pls-routing-util-templates') )  {
 			// Hook into each classification, so we can store the request locally. 
 			add_action( '404_template', array( __CLASS__, 'handle_404'  ));
 			add_action( 'search_template', array( __CLASS__, 'handle_search'  ));

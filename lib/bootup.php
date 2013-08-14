@@ -30,6 +30,9 @@ class PL_Bootup {
         if ( !empty($menus) ) {
             self::create_menus( $menus );
         }
+        if ( !empty($settings['taxonomies']) ) {
+            self::create_taxonomies( $settings['taxonomies'] );
+        }
         if ( !empty($posts) ) {
             self::create_posts( $posts, 'post', $settings );
         }
@@ -65,6 +68,10 @@ class PL_Bootup {
 
     private static function create_menus ( $menus ) {
         PL_Menus::create( $menus );
+    }
+
+    private static function create_taxonomies ( $taxonomies ) {
+        PL_Taxonomies::create( $taxonomies );
     }
 
     private static function create_posts ( $posts, $post_type, $settings ) {

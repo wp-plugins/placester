@@ -268,7 +268,8 @@ abstract class PL_SC_Base {
 					// single items
 					if (!empty($f_atts['type']) && $f_atts['type']=='multiselect') {
 						if (is_array($args[$f_id])) {
-							$subcodes .= " [pl_filter filter='" . $gname . "' value='". implode(',', htmlentities($args[$f_id])) . "'] ";
+							// we treat multiple selections in the filter as ORs
+							$subcodes .= " [pl_filter filter='" . $gname . "' value='". htmlentities(implode('||', $args[$f_id])) . "'] ";
 						}
 					}
 					else {

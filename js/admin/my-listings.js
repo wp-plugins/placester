@@ -14,9 +14,9 @@ jQuery(document).ready(function($) {
 
     $('#pls_admin_my_listings_filters input').live('change', function (event) {
         event.preventDefault();
-        handle_custom_filter_choices($(this).attr('id'), $(this).is(":checked"));   
+        handle_custom_filter_choices($(this).attr('id'), $(this).is(":checked"));
     });
-    
+
     function handle_custom_filter_choices(filter, value) {
         var params = {action : 'filter_options'};
         if (typeof filter == 'undefined' || typeof value == 'undefined') {
@@ -39,7 +39,7 @@ jQuery(document).ready(function($) {
                 $('#pls_admin_my_listings .form_group').hide();
             };
         }, "json");
-    }    
+    }
 
     //datepicker
     $("input#metadata-max_avail_on_picker, #metadata-min_avail_on_picker").datepicker({
@@ -67,7 +67,7 @@ jQuery(document).ready(function($) {
                 { sWidth: '70px' },     //price
                 { sWidth: '100px' },    //sqft
                 { sWidth: '100px' }     //available
-            ], 
+            ],
             "fnServerParams": function ( aoData ) {
                 aoData.push( { "name": "action", "value" : "datatable_ajax"} );
                 aoData.push( { "name": "sSearch", "value" : $('input#address_search').val() })
@@ -79,9 +79,9 @@ jQuery(document).ready(function($) {
     $('input#address_search').live('keyup', function () {
         clearTimeout(address_timer);
         address_timer = setTimeout(function () {my_listings_datatable.fnDraw();}, 700);
-        
+
     });
-    
+
     // hide/show action links in rows
     $('tr.odd, tr.even').live('mouseover', function(event) {
         $(this).find(".row_actions").show();
@@ -97,7 +97,7 @@ jQuery(document).ready(function($) {
         title: '<h2>Delete Listing</h2> ',
         buttons: {
             1:{
-                text: "Cancel", 
+                text: "Cancel",
                 click: function (){
                     $(this).dialog("close")
                 }
@@ -129,7 +129,7 @@ jQuery(document).ready(function($) {
         $('span#delete_listing_address').html(address);
         $('span#delete_listing_address').attr('ref',property_id);
         delete_listing_confirm.dialog("open");
-        
+
     });
 
     // prevents default on search button
@@ -137,19 +137,28 @@ jQuery(document).ready(function($) {
         event.preventDefault();
         my_listings_datatable.fnDraw();
     });
-    // parses search form and adds parameters to aoData
-    function my_listings_search_params (aoData) {
-        $.each($('#pls_admin_my_listings:visible').serializeArray(), function(i, field) {
-          if( field.name == 'zoning_types' || field.name == 'listing_types' || field.name == 'purchase_types' ) {
-            // API expects these to be arrays
-            aoData.push({"name" : field.name + "[]", "value" : field.value});
-          } else {
-            aoData.push({"name" : field.name, "value" : field.value});
-          }
-        });
-        return aoData;
-    }
-
+	// parses search form and adds parameters to aoData
+	function my_listings_search_params (aoData) {
+		var formAdditions = new Array();
+		$.each($('#pls_admin_my_listings:visible').serializeArray(), function(i, field) {
+			if( field.name == 'zoning_types' || field.name == 'listing_types' || field.name == 'purchase_types' ) {
+				// API expects these to be arrays
+				aoData.push({"name" : field.name + "[]", "value" : field.value});
+			} else {
+				aoData.push({"name" : field.name, "value" : field.value});
+			}
+			// if this is an array then tell the api to look for multiple values
+			if( field.name.slice(-2) == '[]' ) {
+				if ( $.inArray(field.name, formAdditions) == -1) {
+					formAdditions.push(field.name);
+					var matchname = field.name.slice(0, -2);
+					matchname = matchname.slice(-1) == ']' ? matchname.slice(0,-1)+'_match]' : matchname+'_match';
+					aoData.push({name: matchname, value: 'in'});
+				}
+			}
+		});
+		return aoData;
+	}
 });
 
 
