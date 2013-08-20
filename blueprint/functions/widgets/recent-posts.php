@@ -23,7 +23,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 	 * Set up the widget's unique name, ID, class, description, and other options.
 	 * @since 0.0.1
 	 */
-	function __construct() {
+	public function __construct() {
 
 		/* Set the widget textdomain. */
 		$this->textdomain = pls_get_textdomain();
@@ -45,10 +45,10 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 
 	/**
 	 * Outputs and filters the widget.
-     * 
+     *
 	 * @since 0.0.1
 	 */
-	function widget( $args, $instance ) {
+	public function widget( $args, $instance ) {
 
         /** Get the the cached posts list. */
 		$cache = wp_cache_get( 'pls_widget_recent_posts', 'widget' );
@@ -72,7 +72,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
         /** If conversion to non-negative integer results in 0, set the number of posts to 5. */
 		if ( ! $number = absint( $instance['number'] ) )
  			$number = 5;
-		
+	
         /** Get the posts. */
         $query = new WP_Query( array(
             'posts_per_page' => $number,
@@ -91,7 +91,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 
             /* Output the theme's $before_widget wrapper. */
             echo $before_widget;
-            
+           
             /** Will hold the combined posts html. */
             $widget_body = '';
 
@@ -113,31 +113,31 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 
                 $post_html['date'] = empty( $instance['date'] ) ? ''
                                      : sprintf( ' ' . 'on <time datetime="%1$s">%2$s</time>', get_the_date( 'Y-m-d' ), get_the_date() );
- 
+
                 $post_html['excerpt'] = empty( $instance['excerpt'] ) ? ''
                                         : pls_h_div( ( has_excerpt() ? get_the_excerpt() : '' ), array( 'class' => 'excerpt' ) );
 
                 $post_html['url'] = empty( $instance['excerpt'] ) ? '' : get_permalink();
-                
+               
                 $post_html['read_more'] = empty( $instance['read_more'] ) ? ''
                                           : pls_h_a( get_permalink(), 'Read more', array( 'class' => 'read-more' ) );
 
                 /** Combine the post information. */
-                $post_item = pls_get_if_not_empty( $post_html['post_title'] ) . 
-                    ( ! empty( $post_html['author'] ) || ! empty( $post_html['date'] ) ? 
-                    pls_h_p( sprintf( 'Posted%1$s%2$s.', pls_get_if_not_empty( $post_html['author'] ), pls_get_if_not_empty( $post_html['date'] ) ), array( 'class' => 'meta p3' ) ) : 
+                $post_item = pls_get_if_not_empty( $post_html['post_title'] ) .
+                    ( ! empty( $post_html['author'] ) || ! empty( $post_html['date'] ) ?
+                    pls_h_p( sprintf( 'Posted%1$s%2$s.', pls_get_if_not_empty( $post_html['author'] ), pls_get_if_not_empty( $post_html['date'] ) ), array( 'class' => 'meta p3' ) ) :
                     '' ) .
-                    pls_get_if_not_empty( $post_html['excerpt'] ) . 
-                    pls_get_if_not_empty( $post_html['read_more'] ); 
+                    pls_get_if_not_empty( $post_html['excerpt'] ) .
+                    pls_get_if_not_empty( $post_html['read_more'] );
 
                 /** Wrap the post in an article element and filter its contents. */
                 $post_item = pls_h('article', array('class' => 'recent-post-single', 'itemscope' => '', 'itemtype' => "http://schema.org/BlogPosting"), apply_filters( 'pls_widget_recent_posts_post_inner', $post_item, $post_html, $instance, $widget_id ));
-                 
+                
                 /** Append the filtered post to the post list. */
                 $widget_body .= apply_filters( 'pls_widget_recent_posts_post_outer', $post_item, $post_html, $instance, $widget_id );
 
-            } /** while $query->have_posts() */ 
-            
+            } /** while $query->have_posts() */
+           
             /** Wrap the widget body in a section element. */
             $widget_body = pls_h(
                 'section',
@@ -145,7 +145,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
                 /** Apply a filter on the combined list of posts. */
                 apply_filters( 'pls_widget_recent_posts_inner', $widget_body, $instance, $widget_id )
             );
-            
+           
             // Now we need to put the "read more" strip at the bottom, linking to the selected category page
             // should come back and use pls_ methods
 			$category_link = get_category_link( $cat );
@@ -157,10 +157,10 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
             /* Output the theme's $after_widget wrapper. */
             echo $after_widget;
 
-            /** Reset the global $the_post as this query will have stomped on it. */	
+            /** Reset the global $the_post as this query will have stomped on it. */
             wp_reset_postdata();
 
-        } /** if $query->have_posts() */ 
+        } /** if $query->have_posts() */
 
         /** Cache the widget contents */
 		$cache[$args['widget_id']] = ob_get_flush();
@@ -169,10 +169,10 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 
     /**
      * Deletes the widget cache
-     * 
+     *
      * @since 0.0.1
      */
-	function flush_widget_cache() {
+	public function flush_widget_cache() {
 		wp_cache_delete( 'pls_widget_recent_posts', 'widget' );
 	}
 
@@ -181,7 +181,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
      *
 	 * @since 0.0.1
 	 */
-	function update( $new_instance, $old_instance ) {
+	public function update( $new_instance, $old_instance ) {
 
         $instance = $old_instance;
 
@@ -194,7 +194,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
         $instance['number'] = absint( $new_instance['number'] );
         $instance['cat'] = ( isset($new_instance['cat'] ) ? $new_instance['cat'] : '' );
 
-        /** Delete the widget cache. */ 
+        /** Delete the widget cache. */
         $this->flush_widget_cache();
 
 		return $instance;
@@ -205,7 +205,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
      *
 	 * @since 0.0.1
 	 */
-	function form( $instance ) {
+	public function form( $instance ) {
 
 		/** Set up the default form values. */
 		$defaults = array(
@@ -225,10 +225,10 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
         /** Print the backend widget form. */
         echo pls_h_div(
             /** Print the Title input */
-            pls_h_p( 
-                pls_h_label( 
+            pls_h_p(
+                pls_h_label(
                     'Title' . ':' .
-                    pls_h( 
+                    pls_h(
                         'input',
                         array(
                             'type' => 'text',
@@ -236,24 +236,24 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
                             'id' => $this->get_field_id( 'title' ),
                             'name' => $this->get_field_name( 'title' ),
                             'value' => esc_attr( $instance['title'] )
-                        ) 
-                    ), 
-                    $this->get_field_id( 'title' ) 
-                ) 
-            ) . 
+                        )
+                    ),
+                    $this->get_field_id( 'title' )
+                )
+            ) .
             /** Print the Post Title checkbox */
-            pls_h_p( 
-                pls_h_label( 
-                    pls_h_checkbox( 
-                        checked( $instance['post_title'], true, false ), 
+            pls_h_p(
+                pls_h_label(
+                    pls_h_checkbox(
+                        checked( $instance['post_title'], true, false ),
                         array(
                             'id' => $this->get_field_id( 'post_title' ),
                             'name' => $this->get_field_name( 'post_title' ),
-                        ) 
-                    ) . 
-                    ' ' . 'Post Title', 
-                    $this->get_field_id( 'post_title' ) 
-                ) 
+                        )
+                    ) .
+                    ' ' . 'Post Title',
+                    $this->get_field_id( 'post_title' )
+                )
             ) .
             /** Print the Category dropdown */
             pls_h_p(
@@ -270,66 +270,66 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 				)
 			) .
             /** Print the Author checkbox */
-			pls_h_p( 
-                pls_h_label( 
-                    pls_h_checkbox( 
-                        checked( $instance['author'], true, false ), 
+			pls_h_p(
+                pls_h_label(
+                    pls_h_checkbox(
+                        checked( $instance['author'], true, false ),
                         array(
                             'id' => $this->get_field_id( 'author' ),
                             'name' => $this->get_field_name( 'author' ),
-                        ) 
-                    ) . 
-                    ' ' . 'Author', 
-                    $this->get_field_id( 'author' ) 
-                ) 
-            ) . 
+                        )
+                    ) .
+                    ' ' . 'Author',
+                    $this->get_field_id( 'author' )
+                )
+            ) .
             /** Print the Post Date checkbox */
-            pls_h_p( 
-                pls_h_label( 
-                    pls_h_checkbox( 
-                        checked( $instance['date'], true, false ), 
+            pls_h_p(
+                pls_h_label(
+                    pls_h_checkbox(
+                        checked( $instance['date'], true, false ),
                         array(
                             'id' => $this->get_field_id( 'date' ),
                             'name' => $this->get_field_name( 'date' ),
-                        ) 
-                    ) . 
-                    ' ' . 'Post Date', 
-                    $this->get_field_id( 'date' ) 
-                ) 
-            ) . 
+                        )
+                    ) .
+                    ' ' . 'Post Date',
+                    $this->get_field_id( 'date' )
+                )
+            ) .
             /** Print the Excerpt checkbox */
-            pls_h_p( 
-                pls_h_label( 
-                    pls_h_checkbox( 
-                        checked( $instance['excerpt'], true, false ), 
+            pls_h_p(
+                pls_h_label(
+                    pls_h_checkbox(
+                        checked( $instance['excerpt'], true, false ),
                         array(
                             'id' => $this->get_field_id( 'excerpt' ),
                             'name' => $this->get_field_name( 'excerpt' ),
-                        ) 
-                    ) . 
-                    ' ' . 'Excerpt', 
-                    $this->get_field_id( 'excerpt' ) 
-                ) 
+                        )
+                    ) .
+                    ' ' . 'Excerpt',
+                    $this->get_field_id( 'excerpt' )
+                )
             ) .
             /** Print the Read More checkbox */
-            pls_h_p( 
-                pls_h_label( 
-                    pls_h_checkbox( 
-                        checked( $instance['read_more'], true, false ), 
+            pls_h_p(
+                pls_h_label(
+                    pls_h_checkbox(
+                        checked( $instance['read_more'], true, false ),
                         array(
                             'id' => $this->get_field_id( 'read_more' ),
                             'name' => $this->get_field_name( 'read_more' ),
-                        ) 
-                    ) . 
-                    ' ' . 'Read more link', 
-                    $this->get_field_id( 'read_more' ) 
-                ) 
-            ) . 
+                        )
+                    ) .
+                    ' ' . 'Read more link',
+                    $this->get_field_id( 'read_more' )
+                )
+            ) .
             /** Print the Number text input */
-            pls_h_p( 
-                pls_h_label( 
+            pls_h_p(
+                pls_h_label(
                     'Number of posts' . ': ' .
-                    pls_h( 
+                    pls_h(
                         'input',
                         array(
                             'type' => 'text',
@@ -337,16 +337,16 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
                             'id' => $this->get_field_id( 'number' ),
                             'name' => $this->get_field_name( 'number' ),
                             'value' => esc_attr( $instance['number'] )
-                        ) 
+                        )
                     ),
-                    $this->get_field_id( 'number' ) 
-                ) 
-            )  
+                    $this->get_field_id( 'number' )
+                )
+            ) 
             /** Print the Extra HTML textarea */
-            // pls_h_p( 
-                // pls_h_label( 
+            // pls_h_p(
+                // pls_h_label(
                     // 'Extra HTML' . ":" .
-                    // pls_h( 
+                    // pls_h(
                         // 'textarea',
                         // array(
                             // 'class' => 'widefat',
@@ -356,16 +356,15 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
                             // 'id' => $this->get_field_id( 'extra' ),
                             // 'name' => $this->get_field_name( 'extra' ),
                             // 'value' => esc_textarea( $instance['extra'] ),
-                        // ) 
-                    // ), 
-                    // $this->get_field_id( 'extra' ) 
-                // ) 
-            // ) 
-        ); 
+                        // )
+                    // ),
+                    // $this->get_field_id( 'extra' )
+                // )
+            // )
+        );
 	}
 
-
-    function process_defaults ($args, $instance) {
+    private static function process_defaults ($args, $instance) {
 
         /** Define the default argument array. */
         $arg_defaults = array(

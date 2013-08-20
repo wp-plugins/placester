@@ -211,7 +211,7 @@
 
    		public function render() {
    			?>
-   			  <div id='create_listing'>
+   			  <div id="create_listing">
 
    			  	<div id="listing_message" class="error" style="display: none">
    			  	  <!-- Inject error message(s) here... -->
@@ -284,7 +284,7 @@
 	          
 				<div class="button-container">	          
 	              <input id="submit_listing" class="bt-norm" type="button" value="Post Listing">
-		        <div>
+		        </div>
 		      </div>
    			<?php
    		}
@@ -302,7 +302,7 @@
    			?>
    			  <div id="create_post">
    			  	<div id="blogpost_message" class="error" style="display: none">
-   			  	  <h3>Make sure to fill-in the <u>title</u> and <u>content</u> of your post</h3>
+   			  	  <h3>Make sure to fill-in the <strong>title</strong> and <strong>content</strong> of your post</h3>
    			  	</div>
 
 	            <label>Title</label>

@@ -8,7 +8,7 @@ class PL_Taxonomy_Helper {
 	// List of taxonomies used to bulid URLs, etc.
 	static $all_loc_taxonomies = array('state', 'zip', 'city', 'neighborhood', 'street');
 
-	function init () {
+	public static function init () {
 		add_action('init', array(__CLASS__, 'register_taxonomies'));
 		add_filter('post_type_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
 		add_action('wp_ajax_save_polygon', array(__CLASS__, 'save_polygon'));
@@ -29,12 +29,12 @@ class PL_Taxonomy_Helper {
 		add_action('wp_ajax_nopriv_polygon_listings', array(__CLASS__, 'ajax_polygon_listings'));
 	}
 
-	function register_taxonomies () {
-		register_taxonomy('state', array('property', 'post', 'page', 'mediapage', 'attachment'), array('hierarchical' => TRUE,'label' => __('States'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		register_taxonomy('zip', array('property', 'post', 'page', 'mediapage', 'attachment'), array('hierarchical' => TRUE,'label' => __('Zip Codes'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		register_taxonomy('city', array('property', 'post', 'page', 'mediapage', 'attachment'), array('hierarchical' => TRUE,'label' => __('Cities'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		register_taxonomy('neighborhood', array('property', 'post', 'page', 'mediapage', 'attachment'), array('hierarchical' => TRUE,'label' => __('Neighborhoods'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		register_taxonomy('street', array('property', 'post', 'page', 'mediapage', 'attachment'), array('hierarchical' => TRUE,'label' => __('Streets'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+	public static function register_taxonomies () {
+		register_taxonomy('state', array('property'), array('hierarchical' => TRUE,'label' => __('States'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+		register_taxonomy('zip', array('property'), array('hierarchical' => TRUE,'label' => __('Zip Codes'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+		register_taxonomy('city', array('property'), array('hierarchical' => TRUE,'label' => __('Cities'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+		register_taxonomy('neighborhood', array('property'), array('hierarchical' => TRUE,'label' => __('Neighborhoods'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+		register_taxonomy('street', array('property'), array('hierarchical' => TRUE,'label' => __('Streets'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
 		
 		register_taxonomy('beds', 'property', array('hierarchical' => TRUE,'label' => __('Beds'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
 		register_taxonomy('baths', 'property', array('hierarchical' => TRUE,'label' => __('Baths'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
@@ -42,7 +42,7 @@ class PL_Taxonomy_Helper {
 		register_taxonomy('mlsid', 'property', array('hierarchical' => TRUE,'label' => __('MLS ID'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
 	}
 
-	function ajax_polygon_listings () {
+	public static function ajax_polygon_listings () {
 		if (isset($_POST['polygon'])) {
 			$polygon = $_POST['polygon'];
 			if (!empty($polygon)) {
@@ -54,7 +54,7 @@ class PL_Taxonomy_Helper {
 		die();
 	}
 
-	function get_polygon_links () {
+	public static function get_polygon_links () {
 		$polygons = PL_Option_Helper::get_polygons();
 		foreach ($polygons as $key => $value) {
 			$polygons[$key]['url'] = get_term_link($value['slug'], $value['tax']);
@@ -62,7 +62,7 @@ class PL_Taxonomy_Helper {
 		return $polygons;
 	}
 
-	function get_listings_polygon_name ($params) {
+	public static function get_listings_polygon_name ($params) {
 		$polygons = PL_Option_Helper::get_polygons();
 		$neighborhood_polygons = preg_replace("/[\\\\]+'/", "\\\\'", $params['neighborhood_polygons']);
 		foreach ($polygons as $polygon) {
@@ -72,7 +72,7 @@ class PL_Taxonomy_Helper {
 		}
 	}
 
-	function get_preset_polygon_styles () {
+	public static function get_preset_polygon_styles () {
 		$preset_styes = array(
 				'Red' => array(
 					'border-weight' => 3,
@@ -135,7 +135,7 @@ class PL_Taxonomy_Helper {
 		return $options;
 	}
 
-	function polygon_listings ($polygon, $additional_params = array()) {
+	public static function polygon_listings ($polygon, $additional_params = array()) {
 		$request = '';
 		foreach ($polygon as $key => $point) {
 			$request .= 'polygon['.$key. '][lat]=' . $point['lat'] .'&';
@@ -145,7 +145,7 @@ class PL_Taxonomy_Helper {
 		return PL_Listing_Helper::results($request);
 	}
 
-	function lifestyle_polygon () {
+	public static function lifestyle_polygon () {
 		$request = wp_parse_args(wp_kses_post($_POST), array('location' => '', 'radius' => '', 'types' => ''));
 		$places_response = PL_Google_Places_Helper::search($request);
 		$points = array();
@@ -162,7 +162,7 @@ class PL_Taxonomy_Helper {
 		die();
 	}
 
-	function find_hull ($points = array(), $settings = array()) {
+	public static function find_hull ($points = array(), $settings = array()) {
 		extract(wp_parse_args($settings, array('include_listings' => false)));
 		$response = array();
 		if (!empty($points)) {
@@ -185,12 +185,12 @@ class PL_Taxonomy_Helper {
 		return $response;
 	}
 
-	function update_polygon () {
+	public static function update_polygon () {
 		PL_Option_Helper::set_polygons(array(), (int)$_POST['id']);
 		self::save_polygon();
 	}
 
-	function save_polygon () {
+	public static function save_polygon () {
 		$polygon = array();
 		$polygon['name'] = $_POST['name'];
 		$polygon['tax'] = $_POST['tax'];
@@ -217,13 +217,13 @@ class PL_Taxonomy_Helper {
 		die();	
 	}
 
-	function delete_polygon () {
+	public static function delete_polygon () {
 		$response = PL_Option_Helper::set_polygons(array(), (int)$_POST['id']);
 		echo json_encode($response);
 		die();		
 	}
 
-	function get_polygon () {
+	public static function get_polygon () {
 		$polygons = PL_Option_Helper::get_polygons();
 		if ($polygons[$_POST['id']]) {
 			$polygons[$_POST['id']]['id'] = $_POST['id'];
@@ -234,12 +234,12 @@ class PL_Taxonomy_Helper {
 		die();
 	}
 
-	function ajax_polygons_as_items () {
+	public static function ajax_polygons_as_items () {
 		echo json_encode(self::polygons_as_items());
 		die();
 	}
 
-	function get_polygons_datatable () {
+	public static function get_polygons_datatable () {
 		$raw_polygons = PL_Option_Helper::get_polygons();
 		// pls_dump($raw_polygons);
 		$polygons = array();
@@ -277,12 +277,12 @@ class PL_Taxonomy_Helper {
 		return $response;
 	}
 
-	function ajax_get_polygons_by_slug () {
+	public static function ajax_get_polygons_by_slug () {
 		echo json_encode(self::get_polygons_by_slug($_POST['slug']));
 		die();
 	}
 
-	function get_polygons_by_slug ($slug = false) {
+	public static function get_polygons_by_slug ($slug = false) {
 		$response = array();
 		$polygons = PL_Option_Helper::get_polygons();
 		foreach ($polygons as $key => $polygon) {
@@ -294,7 +294,7 @@ class PL_Taxonomy_Helper {
 		return $response;
 	}
 
-	function get_polygon_detail ($args = array()) {
+	public static function get_polygon_detail ($args = array()) {
 		extract(wp_parse_args($args, array('tax' => false, 'slug' => false)));
 		$response = array();
 		$polygons = PL_Option_Helper::get_polygons();
@@ -309,12 +309,12 @@ class PL_Taxonomy_Helper {
 		return array();
 	}
 
-	function ajax_get_polygons_by_type ($type = false) {
+	public static function ajax_get_polygons_by_type ($type = false) {
 		echo json_encode(self::get_polygons_by_type($type));
 		die();
 	}
 
-	function types_as_selects () {
+	public static function types_as_selects () {
 		$taxonomies = self::get_taxonomies();
 		ob_start();
 		?>
@@ -327,7 +327,7 @@ class PL_Taxonomy_Helper {
 		return ob_get_clean();
 	}
 
-	function taxonomies_as_selects () {
+	public static function taxonomies_as_selects () {
 		$taxonomies = self::get_taxonomies();
 		ob_start();
 		?>
@@ -343,7 +343,7 @@ class PL_Taxonomy_Helper {
 		return ob_get_clean();
 	}
 
-	function taxonomies_as_checkboxes () {
+	public static function taxonomies_as_checkboxes () {
 		$taxonomies = self::get_taxonomies();
 		ob_start();
 		?>
@@ -359,7 +359,7 @@ class PL_Taxonomy_Helper {
 		return ob_get_clean();
 	}
 
-	function get_taxonomies () {
+	public static function get_taxonomies () {
 		return self::$location_taxonomies;
 	}
 
@@ -383,7 +383,7 @@ class PL_Taxonomy_Helper {
 	 * @param string $default Value returned if no matching taxonomy found
 	 * @return string
 	 */
-	private function get_obj_term($obj_id, $taxonomy, $default) {
+	private static function get_obj_term ($obj_id, $taxonomy, $default) {
 		
 		static $cache = array();
 
@@ -405,7 +405,7 @@ class PL_Taxonomy_Helper {
 		return $default;
 	}
 
-	function get_property_permalink ($permalink, $post_id, $leavename) {
+	public static function get_property_permalink ($permalink, $post_id, $leavename) {
 		$post = get_post($post_id);
 		$state = '';
 		$zip = '';
@@ -440,4 +440,17 @@ class PL_Taxonomy_Helper {
         }
         return $permalink;
 	}
+
+	public static function create ($taxonomies) {
+      	foreach ($taxonomies as $taxonomy) {
+      		if ( !taxonomy_exists( $taxonomy['taxonomy_name'] ) ) {
+      			return false;
+      		}
+
+            // create terms in taxonomy
+      		foreach ($taxonomy['terms'] as $term) {
+                wp_insert_term( $term['term_name'], $taxonomy['taxonomy_name'], $term['args'] );
+      		}
+      	}
+    }
 }

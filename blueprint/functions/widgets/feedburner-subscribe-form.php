@@ -2,7 +2,7 @@
 
 class PLS_Widget_Feedburner_Widget extends WP_Widget {
 
-  function PLS_Widget_Feedburner_Widget() {
+  public function __construct() {
     $widget_ops = array( 
       'classname' => 'pls-feedburner-widget',
       'description' => 'Set your Feedburner URI in theme options.'
@@ -15,7 +15,7 @@ class PLS_Widget_Feedburner_Widget extends WP_Widget {
     $this->WP_Widget( 'PLS_Widget_Feedburner_Widget', 'Placester: Feedburner Subscription', $widget_ops, $control_ops );
   }
 
-  function widget( $args, $instance ) {
+  public function widget( $args, $instance ) {
     // Widget output
 
     /** Define the default argument array. */
@@ -60,7 +60,7 @@ class PLS_Widget_Feedburner_Widget extends WP_Widget {
 <?php
   }
 
-  function update( $new_instance, $old_instance ) {
+  public function update( $new_instance, $old_instance ) {
     // Save widget options
     $instance = $old_instance;
     $instance['title'] = strip_tags($new_instance['title']);
@@ -69,7 +69,7 @@ class PLS_Widget_Feedburner_Widget extends WP_Widget {
     return $instance;
   }
 
-  function form( $instance ) {
+  public function form( $instance ) {
     // Output admin widget options form
     $instance = wp_parse_args( (array) $instance, array( 'title' => 'Newsletter Signup', 'instructions' => 'Sign up for our newsletter.', 'email_placeholder' => 'Email Address' ) );
     $title = strip_tags($instance['title']);

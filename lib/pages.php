@@ -3,9 +3,9 @@
 PL_Pages::init();
 class PL_Pages {
 
-	static $property_post_type = 'property';
+	public static $property_post_type = 'property';
 
-	function init() {
+	public static function init () {
 		add_action( 'init', array(__CLASS__, 'create_taxonomies') );
 		add_action( 'wp_footer', array(__CLASS__,'force_rewrite_update') );
 		add_action( 'admin_footer', array(__CLASS__,'force_rewrite_update') );
@@ -13,7 +13,7 @@ class PL_Pages {
 	}
 
 	//return many page urls
-	function get () {
+	public static function get () {
 		global $wpdb;
 		$sql = $wpdb->prepare('SELECT * FROM ' . $wpdb->posts .' WHERE post_type = %s', self::$property_post_type );
 	    $rows = $wpdb->get_results($sql, ARRAY_A);
@@ -21,7 +21,7 @@ class PL_Pages {
 	}
 
 	//return a page url
-	function details ($placester_id) {
+	public static function details ($placester_id) {
 		global $wpdb;
 		$sql = $wpdb->prepare("SELECT ID, post_modified FROM " . $wpdb->posts . " WHERE post_type = %s AND post_name = %s LIMIT 0, 1", self::$property_post_type, $placester_id);
 	    $row = $wpdb->get_row($sql, OBJECT, 0);
@@ -31,7 +31,7 @@ class PL_Pages {
 	}
 
 	//create listing page
-	function manage_listing ($api_listing) {
+	public static function manage_listing ($api_listing) {
 		$page_details = array();
 		$page_details['post_id'] = self::details($api_listing['id']);
 		$page_details['type'] = self::$property_post_type;
@@ -53,7 +53,7 @@ class PL_Pages {
 		return self::manage($page_details);
 	}
 
-	function create_once ($pages_to_create, $force_template = true) {
+	public static function create_once ($pages_to_create, $force_template = true) {
 		foreach ($pages_to_create as $page_info) {
 			$page = get_page_by_title($page_info['title']);
 			if (!isset($page->ID)) {
@@ -78,7 +78,7 @@ class PL_Pages {
 	}
 
 	//create page
-	function manage ($args = array()) {
+	public static function manage ($args = array()) {
 		$defaults = array('post_id' => false, 'type' => 'page', 'title' => '', 'name' => false, 'content' => ' ', 'status' => 'publish', 'post_meta' => array(), 'taxonomies' => array());
 		extract(wp_parse_args($args, $defaults));
 		$post = array(
@@ -111,7 +111,7 @@ class PL_Pages {
         return $post_id;
 	}
 
-	function delete_all() {
+	public static function delete_all () {
 		global $wpdb;
     	$posts_table = $wpdb->prefix . 'posts';
     	$results = $wpdb->get_results( "DELETE FROM $posts_table WHERE post_type = '" . self::$property_post_type . "'");
@@ -121,7 +121,7 @@ class PL_Pages {
     	return false;
 	}
 
-	function delete_by_name ($name) {
+	public static function delete_by_name ($name) {
 		global $wpdb;
     	$posts_table = $wpdb->prefix . 'posts';
     	$results = $wpdb->get_results( "DELETE FROM $posts_table WHERE post_name = '".$name."' AND post_type = '" . self::$property_post_type . "'");
@@ -131,7 +131,7 @@ class PL_Pages {
     	return false;	
 	}
 
-	function create_taxonomies() {
+	public static function create_taxonomies () {
 		register_post_type(self::$property_post_type, array('labels' => array('name' => __( 'Properties' ),'singular_name' => __( 'property' )),'public' => true,'has_archive' => true, 'rewrite' => true, 'query_var' => true, 'taxonomies' => array('category', 'post_tag')));
 		
 		global $wp_rewrite;
@@ -142,7 +142,7 @@ class PL_Pages {
         remove_post_type_support( self::$property_post_type, 'comments' );
 	}
 
-	function force_rewrite_update () {
+	public static function force_rewrite_update () {
 		if ( PL_PLUGIN_VERSION ) {
 			$old_version = get_option('pl_plugin_version');
 			if ($old_version != PL_PLUGIN_VERSION) {
@@ -162,7 +162,7 @@ class PL_Pages {
 		}
 	}
 
-	public function dump_permalinks () {
+	public static function dump_permalinks () {
 		global $wp_rewrite;
 		$wp_rewrite->flush_rules();
 	}

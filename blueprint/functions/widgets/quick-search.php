@@ -1,24 +1,24 @@
-<?php 
+<?php
 
 class PLS_Quick_Search_Widget extends WP_Widget {
-    
-    function __construct() {
-    
+   
+    public function __construct() {
+   
         /* Set the widget textdomain. */
         $this->textdomain = pls_get_textdomain();
-            
+           
         $widget_options = array( 'classname' => 'pls-quick-search','description' => 'Displays search filters for bedrooms, bathrooms, city, state, zip, minimum price, and maximum price');
 
         /* Create the widget. */
         parent::__construct( "pls-quick-search", 'Placester: Listings Quick Search', $widget_options );
     }
 
-    function widget($args, $instance) {
+    public function widget($args, $instance) {
 
         list($args, $instance) = self::process_defaults($args, $instance);
 
         extract( $args, EXTR_SKIP );
- 
+
         $title = apply_filters('widget_title', empty($instance['title']) ? '&nbsp;' : $instance['title']);
 
         $search_form_filter_string = '';
@@ -41,14 +41,14 @@ class PLS_Quick_Search_Widget extends WP_Widget {
         echo $after_widget;
     }
 
-    function update($new_instance, $old_instance){
+    public function update($new_instance, $old_instance){
         $instance = $old_instance;
         $instance['title'] = strip_tags(stripslashes($new_instance['title']));
 
         return $instance;
     }
 
-    function form($instance){
+    public function form($instance){
         //Defaults
         $instance = wp_parse_args( (array) $instance, array('title'=>'') );
 
@@ -58,7 +58,7 @@ class PLS_Quick_Search_Widget extends WP_Widget {
         echo '<p><label for="' . $this->get_field_name('title') . '"> Title: </label><input class="widefat" type="text" id="' . $this->get_field_id('title') . '" name="' . $this->get_field_name('title') . '" value="' . $title . '" /></p>';
     }
 
-    function process_defaults ($args, $instance) {
+    private static function process_defaults ($args, $instance) {
 
         /** Define the default argument array. */
         $arg_defaults = array(

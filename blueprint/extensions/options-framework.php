@@ -125,7 +125,7 @@ class PLS_Options_Cache implements ArrayAccess {
 
 class PLS_Options_Framework {
 
-    static function init(){
+    public static function init(){
 
         /** Initialize the framework constant and import it. */
         if ( ! function_exists( 'optionsframework_init' ) && ! defined( 'OPTIONS_FRAMEWORK_URL' ) && ! defined( 'OPTIONS_FRAMEWORK_DIRECTORY' ) ) {
@@ -145,7 +145,7 @@ class PLS_Options_Framework {
         add_action( 'wp_before_admin_bar_render', array( __CLASS__, 'adminbar' ) );
     }
 
-    static function setup() {
+    public static function setup() {
 
         /** Replace the admin submenu with a page. */
     	if( ! defined( 'PLS_WPORG_THEME' ) ) {
@@ -166,7 +166,7 @@ class PLS_Options_Framework {
      * 'optionsframework_options()' functions are missing.
      * 
      */
-    static function add_default_options() {
+    public static function add_default_options() {
 
         if ( ! function_exists( 'optionsframework_options' ) ) {
             function optionsframework_options() { 
@@ -196,7 +196,7 @@ class PLS_Options_Framework {
      * 
      * Its name can be filtered using "pls_admin_bar_menu_page".
      */
-    static function adminbar() {
+    public static function adminbar() {
 
         global $wp_admin_bar;
         global $i_am_a_placester_theme;
@@ -224,7 +224,7 @@ class PLS_Options_Framework {
      *
      * Its title can be filtered using "pls_theme_options_menu_page_title".
      */
-    static function add_page() {
+    public static function add_page() {
 
     	global $i_am_a_placester_theme;
     	

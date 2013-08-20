@@ -3,12 +3,12 @@
 PL_Themes::init();
 class PL_Themes {
 
-	public function init() {
+	public static  function init() {
 		add_action('wp_ajax_install_theme', array(__CLASS__, 'install_theme'));
 	}
 
-	public function install_theme() {
-		if ( ! current_user_can('install_themes') ) {
+	public static function install_theme() {
+		if ( !current_user_can('install_themes') ) {
 			wp_die(__('You do not have sufficient permissions to install themes for this site.'));
 		}
 			

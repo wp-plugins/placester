@@ -5,7 +5,7 @@ class PLS_Widget_Agents extends WP_Widget {
 	/**
 	 * Widget Constuctor
 	 */
-	function PLS_Widget_Agents() {
+	public function __construct() {
 		$widget_ops = array( 'classname' => 'pls_agents_widget', 'description' => 'Agents List Widget' );
 
 		/* Widget control settings. */
@@ -21,7 +21,7 @@ class PLS_Widget_Agents extends WP_Widget {
 	 * @param $args (array)
 	 * @param $instance (array) Widget values.
 	 */
-   function widget( $args, $instance ) {
+   public function widget( $args, $instance ) {
      // widget output
      extract($args);
 
@@ -103,7 +103,7 @@ class PLS_Widget_Agents extends WP_Widget {
 	 *
 	 * @return (array) New values.
 	 */
-	function update( $new_instance, $old_instance ) {
+	public function update( $new_instance, $old_instance ) {
 		// Save widget options
 		$instance = $old_instance;
 
@@ -120,7 +120,7 @@ class PLS_Widget_Agents extends WP_Widget {
 	 *
 	 * @param $instance (array) Widget values.
 	 */
-	function form( $instance ) {
+	public function form( $instance ) {
 
 		// Defaults
 		$instance = wp_parse_args( (array) $instance, array( 

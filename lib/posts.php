@@ -4,12 +4,11 @@ PL_Posts::init();
 
 class PL_Posts {
   
-  function init () {
+  public static function init () {
     self::register_dummy_data_post_status();
   }
 
-  public function create ( $manifest_posts, $post_type, $settings ) {
-
+  public static function create ( $manifest_posts, $post_type, $settings ) {
     // global $_wp_additional_image_sizes;
 
     // get existing posts... get_existing_posts() function
@@ -109,7 +108,7 @@ class PL_Posts {
 
 
 
-  private function register_dummy_data_post_status() {
+  private static function register_dummy_data_post_status() {
     // http://codex.wordpress.org/Function_Reference/register_post_status
     // register_post_status("Dummy Data", array(
     //   'exclude_from_search' => true,

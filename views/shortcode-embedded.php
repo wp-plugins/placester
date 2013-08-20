@@ -1,7 +1,17 @@
 <?php
 /**
- * Displays shortcode when embedded in an iframe using js embed 
- */ 
+ * Displays shortcode when embedded in an iframe using js embed
+ */
+
+function pl_template_drop_modernizr() {
+	wp_dequeue_script('form');
+}
+
+function pl_template_add_modernizr() {
+	wp_enqueue_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
+}
+
+
 $preview = ( !empty($_GET['preview']) && $_GET['preview'] == 'true' ) ? true : false;
 if( $preview ) {
 	header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
@@ -56,18 +66,10 @@ p {
 	echo '<div>';
 
 	wp_footer();
-
-	function pl_template_drop_modernizr() {
- 		wp_dequeue_script('form');
- 	}
-
- 	function pl_template_add_modernizr() {
-	 	wp_enqueue_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
-	}
  	?>
 </body>
 </html>
-<?php 
+<?php
 $widget_page = ob_get_clean();
 $widget_cache->save( $widget_page );
 

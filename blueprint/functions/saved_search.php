@@ -6,7 +6,7 @@ class PLS_Saved_Search {
 	static $save_extension = 'pl_ss_';
 	static $search_extension = 'pl_ssv_';
 
-	function init () {
+	public static function init () {
 		//register ajax endpoints
 		add_action('wp_ajax_get_saved_search_filter', array(__CLASS__, 'ajax_check'));
 		add_action('wp_ajax_nopriv_get_saved_search_filter', array(__CLASS__, 'ajax_check'));
@@ -44,10 +44,6 @@ class PLS_Saved_Search {
 			echo json_encode(array('message' => 'User is not logged in'));
 			die();
 		}
-
-		
-
-
 	}
 
 	public static function render_search_list () {
@@ -72,7 +68,7 @@ class PLS_Saved_Search {
 
 	}
 
-	function ajax_check () {
+	public static function ajax_check () {
 		$result = array();
 		$saved_search = self::check($_POST['search_id']);
 
@@ -93,7 +89,7 @@ class PLS_Saved_Search {
 		die();
 	}
 
-	function check ($search_id) {
+	public static function check ($search_id) {
 		
 		$key = self::generate_key( $search_id );
 		
@@ -123,7 +119,7 @@ class PLS_Saved_Search {
 	}
 
 	// Clear all saved searches stored in the DB...
-	function clear () {
+	public static function clear () {
 		$saved_searches = $wpdb->get_results('SELECT option_name FROM ' . $wpdb->prefix . 'options ' ."WHERE option_name LIKE 'pls_ss_%'");
 	    foreach ($saved_searches as $option) {
 	        delete_option( $option->option_name );

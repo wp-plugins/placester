@@ -104,7 +104,7 @@ $used_by = PL_Shortcode_CPT::template_used_by($ID);
 									'values'=>$template,
 								));?>
 						</div>
-					</div>
+					</div><!-- /post-body-content -->
 
 					<div id="postbox-container-1" class="postbox-container">
 						<div id="submitdiv" class="postbox">

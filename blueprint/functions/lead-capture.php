@@ -2,7 +2,7 @@
 
 class PLS_Lead_Capture {
 
-    function get_contact_form() {
+	public static function get_contact_form() {
     
     // Get args passed to shortcode
     $form_args = func_get_args();

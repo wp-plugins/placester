@@ -373,6 +373,11 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 		$(this).next('.subcode-help').toggle();
 	});
+	// 
+	$('.show_listing_attributes').click(function(e){
+		e.preventDefault();
+		$('#listing_attributes').dialog({modal: true, title: 'Lookup Listing Attribute', width: 'auto', height: 300});
+	});
 
 	// trigger an event to set up the preview pane on page load
 	$('#pl_sc_tpl_shortcode').trigger('change');

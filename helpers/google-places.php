@@ -2,7 +2,7 @@
 
 class PL_Google_Places_Helper {
 
-	function search ($request) {
+	public static function search ($request) {
 		$response = PL_Google_Places::get($request);
 		return $response;
 	}

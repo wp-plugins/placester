@@ -3,11 +3,11 @@
 PLS_Notifications::init();
 class PLS_Notifications {
 
-	function init () {
+	public static function init () {
 		add_action('admin_notices', array(__CLASS__, 'no_plugin'));
 	}
 
-	function no_plugin () {
+	public static function no_plugin () {
 		$error_msg = pls_has_plugin_error();
 
 		$adminURL = ( defined('ADMIN_URL') ? ADMIN_URL : trailingslashit( admin_url() ) );

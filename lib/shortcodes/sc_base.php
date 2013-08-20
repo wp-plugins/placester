@@ -69,7 +69,7 @@ abstract class PL_SC_Base {
 
 
 
-	abstract static function init();
+	static function init() {}
 
 	/**
 	 * Create an instance and register it with the custom shortcode manager

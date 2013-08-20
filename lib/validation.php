@@ -2,7 +2,7 @@
 
 class PL_Validate {
 	
-	public function attributes ($args, $defaults) {
+	public static function attributes ($args, $defaults) {
 		$merged_args = wp_parse_args($args, $defaults);
 		foreach ($merged_args as $key => $value) {
 			if( is_array($value) && isset($defaults[$key]) ) {
@@ -13,7 +13,7 @@ class PL_Validate {
 	}
 
 	// build request, respect incoming args, populate defaults as passed via configs
-	public function request ($args, $config) {
+	public static function request ($args, $config) {
  		// pls_dump($args);
  		foreach ($config as $arg => $value) {
  			if( !isset($args[$arg]) && is_array($value) && isset($value['default']) && !empty($value['default'])) {
@@ -35,7 +35,7 @@ class PL_Validate {
 		return $args;
 	}
 
-	public function route ($args, $default = array()) {
+	public static function route ($args, $default = array()) {
 		return wp_parse_args($args, $default);
 	}
 	

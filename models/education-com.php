@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 class PL_Education {
 
-	function search ($args = array()) {
+	public static function search ($args = array()) {
 		extract(wp_parse_args($args, array('edu_key' => false)));
 		if ($edu_key) {
 			$response = wp_remote_get('http://api.education.com/service/service.php?f=schoolSearch&sn=sf&v=4&resf=json&maxResult='.$maxResult.'&key=' . $edu_key . $search_params , array('timeout' => 10));

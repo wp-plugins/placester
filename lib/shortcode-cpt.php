@@ -733,6 +733,58 @@ class PL_Shortcode_CPT {
 		update_option($tpl_list_DB_key, $tpl_list);
 		return $tpl_list;
 	}
+	
+	
+	public static function get_listing_attributes() {
+		$attrs = array();
+		$config = PL_Config::PL_API_LISTINGS('get', 'args');
+		foreach($config as $g_key => &$g_attrs) {
+			$group = '';
+			switch($g_key) {
+				case 'include_disabled':
+					continue;
+				// TODO: fields used for fetching data that aren't relevant to a single listing
+				case 'location':
+				case 'metadata':
+				case 'rets':
+					$group = $g_key;
+					break;
+				case 'custom':
+					$group = 'uncur_data';
+					break;
+			}
+			if (!empty($g_attrs['type']) && $g_attrs['type']=='bundle') {
+				if (!empty($g_attrs['bound']) && is_array($g_attrs['bound'])) {
+					$params = ( isset($g_attrs['bound']['params']) ? $g_attrs['bound']['params'] : array() ) ;
+					$params = array($params);
+					$g_attrs = call_user_func_array(array($g_attrs['bound']['class'], $g_attrs['bound']['method']), $params);
+					if (!$group) $group = $g_key;
+					foreach($g_attrs as $f_attrs ) {
+						$attrs[] = array('attribute' => $f_attrs['key'], 'label' => (empty($f_attrs['name']) ? '' : $f_attrs['name'] ), 'type' => (empty($f_attrs['type']) ? '' : $f_attrs['type'] ), 'group' => $group);
+					}
+				}
+				continue;
+			}
+			if ($group) {
+				foreach($g_attrs as $f_key => $f_attrs ) {
+					if (!empty($f_attrs['label']) && strpos($f_key, 'min_')!==0 && strpos($f_key, 'max_')!==0) {
+						$attrs[] = array('attribute' => $f_key, 'label' => (empty($f_attrs['label']) ? 'text' : $f_attrs['label'] ), 'type' => (empty($f_attrs['type']) ? '' : $f_attrs['type'] ), 'group' => $group);
+					}
+				}
+			}
+			else {
+				if (!empty($g_attrs['label'])) {
+					$attrs[] = array('attribute' => $g_key, 'label' => $g_attrs['label'], 'type' => (empty($g_attrs['type']) ? 'text' : $g_attrs['type'] ), 'group' => $group);
+				}
+			}
+		}
+		uasort($attrs, array(__CLASS__, '_attr_sort'));
+		return $attrs;
+	}
+	
+	private static function _attr_sort($a, $b) {
+		return strcmp($a['label'], $b['label']);
+	}
 }
 
 new PL_Shortcode_CPT();

@@ -3,12 +3,12 @@
 PL_Page_Helper::init();
 class PL_Page_Helper {
 
-	function init() {
+	public static function init() {
 		add_action('wp_ajax_ajax_delete_all', array(__CLASS__, 'ajax_delete_all' ) );
 		add_action('wp_ajax_get_pages', array(__CLASS__, 'get_pages_datatable' ) );
 	}
 
-	function ajax_delete_all () {
+	public static function ajax_delete_all () {
 		$response = PL_Pages::delete_all();
 		$reply = array('result' => false, 'message' => "There was an error. Your property pages we're removed. Try refreshing.");
 		if ($response) {
@@ -18,7 +18,7 @@ class PL_Page_Helper {
 		die();
 	}
 
-	function get_types () {
+	public static function get_types () {
 		$page_details = array();
 		$pages = PL_Pages::get();
 		// pls_dump($pages);
@@ -27,12 +27,12 @@ class PL_Page_Helper {
 		return $page_details;
 	}
 
-	function get_url ($placester_id) {
+	public static function get_url ($placester_id) {
 		$url = get_permalink(PL_Pages::details($placester_id));
 		return $url;
 	}
 
-	function get_pages_datatable ($placester_id) {
+	public static function get_pages_datatable ($placester_id) {
 		$response = array();
 		
 		// Get listings from model

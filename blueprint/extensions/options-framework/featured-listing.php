@@ -2,11 +2,11 @@
 PLS_Featured_Listing_Option::register();
 class PLS_Featured_Listing_Option {
 
-	function register () {
+	public static function register () {
 		add_action('wp_ajax_list_options', array(__CLASS__, 'get_listings' ));
 	}
 
-	function init ( $params = array() ) {
+	public static function init ( $params = array() ) {
 		// pls_dump($params);
 		ob_start();
 			do_action( 'pl_featured_listings_head' );
@@ -15,28 +15,28 @@ class PLS_Featured_Listing_Option {
 		return ob_get_clean();
 	}
 
-	function load ( $params = array() ) {
+	public static function load ( $params = array() ) {
 		ob_start();
 			extract( $params );
 			include( trailingslashit( PLS_OPTRM_DIR ) . 'views/featured-listings.php' );
 		echo ob_get_clean();
 	}
 
-	function get_filters ( $params = array() ) {
+	public static function get_filters ( $params = array() ) {
 		ob_start();
 			extract( $params );
 			include( trailingslashit( PLS_OPTRM_DIR ) . 'views/featured-listings-filters.php' );
 		echo ob_get_clean();	
 	}
 
-	function get_datatable ( $params = array() ) {
+	public static function get_datatable ( $params = array() ) {
 		ob_start();
 			extract( $params );
 			include( trailingslashit( PLS_OPTRM_DIR ) . 'views/featured-listings-datatable.php' );
 		echo ob_get_clean();	
 	}
 
-	function get_listings () {
+	public static function get_listings () {
 		$response = array();
 		//exact addresses should be shown. 
 		$_POST['address_mode'] = 'exact';

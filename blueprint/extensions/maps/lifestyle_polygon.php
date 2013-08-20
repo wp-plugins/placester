@@ -2,7 +2,7 @@
 
 class PLS_Map_Lifestyle_Polygon extends PLS_Map {
 
-	function lifestyle_polygon($listings = array(), $map_args = array(), $marker_args = array()) {
+	public static function lifestyle_polygon($listings = array(), $map_args = array(), $marker_args = array()) {
 		$map_args = self::process_defaults($map_args);
 		self::make_markers($listings, $marker_args, $map_args);
 		extract($map_args, EXTR_SKIP);

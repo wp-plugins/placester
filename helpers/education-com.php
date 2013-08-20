@@ -2,7 +2,7 @@
 
 class PL_Education_Helper {
 
-	function get_schools ($args = array()) {
+	public static function get_schools ($args = array()) {
 		$args = wp_parse_args($args, array('edu_key' => false, 'area_search' =>  false, 'lat_lng_search' => false, 'search_params' => '', 'maxResult' => 10 ) );
 		if ($args['area_search']) {
 			if (isset($args['area_search']['zip'] ) )  {

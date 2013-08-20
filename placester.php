@@ -4,7 +4,7 @@ Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
 Author: Placester.com
-Version: 1.1.19
+Version: 1.1.20
 Author URI: https://www.placester.com/
 */
 
@@ -27,7 +27,7 @@ Author URI: https://www.placester.com/
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define('PL_PLUGIN_VERSION','1.1.19');
+define('PL_PLUGIN_VERSION','1.1.20');
 
 define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
 define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
@@ -122,7 +122,6 @@ include_once('lib/validation.php');
 include_once('lib/pages.php');
 include_once('lib/community-pages.php');
 include_once('lib/menus.php');
-include_once('lib/taxonomies.php');
 include_once('lib/posts.php');
 include_once('lib/membership.php');
 include_once('lib/caching.php');
@@ -237,7 +236,8 @@ function placester_admin_menu () {
         'Create Custom Shortcode' => '_shortcode_edit',
         'Shortcode Templates' => '_templates',
         'Create Shortcode Template' => '_template_edit',
-    	'Listing Details Customizer' => '_listing_customizer',
+    	'Listing Details Templates' => '_listing_templates',
+    	'Create Listing Details Template' => '_listing_template_edit',
     );
     foreach ($shortcode_subpages as $name => $page_url) {
     	// Leave parent slug empty to add pages without adding them to the menu...

@@ -1,18 +1,26 @@
 <?php
 global $shortcode_subpages, $page_now, $plugin_page;
 
-$action = 'edit';
-$ID = 'pl_listing_template__1';
+$action = empty($_REQUEST['action']) ? 'edit' : $_REQUEST['action'];
+$id = empty($_REQUEST['id']) ? '' : $_REQUEST['id'];
 $notice = $message = '';
-$nonce_action = 'edit-sc-template_' . $ID;
-$template = PL_Listing_Customizer::get_template($ID);
+$nonce_action = 'edit-sc-template_' . $id;
+$template = PL_Listing_Customizer::get_template($id);
 
-if ($action == 'edit' && !empty($_POST['submit'])) {
+if ($action == 'delete' && $id) {
+	if (!PL_Listing_Customizer::template_used_by($id)) {
+		PL_Listing_Customizer::delete_template($id);
+	}
+	wp_redirect(admin_url('admin.php?page=placester_shortcodes_listing_templates'));
+	die;
+}
+if ($action == 'edit' && !empty($_POST['save'])) {
+	// trying to save changes
 	if (empty($_POST['title'])) {
 		$notice = 'Please provide a title for the template.';
 	}
 	else {
-		$id = PL_Listing_Customizer::save_template($ID, $_POST);
+		$id = PL_Listing_Customizer::save_template($id, $_POST);
 		if ($id) {
 			$message = 'Settings saved.';
 		}
@@ -25,18 +33,31 @@ if ($action == 'edit' && !empty($_POST['submit'])) {
 	}
 	$template = array_merge($template, $_POST);
 }
+else if ($action == 'copy' && !empty($id)) {
+	// copying an exiting template
+	$template = PL_Listing_Customizer::get_template($id);
+	if (!empty($template['title'])) {
+		$template['title'] = 'Copy of '.$template['title'];
+	}
+	$id = '';
+}
+else if (empty($id)) {
+	// get a built in if we are starting with a blank template
+	$tpl = PL_Listing_Customizer::get_builtin_templates();
+	$template = PL_Listing_Customizer::get_template(key($tpl));
+	$template['title'] = '';
+}
 
-$title = 'Custom Template';
 $form_link = '';
-$delete_link = $page_now.'?page='.$plugin_page.'&action=delete&id='.$ID;
+$delete_link = $page_now.'?page='.$plugin_page.'&action=delete&id='.$id;
 $form_action = 'edit';
-$used_by = PL_Listing_Customizer::template_used_by($ID);
+$used_by = PL_Listing_Customizer::template_used_by($id);
 $tpl_args = PL_Listing_Customizer::get_args();
 
 
 ?>
 <div class="wrap pl-sc-wrap">
-	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Listing Details Customizer'); ?>
+	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Listing Details Template'); ?>
 
 	<div id="pl_sc_tpl_edit">
 		<?php if ( $notice ) : ?>
@@ -56,70 +77,108 @@ $tpl_args = PL_Listing_Customizer::get_args();
 			<?php wp_nonce_field($nonce_action); ?>
 			<input type="hidden" id="hiddenaction" name="action" value="<?php echo esc_attr( $form_action ) ?>" />
 			<input type="hidden" id="originalaction" name="originalaction" value="<?php echo esc_attr( $form_action ) ?>" />
-			<input type="hidden" id="id" name="id" value="<?php echo esc_attr($ID) ?>" />
-			<input type="hidden" id="title" name="title" value="<?php echo $title ?>" />
-			
+			<input type="hidden" id="id" name="id" value="<?php echo esc_attr($id) ?>" />
+
 			<div id="poststuff">
-				<div id="post-body" class="metabox-holder">
+				<div id="post-body" class="metabox-holder columns-2">
 					<div id="post-body-content">
+
+						<div id="titlediv">
+							<div id="titlewrap">
+								<label class="screen-reader-text" id="title-prompt-text" for="title"><?php echo __( 'Enter a title for your template here' ); ?></label>
+								<input type="text" name="title" size="30" value="<?php echo esc_attr( htmlspecialchars( empty($template['title']) ? '' : $template['title']) ); ?>" id="title" autocomplete="off" title="<?php _e('Please enter a title for this shortcode.')?>" />
+							</div>
+						</div><!-- /titlediv -->
 
 						<div id="pl-sc-tpl-meta-box" class="pl-sc-meta-box">
 							<div class="postbox ">
 								<h3>Listing Page Template</h3>
-							
+
 								<div class="inside">
-							
+
 									<!-- Template Contents -->
 									<section class="row-fluid lc-meta-section">
-							
+
 										<!-- Template HTML/CSS -->
 										<div class="span8">
 											<div class="pl_template_block">
 												<?php
 												foreach($tpl_args['template'] as $field => $f_args) {
-													if ($action!='edit') {
-														$_POST[$field] = !empty($f_args['default']) ? $f_args['default'] : '';
-													}
-													else {
-														$_POST[$field] = !empty( $template[$field] ) ? $template[$field] : '';
-													}
+													$_POST[$field] = !empty( $template[$field] ) ? $template[$field] : '';
 													$f_args['css'] = (!empty($f_args['css'])?$f_args['css'].' ':'').$field;
 													PL_Form::item($field, $f_args, 'POST', '', 'pl-lc-tpl-edit', true);
 												}?>
 											</div>
 										</div>
-											
+
 										<!-- Search Sub-Shortcodes -->
 										<div id="subshortcodes" class="span2">
 											<h3>Template Tags</h3>
-											<?php $subcodes = '';?>
-											<?php foreach($tpl_args['subcodes'] as $subcode=>$atts): ?>
-												<?php $subcodes .= '<h4 class="subcode"><a href="#">[' . $subcode . ']</a></h4>';?>
+											<?php $template_tags = '';?>
+											<?php foreach($tpl_args['template_tags'] as $template_tag=>$atts): ?>
+												<?php $template_tags .= '<h4 class="subcode"><a href="#">[' . $template_tag . ']</a></h4>';?>
 												<?php if (!empty($atts['help'])):?>
-													<?php $subcodes .= '<div class="description subcode-help">'. $atts['help'] .'</div>';?>
+													<?php $template_tags .= '<div class="description subcode-help">'. $atts['help'] .'</div>';?>
 												<?php endif;?>
 											<?php endforeach;?>
-											<p>Use the following tags to customize the Page Body of your template. When the template is rendered in a web page, the tag will be replaced with the corresponding attribute of the property listing:<br /><?php echo $subcodes?></p>
+											<p>Use the following tags to customize the Page Body of your template. When the template is rendered in a web page, the tag will be replaced with the corresponding attribute of the property listing:<br /><?php echo $template_tags?></p>
 										</div>
-							
+
 									</section><!-- /Template Contents -->
-							
+
 									<?php wp_nonce_field( 'pl_sc_meta_box_nonce', 'meta_box_nonce' );?>
-							
+
 									<div class="clear"></div>
-							
+
 								</div><!-- /.inside -->
-							
+
 							</div><!-- /.postbox -->
 						</div><!-- /pl-lc-tpl-meta-box -->
-						
-					</div>
+
+					</div><!-- /post-body-content -->
+
+
+					<div id="postbox-container-1" class="postbox-container">
+						<div id="submitdiv" class="postbox">
+							<?php $action_title = ($id=='' ? __('Create') : ($used_by ? __('Publish') : __('Update')))?>
+							<h3 class="hndle"><span><?php echo $action_title;?></span></h3>
+							<div class="inside">
+								<div class="submitbox" id="submitpost">
+
+									<?php // Hidden submit button early on so that the browser chooses the right button when form is submitted with Return key ?>
+									<div style="display:none;">
+									<?php submit_button( __( 'Update' ), 'button', 'save' ); ?>
+									</div>
+
+									<div id="misc-publishing-actions">
+										<div class="misc-pub-section">
+											<label for="pl_sc_tpl_csc_link">Status:</label> <span
+												id="post-status-display">
+												<?php echo ($id=='' ? __('Draft') : ($used_by ? __('In Use') : __('Not In Use')))?></span>
+										</div>
+									</div>
+
+									<div id="major-publishing-actions">
+										<?php if ($id && !$used_by):?>
+										<div id="delete-action">
+											<a class="submitdelete deletion" href="<?php echo $delete_link; ?>"><?php echo __('Delete'); ?></a>
+										</div>
+										<?php endif;?>
+										<div id="publishing-action">
+											<input name="save" type="submit" class="button button-primary button-large" id="publish" accesskey="p" value="<?php echo $action_title; ?>" />
+										</div>
+										<div class="clear"></div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div><!-- /postbox-container-1 -->
+
 
 				</div><!-- /post-body -->
 			</div>
-			
-			<p class="submit"><input type="submit" value="Save Changes" class="button-primary" id="submit" name="submit"></p>
-			
+
 		</form>
 
 		<div id="ajax-response"></div>

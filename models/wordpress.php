@@ -2,7 +2,7 @@
 
 class PL_WordPress {
 
-	function set ($args = array()) {
+	public static function set ($args = array()) {
 		$site_id = get_option('pls_site_id');
 		if (!$site_id) {
 			update_option('pls_site_id', sha1(site_url()));
@@ -17,7 +17,7 @@ class PL_WordPress {
 		return false;
 	}
 
-	function delete () {
+	public static function delete () {
 		$site_id = get_option('pls_site_id');
 		if (!$site_id) {
 			update_option('pls_site_id', sha1(site_url()));

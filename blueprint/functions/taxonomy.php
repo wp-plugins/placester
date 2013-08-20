@@ -5,11 +5,11 @@ class PLS_Taxonomy {
 
 	static $custom_meta = array();
 
-	function init () {
+	public static function init () {
 		add_action('init', array(__CLASS__, 'metadata_customizations')); 
 	}
 
-	function get ($args = array()) {
+	public static function get ($args = array()) {
 
 		$cache = new PLS_Cache('nbh');
 		if ($result = $cache->get($args)) {
@@ -83,7 +83,7 @@ class PLS_Taxonomy {
 		return $term;
 	}
 
-	function get_links ($location) {
+	public static function get_links ($location) {
 		$response = array();
 		$neighborhoods = array('state' => false, 'city' => false, 'neighborhood' => false, 'zip' => false, 'street' => false);
 		$api_translations = array('state' => 'region', 'city' => 'locality', 'neighborhood' => 'neighborhood', 'zip' => 'postal', 'street' => 'address');
@@ -102,7 +102,7 @@ class PLS_Taxonomy {
 		return $response;
 	}
 
-	function add_meta ($type, $id, $label) {
+	public static function add_meta ($type, $id, $label) {
 		if (in_array($type, array('text', 'textarea', 'checkbox', 'image', 'file', 'wysiwyg'))) {
 			self::$custom_meta[] = array('type' => $type, 'id' => $id, 'label' => $label);
 		} else {
@@ -111,7 +111,7 @@ class PLS_Taxonomy {
 		
 	}
 
-	function metadata_customizations () {
+	public static function metadata_customizations () {
         include_once(PLS_Route::locate_blueprint_option('meta.php'));        
 		
 		//throws random errors if you aren't an admin, can't be loaded with admin_init...
@@ -146,7 +146,7 @@ class PLS_Taxonomy {
 		$my_meta->Finish();
 	}
 
-	function process_args ($args) {
+	public static function process_args ($args) {
 		$defaults = array(
         	
         );

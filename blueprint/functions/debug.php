@@ -23,11 +23,11 @@ class PLS_Debug {
     static $debug_messages = array();
     static $message_text = '';
 
-    static function init() {
+    public static function init() {
         add_action('wp_footer', array(__CLASS__, 'show_window' ) );
     }
 
-    static function show_window () {
+    public static function show_window () {
         
         $show_debug = pls_get_option('display-debug-messages');
         // optionally show debug messages.  
@@ -45,13 +45,13 @@ class PLS_Debug {
     // adds routing messages for easy debugging.
     // TODO: Move this to a global class so devs
     // turn it on easily and see what's going on. 
-    static function add_msg ($new_message) {
+    public static function add_msg ($new_message) {
         self::$debug_messages[] = $new_message;
         
     }
 
 
-    static function assemble_messages ($messages_array = false) {
+    public static function assemble_messages ($messages_array = false) {
 
         self::$message_text = "<ul>";
         
@@ -62,7 +62,7 @@ class PLS_Debug {
         self::$message_text .= "</ul>";
     }
 
-    static function style_message ($message, $indent = false) {
+    public static function style_message ($message, $indent = false) {
         
         $styled_message = "<li>";
         
@@ -93,7 +93,7 @@ class PLS_Debug {
      * @param mixed $data The variable that needs to be dumped.
      * @static
      */
-    static function dump() {
+    public static function dump() {
         $args = func_get_args();
         /**
          *  If the given variable is an array use print_r

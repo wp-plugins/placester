@@ -2,7 +2,7 @@
 
 class PLS_Widget_Twitter extends WP_Widget {
 
-  function __construct() {
+  public function __construct() {
     $widget_ops = array(
       'classname' => 'pls-twitter-widget',
       'description' => 'Change the title of the "Twitter" widget.'
@@ -15,7 +15,7 @@ class PLS_Widget_Twitter extends WP_Widget {
     $this->WP_Widget( 'PLS_Widget_Twitter', 'Placester: Twitter Widget', $widget_ops, $control_ops );
   }
 
-  function widget( $args, $instance ) {
+  public function widget( $args, $instance ) {
     // Widget output
     
     /** Define the default argument array. */
@@ -61,7 +61,7 @@ class PLS_Widget_Twitter extends WP_Widget {
 
   }
 
-  function update( $new_instance, $old_instance ) {
+  public function update( $new_instance, $old_instance ) {
     // Save widget options
     $instance = $old_instance;
     $instance['title'] = strip_tags($new_instance['title']);
@@ -71,7 +71,7 @@ class PLS_Widget_Twitter extends WP_Widget {
     return $instance;
   }
 
-  function form( $instance ) {
+  public function form( $instance ) {
     // Output admin widget options form
     $instance = wp_parse_args( (array) $instance, array( 'title' => 'Twitter', 'username' => 'Placester', 'count' => '4' ) );
     $title = strip_tags($instance['title']);

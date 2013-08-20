@@ -3,7 +3,7 @@
 PLS_Options_Manager::init();
 class PLS_Options_Manager {
 
-	function init() {
+	public static function init() {
 		// add_action('wp_ajax_export_theme_options', array(__CLASS__, 'export_ajax'));
 		add_action('admin_init', array(__CLASS__,'export_http'));
 		add_action('wp_ajax_import_theme_options', array(__CLASS__, 'import_ajax'));

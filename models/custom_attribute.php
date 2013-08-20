@@ -1,8 +1,8 @@
 <?php
 
 class PL_Custom_Attributes {
-	
-	public function get($args = array()) {
+
+	public static function get($args = array()) {
 		$config = PL_Config::PL_API_CUST_ATTR('get');
 		$request = array_merge(array( "api_key" => PL_Option_Helper::api_key()), PL_Validate::request($args, $config['args']));
 		$response = PL_HTTP::send_request($config['request']['url'], $request);
@@ -15,19 +15,19 @@ class PL_Custom_Attributes {
 		return array();
 	}
 
-	public function create() {
-		
+	public static function create() {
+
 	}
 
-	public function update() {
-		
+	public static function update() {
+
 	}
 
-	public function details() {
-		
+	public static function details() {
+
 	}
 
-	public function keys_for_options ($args = array()) {
+	public static function keys_for_options ($args = array()) {
 		$options = array();
 		$attributes = self::get($args);
 		foreach ($attributes as $attribute => $value) {

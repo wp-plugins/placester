@@ -2,7 +2,7 @@
 
 class PLS_Widget_Facebook extends WP_Widget {
 
-  function __construct() {
+  public function __construct() {
     $widget_ops = array(
       'classname' => 'pls-facebook-widget',
       'description' => 'Change the title of the "Facebook" widget.'
@@ -15,7 +15,7 @@ class PLS_Widget_Facebook extends WP_Widget {
     $this->WP_Widget( 'PLS_Widget_Facebook', 'Placester: Facebook Widget', $widget_ops, $control_ops );
   }
 
-  function widget( $args, $instance ) {
+  public function widget( $args, $instance ) {
     // Widget output
     extract($args);
     $title = empty($instance['title']) ? ' ' : apply_filters('title', $instance['title']);
@@ -124,7 +124,7 @@ class PLS_Widget_Facebook extends WP_Widget {
 
   }
 
-  function update( $new_instance, $old_instance ) {
+  public function update( $new_instance, $old_instance ) {
     // Save widget options
     $instance = $old_instance;
     $instance['title'] = strip_tags($new_instance['title']);
@@ -134,7 +134,7 @@ class PLS_Widget_Facebook extends WP_Widget {
     return $instance;
   }
 
-  function form( $instance ) {
+  public function form( $instance ) {
     // Output admin widget options form
     $instance = wp_parse_args( (array) $instance, array( 'title' => 'Facebook', 'facebook_id' => '320744871774', 'count' => '4' ) );
     $title = strip_tags($instance['title']);

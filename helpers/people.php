@@ -6,22 +6,22 @@ class PL_People_Helper {
 	public static $user_saved_keys = 'pls_saved_searches';
 	public static $saved_key_prefix = 'pl_sk_';
 
-	public function init() {
+	public static function init() {
 		add_action('wp_ajax_add_person', array(__CLASS__, 'add_person_ajax' ) );
 		add_action('wp_ajax_get_favorites', array(__CLASS__, 'get_favorites_ajax' ) );
 	}
 
-	public function add_person($args = array()) {
+	public static function add_person($args = array()) {
 		return PL_People::create($args);
 	}	
 
-	public function add_person_ajax() {
+	public static function add_person_ajax() {
 		$api_response = PL_People::create($_POST);
 		echo json_encode($api_response);
 		die();
 	}
 
-	public function get_favorites_ajax () {
+	public static function get_favorites_ajax () {
 		$placester_person = self::person_details();
 		if (isset($placester_person['fav_listings']) && is_array($placester_person['fav_listings'])) {
 			echo json_encode($placester_person['fav_listings']);
@@ -31,7 +31,7 @@ class PL_People_Helper {
 		die();
 	}
 	
-	public function add_member_saved_search( $search_args ) {
+	public static function add_member_saved_search( $search_args ) {
 		$user_id = get_current_user_id();
 		if( empty( $user_id ) ) {
 			echo false; 
@@ -61,12 +61,12 @@ class PL_People_Helper {
 		die();
 	}
 
-	public function update_person_details ($person_details) {
+	public static function update_person_details ($person_details) {
 		$placester_person = self::person_details();
 		return PL_People::update(array_merge(array('id' => $placester_person['id']), $person_details));
 	}
 
-	public function person_details () {
+	public static function person_details () {
 		$wp_user = PL_Membership::get_user();
 		$placester_id = get_user_meta($wp_user->ID, 'placester_api_id');
 		if (is_array($placester_id)) { $placester_id = implode($placester_id, ''); }
@@ -76,7 +76,7 @@ class PL_People_Helper {
 		return PL_People::details(array('id' => $placester_id));
 	}
 
-	public function associate_property($property_id) {
+	public static function associate_property($property_id) {
 		$placester_person = self::person_details();
 		$new_favorites = array($property_id);
 		if (isset($placester_person['fav_listings']) && is_array($placester_person['fav_listings'])) {
@@ -87,7 +87,7 @@ class PL_People_Helper {
 		return PL_People::update(array('id' => $placester_person['id'], 'fav_listing_ids' => $new_favorites ) );
 	}	
 
-	public function unassociate_property($property_id) {
+	public static function unassociate_property($property_id) {
 		$placester_person = self::person_details();
 		$new_favorites = array();
 		if (is_array($placester_person['fav_listings'])) {
@@ -104,7 +104,7 @@ class PL_People_Helper {
 	 * Helper function for a user's unique Placester ID (managed by Rails, stored in WP's usermeta table)
 	 * @return User's Placester ID
 	 */
-	private function get_placester_user_id() {
+	public static function get_placester_user_id() {
 		$wp_user = PL_Membership::get_user();
 		$placester_id = get_user_meta($wp_user->ID, 'placester_api_id');
 		if (is_array($placester_id)) { $placester_id = implode($placester_id, ''); }

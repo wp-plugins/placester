@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 class PL_Integration {
-	
-	public function get($args = array()) {
+
+	public static function get($args = array()) {
 		$request = array_merge(array("api_key" => PL_Option_Helper::api_key()), PL_Validate::request($args, PL_Config::PL_API_INTEGRATION('get', 'args')));
 		$response = PL_HTTP::send_request(trailingslashit(PL_Config::PL_API_INTEGRATION('get', 'request', 'url')), $request, PL_Config::PL_API_INTEGRATION('get', 'request', 'type'), false);
 		if (!empty($response)) {
@@ -16,7 +16,7 @@ class PL_Integration {
 		return $response;
 	}
 
-	public function create($args = array()) {
+	public static function create($args = array()) {
 		$request = PL_Validate::request($args, PL_Config::PL_API_INTEGRATION('create', 'args') );
 		$request = array_merge($request, array("api_key" => PL_Option_Helper::api_key() ) );
 
@@ -24,7 +24,7 @@ class PL_Integration {
 		return $response;
 	}
 
-	public function mls_list($args = array()) {
+	public static function mls_list($args = array()) {
 		$request = PL_Validate::request($args, PL_Config::PL_API_INTEGRATION('mls_list', 'args'));
 		$request = array_merge($request, array("api_key" => PL_Option_Helper::api_key()));
 

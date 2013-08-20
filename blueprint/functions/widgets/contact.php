@@ -2,7 +2,7 @@
 
 class Placester_Contact_Widget extends WP_Widget {
 
-  function Placester_Contact_Widget() {
+  public function __construct() {
     $widget_ops = array(
       'classname' => 'pls-contact-form Placester_Contact_Widget',
       'description' => 'Works only on the Property Details Page.'
@@ -11,7 +11,7 @@ class Placester_Contact_Widget extends WP_Widget {
   }
 
   //Front end contact form
-  function form($instance){
+  public function form($instance){
     //Defaults
     $instance = wp_parse_args( (array) $instance, array('title'=>'', 'button' => 'Submit', 'departments' => '') );
 
@@ -38,7 +38,7 @@ class Placester_Contact_Widget extends WP_Widget {
   }
   
   // Update settings
-  function update($new_instance, $old_instance){
+  public function update($new_instance, $old_instance){
     $instance = $old_instance;
     $instance['title'] = strip_tags(stripslashes($new_instance['title']));
     $instance['button'] = strip_tags(stripslashes($new_instance['button']));
@@ -50,7 +50,7 @@ class Placester_Contact_Widget extends WP_Widget {
   }
 
   // Admin widget
-  function widget($args, $instance) {
+  public function widget($args, $instance) {
     
 
     // Find where this widget's sidebar falls in the list of registered sidebars
@@ -97,6 +97,7 @@ class Placester_Contact_Widget extends WP_Widget {
         $departments_label = apply_filters('departments_label', !isset($instance['departments_label']) ? 'Department' : $instance['departments_label']);
         $departments_value = apply_filters('departments_value', !isset($instance['departments_value']) ? 'Department' : $instance['departments_value']);
         
+        $include_name = isset($instance['include_name']) && $instance['include_name'] == "false" ? false : true;
         $name_label = apply_filters('name_label', !isset($instance['name_label']) ? 'Name (required)' : $instance['name_label']);
         $name_value = apply_filters('name_value', !isset($instance['name_value']) ? 'Name' : $instance['name_value']);
         
@@ -207,11 +208,13 @@ class Placester_Contact_Widget extends WP_Widget {
                     <input type="hidden" name="custom_link" value="<?php echo @$custom_link; ?>">
                     <input type="hidden" name="custom_link_target" value="<?php echo @$custom_link_target; ?>">
                     <input type="hidden" name="form_title" value="<?php echo @$form_title; ?>">
-
-                    <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
-                    <label class="required" for="name"><?php echo $name_label; ?></label>
-                    <input class="required" id="name" placeholder="<?php echo $name_value ?>" type="text" name="name" tabindex="<?php echo $sidebar_pos; ?>1" <?php echo $name_required == true ? 'required="required"' : '' ?> <?php echo !empty($name_error) ? 'data-message="'.$name_error.'"' : ''; ?> />
-                    <?php echo empty($instance['inner_containers']) ? '' : '</div>'; ?>
+                    
+                    <?php if(!empty($include_name)) { ?>
+                      <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
+                      <label class="required" for="name"><?php echo $name_label; ?></label>
+                      <input class="required" id="name" placeholder="<?php echo $name_value ?>" type="text" name="name" tabindex="<?php echo $sidebar_pos; ?>1" <?php echo $name_required == true ? 'required="required"' : '' ?> <?php echo !empty($name_error) ? 'data-message="'.$name_error.'"' : ''; ?> />
+                      <?php echo empty($instance['inner_containers']) ? '' : '</div>'; ?>
+                    <?php } ?>
 
                     <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
                     <label class="required" for="email"><?php echo $email_label; ?></label><input class="required" id="email" placeholder="<?php echo $email_value ?>" type="email" name="email" tabindex="<?php echo $sidebar_pos; ?>2" <?php echo $email_required == true ? 'required="required"' : '' ?> <?php echo !empty($email_error) ? 'data-message="'.$email_error.'"' : ''; ?> />
@@ -277,7 +280,7 @@ class Placester_Contact_Widget extends WP_Widget {
    * @param array $data
    * @return string
    */
-  function _get_full_address($data) {
+  private static function _get_full_address($data) {
     if(isset($data['location']['full_address'])) {
       return $data['location']['full_address'];
     }

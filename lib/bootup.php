@@ -71,7 +71,7 @@ class PL_Bootup {
     }
 
     private static function create_taxonomies ( $taxonomies ) {
-        PL_Taxonomies::create( $taxonomies );
+        PL_Taxonomy_Helper::create( $taxonomies );
     }
 
     private static function create_posts ( $posts, $post_type, $settings ) {

@@ -1,8 +1,8 @@
 <?php 
 
 class PLS_Format {
-  
-	static public function phone ($phone, $options = '') {
+	
+	public static function phone ($phone, $options = '') {
 		$new_phone = '';
 
 		/** Define the default argument array. */
@@ -43,7 +43,7 @@ class PLS_Format {
 
 	}
 
-	static public function listing_price ($listing, $args) {
+	public static function listing_price ($listing, $args) {
 
 		if (is_array($listing)) {
 		
@@ -72,7 +72,7 @@ class PLS_Format {
 	}
 
 	// formats the given number based on the supplied options. 
-	static public function number ( $number, $options = '') {
+	public static function number ( $number, $options = '') {
 
 		// Handle specific values AND types (this makes sure to allow '0' as a string and 0 as an integer)
 	    if ( $number === '' || $number === false || $number === null ) {
@@ -102,14 +102,14 @@ class PLS_Format {
 		
 		//insert $ sign.
 		if ($options['add_currency_sign']) {
-			$formatted_number =  pls_get_currency_symbol() . $formatted_number;	
+			$formatted_number =	pls_get_currency_symbol() . $formatted_number;	
 		}
 		
 		return $formatted_number;
 
 	}
 
-	static public function abbreviate_number ($number) {
+	public static function abbreviate_number ($number) {
 		$abbreviated_number = false;
 
 		
@@ -152,7 +152,7 @@ class PLS_Format {
 		return $abbreviated_number;
 	}
 
-	static private function validate_number (&$phone) {
+	private static function validate_number (&$phone) {
 		
 		//placester api dumps a + in there. 		
 		if (substr($phone, 0, 1) == '+') {
@@ -178,7 +178,7 @@ class PLS_Format {
 		return false;
 	}
 
-	static private function process_phone_parts ($phone) {
+	private static function process_phone_parts ($phone) {
     	
     	$phone_parts = array();
     	//area code in states
@@ -191,7 +191,7 @@ class PLS_Format {
     	return $phone_parts;
 	}
 
-	static private function format_phone ($phone_parts, $delimiter = '') {
+	private static function format_phone ($phone_parts, $delimiter = '') {
 		
 		$new_phone = '';
 		
@@ -206,7 +206,7 @@ class PLS_Format {
 		return $new_phone;
 	}
 
-	static private function format_phone_html ($phone_parts, $args) {
+	private static function format_phone_html ($phone_parts, $args) {
 		$new_phone = '';
 
 		/** Define the default argument array. */
@@ -248,7 +248,7 @@ class PLS_Format {
 		return $new_phone;
 	}
 
-  function translate_region($region) {
+	public static function translate_region($region) {
     
     // apply correct case to region to match library
     $region = ucwords($region);
@@ -271,7 +271,7 @@ class PLS_Format {
     return $region;
   }
 
-  function translate_property_type($listing) {
+	public static function translate_property_type($listing) {
 
     if (isset($listing['cur_data']['prop_type']) && ($listing['cur_data']['prop_type'] != null) && !empty($listing['cur_data']['prop_type'])) {
 
@@ -292,7 +292,7 @@ class PLS_Format {
     }
   }
 
-	function amenities_but($listing_data, $amenities_to_remove) {
+	public static function amenities_but($listing_data, $amenities_to_remove) {
 		$amenities = array();
 		$amenities['ngb'] = array();
 		$amenities['list'] = array();
@@ -330,7 +330,7 @@ class PLS_Format {
 		return $amenities;
 	}
 
-  function translate_lease_terms ($listing, $term = 'price_unit') {
+	public static function translate_lease_terms ($listing, $term = 'price_unit') {
     $lease_terms = array(
       'per_yr' => 'per year',
       'per_wk' => 'per week',
@@ -352,7 +352,7 @@ class PLS_Format {
 		}
   }
 
-	function translate_amenities ($amenities) {
+	public static function translate_amenities ($amenities) {
 		
 		$local_dictionary = array(
 				'half_baths' => 'Half Baths',
@@ -697,7 +697,7 @@ class PLS_Format {
 		return $amenities;
 	}
 
-  static public function shorten_excerpt ( $post, $length = 50, $ellipsis = true ) {
+	public static function shorten_excerpt ( $post, $length = 50, $ellipsis = true ) {
     
     if ( !empty($post->post_excerpt) ) {
       // 1st priority: excerpt
@@ -722,7 +722,7 @@ class PLS_Format {
     return $shortened_excerpt;
   }
 
-  static public function shorten_text ( $content, $length = 50, $ellipsis = true ) {
+	public static function shorten_text ( $content, $length = 50, $ellipsis = true ) {
     if (strlen($content) > $length) {
       $content = strip_tags($content);
       $shortened_content = preg_replace('/\s+?(\S+)?$/', '', substr($content, 0, $length));
@@ -733,7 +733,7 @@ class PLS_Format {
     }
   }
 
-  static public function get_lat_lng_of_address ($address) {
+	public static function get_lat_lng_of_address ($address) {
 		$url = 'http://maps.googleapis.com/maps/api/geocode/json?address='.$address.'&sensor=false';
 		$url = str_replace(',', '', $url);
 		$url = str_replace(' ', '+', $url);
@@ -743,6 +743,6 @@ class PLS_Format {
 		$lat_lng_array['lng'] = $obj->results[0]->geometry->location->lng;
 		return $lat_lng_array;
   }
-
+	
 //end of class
 }

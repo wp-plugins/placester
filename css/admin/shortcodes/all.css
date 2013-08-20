@@ -215,10 +215,6 @@
 	overflow: hidden;
 }
 
-.sc-meta-section a {
-	display: block;
-}
-
 #pl_sc_tpl_edit .pl_template_block {
 	float: none;
 }
@@ -256,5 +252,14 @@ h4.subcode {
 
 #options-filters .button {
 	height: auto;
+}
+
+
+/* Custom Attribute Lookup */
+.ui-dialog-content th {
+	text-align: left;
+}
+.ui-dialog-content td {
+	white-space: nowrap;
 }
 

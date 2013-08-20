@@ -21,7 +21,57 @@ class PL_Component_Entity {
 	
 	public static $template_tags = array();
 
-
+	public static $listing_tags = array(
+			'price'			=> array('help' => 'Property price'),
+			'sqft'			=> array('help' => 'Total square feet'),
+			'beds'			=> array('help' => 'Number of bedrooms'),
+			'baths'			=> array('help' => 'Number of bathrooms'),
+			'half_baths'	=> array('help' => 'Number of half bathrooms'),
+			'avail_on'		=> array('help' => 'Date the property will be available'),
+			'url'			=> array('help' => 'Link to page for the listing'),
+			'address'		=> array('help' => 'Street address'),
+			'locality'		=> array('help' => 'Locality'),
+			'region'		=> array('help' => 'Region'),
+			'postal'		=> array('help' => 'Zip/postal code'),
+			'neighborhood'	=> array('help' => 'Neighborhood'),
+			'county'		=> array('help' => 'County'),
+			'country'		=> array('help' => 'Country'),
+			//'coords'		=> array('help' => ''),
+			'unit'			=> array('help' => 'Unit'),
+			'full_address'	=> array('help' => 'Full address'),
+			'email'			=> array('help' => 'Email address for this listing'),
+			'phone'			=> array('help' => 'Contact phone'),
+			'desc'			=> array('help' => 'Property description'),
+			'image'			=> array('help' => 'First property image'),
+			'mls_id'		=> array('help' => 'MLS #'),
+			'map'			=> array('help' => ''),
+			'listing_type'	=> array('help' => 'Type of listing'),
+			'gallery'		=> array('help' => 'Image gallery'),
+			'amenities'		=> array('help' => 'List of amenties'),
+			'price_unit'	=> array('help' => 'Unit price'),
+			'compliance'	=> array('help' => 'MLS compliance statement'),
+			'favorite_link_toggle' => array('help' => 'Link to add/remove from favorites'),
+			'custom'		=> array('help' => 'Use to display a custom listing attribute.<br />
+Format is as follows:<br />
+<code>[custom group=\'group_name\' attribute=\'some_attribute_name\' type=\'text\' value=\'some_value\']</code><br />
+where:<br />
+<code>group</code> - The group identifier if the listing attribute is part of a group. Possible values are <code>location</code>, <code>rets</code>, <code>metadata</code>, <code>uncur_data</code>.<br />
+<code>attribute</code> - (required) The unique identifier of the listing attribute.<br />
+<code>type</code> - (optional, default is \'text\') Can be <code>text</code>, <code>currency</code>, <code>list</code>. Used to indicate how the attribute should be formatted.<br />
+<code>value</code> - (optional) Indicates text to be displayed if the listing attribute is empty.<br />
+'),
+			'if'			=> array('help' => 'Use to conditionally display some content depending on the value of a listing\'s attribute.<br />
+Format is as follows:<br />
+<code>[if group=\'group_name\' attribute=\'some_attribute_name\' value=\'some_value\']some HTML that will be displayed if the condition is true[/if]</code><br />
+where:<br />
+<code>group</code> - The group identifier if the listing attribute is part of a group. Possible values are <code>location</code>, <code>rets</code>, <code>metadata</code>, <code>uncur_data</code>.<br />
+<code>attribute</code> - (required) The unique identifier of the listing attribute.<br />
+<code>value</code> - (optional) By default the condition is true if the attribute has any value other than being empty. If you wish to test if the attribute matches a specific value, then set that value in this parameter.<br />
+For example, to only display bedroom and bathroom details if the property is residential:<br />
+<code>[if attribute=\'compound_type\' value=\'res_sale\']Beds: [beds] Baths: [baths][/if]</code><br />
+To add some text to your listings:<br />
+<code>[if group=\'rets\' attribute=\'aid\' value=\'MY_MLS_AGENT_ID\']&lt;span&gt;Featured Listing&lt;/span&gt;[/if]</code>'),
+	);
 
 	public static function init() {
 		// add_action('init', array( __CLASS__, 'filter_featured_context' ) );
@@ -1336,13 +1386,13 @@ class PL_Component_Entity {
 		if ($tag == 'if') {
 			$val = isset($atts['value']) ? $atts['value'] : null;
 			if (empty($atts['group']) && !empty($atts['attribute'])) {
-				if (array_key_exists($atts['attribute'], self::$listing['cur_data'])) {
+				if (!empty(self::$listing['cur_data']) && array_key_exists($atts['attribute'], self::$listing['cur_data'])) {
 					$atts['group'] = 'cur_data';
-				}else if (array_key_exists($atts['attribute'], self::$listing['location'])) {
+				}else if (!empty(self::$listing['location']) && array_key_exists($atts['attribute'], self::$listing['location'])) {
 					$atts['group'] = 'location';
-				}else if (array_key_exists($atts['attribute'], self::$listing['contact'])) {
+				}else if (!empty(self::$listing['contact']) && array_key_exists($atts['attribute'], self::$listing['contact'])) {
 					$atts['group'] = 'contact';
-				}else if (array_key_exists($atts['attribute'], self::$listing['rets'])) {
+				}else if (!empty(self::$listing['rets']) && array_key_exists($atts['attribute'], self::$listing['rets'])) {
 					$atts['group'] = 'rets';
 				}
 			}

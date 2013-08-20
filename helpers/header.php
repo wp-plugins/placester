@@ -7,7 +7,7 @@ class PL_Helper_Header {
     private static $page;
     private static $sub_pages = array();
 
-    public function init() {
+    public static function init() {
       add_action('admin_enqueue_scripts', array(__CLASS__, 'set_page' ) );
 	  add_action('admin_head', array(__CLASS__, 'hide_sub_pages'));
     }
@@ -34,16 +34,17 @@ class PL_Helper_Header {
         self::$page = $hook;
     }
 
-    public function pl_settings_subpages() {
+    public static function pl_settings_subpages() {
     	global $settings_subpages;
     	$base_page = 'placester_settings';
     	return self::pl_subpages($base_page, $settings_subpages, 'Settings Pages');
     }
 
-    public function pl_subpages($base_page, $subpages=array(), $title='') {
-        global $submenu;
-        $base_url = 'admin.php?page='.$base_page;
+    public static function pl_subpages($base_page, $subpages=array(), $title='') {
+        global $submenu, $plugin_page;
         
+        $base_url = 'admin.php?page='.$base_page;
+
         ob_start();
         ?>
           <div class="settings_sub_nav">
@@ -52,7 +53,7 @@ class PL_Helper_Header {
               <?php foreach ($subpages as $page_title => $page_url): ?>
                 <li>
                   <?php
-                    $current_page = ( !empty($page_url) ? strpos(self::$page, $page_url) : ($_REQUEST['page'] == $base_page) );
+                    $current_page = $_REQUEST['page'] == $base_page.$page_url;
                   ?>
                   <a href="<?php echo $base_url . $page_url ?>" style="<?php echo $current_page ? 'color:#D54E21;' : '' ?>"><?php echo $page_title; ?></a>
                 </li>

@@ -3,12 +3,12 @@
 PL_WordPress_Helper::init();
 class PL_WordPress_Helper {
 	
-	function init () {
+	public static function init () {
 		add_action('switch_theme', array(__CLASS__, 'report_theme'));
 		add_action('wp_ajax_publish_post', array(__CLASS__, 'publish_post' ) );
 	}
 
-	function report_theme () {
+	public static function report_theme () {
 		$theme = 'not sure';
 		//I don't believe this function is registered at the time this is hooked in. 
 		if (function_exists('wp_get_theme')) {
@@ -18,17 +18,17 @@ class PL_WordPress_Helper {
 		return $response;
 	}
 
-	function report_url () {
+	public static function report_url () {
 		$request = array('url' => site_url());
 		$response = PL_WordPress::set($request);
 	}
 
-	function remote_filter_update ($args = array()) {
+	public static function remote_filter_update ($args = array()) {
 		$args = wp_parse_args($args);
 		PL_Helper_User::set_global_filters($args);
 	}
 
-	function publish_post() {
+	public static function publish_post() {
 		// Get current user's WP id...
 		global $user_ID;
 

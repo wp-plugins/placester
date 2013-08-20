@@ -2,7 +2,7 @@
 
 class PL_Form {
 	
-	static $args = array();
+	private static $args = array();
 
 	public static function generate_form($items, $args, $section_prefix = '') {
 		extract(self::process_defaults($args), EXTR_SKIP);
@@ -174,7 +174,7 @@ class PL_Form {
 		return $op;
 	}
 
-	private function prepare_item($item, $attributes, $method, $parent) {
+	private static function prepare_item($item, $attributes, $method, $parent) {
 
 		// Sets text
 		$text = $item;
@@ -254,7 +254,7 @@ class PL_Form {
 		return array('name' => $name, 'value' => $value, 'text' => $text, 'options' => $options, 'id' => $id, 'type' => $attributes['type'], 'css' => $css, 'description' => $description);
 	}
 
-	public function prepare_custom_item($options, $method, $parent) {
+	public static function prepare_custom_item($options, $method, $parent) {
 		$custom_items = array();
 		$form_types = PL_Config::PL_API_CUST_ATTR('get');
 		$form_types = $form_types['args']['attr_type']['options'];
@@ -265,7 +265,7 @@ class PL_Form {
 		return $custom_items;
 	}
 
-	private function process_defaults ($args){
+	private static function process_defaults ($args){
 		/** Define the default argument array. */
 		$defaults = array(
 			'url' => false,
