@@ -688,7 +688,7 @@ class PLS_Partials_Listing_Search_Form {
 
     /** Add the property type select element. */
     if ($property_type == 1) {
-    	$selected_property_type = isset( $_POST['metadata']['property_type']  ) ? wp_kses_post( $_POST['metadata']['property_type'] ) : false;
+    	$selected_property_type = isset( $_POST['property_type']  ) ? wp_kses_post( $_POST['property_type'] ) : false;
         
         $form_html['property_type'] = pls_h(
             'select',
@@ -700,7 +700,7 @@ class PLS_Partials_Listing_Search_Form {
 
     /** Add the listing type select element. */
     if ($listing_types == 1) {
-    	$selected_listing_types = isset( $_POST['metadata']['listing_types']  ) ? wp_kses_post( $_POST['metadata']['listing_types'] ) : false;
+    	$selected_listing_types = isset( $_POST['listing_types']  ) ? wp_kses_post( $_POST['listing_types'] ) : false;
         
         $form_html['listing_types'] = pls_h(
             'select',
@@ -711,7 +711,7 @@ class PLS_Partials_Listing_Search_Form {
     
     /** Add the zoning type select element. */
     if ($zoning_types == 1) {
-    	$selected_zoning_types = isset( $_POST['metadata']['zoning_types']  ) ? wp_kses_post( $_POST['metadata']['zoning_types'] ) : false;
+    	$selected_zoning_types = isset( $_POST['zoning_types']  ) ? wp_kses_post( $_POST['zoning_types'] ) : false;
         
         $form_html['zoning_types'] = pls_h(
             'select',

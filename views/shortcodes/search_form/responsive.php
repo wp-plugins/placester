@@ -28,7 +28,11 @@ form.pls_search_form_listings .search-item select, form.pls_search_form_listings
 </div>
 <div class="search-item	">
 	<label>Property Type:</label>[property_type]
-</div>',
+</div>
+<div class="search-item	">
+	<input type="submit" name="submit" value="Search Now!">
+</div>
+',
 
 'before_widget'	=> '
 <div class="pl-tpl-sf-responsive">',

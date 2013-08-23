@@ -72,7 +72,7 @@ class PL_Form {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
 					<input id="<?php echo $id ?>" type="<?php echo $type ?>" name="<?php echo $name ?>" value="true" <?php echo $value ? 'checked' : '' ?> />
-					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
+					<label for="<?php echo $id ?>" class="<?php echo $type ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
 				</section>
 			<?php	
 		} elseif ($type == 'textarea') {
@@ -80,14 +80,14 @@ class PL_Form {
 			$cols = ! empty( $attributes['cols'] ) ? $attributes['cols'] : 20;
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
-					<label class="textarea" for="<?php echo $id ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
+					<label for="<?php echo $id ?>" class="<?php echo $type ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
 					<textarea id="<?php echo $id ?>" name="<?php echo $name ?>" rows="<?php echo $rows; ?>" cols="<?php echo $cols; ?>"><?php echo $value ?></textarea>
 				</section>
 			<?php
 		} elseif ($type == 'select') {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>" >
-					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
+					<label for="<?php echo $id ?>" class="<?php echo $type ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
 					<select name="<?php echo $name ?>" id="<?php echo $id ?>">
 						<?php foreach ($options as $key => $text): ?>
 							<option value="<?php echo htmlentities($key, ENT_QUOTES) ?>" <?php echo ($key == $value ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text, ENT_QUOTES, 'UTF-8', false) ?></option>
@@ -98,7 +98,7 @@ class PL_Form {
 		} elseif ($type == 'multiselect') {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>" >
-					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
+					<label for="<?php echo $id ?>" class="<?php echo $type ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
 					<select name="<?php echo $name ?>[]" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
 						<?php foreach ($options as $key => $text): ?>
 							<option value="<?php echo htmlentities($key, ENT_QUOTES) ?>" <?php echo ((is_array($value) && in_array($key, $value) ) ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text, ENT_QUOTES, 'UTF-8', false) ?></option>
@@ -109,21 +109,21 @@ class PL_Form {
 		} elseif( $type == 'text' || $type == 'int' ) {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
-					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
+					<label for="<?php echo $id ?>" class="<?php echo $type ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
 					<input id="<?php echo $id ?>" class="form_item_<?php echo $type ?>" type="text" name="<?php echo $name ?>" value="<?php echo htmlentities($value) ?>" data-attr_type="<?php echo $type ?>" />
 				</section>
 			<?php
 		} elseif ( $type == 'date') {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
-					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
+					<label for="<?php echo $id ?>" class="<?php echo $type ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
 					<input id="<?php echo $id ?>_picker" class="form_item_date" type="text" name="<?php echo $name ?>" <?php echo !empty($value) ? 'value="'.$value.'"' : ''; ?> />
 				</section>
 			<?php
 		} elseif( $type == 'image' ) {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
-					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
+					<label for="<?php echo $id ?>" class="<?php echo $type ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
 					<input id="fileupload" type="file" name="images" name="<?php echo $name ?>" multiple /> 
 				</section>
 			<?php
@@ -146,10 +146,10 @@ class PL_Form {
 		} elseif ($type == 'radio') {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>" >
-					<label for="<?php echo $id ?>"><?php echo $text ?></label>
+					<label for="<?php echo $id ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>
 					<?php foreach( $options as $key => $text ): ?>
 					<div class="<?php echo $name . '_radios'; ?>">
-						<label for="<?php echo $name . '_' . $key; ?>"><?php echo $text ?></label>
+						<label for="<?php echo $name . '_' . $key; ?>" class="<?php echo $type ?>"><?php echo $text ?></label>
 						<input id="<?php echo $name . '_' . $key; ?>" type="radio" value="<?php echo $text; ?>" name="<?php echo $name; ?>" />
 					</div>
 					<?php endforeach; ?>	

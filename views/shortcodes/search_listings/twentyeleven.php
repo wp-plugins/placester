@@ -9,6 +9,10 @@ $template = array(
 .pl-tpl-sl-twentyeleven .clear {
 	clear: both;
 }
+.pl-tpl-sl-twentyeleven form {
+	clear: both;
+	padding: 1em 0 0 0;
+}
 .pl-tpl-sl-twentyeleven p {
 	display: block !important;
 	float: none !important;
@@ -251,7 +255,10 @@ $template = array(
 </div><!--listing-item-->
 ',
 
-'before_widget' => '<div class="pl-tpl-sl-twentyeleven">',
+'before_widget' => '<div class="pl-tpl-sl-twentyeleven">
+  <div id="pls_num_results_found" class="search_results">
+    <span id="pls_num_results"></span> listings match your search
+  </div>',
 
 'after_widget' => '<div class="pl-tpl-footer">[compliance]</div></div>',
 

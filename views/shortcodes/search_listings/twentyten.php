@@ -207,7 +207,10 @@ It can be used as a guide for making a custom template that styles output create
 
 'snippet_body' => '',
 
-'before_widget' => '<div class="pl-tpl-sl-twentyten">',
+'before_widget' => '<div class="pl-tpl-sl-twentyten">
+  <div id="pls_num_results_found" class="search_results">
+    <span id="pls_num_results"></span> listings match your search
+  </div>',
 
 'after_widget' => '<div class="pl-tpl-footer">[compliance]</div></div>',
 

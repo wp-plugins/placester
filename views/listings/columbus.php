@@ -57,6 +57,7 @@ $template = array(
 .property-listing .image {
 }
 .property-listing .image img {
+  display: block;
   width: 100% !important;
   height: auto !important;
   max-width: 100% !important;
@@ -69,22 +70,20 @@ $template = array(
 }
 .property-listing .gallery .grid_8 {
   width: 100%;
-  height: 80px;
+  max-height: 80px;
 }
 .property-listing .gallery li {
-  margin: 1% 1% 0 0 !important;
+  margin: 0 !important;
   padding: 0 !important;
-  width: 9%;
-  height: 49%;
+  width: 10%;
+  height: 40px;
   overflow: hidden;
 }
 .property-listing .gallery a {
   display: block;
   margin: 0 !important;
   border: none !important;
-  padding: 0 !important;
-  width: 100%;
-  height: 100%;
+  padding: 5px 5px 0 0 !important;
 }
 .property-listing .gallery img {
   display: block;

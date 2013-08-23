@@ -49,7 +49,7 @@ class PL_Component_Entity {
 			'gallery'		=> array('help' => 'Image gallery'),
 			'amenities'		=> array('help' => 'List of amenties'),
 			'price_unit'	=> array('help' => 'Unit price'),
-			'compliance'	=> array('help' => 'MLS compliance statement'),
+			'compliance'	=> array('help' => 'MLS compliance statement for an individual listing'),
 			'favorite_link_toggle' => array('help' => 'Link to add/remove from favorites'),
 			'custom'		=> array('help' => 'Use to display a custom listing attribute.<br />
 Format is as follows:<br />
@@ -235,7 +235,7 @@ To add some text to your listings:<br />
 
 		ob_start();
 		self::hide_unnecessary_controls($atts);
-		self::print_filters( $filters . $filters_string, $atts['context'] );
+		self::print_filters( $filters . $filters_string, 'static_listings', $atts['context'] );
 		echo PLS_Partials::get_listings_list_ajax($atts);
 		// support shortcodes in the header or footer
 		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
@@ -323,7 +323,7 @@ To add some text to your listings:<br />
 		$atts['context'] = 'search_listings' . (empty($atts['context']) ? '' : '_'.$atts['context']);
 
 		ob_start();
-		self::print_filters( $filters . $filters_string, $atts['context'] );
+		self::print_filters( $filters . $filters_string, 'search_listings', $atts['context'] );
 		PLS_Partials_Get_Listings_Ajax::load($atts);
 		// support shortcodes in the header or footer
 		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
@@ -915,15 +915,18 @@ To add some text to your listings:<br />
 		// Setup form action
 		$form_data = array('action'=>'');
 		// Handle attributes using shortcode_atts...
-		$form_action = esc_url( home_url( '/' ) ) . 'listings';
-		if( isset( $atts['form_action_url'] ) ) {
+		$form_data['action'] = '';
+		// TODO deprecate this attr
+		if( !empty($atts['form_action_url']) ) {
 			$form_data['action'] = $atts['form_action_url'];
 		}
-		// use the form action from the metabox if AJAX is disabled
-		if( isset( $atts['ajax'] ) && $atts['ajax'] == 'true' && isset( $atts['formaction'] ) ) {
+		// use this one
+		if( !empty($atts['formaction']) ) {
 			$form_data['action'] = $atts['formaction'];
 		}
+		$atts['ajax'] = empty($form_data['action']) ? true : false;
 		$atts['form_data'] = (object)$form_data;
+		/*
 		// add context and ajax support if missing
 		if( isset( $atts['ajax'] ) ) {
 			$atts['ajax'] = true;
@@ -933,7 +936,7 @@ To add some text to your listings:<br />
 				if (typeof bootloader !== \'object\') {
 					var bootloader;
 				}
-
+		
 				jQuery(document).ready(function( $ ) {
 					if (typeof bootloader !== \'object\') {
 						bootloader = new SearchLoader();
@@ -947,7 +950,7 @@ To add some text to your listings:<br />
 		} else {
 			$atts['ajax'] = false;
 		}
-
+		*/
 		return PLS_Partials_Listing_Search_Form::init($atts);
 	}
 
@@ -979,7 +982,7 @@ To add some text to your listings:<br />
 		return $pl_featured_listing_meta;
 	}
 
-	private static function print_filters( $static_listing_filters, $context = 'listings_search' ) {
+	private static function print_filters( $filters, $shortcode, $context = 'listings_search') {
 
 		wp_enqueue_script('filters-featured.js', trailingslashit(PLS_JS_URL) . 'scripts/filters.js', array('jquery'));
 		?>
@@ -996,8 +999,12 @@ To add some text to your listings:<br />
 				});
 
 				filter.init({
-					dom_id : "#pls_search_form_listings",
-					'class' : ".pls_search_form_listings",
+					<?php if ($shortcode == 'search_listings'):?>
+						'class' : ".pls_search_form_listings",
+					<?php else: ?>
+						// static listings should ignore the search form
+						'class' : ".no_search_form__",
+					<?php endif; ?>
 					list : list,
 					listings : listings
 				});
@@ -1011,10 +1018,9 @@ To add some text to your listings:<br />
 					context: '<?php echo $context; ?>'
 				});
 
-
 				<?php
-				if( !empty( $static_listing_filters ) ) {
-						echo $static_listing_filters;
+				if( !empty( $filters ) ) {
+					echo $filters;
 				}
 				?>
 				listings.init();

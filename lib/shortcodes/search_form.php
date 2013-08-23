@@ -20,12 +20,11 @@ class PL_Form_CPT extends PL_SC_Base {
 		</p>';
 
 	protected $options = array(
-		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
-		'width'				=> array( 'type' => 'int', 'label' => 'Width(px)', 'default' => 250 ),
-		'height'			=> array( 'type' => 'int', 'label' => 'Height(px)', 'default' => 250 ),
-		'widget_class'		=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
-		'ajax'				=> array( 'type' => 'checkbox', 'label' => 'Disable AJAX', 'default' => false ),
-		'formaction'		=> array( 'type' => 'text', 'label' => 'Form URL when AJAX is disabled', 'default' => '' ),
+		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
+		'width'				=> array( 'type' => 'int', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),
+		'height'			=> array( 'type' => 'int', 'label' => 'Height', 'default' => 250, 'description' => '(px)' ),
+		'widget_class'	=> array( 'type' => 'text', 'label' => 'CSS Class', 'default' => '', 'description' => '(optional)' ),
+		'formaction'		=> array( 'type' => 'text', 'label' => 'Enter URL of listings page', 'description'=>'Only required if different from the page where this shortcode will be used.', 'default' => '' ),
 		'modernizr'			=> array( 'type' => 'checkbox', 'label' => 'Drop Modernizr', 'default' => false ),
 	);
 
@@ -89,7 +88,9 @@ In the following example a search field is created for the custom attribute \'ro
 <div class="search-item	">
 	<label>Property Type:</label>[property_type]
 </div>
-			',
+<div class="search-item	">
+	<input type="submit" name="submit" value="Search Now!">
+</div>',
 			'description'	=> 'You can use any valid HTML in this field to format the template tags.'
 		),
 

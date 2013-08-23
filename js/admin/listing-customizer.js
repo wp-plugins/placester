@@ -71,7 +71,11 @@ jQuery(document).ready(function($){
 			}, 1000);
 		});
 	});
-
+	// popup with list of listing attributes
+	$('.show_listing_attributes').click(function(e){
+		e.preventDefault();
+		$('#listing_attributes').dialog({modal: true, title: 'Lookup Listing Attribute', width: 'auto', height: 300});
+	});
 
 
 	////////////////////////////////////////

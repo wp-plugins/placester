@@ -62,7 +62,7 @@ $template = array(
 /* search button */
 .pl-tpl-sf-twentyeleven #search-button {
 	float: left !important;
-	margin: 0 !important;
+	margin: 0 1em 0 0 !important;
 }
 /* result count */
 .pl-tpl-sf-twentyeleven .search_results {
@@ -138,11 +138,7 @@ $template = array(
 <!-- </div> -->
 <div class="clr"></div>
 
-<input type="submit" name="submit" value="Search Now!" id="search-button">
-
-<div class="search_results">
-	<span id="pls_num_results"></span> listings match your search
-</div>
+<input type="submit" name="submit" value="Search Now!">
 ',
 
 'before_widget' => '<div class="pl-tpl-sf-twentyeleven">',

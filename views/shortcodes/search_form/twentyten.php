@@ -20,6 +20,9 @@ $template = array(
 	border: none !important;
 	padding: 0 !important;
 }
+.pl-tpl-sf-twentyten .clear {
+	clear: both;
+}
 .pl-tpl-sf-twentyten .form-grp {
 	float: left !important;
 	margin: 0 0 7px 0 !important;
@@ -64,7 +67,7 @@ $template = array(
 /* search button */
 .pl-tpl-sf-twentyten #search-button {
 	float: left !important;
-	margin: 0 !important;
+	margin: 0 1em 0 0 !important;
 }
 /* result count */
 .pl-tpl-sf-twentyten .search_results {
@@ -140,11 +143,7 @@ $template = array(
 <!-- </div> -->
 <div class="clr"></div>
 
-<input type="submit" name="submit" value="Search Now!" id="search-button">
-
-<div class="search_results">
-	<span id="pls_num_results"></span> listings match your search
-</div>
+<input type="submit" name="submit" value="Search Now!">
 ',
 
 'before_widget' => '<div class="pl-tpl-sf-twentyten">',

@@ -6,6 +6,7 @@ $id = empty($_REQUEST['id']) ? '' : $_REQUEST['id'];
 $notice = $message = '';
 $nonce_action = 'edit-sc-template_' . $id;
 $template = PL_Listing_Customizer::get_template($id);
+$listing_attributes = PL_Shortcode_CPT::get_listing_attributes();
 
 if ($action == 'delete' && $id) {
 	if (!PL_Listing_Customizer::template_used_by($id)) {
@@ -118,12 +119,36 @@ $tpl_args = PL_Listing_Customizer::get_args();
 											<?php foreach($tpl_args['template_tags'] as $template_tag=>$atts): ?>
 												<?php $template_tags .= '<h4 class="subcode"><a href="#">[' . $template_tag . ']</a></h4>';?>
 												<?php if (!empty($atts['help'])):?>
-													<?php $template_tags .= '<div class="description subcode-help">'. $atts['help'] .'</div>';?>
+													<?php $template_tags .= '<div class="description subcode-help">'. $atts['help'];?>
+													<?php if ($template_tag=='custom' || $template_tag=='if'): ?>
+														<?php $template_tags = $template_tags . '<br />Click <a href="#" class="show_listing_attributes">here</a> to see a list of available listing attributes.';?>
+													<?php endif;?>
+													<?php $template_tags .= '</div>';?>
 												<?php endif;?>
 											<?php endforeach;?>
 											<p>Use the following tags to customize the Page Body of your template. When the template is rendered in a web page, the tag will be replaced with the corresponding attribute of the property listing:<br /><?php echo $template_tags?></p>
 										</div>
-
+										<div id="listing_attributes" style="display:none;">
+											<table>
+												<tr>
+													<th>Listing Field</th>
+													<th>Attribute</th>
+													<th>Group</th>
+												</tr>
+												<?php foreach($listing_attributes as $attr) :?>
+													<tr>
+														<td><strong><?php echo $attr['label']?></strong></td>
+														<td><?php echo $attr['attribute']?></td>
+														<td>
+														<?php if ($attr['group']):?>
+															<?php echo $attr['group']?>
+														<?php endif;?>
+														</td>
+													</tr>
+												<?php endforeach;?>
+											</table>
+										</div>
+										
 									</section><!-- /Template Contents -->
 
 									<?php wp_nonce_field( 'pl_sc_meta_box_nonce', 'meta_box_nonce' );?>

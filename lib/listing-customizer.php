@@ -25,7 +25,7 @@ class PL_Listing_Customizer {
 			'label'			=> 'Page Body',
 			'description'	=> '
 You can use any valid HTML in this field to format the template tags.
-If you leave this section empty the page will be rendered using the default template, which you can style using CSS in the block above.',
+If you leave this section empty the page will be rendered using the default template, which you can style using CSS in the block below.',
 			'css'			=> 'mime_html', 					// used for CodeMirror
 			'default'		=> '',
 		),

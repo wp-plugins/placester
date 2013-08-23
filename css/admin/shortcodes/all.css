@@ -27,9 +27,10 @@
 	display: block;
 	clear: both;
 	float: left;
+	margin: .3em 0;
+	background: none;
 	width: 20em;
-	height: 2em;
-	line-height: 2em;
+	line-height: 1.4em;
 	white-space: pre-wrap;
 }
 .pl-sc-wrap .pl-sc-meta-box section label {
@@ -40,12 +41,11 @@
 	float: none;
 	margin: .8em 0 .2em 0;
 	width: auto;
-	height: auto;
 	line-height: 1.2em;
 	font-weight: bold;
 }
 
-.pl-sc-wrap label.textarea span.description {
+.pl-sc-wrap span.description {
 	padding-left: .5em;
 	font-weight: normal;
 }
@@ -68,7 +68,7 @@
 	margin: 0 .5em .5em 0;
 }
 .sc-meta-section select[multiple] {
-	height: 12em;
+	height: 8em;
 	min-width: 15em;
 }
 .sc-meta-section input[type="checkbox"] {
@@ -79,7 +79,7 @@
 	width: 5em;
 }
 .sc-meta-section input.form_item_text {
-	width: 15em;
+	width: 20em;
 }
 
 /* CodeMirror for template */

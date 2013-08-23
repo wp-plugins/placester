@@ -21,10 +21,10 @@ class PL_Static_Listing_CPT extends PL_Search_Listing_CPT {
 		</p>';
 
 	protected $options = array(
-		'context'				=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
-		'width'					=> array( 'type' => 'int', 'label' => 'Width(px)', 'default' => 250 ),
-		'height'				=> array( 'type' => 'int', 'label' => 'Height(px)', 'default' => 250 ),
-		'widget_class'			=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
+		'context'				=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
+		'width'					=> array( 'type' => 'int', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),
+		'height'				=> array( 'type' => 'int', 'label' => 'Height', 'default' => 250, 'description' => '(px)' ),
+		'widget_class'	=> array( 'type' => 'text', 'label' => 'CSS Class', 'default' => '', 'description' => '(optional)' ),
 		'sort_by_options'		=> array( 'type' => 'multiselect', 'label' => 'Items in "Sort By" list', 
 			'options'	=> array(	// options we always want to show even if they are not part of the filter set
 				'location.address'	=> 'Address', 
