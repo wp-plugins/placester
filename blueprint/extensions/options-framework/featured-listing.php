@@ -61,7 +61,7 @@ class PLS_Featured_Listing_Option {
 		$_POST['offset'] = $_POST['iDisplayStart'];		
 		
 		// Get listings from model
-		$api_response = PL_Listing::get($_POST);
+		$api_response = PLS_Plugin_API::get_listings($_POST, false);
 		
 		// build response for datatables.js
 		$listings = array();

@@ -78,39 +78,24 @@ To add some text to your listings:<br />
 
 		// TODO: make dynamic function control over templates
 		// currently they have different logic and diff input parameters
-		$featured_templates = PL_Shortcode_CPT::template_list('featured_listings', true);
-		foreach ($featured_templates as $template => $type) {
-			add_filter( 'pls_listing_featured_listings_' . $template, array(__CLASS__,'featured_listings_templates'), 10, 3 );
-		}
-		add_filter( 'pls_listing_featured_listings_shortcode', array(__CLASS__,'featured_listings_templates'), 10, 3 );
 
-		$search_form_templates = PL_Shortcode_CPT::template_list('search_form', true);
-		foreach ($search_form_templates as $id => $attr) {
-			add_filter( 'pls_listings_search_form_inner_' . $id, array(__CLASS__,'search_form_inner_template'), 10, 5 );
-			add_filter( 'pls_listings_search_form_outer_' . $id, array(__CLASS__,'search_form_outer_template'), 10, 7 );
-		}
-		add_filter( 'pls_listings_search_form_inner_shortcode', array(__CLASS__,'search_form_inner_template'), 10, 5 );
-		add_filter( 'pls_listings_search_form_outer_shortcode', array(__CLASS__,'search_form_outer_template'), 10, 7 );
-
-		$listing_slideshow_templates = PL_Shortcode_CPT::template_list('listing_slideshow', true);
-		foreach ($listing_slideshow_templates as $id => $attr) {
-			add_filter( 'pls_slideshow_single_caption_' . $id, array( __CLASS__, 'listing_slideshow_templates' ), 10, 5 );
-			// add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
-			// add_filter( 'pls_slideshow_data_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 3 );
-		}
-		add_filter( 'pls_slideshow_single_caption_shortcode', array( __CLASS__, 'listing_slideshow_templates' ), 10, 5 );
-
+		// add formatting for individual listings here because they are fetched using ajax
 		$search_listings_templates = PL_Shortcode_CPT::template_list('search_listings', true);
 		foreach ($search_listings_templates as $id => $attr) {
-			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $id, array(__CLASS__,'search_listings_templates'), 10, 3 );
+			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $id, array(__CLASS__,'pls_listings_list_ajax_item_html_callback'), 10, 3 );
 		}
-		//add_filter( 'pls_listings_list_ajax_item_html_search_listings_shortcode', array(__CLASS__,'search_listings_templates'), 10, 3 );
+		if (!has_filter('pls_listings_search_listings_shortcode')) {
+			add_filter( 'pls_listings_list_ajax_item_html_search_listings_shortcode', array(__CLASS__,'pls_listings_list_ajax_item_html_callback'), 10, 3 );
+		}
 
+		// add formatting for individual listings here because they are fetched using ajax
 		$static_listings_templates = PL_Shortcode_CPT::template_list('static_listings', true);
 		foreach ($static_listings_templates as $id => $attr) {
-			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $id, array(__CLASS__, 'search_listings_templates'), 10, 3 );
+			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $id, array(__CLASS__, 'pls_listings_list_ajax_item_html_callback'), 10, 3 );
 		}
-		//add_filter( 'pls_listings_list_ajax_item_html_static_listings_shortcode', array(__CLASS__, 'search_listings_templates'), 10, 3 );
+		if (!has_filter('pls_listings_static_listings_shortcode')) {
+			add_filter( 'pls_listings_list_ajax_item_html_static_listings_shortcode', array(__CLASS__, 'pls_listings_list_ajax_item_html_callback'), 10, 3 );
+		}
 
 		$neighborhood_templates = PL_Shortcode_CPT::template_list('pl_neighborhood', true);
 		foreach ($neighborhood_templates as $id => $attr) {
@@ -133,30 +118,15 @@ To add some text to your listings:<br />
 				unset($atts['id']);
 			}
 		}
-		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'limit' => 0, 'sort_type' => ''));
-
-		// add template formatting
-		$header = $footer = '';
-		$template = PL_Shortcode_CPT::load_template($atts['context'], 'featured_listings');
-		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
-			$header = $template['before_widget'].$header;
-		}
-		if (!empty($template['css'])) {
-			$header = '<style type="text/css">'.$template['css'].'</style>'.$header;
-		}
-		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
-			$footer .= $template['after_widget'];
+		$atts = wp_parse_args($atts, array('limit' => 0, 'sort_type' => ''));
+		$atts['context'] = 'featured_listings_'.(empty($atts['context']) ? 'shortcode' : $atts['context']);
+		
+		if (!has_filter('pls_listings_' . $atts['context'])) {
+			add_filter('pls_listings_' . $atts['context'], array(__CLASS__,'pls_listings_callback'), 10, 5);
+			add_filter('pls_listing_' . $atts['context'], array(__CLASS__,'pls_listing_callback'), 10, 4);
 		}
 
-		// namespace the context:
-		if (!empty($atts['context'])) {
-			$atts['context'] = 'featured_listings_'.$atts['context'];
-		}
-		ob_start();
-		// output listings formatted w/ template
-		echo PLS_Partials::get_listings($atts);
-		// support shortcodes in the header or footer
-		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
+		return PLS_Partials::get_listings($atts);
 	}
 
 	/**
@@ -207,8 +177,9 @@ To add some text to your listings:<br />
 				}
 			}
 		}
-		$atts = wp_parse_args($atts, array('id' => 0, 'query_limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode', 'sort_by' => 'cur_data.price', 'table_id' => 'placester_listings_list'));
-
+		$atts = wp_parse_args($atts, array('id' => 0, 'query_limit' => 5, 'featured_id' => 'custom', 'sort_by' => 'cur_data.price', 'table_id' => 'placester_listings_list'));
+		$atts['context'] = 'static_listings_' . (empty($atts['context']) ? 'shortcode' : $atts['context']);
+		
 		// set limit per page if any
 		if( ! empty( $atts['query_limit'] ) ) {
 			global $pl_listings_query_limit;
@@ -218,27 +189,20 @@ To add some text to your listings:<br />
 			unset ( $pl_listings_query_limit );
 		}
 
-		// add template formatting
-		$header = $footer = '';
-		$template = PL_Shortcode_CPT::load_template($atts['context'], 'static_listings');
-		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
-			$header = $template['before_widget'].$header;
+		if (!has_filter('pls_listings_' . $atts['context'])) {
+			// formatting filter for individual listings already registered above
+			add_filter('pls_listings_' . $atts['context'], array(__CLASS__,'pls_listings_callback'), 10, 5);
 		}
-		if (!empty($template['css'])) {
-			$header = '<style type="text/css">'.$template['css'].'</style>'.$header;
-		}
-		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
-			$footer .= $template['after_widget'];
-		}
-		// way to request template when ajax gets listings
-		$atts['context'] = 'static_listings' . (empty($atts['context']) ? '' : '_'.$atts['context']);
 
+		// we support a filter for wrapping the whole shortcode here
+		// TODO: move applyfilter to blueprint 
 		ob_start();
 		self::hide_unnecessary_controls($atts);
 		self::print_filters( $filters . $filters_string, 'static_listings', $atts['context'] );
-		echo PLS_Partials::get_listings_list_ajax($atts);
+		PLS_Partials_Get_Listings_Ajax::load($atts);
 		// support shortcodes in the header or footer
-		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
+		$return = ob_get_clean();
+		return apply_filters('pls_listings_' . $atts['context'], $return, array(), '', $atts, null);
 	}
 
 	public static function add_length_limit_default() {
@@ -296,8 +260,9 @@ To add some text to your listings:<br />
 				}
 			}
 		}
-		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'sort_by' => 'cur_data.price'));
-
+		$atts = wp_parse_args($atts, array('sort_by' => 'cur_data.price'));
+		$atts['context'] = 'search_listings_'.(empty($atts['context']) ? 'shortcode' : $atts['context']);
+		
 		// set limit per page if any
 		if( ! empty( $atts['query_limit'] ) ) {
 			global $pl_listings_query_limit;
@@ -307,26 +272,18 @@ To add some text to your listings:<br />
 			unset ( $pl_listings_query_limit );
 		}
 
-		// add template formatting
-		$header = $footer = '';
-		$template = PL_Shortcode_CPT::load_template($atts['context'], 'search_listings');
-		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
-			$header = $template['before_widget'].$header;
+		if (!has_filter('pls_listings_' . $atts['context'])) {
+			// formatting filter for individual listings already registered above
+			add_filter('pls_listings_' . $atts['context'], array(__CLASS__,'pls_listings_callback'), 10, 5);
 		}
-		if (!empty($template['css'])) {
-			$header = '<style type="text/css">'.$template['css'].'</style>'.$header;
-		}
-		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
-			$footer .= $template['after_widget'];
-		}
-		// way to request template when ajax gets listings
-		$atts['context'] = 'search_listings' . (empty($atts['context']) ? '' : '_'.$atts['context']);
 
+		// we support a filter for wrapping the whole shortcode here
+		// TODO: move applyfilter to blueprint 
 		ob_start();
 		self::print_filters( $filters . $filters_string, 'search_listings', $atts['context'] );
 		PLS_Partials_Get_Listings_Ajax::load($atts);
-		// support shortcodes in the header or footer
-		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
+		$return = ob_get_clean();
+		return apply_filters('pls_listings_' . $atts['context'], $return, array(), '', $atts, null);
 	}
 
 	/**
@@ -352,20 +309,8 @@ To add some text to your listings:<br />
 			}
 		}
 		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'type' => 'listings', 'sync_map_to_list' => false));
-
-		// add template formatting
-		$header = $footer = '';
-		$template = PL_Shortcode_CPT::load_template($atts['context'], 'search_map');
-		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
-			$header = $template['before_widget'].$header;
-		}
-		if (!empty($template['css'])) {
-			$header = '<style type="text/css">'.$template['css'].'</style>'.$header;
-		}
-		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
-			$footer .= $template['after_widget'];
-		}
-
+		$atts['context'] = empty($atts['context']) ? 'shortcode' : $atts['context'];
+		
 		$encoded_atts = array(
 				'width' => $atts['width'],
 				'height' => $atts['height'],
@@ -373,6 +318,10 @@ To add some text to your listings:<br />
 		);
 
 		$encoded_atts = json_encode( $encoded_atts );
+
+		if (!has_filter('pls_search_map_' . $atts['context'])) {
+			add_filter('pls_search_map_' . $atts['context'], array(__CLASS__,'pls_search_map_callback'), 10, 3);
+		}
 
 		ob_start();
 		?>
@@ -426,15 +375,19 @@ To add some text to your listings:<br />
 		});
 		</script>
 		<?php
+
+		// we support a filter for wrapping the whole shortcode here
+		// TODO: move applyfilter to blueprint 
 		$listings = null;
-		echo PLS_Map::listings( $listings, array('width' => $atts['width'], 'height' => $atts['height']) );
-		return $header.ob_get_clean().$footer;
+		echo PLS_Map::listings( null, array('width' => $atts['width'], 'height' => $atts['height']) );
+		$return = ob_get_clean();
+		return apply_filters('pls_search_map_' . $atts['context'], $return, $listings, $atts);
 	}
 
 	/**
 	 * Generate listing_slideshow shortcode output
 	 */
-	public static function listing_slideshow( $atts, $default_style = true ) {
+	public static function listing_slideshow( $atts ) {
 
 		// fix attribute name case so js slideshow gets correct value names
 		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs('listing_slideshow');
@@ -470,46 +423,17 @@ To add some text to your listings:<br />
 				'captionAnimationSpeed' => 800,			// if so how quickly should they animate in
 				'afterSlideChange' => 'function(){}',	// empty function
 				'bullets' => 'false',
-				'context' => 'shortcode',
 				'featured_option_id' => 'slideshow-featured-listings',
 				'listings' => 'limit=5&is_featured=true&sort_by=price'
 		));
+		$atts['context'] = empty($atts['context']) ? 'shortcode' : $atts['context'];
 
-		// basic slideshow style
-		$css = '';
-		if ($default_style) {
-			$css = '
-				.orbit-wrapper .orbit-caption {
-				z-index: 999999 !important;
-				margin-top: -113px;
-				position: absolute;
-				right: 0;
-				bottom: 0;
-				width: 100%;
-				}
-				.orbit-caption {
-				display: none;
-				}';
+		if (!has_filter('pls_slideshow_html_' . $atts['context'])) {
+			add_filter( 'pls_slideshow_html_' . $atts['context'], array(__CLASS__,'pls_slideshow_html_shortcode_callback'), 10, 5 );
+			add_filter( 'pls_slideshow_single_caption_' . $atts['context'], array(__CLASS__,'pls_slideshow_single_caption_callback'), 10, 5 );
 		}
-		// add template formatting
-		$header = $footer = '';
-		$template = PL_Shortcode_CPT::load_template($atts['context'], 'listing_slideshow');
-		if (!empty($template['css'])) {
-			$css .= $template['css'];
-		}
-		if ($css) {
-			$header = '<style type="text/css">'.$css.'</style>';
-		}
-		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
-			$header .= $template['before_widget'];
-		}
-		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
-			$footer .= $template['after_widget'];
-		}
-
-		ob_start();
-		echo PLS_Slideshow::slideshow($atts);
-		return $header.ob_get_clean().$footer;
+		
+		return PLS_Slideshow::slideshow($atts);
 	}
 
 	/**
@@ -560,8 +484,7 @@ To add some text to your listings:<br />
 			$taxonomy_maps_name = self::translate_taxonomy_type( $term->taxonomy );
 			$term_name = $term->name;
 
-			$api_response = PLS_Plugin_API::get_listings_list(
-						array( 'location[' . $taxonomy_maps_name . ']' => $term_name, 'limit' => 1 ) );
+			$api_response = PL_Listing_Helper::results(array('location[' . $taxonomy_maps_name . ']' => $term_name, 'limit' => 1));
 
 			$featured_image_src = PLS_IMG_URL . '/null/listing-300x180.jpg';
 
@@ -746,7 +669,7 @@ To add some text to your listings:<br />
 				$val = ob_get_clean();
 				break;
 			case 'favorite_link_toggle':
-				$val = PLS_Plugin_API::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
+				$val = PL_People_Helper::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
 				break;
 			case 'custom':
 				// TODO: format based on data type
@@ -910,7 +833,7 @@ To add some text to your listings:<br />
 				$atts[$key] = $vals['default'];
 			}
 		}
-		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
+		$atts['context'] = empty($atts['context']) ? 'shortcode' : $atts['context'];
 
 		// Setup form action
 		$form_data = array('action'=>'');
@@ -951,6 +874,11 @@ To add some text to your listings:<br />
 			$atts['ajax'] = false;
 		}
 		*/
+		if (!has_filter('pls_listings_search_form_outer_' . $atts['context'])) {
+			add_filter( 'pls_listings_search_form_outer_' . $atts['context'], array(__CLASS__,'pls_listings_search_form_outer_callback'), 10, 7 );
+			add_filter( 'pls_listings_search_form_inner_' . $atts['context'], array(__CLASS__,'pls_listings_search_form_inner_callback'), 10, 5 );
+		}
+		
 		return PLS_Partials_Listing_Search_Form::init($atts);
 	}
 
@@ -1000,10 +928,10 @@ To add some text to your listings:<br />
 
 				filter.init({
 					<?php if ($shortcode == 'search_listings'):?>
-						'class' : ".pls_search_form_listings",
+						'class' : '.pls_search_form_listings',
 					<?php else: ?>
 						// static listings should ignore the search form
-						'class' : ".no_search_form__",
+						'class' : '.no_search_form__',
 					<?php endif; ?>
 					list : list,
 					listings : listings
@@ -1032,11 +960,10 @@ To add some text to your listings:<br />
 	}
 
 	public static function partial_one( $listing, $featured_listing_id ) {
-
 		$property_ids = PL_Component_Entity::get_property_ids( $featured_listing_id );
 		$property_ids = array_flip( $property_ids );
 
-		$api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => $property_ids));
+		$api_response = PL_Listing_Helper::details(array('property_ids' => $property_ids));
 		//response is expected to be of fortmat api response
 		//no addiitonal formatting needed.
 		return $api_response;
@@ -1048,25 +975,40 @@ To add some text to your listings:<br />
 	}
 
 	private static function convert_filters( $filters ) {
+		$av_filters = PL_Shortcode_CPT::get_listing_filters();
 		ob_start();
 		if( is_array( $filters ) ) {
-			foreach( $filters as $top_key => $top_value ) {
-				if( is_array( $top_value ) ) {
-					if ($top_key == 'custom') {
-						// we store custom data as custom but it uses filter name metadata
-						$top_key = 'metadata';
-					}
-					foreach( $top_value as $key => $value ) {
-						$skey = is_int($key) ? '' : $key;
-						if ($skey || count($top_value)>1) {
-							$skey = '['.$skey.']';
+			foreach( $filters as $key1 => $value1 ) {
+				if( is_array( $value1 ) ) {
+					// we store custom data as custom but it uses filter name metadata
+					$key = $key1 == 'custom' ? 'metadata' : $key1;
+					if (array_diff_key($value1,array_keys(array_keys($value1)))) {
+						foreach( $value1 as $key2 => $value2 ) {
+							$skey = count($value2) > 1 ? '[]' :'';
+							foreach( $value2 as $value3 ) {
+								echo 'listings.default_filters.push( { "name": "' . $key .  '['.$key2.']'.$skey . '", "value" : "'. $value3 . '" } );';
+							}
+							if ($skey) {
+								echo 'listings.default_filters.push( { "name": "' . $key . '['.$key2.'_match]", "value" : "in" } );';
+							}
+							elseif (!empty($av_filters[$key1.'.'.$key2]['type']) && ($av_filters[$key.'.'.$key2]['type']=='text'|| $av_filters[$key.'.'.$key2]['type']=='textarea')) {
+								echo 'listings.default_filters.push( { "name": "' . $key . '['.$key2.'_match]", "value" : "like" } );';
+							}
 						}
-						if (!empty($value)) {
-							echo 'listings.default_filters.push( { "name": "' . $top_key .  $skey . '", "value" : "'. $value . '" } );';
+					}
+					else {
+						// list
+						$skey = count($value1) > 1 ? '[]' :'';
+						foreach( $value1 as $value2 ) {
+							echo 'listings.default_filters.push( { "name": "' . $key .  $skey . '", "value" : "'. $value2 . '" } );';
+						}
+						if ($skey) {
+							echo 'listings.default_filters.push( { "name": "' . $key . '_match", "value" : "in" } );';
+						}
+						elseif (!empty($av_filters[$key]['type']) && ($av_filters[$key]['type']=='text' || $av_filters[$key]['type']=='textarea')) {
+							echo 'listings.default_filters.push( { "name": "' . $key . '_match", "value" : "like" } );';
 						}
 					}
-				} else {
-					echo 'listings.default_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
 				}
 			}
 		}
@@ -1080,16 +1022,60 @@ To add some text to your listings:<br />
 
 
 	/**
+	 * Callback to wrap formatting around search_map
+	 */
+	public static function pls_search_map_callback( $return, $listings, $request_params ) {
+		// add template formatting
+		$header = $footer = '';
+		$template_id = substr(current_filter(), strlen('pls_search_map_'));
+		$template = PL_Shortcode_CPT::load_template($template_id, 'search_map');
+		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
+			$header = $template['before_widget'].$header;
+		}
+		if (!empty($template['css'])) {
+			$header = '<style type="text/css">'.$template['css'].'</style>'.$header;
+		}
+		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
+			$footer .= $template['after_widget'];
+		}
+		// support shortcodes in the header or footer
+		return do_shortcode($header).$return.do_shortcode($footer);
+	}
+
+	/**
+	 * Wrap formatting around list of listings (featured_listings, search_listings, static_listings)
+	 */
+	public static function pls_listings_callback( $return, $listings_raw, $listings_html, $request_params, $context_var ) {
+		// add template formatting
+		$header = $footer = '';
+		$context = explode('_', substr(current_filter(), strlen('pls_listings_')), 3);
+		$shortcode = $context[0].'_'.$context[1];
+		$template_id = $context[2];
+		$template = PL_Shortcode_CPT::load_template($template_id, $shortcode);
+		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
+			$header = $template['before_widget'].$header;
+		}
+		if (!empty($template['css'])) {
+			$header = '<style type="text/css">'.$template['css'].'</style>'.$header;
+		}
+		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
+			$footer .= $template['after_widget'];
+		}
+		// support shortcodes in the header or footer
+		return do_shortcode($header).$return.do_shortcode($footer);
+	}
+
+	/**
 	 * Format single featured listing
 	 */
-	public static function featured_listings_templates( $item_html, $listing, $context_var ) {
-		$shortcode = 'featured_listings';
-		self::$listing = $listing;
+	public static function pls_listing_callback( $item_html, $listing, $request_params, $context_var ) {
+		// get the template and shortcode from the filter prefix
+		// TODO: use params instead
+		$context = explode('_', substr(current_filter(), strlen('pls_listing_')), 3);
+		$shortcode = $context[0].'_'.$context[1];
+		$template_id = $context[2];
 
-		// get the template attached as a context arg, 30 is the length of the filter prefix
-		$template = substr(current_filter(), 30);
-
-		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template );
+		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template_id );
 		if (empty($snippet_body)) {
 			return $item_html;
 		}
@@ -1100,14 +1086,13 @@ To add some text to your listings:<br />
 	 * Format the search form body using any template we might have.
 	 * Called from PLS_Partials_Listing_Search_Form
 	 */
-	public static function search_form_inner_template($form, $form_html, $form_options, $section_title, $context_var) {
+	public static function pls_listings_search_form_inner_callback($form, $form_html, $form_options, $section_title, $context_var) {
 		$shortcode = 'search_form';
 		self::$form_html = $form_html;
 		PL_Shortcodes::$form_html = $form_html;
 
-		// get the template attached as a context arg, 31 is the length of the filter prefix
-		$template_id = substr(current_filter(), 31);
-
+		// get the template id from the filter name
+		$template_id = substr(current_filter(), strlen('pls_listings_search_form_inner_'));
 		$template = PL_Shortcode_CPT::load_template($template_id, $shortcode);
 		if (empty($template['snippet_body'])) {
 			return $form;
@@ -1119,9 +1104,9 @@ To add some text to your listings:<br />
 	 * Format and style the search form using any template we might have.
 	 * Called from PLS_Partials_Listing_Search_Form
 	 */
-	public static function search_form_outer_template($form, $form_html, $form_options, $section_title, $form_data, $form_id, $context_var) {
-		// get the template attached as a context arg, 31 is the length of the filter prefix
-		$template_id = substr(current_filter(), 31);
+	public static function pls_listings_search_form_outer_callback($form, $form_html, $form_options, $section_title, $form_data, $form_id, $context_var) {
+		// get the template id from the filter name
+		$template_id = substr(current_filter(), strlen('pls_listings_search_form_outer_'));
 		$template = PL_Shortcode_CPT::load_template($template_id, 'search_form');
 
 		// form enclosure and add template formatting
@@ -1142,9 +1127,45 @@ To add some text to your listings:<br />
 	}
 
 	/**
+	 * Wrap formatting around slideshow
+	 */
+	public function pls_slideshow_html_shortcode_callback($html, $data, $context, $context_var, $args) {
+		// basic slideshow style
+		$css = '
+			.orbit-wrapper .orbit-caption {
+				z-index: 999999 !important;
+				margin-top: -113px;
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				width: 100%;
+			}
+			.orbit-caption {
+				display: none;
+			}';
+		// add template formatting
+		$header = $footer = '';
+		$template = PL_Shortcode_CPT::load_template($context, 'listing_slideshow');
+		if (!empty($template['css'])) {
+			$css .= $template['css'];
+		}
+		if ($css) {
+			$header = '<style type="text/css">'.$css.'</style>';
+		}
+		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
+			$header .= $template['before_widget'];
+		}
+		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
+			$footer .= $template['after_widget'];
+		}
+		
+		return $header.$html.$footer;
+	}
+
+	/**
 	 * Format single slideshow caption
 	 */
-	public static function listing_slideshow_templates( $caption_html, $listing, $context, $context_var, $index ) {
+	public static function pls_slideshow_single_caption_callback( $caption_html, $listing, $context, $context_var, $index ) {
 		$shortcode = 'listing_slideshow';
 		self::$listing = $listing;
 		self::$slideshow_caption_index = $index;
@@ -1169,22 +1190,16 @@ To add some text to your listings:<br />
 	}
 
 	/**
-	 * Generate individual items for search_listings, static_listings and featured_listings shortcodes
+	 * Generate individual items for ajax - fetched listings (search_listings, static_listings)
 	 */
-	public static function search_listings_templates( $item_html, $listing, $context_var ) {
-		$shortcode = 'search_listings';
-
-		// get the template attached as a context arg, 33 is the length of the filter prefix
-		$template = substr(current_filter(), 33);
-
-		if( false !== strpos($template, 'static_listings_' ) ) {
-			$template = substr( $template, 16 );
-			$shortcode = 'static_listings';
-		} else if( false !== strpos( $template, 'search_listings_' ) ) {
-			$template = substr( $template, 16 );
-		}
-
-		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template );
+	public static function pls_listings_list_ajax_item_html_callback( $item_html, $listing, $context_var ) {
+		// get the template and shortcode from the filter prefix
+		// TODO: use params instead
+		$context = explode('_', substr(current_filter(), strlen('pls_listings_list_ajax_item_html_')), 3);
+		$shortcode = $context[0].'_'.$context[1];
+		$template_id = $context[2];
+		
+		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template_id );
 		if (empty($snippet_body)) {
 			return $item_html;
 		}

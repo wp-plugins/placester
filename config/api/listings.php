@@ -10,9 +10,11 @@ $PL_API_LISTINGS = array(
 		'args' => array(
 			'listing_ids'  => array(),
 			'compound_type' => array(
+				'attr_type' => 'text',
+				'multi' => '1',
 				'label' => 'Listing Type',
-				'group' => 'Basic Details',
 				'type' => 'select',
+				'group' => 'Basic Details',
 				'options' => array(
 					'false' => 'Not Set',
 					'res_sale' => 'Residential Sale',
@@ -25,8 +27,9 @@ $PL_API_LISTINGS = array(
 				)
 			),
 			'zoning_types' => array(
-				'type' => 'select',
+				'attr_type' => 'text',
 				'label' => 'Zoning',
+				'type' => 'select',
 				'group' => 'listing types',
 				'options' => array(
 					'false' => 'Any',
@@ -35,8 +38,9 @@ $PL_API_LISTINGS = array(
 				)
 			),
 			'purchase_types' => array(
-				'type' => 'select',
+				'attr_type' => 'text',
 				'label' => 'Purchase',
+				'type' => 'select',
 				'group' => 'listing types',
 				'options' => array(
 					'false' => 'Any',
@@ -45,8 +49,10 @@ $PL_API_LISTINGS = array(
 				)
 			),
 			'property_type'  => array(
+				'attr_type' => 'text',
+				'multi' => '1',
 				'label' => 'Property Type',
-				'type' => 'multiselect',
+				'type' => 'select',
 				'group' => 'listing types',
 				'bound' => array(
 					'class' => 'PL_Listing_Helper',
@@ -58,6 +64,8 @@ $PL_API_LISTINGS = array(
 			'building_id' => array(),// => array('type' => 'text'),
 			'location' => array(
 				'postal' => array(
+					'attr_type' => 'text',
+					'multi' => '1',
 					'label' => 'Zip',
 					'type' => 'select',
 					'group' => 'location',
@@ -65,9 +73,11 @@ $PL_API_LISTINGS = array(
 						'class' => 'PL_Listing_Helper',
 						'method' => 'locations_for_options',
 						'params' => array('postal', false)
-					)
+					),
 				),
 				'region'  => array(
+					'attr_type' => 'text',
+					'multi' => '1',
 					'label' => 'State',
 					'type' => 'select',
 					'group' => 'location',
@@ -78,6 +88,8 @@ $PL_API_LISTINGS = array(
 					)
 				),
 				'locality'  => array(
+					'attr_type' => 'text',
+					'multi' => '1',
 					'label' => 'City',
 					'type' => 'select',
 					'group' => 'location',
@@ -88,6 +100,8 @@ $PL_API_LISTINGS = array(
 					)
 				),
 				'neighborhood'  => array(
+					'attr_type' => 'text',
+					'multi' => '1',
 					'label' => 'Neighborhood',
 					'type' => 'select',
 					'group' => 'location',
@@ -98,6 +112,8 @@ $PL_API_LISTINGS = array(
 					)
 				),
 				'county'  => array(
+					'attr_type' => 'text',
+					'multi' => '1',
 					'label' => 'County',
 					'type' => 'select',
 					'group' => 'location',
@@ -108,6 +124,7 @@ $PL_API_LISTINGS = array(
 					)
 				),
 				'address'  => array(
+					'attr_type' => 'text',
 					'label' => 'Street',
 					'type' => 'text',
 					'group' => 'location'
@@ -115,12 +132,35 @@ $PL_API_LISTINGS = array(
 				
 			),
 			'rets' => array(
-				'aid' => array('type' => 'text', 'group' => 'basic', 'label' => 'Agent ID'),
-				'oid' => array('type' => 'text', 'group' => 'basic', 'label' => 'Office ID'),
+				'aid' => array(
+					'attr_type' => 'text',
+					'label' => 'Agent ID',
+					'type' => 'text', 
+					'group' => 'basic', 
+				),
+				'aname' => array(
+					'attr_type' => 'text',
+					'label' => 'Agent Name',
+					'type' => 'text', 
+					'group' => 'basic', 
+				),
+				'oid' => array(
+					'attr_type' => 'text',
+					'label' => 'Office ID',
+					'type' => 'text', 
+					'group' => 'basic', 
+				),
+				'oname' => array(
+					'attr_type' => 'text',
+					'label' => 'Office Name',
+					'type' => 'text', 
+					'group' => 'basic', 
+				),
 			),
 			// binds to keys / values of all attributes (cur + uncur)
 			'metadata' => array(
 				'beds' => array(
+					'attr_type' => 'int',
 					'label' => 'Beds',
 					'type' => 'select',
 					'group' => 'basic',
@@ -144,9 +184,8 @@ $PL_API_LISTINGS = array(
 						'15' => '15',
 					)
 				),
-				'max_beds' => array(),// => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Beds'),
-				'min_beds' => array(),//=> array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Beds'),
                 'baths' => array(
+					'attr_type' => 'int',
                 	'label' => 'Baths',
 	                'type' => 'select',
 	                'group' => 'basic',
@@ -169,9 +208,8 @@ $PL_API_LISTINGS = array(
 						'15' => '15',
 					)
 	            ),
-                'max_baths' => array(),// => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Baths'),
-                'min_baths' => array(),// => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Baths'),
                 'half_baths' => array(
+					'attr_type' => 'int',
                 	'label' => 'Half Baths',
 	                'type' => 'select',
 	                'group' => 'basic',
@@ -194,31 +232,39 @@ $PL_API_LISTINGS = array(
 						'15' => '15',
 					)
 	            ),
-                'max_half_baths' => array(),// => array('type' => 'text', 'group' => 'advanced'),
-                'min_half_baths' => array(),// => array('type' => 'text', 'group' => 'advanced'),
-                'price'  => array(),// => array('type' => 'text', 'group' => 'basic'),
-                'max_price' => array(
-                	'label' => 'Max Price',
+                'price' => array(
+					'attr_type' => 'int',
+                	'label' => 'Price',
 	                'type' => 'text',
 	                'group' => 'basic',
 					
 	            ),
-                'min_price' => array(
-                	'label' => 'Min Price',
-	                'type' => 'text',
-	                'group' => 'basic'
-					
-	            ),
-                'sqft' => array(),// => array('type' => 'text', 'group' => 'basic'),
-                'max_sqft' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Sqft'),
-                'min_sqft' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Sqft'),
-                'avail_on' => array(),// => array('type' => 'date', 'group' => 'advanced'),
-                'max_avail_on' => array('type' => 'date', 'group' => 'basic', 'label' => 'Latest Available Date'),
-                'min_avail_on' => array('type' => 'date', 'group' => 'basic', 'label' => 'Earliest Available Date'),
-                'lt_sz' => array(),
-                'max_lt_sz' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Lot Size'),
-                'min_lt_sz' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Lot Size'),
-                'desc' => array('type' => 'checkbox', 'group' => 'advanced', 'label' => 'Has Description'),
+                'sqft' => array(
+					'attr_type' => 'int',
+                	'label' => 'Sqft',
+                	'type' => 'text', 
+                	'group' => 'advanced', 
+               	),
+                'avail_on' => array(
+					'attr_type' => 'date',
+                	'label' => 'Available Date',
+                	'label_max' => 'Latest Available Date',
+                	'label_min' => 'Earliest Available Date',
+                	'type' => 'date', 
+                	'group' => 'basic', 
+                ),
+                'lt_sz' => array(
+                	'attr_type' => 'int',
+                	'label' => 'Lot Size',
+                	'type' => 'int', 
+                	'group' => 'advanced', 
+                ),
+                'desc' => array(
+                	'attr_type' => 'text',
+                	'label' => 'Description',
+                	'type' => 'text', 
+                	'group' => 'advanced', 
+                ),
                 'ngb_shop' => array(),
                 'ngb_hgwy' => array(),
                 'grnt_tops' => array('type' => 'checkbox', 'group' => 'amenities', 'label' => 'Granite Countertops'),
@@ -234,6 +280,22 @@ $PL_API_LISTINGS = array(
                 'refrig' => array(),
                 'deposit' => array(),
                 'ngb_pubsch' => array(),
+
+				// TODO: Find a way to get rid of these (curently used to construct "My Listings" search form...)
+				'max_price' => array('type' => 'text', 'group' => 'basic', 'label' => 'Max Price'),
+				'min_price' => array('type' => 'text', 'group' => 'basic', 'label' => 'Min Price'),
+				'max_beds' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Beds'),
+				'min_beds' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Beds'),
+				'max_baths' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Baths'),
+				'min_baths' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Baths'),
+				'max_half_baths' => array(), // => array('type' => 'text', 'group' => 'advanced'),
+				'min_half_baths' => array(), // => array('type' => 'text', 'group' => 'advanced'),
+				'max_sqft' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Sqft'),
+				'min_sqft' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Sqft'),
+				'max_avail_on' => array(), // => array('type' => 'date', 'group' => 'basic', 'label' => 'Latest Available Date'),
+				'min_avail_on' => array(), // => array('type' => 'date', 'group' => 'basic', 'label' => 'Earliest Available Date'),
+				'max_lt_sz' => array(), // => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Lot Size'),
+				'min_lt_sz' => array(), // => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Lot Size')
 			),
 			'agency_only' => array('type' => 'checkbox', 'group' => 'advanced', 'label' => 'My Offices Listings'),
 			'non_import' => array('type' => 'checkbox',  'group' => 'advanced', 'label' => 'Non MLS Listings'),

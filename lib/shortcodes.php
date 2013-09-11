@@ -350,11 +350,14 @@ class PL_Shortcodes
 	 * filter - filter="listing_types", filter="zoning_types" and used together with a group call
 	 * value - the value of the filter
 	 * 
+	 * //TODO: merge with component_entities convert_filters
+	 * 
 	 * @param unknown_type $atts
 	 * @param unknown_type $content
 	 */
 	public static function pl_filter_shortcode_handler( $atts, $content = '' ) {
 		$out = '';
+		$av_filters = PL_Shortcode_CPT::get_listing_filters();
 		
 		if( !isset( $atts['filter'] ) || ! isset( $atts['value'] ) ) {
 			return "";
@@ -362,21 +365,32 @@ class PL_Shortcodes
 		
 		extract($atts);
 		
+		$filterlogic = $filter . '_match';
+		$av_filter = $filter;
+		$filterstr = $filter;
 		if( isset( $group ) ) {
-			$filter = $group . '[' . $filter . ']';
+			$filterstr = $group . '[' . $filter . ']';
+			$filterlogic = $group . '[' . $filterlogic . ']';
+			$av_filter = $group . '.' . $av_filter;
 		}
-		if (strpos($value, '||') !==false ) {
+		$jsfilter = '';
+		if (strpos($value, '||') !==false ) {//print_r($atts);die;
 			$values = explode('||', $value);
-			$filter .= '[]';
-			$jsfilter = '';
-			foreach ($values as $value) {
-				$jsfilter .= apply_filters('pl_filter_wrap_filter', "{ 'name': '" . $filter . "', 'value' : '" . $value . "'} ");
+			if (count($values) > 1) {
+				$filterstr .= '[]';
+				$jsfilter .= apply_filters('pl_filter_wrap_filter', "{ 'name': '" . $filterlogic . "', 'value' : 'in'} ");
 			}
-			return $jsfilter;
+			foreach ($values as $value) {
+				$jsfilter .= apply_filters('pl_filter_wrap_filter', "{ 'name': '" . $filterstr . "', 'value' : '" . $value . "'} ");
+			}
 		}
 		else {
-			return apply_filters('pl_filter_wrap_filter', "{ 'name': '" . $filter . "', 'value' : '" . $value . "'} ");
+			if (!empty($av_filters[$av_filter]['type']) && ($av_filters[$av_filter]['type']=='text' || $av_filters[$av_filter]['type']=='textarea')) {
+				$jsfilter .= apply_filters('pl_filter_wrap_filter', "{ 'name': '" . $filterlogic . "', 'value' : 'like'} ");
+			}
+			$jsfilter .= apply_filters('pl_filter_wrap_filter', "{ 'name': '" . $filterstr . "', 'value' : '" . $value . "'} ");
 		}
+		return $jsfilter;
 	}	
 	
 	public static function pl_filter_wrap_default_filters ($filter) {

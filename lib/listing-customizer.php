@@ -352,7 +352,7 @@ You can use any valid CSS in this field to customize the listing, which will als
 	 * output the before listing content from the template
 	 */
 	public static function custom_property_details_before_widget_filter($content) {
-		echo do_shortcode(self::$active_template['before_widget']);
+		return $content.do_shortcode(self::$active_template['before_widget']);
 	}
 
 
@@ -362,7 +362,12 @@ You can use any valid CSS in this field to customize the listing, which will als
 	public static function custom_property_details_html_filter($content) {
 		global $post;
 
-		$listing_data = PLS_Plugin_API::get_listing_in_loop();
+		$listing_data = PL_Listing_Helper::get_listing_in_loop();
+
+		if (is_null($listing_data)) {
+			return $content;
+		}
+
 		// add in js to init the map
 		// TODO: move this to subcode handler?
 		$js = "
@@ -386,7 +391,7 @@ You can use any valid CSS in this field to customize the listing, which will als
 		";
 
 		PL_Component_Entity::$listing = $listing_data;
-		echo PL_Component_Entity::do_templatetags(array('PL_Component_Entity', 'listing_templatetag_callback'), array_keys(PL_Component_Entity::$listing_tags), self::$active_template['snippet_body']).$js;
+		return $content.PL_Component_Entity::do_templatetags(array('PL_Component_Entity', 'listing_templatetag_callback'), array_keys(PL_Component_Entity::$listing_tags), self::$active_template['snippet_body']).$js;
 	}
 
 
@@ -394,7 +399,7 @@ You can use any valid CSS in this field to customize the listing, which will als
 	 * output the before listing content from the template
 	 */
 	public static function custom_property_details_after_widget_filter($content) {
-		echo do_shortcode(self::$active_template['after_widget']);
+		return $content.do_shortcode(self::$active_template['after_widget']);
 	}
 }
 

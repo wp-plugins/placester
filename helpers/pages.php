@@ -3,7 +3,7 @@
 PL_Page_Helper::init();
 class PL_Page_Helper {
 
-	public static function init() {
+	public static function init () {
 		add_action('wp_ajax_ajax_delete_all', array(__CLASS__, 'ajax_delete_all' ) );
 		add_action('wp_ajax_get_pages', array(__CLASS__, 'get_pages_datatable' ) );
 	}
@@ -13,7 +13,8 @@ class PL_Page_Helper {
 		$reply = array('result' => false, 'message' => "There was an error. Your property pages we're removed. Try refreshing.");
 		if ($response) {
 			$reply = array('result' => true, 'message' => "You've successfully deleted all your property pages");
-		} 
+		}
+
 		echo json_encode($reply);
 		die();
 	}
@@ -21,9 +22,10 @@ class PL_Page_Helper {
 	public static function get_types () {
 		$page_details = array();
 		$pages = PL_Pages::get();
-		// pls_dump($pages);
+		
 		$page_details['total_pages'] = count($pages);
 		$page_details['pages'] = $pages;
+
 		return $page_details;
 	}
 
@@ -52,7 +54,6 @@ class PL_Page_Helper {
 				$items[$key][] = '<a href="'.$page['guid'].'">View</a> | <a href="#" id="'.$page['ID'].'" class="delete_cache">Delete</a>';
 			}
 		}
-		
 
 		// Required for datatables.js to function properly.
 		// $response['sEcho'] = $_POST['sEcho'];

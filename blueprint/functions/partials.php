@@ -39,6 +39,6 @@ class PLS_Partials {
 
     // Wrapper for property details page content
     public static function custom_property_details_html_filter ($content) {
-        echo PLS_Partials_Property_Details::init($content);
+        return PLS_Partials_Property_Details::init($content);
     } 
 }

@@ -193,10 +193,16 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 	}
 
 	/**
-	 * No filters
-	 * @see PL_SC_Base::_get_filters()
+	 * No additional options
 	 */
-	protected function _get_filters() {
+	public function get_options_list() {
+		return $this->options;
+	}
+
+	/**
+	 * No filters
+	 */
+	public function get_filters_list() {
 		return array();
 	}
 }

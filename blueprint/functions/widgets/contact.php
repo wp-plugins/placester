@@ -51,26 +51,6 @@ class Placester_Contact_Widget extends WP_Widget {
 
   // Admin widget
   public function widget($args, $instance) {
-    
-
-    // Find where this widget's sidebar falls in the list of registered sidebars
-    // Use this to get a number we can use for unique tabindexes
-    if(isset($args['id'])) {
-      // Widget is rendering as part of a sidebar
-      $sidebar_pos = array_search($args['id'], array_keys(wp_get_sidebars_widgets())) + 1;
-    }
-    elseif(isset($instance['number'])) {
-      // Widget is being passed an instance number
-      // the theme is probably instantiating the widget itself
-      $sidebar_pos = $instance['number'];
-    }
-    else {
-      // Nothing else to go on, really. Make a counter and
-      // increment it each time the widget it rendered on this
-      // page hit
-      static $instance_count = 1;
-      $sidebar_pos = $instance_count++;
-    }
 
       global $post;
         
@@ -212,23 +192,23 @@ class Placester_Contact_Widget extends WP_Widget {
                     <?php if(!empty($include_name)) { ?>
                       <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
                       <label class="required" for="name"><?php echo $name_label; ?></label>
-                      <input class="required" id="name" placeholder="<?php echo $name_value ?>" type="text" name="name" tabindex="<?php echo $sidebar_pos; ?>1" <?php echo $name_required == true ? 'required="required"' : '' ?> <?php echo !empty($name_error) ? 'data-message="'.$name_error.'"' : ''; ?> />
+                      <input class="required" id="name" placeholder="<?php echo $name_value ?>" type="text" name="name" <?php echo $name_required == true ? 'required="required"' : '' ?> <?php echo !empty($name_error) ? 'data-message="'.$name_error.'"' : ''; ?> />
                       <?php echo empty($instance['inner_containers']) ? '' : '</div>'; ?>
                     <?php } ?>
 
                     <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
-                    <label class="required" for="email"><?php echo $email_label; ?></label><input class="required" id="email" placeholder="<?php echo $email_value ?>" type="email" name="email" tabindex="<?php echo $sidebar_pos; ?>2" <?php echo $email_required == true ? 'required="required"' : '' ?> <?php echo !empty($email_error) ? 'data-message="'.$email_error.'"' : ''; ?> />
+                    <label class="required" for="email"><?php echo $email_label; ?></label><input class="required" id="email" placeholder="<?php echo $email_value ?>" type="email" name="email" <?php echo $email_required == true ? 'required="required"' : '' ?> <?php echo !empty($email_error) ? 'data-message="'.$email_error.'"' : ''; ?> />
                     <?php echo empty($instance['inner_containers']) ? '' : '</div>'; ?>
 
                     <?php if(!empty($instance['phone_number'])) { ?>
                       <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
-                      <label class="required" for="phone"><?php echo $phone_label; ?></label><input class="required" id="phone" placeholder="<?php echo $phone_value ?>" type="text" name="phone" tabindex="<?php echo $sidebar_pos; ?>3" <?php echo $phone_required == true ? 'required="required"' : '' ?> <?php echo !empty($phone_error) ? 'data-message="'.$phone_error.'"' : ''; ?> />
+                      <label class="required" for="phone"><?php echo $phone_label; ?></label><input class="required" id="phone" placeholder="<?php echo $phone_value ?>" type="text" name="phone" <?php echo $phone_required == true ? 'required="required"' : '' ?> <?php echo !empty($phone_error) ? 'data-message="'.$phone_error.'"' : ''; ?> />
                       <?php echo empty($instance['inner_containers']) ? '' : '</div>'; ?>
                     <?php } ?>
 
                     <?php if(!empty($instance['subject'])) { ?>
                       <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
-                      <label class="required" for="subject"><?php echo $subject_label; ?></label><input class="required" id="subject" placeholder="<?php echo $subject_value ?>" type="text" name="subject" tabindex="<?php echo $sidebar_pos; ?>4" <?php echo $subject_required == true ? 'required="required"' : '' ?> <?php echo !empty($subject_error) ? 'data-message="'.$subject_error.'"' : ''; ?> />
+                      <label class="required" for="subject"><?php echo $subject_label; ?></label><input class="required" id="subject" placeholder="<?php echo $subject_value ?>" type="text" name="subject" <?php echo $subject_required == true ? 'required="required"' : '' ?> <?php echo !empty($subject_error) ? 'data-message="'.$subject_error.'"' : ''; ?> />
                       <?php echo empty($instance['inner_containers']) ? '' : '</div>'; ?>
                     <?php } ?>
 
@@ -236,7 +216,7 @@ class Placester_Contact_Widget extends WP_Widget {
                       <?php echo empty($instance['inner_containers']) ? '' : '<div class="' . $instance['inner_containers'] .'">'; ?>
                       <label class="required" for="department"><?php echo $departments_label; ?></label>
                       <?php $departments = explode( ',', $instance['departments']) ?>
-                      <select id="department" placeholder="<?php echo $departments_value ?>" name="department" tabindex="<?php echo $sidebar_pos; ?>5">
+                      <select id="department" placeholder="<?php echo $departments_value ?>" name="department">
                         <?php foreach ($departments as $department): ?>
                           <option value="<?php echo $department ?>"><?php echo $department ?></option>
                         <?php endforeach ?>
@@ -254,11 +234,11 @@ class Placester_Contact_Widget extends WP_Widget {
 
                     <?php echo empty($instance['textarea_container']) ? '' : '<div class="' . $instance['textarea_container'] .'">'; ?>
                     <label for="question"><?php echo $question_label; ?></label>
-                    <textarea rows="5" id="question" name="question" placeholder="<?php echo $question_value; ?>" tabindex="<?php echo $sidebar_pos; ?>6" <?php echo $question_required == true ? 'required="required"' : '' ?> <?php echo !empty($question_error) ? 'data-message="'.$question_error.'"' : ''; ?>></textarea>
+                    <textarea rows="5" id="question" name="question" placeholder="<?php echo $question_value; ?>" <?php echo $question_required == true ? 'required="required"' : '' ?> <?php echo !empty($question_error) ? 'data-message="'.$question_error.'"' : ''; ?>></textarea>
                     <?php echo empty($instance['textarea_container']) ? '' : '</div>'; ?>
                     
 
-                  <input type="submit" value="<?php echo $submit_value; ?>" class="<?php echo $button_class; ?>" tabindex="<?php echo $sidebar_pos; ?>7" />
+                  <input type="submit" value="<?php echo $submit_value; ?>" class="<?php echo $button_class; ?>" />
                   
                   <div class="pls-contact-form-loading" style='display:none;'>
                     <div id="medium-spinner"><div class="bar1"></div><div class="bar2"></div><div class="bar3"></div><div class="bar4"></div><div class="bar5"></div><div class="bar6"></div><div class="bar7"></div><div class="bar8"></div></div>
@@ -434,7 +414,7 @@ function ajax_placester_contact() {
       }
       
       $name = $_POST['name'];
-      PLS_Membership::create_person(array('metadata' => array('name' => $name, 'email' => $_POST['email'] ) )) ;
+      PLS_Plugin_API::create_person(array('metadata' => array('name' => $name, 'email' => $_POST['email'])));
 
       // Send a email confirmation
       if (trim($_POST['email_confirmation']) == true) {

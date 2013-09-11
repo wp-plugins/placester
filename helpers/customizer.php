@@ -41,7 +41,7 @@ class PL_Customizer_Helper
 
 		// Check to see if the current active theme is present in the list of those supported by our customizer..
 		global $PL_CUSTOMIZER_THEME_LIST;
-		$theme_supported = in_array(wp_get_theme()->Template, $PL_CUSTOMIZER_THEME_LIST);
+		$theme_supported = in_array(wp_get_theme()->template, $PL_CUSTOMIZER_THEME_LIST);
 
 		// Check to see if the plugin is running on the hosted environment...
 		$on_hosted = defined('HOSTED_PLUGIN_KEY');
@@ -66,7 +66,7 @@ class PL_Customizer_Helper
 			}
 
 			// Make sure a directory full of theme skins exist for the current theme -- otherwise, the pane should be excluded...
-			$theme_skin_dir = (trailingslashit(PL_THEME_SKIN_DIR) . trailingslashit(wp_get_theme()->Template));
+			$theme_skin_dir = (trailingslashit(PL_THEME_SKIN_DIR) . trailingslashit(wp_get_theme()->template));
 			if (!file_exists($theme_skin_dir)) {
 				$excluded_opts []= 'colors';
 			}
@@ -146,7 +146,7 @@ class PL_Customizer_Helper
 		  	// This needs to be defined (ref'd by the template file we're about to load...)
 		  	$color = $_POST['color'];
 
-		  	$curr_theme = wp_get_theme()->Template;
+		  	$curr_theme = wp_get_theme()->template;
 		  	$skin_path = ( trailingslashit(PL_THEME_SKIN_DIR) . trailingslashit($curr_theme) . "{$color}.css" );
 
 		  	// Read in CSS file contents as a sting...

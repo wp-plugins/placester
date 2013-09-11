@@ -6,8 +6,8 @@ $template = array(
 
 'snippet_body' => '',
 
-'before_widget' => '',
+'before_widget' => '<div class="pl-tpl-sm-twentyeleven">',
 
-'after_widget' => '',
+'after_widget' => '</div>',
 
 );

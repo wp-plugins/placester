@@ -37,13 +37,15 @@ class PLS_Partials_Get_Listings_Ajax {
         add_action('wp_ajax_pls_listings_ajax', array(__CLASS__, 'get' ) );
         add_action('wp_ajax_nopriv_pls_listings_ajax', array(__CLASS__, 'get' ) );
 
-        add_action( 'wp_ajax_pls_listings_fav_ajax', array(__CLASS__,'get_favorites'));
-        add_action( 'wp_ajax_nopriv_pls_listings_fav_ajax', array(__CLASS__,'get_favorites'));
+        add_action( 'wp_ajax_pls_listings_fav_ajax', array(__CLASS__,'get_favorite_ids'));
+        add_action( 'wp_ajax_nopriv_pls_listings_fav_ajax', array(__CLASS__,'get_favorite_ids'));
     }
 
-    public static function get_favorites () {
+    public static function get_favorite_ids () {
         $favorite_ids = PLS_Plugin_API::get_listings_fav_ids();
         self::get(array('property_ids' => $favorite_ids, 'allow_id_empty' => true));
+
+        die();
     }
 
     public static function load ($args = array()) {
@@ -182,6 +184,11 @@ class PLS_Partials_Get_Listings_Ajax {
         echo ob_get_clean();
     }
 
+    private static function order_images ($a, $b) {
+        if ($a['order'] == $b['order']) { return 0; }
+        return ($a['order'] < $b['order']) ? -1 : 1;
+    }
+
   	public static function get ($args = array()) {
 		// Saved Search init...
 		$saved_user_search = false;
@@ -273,7 +280,7 @@ class PLS_Partials_Get_Listings_Ajax {
             }
             else {
                 $api_args = ( $saved_user_search ? $_POST : $search_query );
-                $api_response = PLS_Plugin_API::get_listings($api_args, true);
+                $api_response = PLS_Plugin_API::get_listings($api_args);
             }
         }
 
@@ -299,7 +306,7 @@ class PLS_Partials_Get_Listings_Ajax {
                       <div class="listing-thumbnail grid_3 alpha">
                         <?php 
                           $property_images = ( is_array($listing['images']) ? $listing['images'] : array() );
-                          usort($property_images, array(__CLASS__, 'order_images_ajax'));
+                          usort($property_images, array(__CLASS__, 'order_images'));
                         ?>
                           
                          <a href="<?php echo @$listing['cur_data']['url']; ?>" itemprop="url">
@@ -334,7 +341,7 @@ class PLS_Partials_Get_Listings_Ajax {
                           		<li class="basic-details-price p1" itemprop="price"><span>Price:</span> <?php echo PLS_Format::number($listing['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true)); ?></li>
                           	<?php endif; ?>
 
-                          	<?php if (!empty($listing['cur_data']['avail_on'])): ?>
+                          	<?php if (!empty($listing['cur_data']['sqft'])): ?>
                           		<li class="basic-details-sqft p1"><span>Sqft:</span> <?php echo PLS_Format::number($listing['cur_data']['sqft'], array('abbreviate' => false, 'add_currency_sign' => false)); ?></li>
                           	<?php endif; ?>
 
@@ -387,11 +394,6 @@ class PLS_Partials_Get_Listings_Ajax {
         // wordpress echos out a 0 randomly. die prevents it.
         die();
   	}
-
-    private static function order_images_ajax ($a, $b) {
-        if ($a['order'] == $b['order']) { return 0; }
-        return ($a['order'] < $b['order']) ? -1 : 1;
-    }
   
 }
 // end of class

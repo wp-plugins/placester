@@ -94,7 +94,7 @@ class PLS_Listing_Helper {
 	}
 
 	public static function get_search_count() {
-	    $response = PLS_Plugin_API::get_listings($_POST, true);
+	    $response = PLS_Plugin_API::get_listings($_POST);
 	    echo json_encode(array('count' => $response['total']));
 	    die();
 	}

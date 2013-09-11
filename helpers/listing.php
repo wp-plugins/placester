@@ -5,11 +5,25 @@ PL_Listing_Helper::init();
 class PL_Listing_Helper {
 
 	public static function init () {
+		add_action('wp', array(__CLASS__, 'check_listing_exists'));
 		add_action('wp_ajax_datatable_ajax', array(__CLASS__, 'datatable_ajax'));
 		add_action('wp_ajax_add_listing', array(__CLASS__, 'add_listing_ajax'));
 		add_action('wp_ajax_update_listing', array(__CLASS__, 'update_listing_ajax'));
 		add_action('wp_ajax_add_temp_image', array(__CLASS__, 'add_temp_image'));
 		add_action('wp_ajax_delete_listing', array(__CLASS__, 'delete_listing_ajax'));
+	}
+
+	/**
+	 * If this is a single property listing, and the listing no longer exists, redirect
+	 */
+	public static function check_listing_exists() {
+
+		if (is_singular(PL_Pages::$property_post_type) && is_null(self::get_listing_in_loop())) {
+			$home = home_url();
+			wp_redirect($home);
+			exit;
+		}
+
 	}
 	
 	public static function results ($args = array(), $global_filters = true) {
@@ -86,17 +100,25 @@ class PL_Listing_Helper {
 	}
 
 	/*
-	 * Used primarily to fetch listing details for the property inferred from the URL structure (i.e., for the property details template).
+	 * Used primarily to fetch listing details for the property inferred from the URL structure (i.e., for the property details template). Returns null if listing no longer exists, and property post is deleted.
+	 *
+	 * @returns 	array|null 
 	 */
 	public static function get_listing_in_loop () {
 		global $post;
-        
+
 		// If the current $post is of type 'property', it's 'post_name' will be set to that listing's unique property ID (as set by the API)...
 		$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
 		$response = PL_Listing::get($args);
 		
+		// Despite the name we also call this outside of the loop. Make sure global $post is a Property before deleting.
 		$listing_data = null;
-		if ( !empty($response['listings']) ) {
+		if ( empty($response['listings']) ) {
+			if ($post->post_type === PL_Pages::$property_post_type) {
+				wp_delete_post($post->ID, true);
+				PL_Pages::ping_yoast_sitemap();
+			}
+		} else {
 			$listing_data = $response['listings'][0];
 		}
 		
@@ -339,13 +361,10 @@ class PL_Listing_Helper {
 			}
 
 			ksort($options);
-			$options = array('false' => 'Any') + $options;
-			
-			return $options;	
-		} 
-		else {
-			return array();	
+			$options = array('false' => 'Any') + $options;	
 		}
+
+		return $options;
 	}
 
 	/* 

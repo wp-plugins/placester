@@ -171,6 +171,7 @@ It can be used as a guide for making a custom template that styles output create
 }
 .pl-tpl-stl-twentyten .dataTables_paginate a {
 	margin: 0 1em 0 0;
+	padding: 0;
 	font-weight: 500;
 }
 .pl-tpl-stl-twentyten .dataTables_paginate a.paginate_active {

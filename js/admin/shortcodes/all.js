@@ -186,6 +186,81 @@ jQuery(document).ready(function($){
 		$(field).attr('name', name);
 	}
 
+	function addActiveFilter(shortcode, id, value) {
+		var label = $('#'+id+' label').html();
+		var idparts = id.split('-');
+		var name = '';
+		for (var i=0; i<idparts.length; i++) {
+			if (i<2) {
+				continue;
+			}
+			else if (i==2) {
+				name += idparts[i];
+			}
+			else {
+				name += '['+idparts[i]+']';
+			}
+		}
+		var $input, dispvalue;
+		if (($input = $('#'+id).find('select')) && $input.length) {
+			if (typeof value !== 'undefined') {
+				var option = $input.find('option[value="'+value+'"]');
+				if (option.length != 0) {
+					dispvalue = option.html();
+				}
+				else {
+					dispvalue = value;
+				}
+			}
+			else {
+				value = $input.val();
+				if ($.isArray(value)) {
+					value.forEach(function(svalue){
+						addActiveFilter(shortcode, id, svalue);
+					});
+					return;
+				}
+				dispvalue = $input.find(':selected').html();
+			}
+		}
+		else {
+			$input = $('#'+id).find('input');
+			if (typeof value !== 'undefined') {
+				dispvalue = value;
+			}
+			else {
+				if ($input.attr('type')=='checkbox' && !($input.attr('checked'))) return;
+				value = $input.val();
+				dispvalue = $input.val();
+			}
+		}
+		var $filters = $('#pl_sc_edit .pl_widget_block .'+shortcode+'.filters .active_filters');
+		if (!$input.data('multi')) {
+			$filters.find('.'+id).remove();
+		}
+		$filters.find('.'+id).each(function(){
+			if ($(this).find(' input[value="'+value+'"]').length) $(this).remove();
+		});
+		var $block = $('<div class="active_filter '+id+'"></div>').hide();
+		var added = false;
+        $filters.children().each(function(){
+        	var elabel = $(this).find('label').html();
+            if ((elabel==label && $(this).find('input').val()>value) || elabel > label) {
+            	$block.insertBefore($(this)).fadeIn(800);
+                added = true;
+                return false;
+            }
+        });
+        if(!added) $block.appendTo($filters).fadeIn(800);
+		$block.append('<input type="hidden" name="'+name+'[]" value="'+value+'" />');
+		$block.append('<label>'+label+'</label><span class="filter_value">'+dispvalue+'</span>');
+		$block.append('<a href="#" class="button-secondary remove_filter">Remove</a>').find('.remove_filter').click(function(e){
+			e.preventDefault();
+			$block.remove();
+			sc_update_preview();
+			_changesMade = true;
+		});
+	}
 
 	// shortcode changing
 	$('#pl_sc_shortcode_type').change(sc_shortcode_selected);
@@ -202,32 +277,41 @@ jQuery(document).ready(function($){
 			this.value = val;
 		}
 	});
-	// support min max filters
-	$('#pl_sc_edit .form_item_int[id*=-custom-]').each(function(){
-		var field = this;
-		var fname = $(this).attr('name').match(/([a-zA-Z_]+)\]$/);
-		fname = fname[1];
-		var fval='', sval='';
-		if (form_data[form_data.shortcode]!= undefined && form_data[form_data.shortcode]['custom']!= undefined) {
-			if (form_data[form_data.shortcode]['custom']['max_'+fname]) {
-				sval = 'max_';
-			}
-			else if (form_data[form_data.shortcode]['custom']['min_'+fname]) {
-				sval = 'min_';
-			}
-			fval = form_data[form_data.shortcode]['custom'][sval+fname];
-		}
-		var sname = $(this).attr('name').replace(/([a-zA-Z_]+\]*)$/, 'limit_$1');
-		var minmaxSelect = $('<select name="'+sname+'"><option value="">equals</option><option value="min_">minimum</option><option value="max_">maximum</option></select>').val(sval).change(function (){integerLimit(this, field);});
-		$(this).before(minmaxSelect);
-		$(this).attr('data-orig_name', $(this).attr('name')).val(fval);
-		integerLimit(minmaxSelect.get(0), this);
+	// set up filter selector
+	$('#pl_sc_edit .filter_select').change(function(){
+		$('#pl_sc_edit .pl_filters section').hide();
+		$('#pl_sc_edit .pl_filters #' + this.value).show();
+	});
+	$('#pl_sc_edit .filter_select').each(function(){
+		$('#pl_sc_edit .pl_filters #' + this.value).show();
+	});
+	$('#pl_sc_edit .add_filter').click(function(e){
+		e.preventDefault();
+		var shortcode = $('#pl_sc_shortcode_type').val();
+		var id = $('#pl_sc_edit select[name="'+shortcode+'[filter]"]').val();
+
+		addActiveFilter(shortcode,id);
+		_changesMade = true;
+		sc_update_preview();
 	});
 	// date pickers
 	$('#pl_sc_edit .form_item_date').each(function(){
 		$(this).datepicker();
 	});
+
 	// setup view based on current shortcode type, etc
+	if (typeof active_filters !== 'undefined') {
+		active_filters.forEach(function(entry){
+			if ($.isArray(entry.value)) {
+				entry.value.forEach(function(value){
+					addActiveFilter(entry.shortcode, entry.id, value);
+				});
+			}
+			else {
+				addActiveFilter(entry.shortcode, entry.id, entry.value);
+			}
+		});
+	}
 	wptitlehint();
 	$('#pl_sc_shortcode_type').trigger('change');
 	// setup preview window if loading prexisting shortcode
@@ -235,7 +319,7 @@ jQuery(document).ready(function($){
 		$('#pl_sc_edit .pl_review_link').show();
 	}
 	// call the preview update for every changed input and select in the shortcode edit view
-	$('#pl_sc_edit input, #pl_sc_edit select').change(function() {
+	$('#pl_sc_edit .sc_type_and_template, #pl_sc_edit .sc_options').find('select, input').change(function() {
 		sc_update_preview();
 		_changesMade = true;
 	});

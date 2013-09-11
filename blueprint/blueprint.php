@@ -284,12 +284,16 @@ class Placester_Blueprint {
                 'lead-capture' => array('script' => true, 'style' => false)
             ) 
         );
-        add_theme_support( 'pls-theme-options' );
+        if (!function_exists('optionsframework_options')) {
+            add_theme_support( 'pls-theme-options' );
+        }
         add_theme_support( 'pls-image-util', array('fancybox') );
         add_theme_support( 'pls-slideshow', array( 'script', 'style' ) );
         add_theme_support( 'pls-maps-util');
         add_theme_support( 'pls-debug');
-        add_theme_support( 'pls-membership');
+        add_theme_support( 'pls-meta-data');
+        add_theme_support( 'pls-meta-tags');
+        add_theme_support( 'pls-micro-data');
         add_theme_support( 'pls-custom-meta');
         add_theme_support( 'pls-walkscore');
 
@@ -428,13 +432,10 @@ class Placester_Blueprint {
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'shortcodes.php' );
 
         /** Load the saved search functions. */
-        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'saved_search.php' );
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'saved-search.php' );
 
         /** Load the internationalization functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'internationalization.php' );
-        
-        /** Load the SEO Helper. */
-        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'seo-helper.php' );
         
         /** Load the Form Helper. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'form.php' );
@@ -488,7 +489,7 @@ class Placester_Blueprint {
         /** Load the Style Util extension if supported. */
         require_if_theme_supports( 'pls-theme-options', trailingslashit ( PLS_EXT_DIR ) . 'style-util.php' );
 
-        /** Load the Options Framework extension if supported. */
+        /** Load the image handling if supported. */
         require_if_theme_supports( 'pls-image-util', trailingslashit ( PLS_EXT_DIR ) . 'image-util.php' );
 
         /** Load the Maps Util extension if supported. */
@@ -499,15 +500,15 @@ class Placester_Blueprint {
         require_if_theme_supports( 'pls-maps-util', trailingslashit ( PLS_EXT_DIR ) . 'maps/polygon.php' );
         require_if_theme_supports( 'pls-maps-util', trailingslashit ( PLS_EXT_DIR ) . 'maps/neighborhood.php' );
 
-        /** Load the Membership extension if supported. */
-        require_if_theme_supports( 'pls-membership', trailingslashit ( PLS_EXT_DIR ) . 'membership.php' );
-
         /** Load fallbacks last. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'fallback.php' );
         
         /** Load the Shuffle Bricks extension if requested. */
         require_if_theme_supports( 'pls-shuffle-bricks', trailingslashit( PLS_EXT_DIR ) . 'shuffle-bricks.php' );
-        
+
+        /** Load the Meta Data, Micro Data, Meta Tags extension if requested. */
+        require_if_theme_supports( 'pls-meta-tags', trailingslashit( PLS_EXT_DIR ) . 'meta-tags.php' );
+        require_if_theme_supports( 'pls-micro-data', trailingslashit( PLS_EXT_DIR ) . 'micro-data.php' );
   }
 
 }

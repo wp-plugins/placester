@@ -87,7 +87,7 @@ class PLS_Partial_Get_Listings {
             }
 
             if ($listings_raw === false || ( isset($listings_raw['listings']) && empty($listings_raw['listings']) )) {
-              $listings_raw = PLS_Plugin_API::get_listings($request_params, true);
+              $listings_raw = PLS_Plugin_API::get_listings($request_params);
             }
         }
       
@@ -184,7 +184,7 @@ class PLS_Partial_Get_Listings {
                           <li class="basic-details-price p1" itemprop="price"><span>Price:</span> <?php echo PLS_Format::number($listing_data['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true)); ?></li>
                         <?php endif; ?>
 
-                        <?php if (!empty($listing_data['cur_data']['avail_on'])): ?>
+                        <?php if (!empty($listing_data['cur_data']['sqft'])): ?>
                           <li class="basic-details-sqft p1"><span>Sqft:</span> <?php echo PLS_Format::number($listing_data['cur_data']['sqft'], array('abbreviate' => false, 'add_currency_sign' => false)); ?></li>
                         <?php endif; ?>
 

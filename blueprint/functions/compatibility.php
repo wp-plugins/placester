@@ -85,20 +85,12 @@ class PLS_Plugin_API {
      * Leads (Membership + People) Funcs
      */
 
-    public static function get_listings_fav_ids () {
-        return self::try_call_func( array("PL_Membership", "get_favorite_ids"), array(), false );
-    }
-
     public static function placester_lead_control_panel ($args) {
         return self::try_call_func( array("PL_Membership", "placester_lead_control_panel"), $args, false );
     }
 
     public static function placester_favorite_link_toggle ($args) {
-        return self::try_call_func( array("PL_Membership", "placester_favorite_link_toggle"), $args, false );
-    }
-
-    public static function get_save_search_link () {
-        return self::try_call_func( array("PL_Membership_Helper", "get_save_search_link"), array(), "" );
+        return self::try_call_func( array("PL_People_Helper", "placester_favorite_link_toggle"), $args, false );
     }
 
     public static function get_person_details () {
@@ -113,6 +105,10 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_People_Helper", "add_person"), $person_details, false );
     }
 
+    public static function get_listings_fav_ids () {
+        return self::try_call_func( array("PL_People_Helper", "get_favorite_ids"), array(), false );
+    }
+
     public static function get_user_saved_searches () {
         return self::try_call_func( array("PL_Saved_Search", "get_user_saved_searches"), false, array() );
     }
@@ -122,11 +118,15 @@ class PLS_Plugin_API {
     }
 
     public static function get_saved_search_registration_form () {
-        return self::try_call_func( array("PL_Saved_Search", "get_saved_search_registration_form"));   
+        return self::try_call_func( array("PL_Saved_Search", "get_saved_search_registration_form") );   
     }
 
     public static function get_saved_search_button () {
-        return self::try_call_func( array("PL_Saved_Search", "get_saved_search_button"));   
+        return self::try_call_func( array("PL_Saved_Search", "get_saved_search_button") ); 
+    }
+
+    public static function get_save_search_link () {
+        return self::try_call_func( array("PL_Saved_Search", "get_save_search_link"), array(), "");
     }
 
     public static function merge_bcc_forwarding_addresses_for_sending ($headers) {
@@ -275,41 +275,12 @@ class PLS_Plugin_API {
      * @return list of property details
      * @since 0.0.1
      */
-    public static function get_listings ($args, $caching_on = false, $global_filters = true) {
-        // Default value...
-        $val = false;
-
-        // See if it's cached...
-        $cache = new PLS_Cache("Get Listings List");
-        $val = $cache->get($args);
-        if ($val && $caching_on) {
-            return $val;
-        }
-
-        $val = self::_try_for_exceptions(array("PL_Listing_Helper", "results"), $args, $global_filters);
-        if ($val && $caching_on)  {
-            $cache->save($val, PLS_Cache::TTL_LOW);
-        }
-
-        return $val;
+    public static function get_listings ($args, $global_filters = true, $caching_on = false) {
+        return self::_try_for_exceptions(array("PL_Listing_Helper", "results"), $args, $global_filters);
     }
 
     public static function get_listing_details ($args) {
-        // Default value...
-        $val = false;
-
-        // See if it's cached...
-        $cache = new PLS_Cache("Listings Details List");
-        if ($val = $cache->get($args)) {
-            return $val;
-        }
-
-        $val = self::_try_for_exceptions(array("PL_Listing_Helper", "details"), $args);
-        if ($val) {
-            $cache->save($val, PLS_Cache::TTL_LOW);
-        }
-
-        return $val;
+        return self::_try_for_exceptions(array("PL_Listing_Helper", "details"), $args);
     }
 
     /**

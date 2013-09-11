@@ -171,7 +171,8 @@ class PLS_Image {
 				'a_classes' => '',
 				'img_classes' => '',
 				'alt' => '',
-				'title' => ''
+				'title' => '',
+				'itemprop' => ''
 			),
 			'as_html' => false,
 			'as_url' => true,

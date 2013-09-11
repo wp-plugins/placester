@@ -40,3 +40,8 @@ function admin_bar_remove_comments() {
     global $wp_admin_bar;
     $wp_admin_bar->remove_menu('comments');
 }
+
+add_filter( 'wp_default_editor', 'set_visual_editor_default' );
+function set_visual_editor_default() {
+	return 'tinymce';
+}

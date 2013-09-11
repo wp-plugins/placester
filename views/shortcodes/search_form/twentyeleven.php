@@ -4,7 +4,7 @@ $template = array(
 
 'css' => '
 .pl-tpl-sf-twentyeleven {
-	margin-bottom: 10px 0;
+	margin: 10px 0;
 	padding: 0;
 	width: 100%;
 	font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif;

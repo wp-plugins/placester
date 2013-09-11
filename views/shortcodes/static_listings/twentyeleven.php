@@ -174,6 +174,7 @@ $template = array(
 }
 .pl-tpl-stl-twentyeleven .dataTables_paginate a {
 	margin: 0 1em 0 0;
+	padding: 0;
 	font-weight: 500;
 }
 .pl-tpl-stl-twentyeleven .dataTables_paginate a.paginate_active {
@@ -225,9 +226,9 @@ $template = array(
 
 			<div class="basic-details">
 				<ul>
-					<li>[beds]<span> Bed(s)</span></li>
-					<li>[baths]<span> Bath(s)</span></li>
-					<li>[sqft]<span> Sqft</span></li>
+					[if group=\'cur_data\' attribute=\'beds\']<li>[beds]<span> Bed(s)</span></li>[/if]
+					[if group=\'cur_data\' attribute=\'baths\']<li>[baths]<span> Bath(s)</span></li>[/if]
+					[if group=\'cur_data\' attribute=\'sqft\']<li>[sqft]<span> Sqft</span></li>[/if]
 				</ul>
 
 				<p class="mls">MLS #: [mls_id]</p>

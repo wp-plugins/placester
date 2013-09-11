@@ -163,10 +163,10 @@ class PL_Js_Helper {
 		<?php
 	}
 
-	public static function frontend() {
+	public static function frontend () {
 		self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
-		self::register_enqueue_if_not('leads', trailingslashit(PL_JS_PUB_URL) . 'leads.js', array('jquery'));
 		self::register_enqueue_if_not('membership', trailingslashit(PL_JS_PUB_URL) . 'membership.js', array('jquery'));
+		// self::register_enqueue_if_not('saved-search', trailingslashit(PL_JS_PUB_URL) . 'saved-search.js', array('jquery'));
 		self::register_enqueue_if_not('general', trailingslashit(PL_JS_PUB_URL) . 'general.js', array('jquery'));
 
 		if ( PL_Option_Helper::get_demo_data_flag() && current_user_can('manage_options') ) {

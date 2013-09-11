@@ -82,6 +82,42 @@
 	width: 20em;
 }
 
+/* Filter list for sc editor */
+.pl_filters {
+	float: left;	
+}
+.pl_filters section {
+	display: none;	
+}
+.pl-sc-wrap .pl-sc-meta-box .pl_filters label {
+	display: none;	
+}
+.pl_widget_block .add_filter {
+	display: block;
+	float: left;	
+}
+.pl_widget_block .active_filters {
+	clear: both;
+}
+.pl_widget_block .active_filter {
+	clear: both;
+	margin-top: .3em;
+	border-top: 1px solid #dfdfdf;
+	padding-top: .3em;
+	overflow: hidden;
+}
+.pl-sc-wrap .pl-sc-meta-box .active_filter label,
+.pl_widget_block .active_filter .filter_value {
+	display: block;
+	float: left;
+	padding: 0 1em 0 0;
+	width: 40%;
+}
+.pl_widget_block .active_filter .remove_filter {
+	display: block;
+	float: right;
+}
+
 /* CodeMirror for template */
 .CodeMirror {
 	height: auto;

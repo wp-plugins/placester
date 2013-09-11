@@ -81,7 +81,7 @@ $template = array(
 		<a href="[url]">[address] [locality], [region]</a>
 	</p>
 	<p class="wf-basics">
-		<span class="hidden-phone">Beds: <strong>[beds]</strong>&nbsp;</span> <span class="hidden-phone">Baths: <strong>[baths]</strong>&nbsp;</span> <span class="wf-mls">MLS #: [mls_id]</span>
+		[if group=\'cur_data\' attribute=\'beds\']<span class="hidden-phone">Beds: <strong>[beds]</strong>&nbsp;</span> [/if][if group=\'cur_data\' attribute=\'baths\']<span class="hidden-phone">Baths: <strong>[baths]</strong>&nbsp;</span> [/if]<span class="wf-mls">MLS #: [mls_id]</span>
 	</p>
 </div>',
 

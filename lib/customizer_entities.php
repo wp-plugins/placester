@@ -335,7 +335,7 @@
    			  <div id="color_scheme">
    			  	<?php
 	 				$preset_colors = array('---' => 'none', 'Default' => 'default');
-	 				$curr_theme = wp_get_theme()->Template;
+	 				$curr_theme = wp_get_theme()->template;
 	   			  	$skin_dir = ( trailingslashit(PL_THEME_SKIN_DIR) . trailingslashit($curr_theme) );
 					
 					// Generate list of available skins by filename...

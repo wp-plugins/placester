@@ -11,23 +11,23 @@ class PL_Lead_Capture_Helper {
 	}
 
 	public static function update_lead_forwarding_addresses () {
+		// Transform comma-separated string of e-mail addresses into an array, then store it in the options table...
 		$email_addresses = explode(',', $_POST['email_addresses']);
-
 		PL_Options::set(self::$forward_address_options_key, $email_addresses);
+		
 		echo true;
 		die();
 	}
 
 	public static function get_lead_forwarding_addresses () {
-		return get_option(self::$forward_address_options_key, array());
+		return PL_Options::get(self::$forward_address_options_key, array());
 	}
 
-	// used as a quick way of always including the right email addresses 
-	// in outgoing mail based on the users forwarding settings.
-	// reference: http://codex.wordpress.org/Function_Reference/wp_mail
-	public static function merge_bcc_forwarding_addresses_for_sending ( $headers = array() ) {
-
-		$email_addresses = self:: get_lead_forwarding_addresses();
+	// Used as a quick way of always including the right email addresses in outgoing mail based on the users forwarding settings.
+	//
+	// NOTE: See http://codex.wordpress.org/Function_Reference/wp_mail for more details
+	public static function merge_bcc_forwarding_addresses_for_sending ($headers = array()) {
+		$email_addresses = self::get_lead_forwarding_addresses();
 		
 		foreach ($email_addresses as $email) {
 			$headers[] = 'Bcc: ' . $email;

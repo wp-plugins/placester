@@ -91,7 +91,7 @@ abstract class PL_SC_Base {
 	 * Return the parameters that describe this shortcode type
 	 * @return multitype:
 	 */
-	public function get_args() {
+	public function get_args($with_choices = false) {
 		if (empty($this->default_tpls)) {
 			$this->default_tpls = $this->_get_builtin_templates();
 		}
@@ -100,8 +100,8 @@ abstract class PL_SC_Base {
 				'pl_post_type'	=> $this->pl_post_type,
 				'title'			=> $this->title,
 				'help'			=> $this->help,
-				'options'		=> $this->options,
-				'filters'		=> $this->_get_filters(),
+				'options'		=> $with_choices ? $this->get_options_list($with_choices) : $this->options,
+				'filters'		=> $with_choices ? $this->get_filters_list($with_choices) : $this->filters,
 				'subcodes'		=> $this->subcodes,
 				'default_tpls'	=> $this->default_tpls,
 				'template'		=> $this->template,
@@ -136,32 +136,30 @@ abstract class PL_SC_Base {
 	 */
 	public function get_builtin_templates() {
 		if (empty($this->default_tpls)) {
-			$this->default_tpls = $this->_get_builtin_templates();
+			if (file_exists($dir = PL_VIEWS_SHORT_DIR . $this->shortcode)) {
+				foreach (new DirectoryIterator($dir) as $fileInfo) {
+					if($fileInfo->isDot()) continue;
+					$matches = array();
+					if (preg_match('/^(.+)\.php/', $fileInfo->getFilename(), $matches)) {
+						$this->default_tpl[] = $matches[1];
+					}
+				}
+			}
 		}
 		return $this->default_tpls;
 	}
 
 	/**
-	 * Return array of templates for this shortcode supplied with the plugin.
+	 * Return array of options used to configure this shortcode type with any available choice values.
 	 */
-	protected function _get_builtin_templates() {
-		$tpls = array();
-		if (file_exists($dir = PL_VIEWS_SHORT_DIR . $this->shortcode)) {
-			foreach (new DirectoryIterator($dir) as $fileInfo) {
-				if($fileInfo->isDot()) continue;
-				$matches = array();
-				if (preg_match('/^(.+)\.php/', $fileInfo->getFilename(), $matches)) {
-					$tpls[] = $matches[1];
-				}
-			}
-		}
-		return $tpls;
+	protected function get_options_list($with_choices = false) {
+		return $this->options;
 	}
 
 	/**
-	 * Return array of filters used to configure this shortcode type.
+	 * Return array of filters used to configure this shortcode type with any available choice values.
 	 */
-	protected function _get_filters() {
+	protected function get_filters_list($with_choices = false) {
 		return $this->filters;
 	}
 
@@ -170,7 +168,7 @@ abstract class PL_SC_Base {
 	 * @param $id int	: id of custom shortcode record
 	 * @return array
 	 */
-	public static function get_filters($id) {
+	public function get_filters($id) {
 		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
 			$postmeta = get_post_meta($id);
 			if (!empty($postmeta['pl_filters'])) {
@@ -236,47 +234,21 @@ abstract class PL_SC_Base {
 
 		// prepare filters
 		$subcodes = '';
-		$class_filters = $this->_get_filters();
-		foreach($class_filters as $f_id => $f_atts) {
-			if (empty($class_options[$f_id]) && !empty($args[$f_id])) {
-				$gname = $f_id;
-				if ($gname == 'custom') {
-					$gname = 'metadata';
+		$class_filters = $this->get_filters_list();
+
+		foreach($class_filters as $f_atts) {
+			if (empty($f_atts['group'])) {
+				if (!empty($args[$f_atts['attribute']])) {
+					$subcodes .= " [pl_filter filter='" . $f_atts['attribute'] . "' value='". htmlentities(implode('||', (array)$args[$f_atts['attribute']])) . "'] ";
 				}
-				if (count($f_atts) && empty($f_atts['type'])) {
-					// probably group filter
-					if (is_array($args[$f_id])) {
-						foreach( $f_atts as $key => $value ) {
-							if (!empty($args[$f_id][$key]) && $args[$f_id][$key]!='false') {
-								$subcodes .= " [pl_filter group='" . $gname. "' filter='" . $key . "' value='" . htmlentities($args[$f_id][$key]) . "'] ";
-							}
-						}
+			}
+			else {
+				$gname = $f_atts['group'];
+				if (!empty($args[$f_atts['group']][$f_atts['attribute']])) {
+					if ($gname == 'custom') {
+						$gname = 'metadata';
 					}
-				}
-				elseif (!empty($f_atts['type']) && $f_atts['type']=='bundle') {
-					// custom data which is a group also
-					foreach( $args[$f_id] as $key => $value ) {
-						if (strpos($key, 'limit_')===0 && isset($args[$f_id][$value.substr($key,6)])) {
-							continue;
-						}
-						if (!empty($args[$f_id][$key]) && $args[$f_id][$key]!='false') {
-							$subcodes .= " [pl_filter group='" . $gname. "' filter='" . $key . "' value='" . htmlentities($args[$f_id][$key]) . "'] ";
-						}
-					}
-				}
-				else {
-					// single items
-					if (!empty($f_atts['type']) && $f_atts['type']=='multiselect') {
-						if (is_array($args[$f_id])) {
-							// we treat multiple selections in the filter as ORs
-							$subcodes .= " [pl_filter filter='" . $gname . "' value='". htmlentities(implode('||', $args[$f_id])) . "'] ";
-						}
-					}
-					else {
-						if (!is_array($args[$f_id]) && $args[$f_id]!='false') {
-							$subcodes .= " [pl_filter filter='" . $gname . "' value='". htmlentities($args[$f_id]) . "'] ";
-						}
-					}
+					$subcodes .= " [pl_filter group='" . $gname. "' filter='" . $f_atts['attribute'] . "' value='" . htmlentities(implode('||', (array)$args[$f_atts['group']][$f_atts['attribute']])) . "'] ";
 				}
 			}
 		}

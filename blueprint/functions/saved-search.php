@@ -3,28 +3,28 @@
 PLS_Saved_Search::init();
 class PLS_Saved_Search {
 
-	static $save_extension = 'pl_ss_';
-	static $search_extension = 'pl_ssv_';
+	public static $save_extension = 'pl_ss_';
+	public static $search_extension = 'pl_ssv_';
 
 	public static function init () {
-		//register ajax endpoints
+		// Register ajax endpoints
 		add_action('wp_ajax_get_saved_search_filter', array(__CLASS__, 'ajax_check'));
 		add_action('wp_ajax_nopriv_get_saved_search_filter', array(__CLASS__, 'ajax_check'));
 
-		//ajax functions for client pages.
+		// AJAX functions for client pages
 		add_action('wp_ajax_delete_client_saved_search', array(__CLASS__, 'delete_client_saved_search'));
 
-		//register shortcodes
-		add_shortcode( 'saved_search_list', array(__CLASS__, 'shortcode_render_search_list'));
+		// Register shortcodes
+		add_shortcode('saved_search_list', array(__CLASS__, 'shortcode_render_search_list'));
 	}
 
 	public static function shortcode_render_search_list () {
 		echo self::render_search_list();
-		//TODO: echo js in here too.
+		// TODO: echo JS in here too.
 	}
 
 	public static function delete_client_saved_search () {
-
+		// Get authenticated user's Wordpress ID...
 		$user_id = get_current_user_id();
 
 		if (!empty($user_id)) {
@@ -37,13 +37,13 @@ class PLS_Saved_Search {
 			}
 
 			$response = PLS_Plugin_API::save_a_search($user_id, $saved_searches);
-
-			echo $response;
-			die();
-		} else {
-			echo json_encode(array('message' => 'User is not logged in'));
-			die();
+		} 
+		else {
+			$response = json_encode(array('message' => 'User is not logged in'));
 		}
+
+		echo $response;
+		die();
 	}
 
 	public static function render_search_list () {
@@ -53,12 +53,12 @@ class PLS_Saved_Search {
 			extract(array('saved_searches' => $saved_searches));
 			include(trailingslashit(PLS_TPL_DIR) . 'saved-search.php');
 		$saved_search_html = ob_get_clean();
+
 		return $saved_search_html;
 		// echo add_filter('pls_saved_search_list');
 	}
 
 	public static function search_to_skip ($key) {
-
 		$keys_to_skip = array('location[address_match' => true);
 
 		if (isset($keys_to_skip[$key])) {
@@ -70,18 +70,18 @@ class PLS_Saved_Search {
 
 	public static function ajax_check () {
 		$result = array();
-		$saved_search = self::check($_POST['search_id']);
 
-		foreach ($saved_search as $key => $value) {
-			if (is_array($value)) {
-				// this is how multidimensional arrays are stored in the name attribute
-				// in js
-				foreach ($value as $k => $v) {
-					$result[ $key . '[' . $k . ']' ] = $v;
+		if ($saved_search = self::check($_POST['search_id'])) {
+			foreach ($saved_search as $key => $value) {
+				if (is_array($value)) {
+					// this is how multidimensional arrays are stored in the name attribute in JS
+					foreach ($value as $k => $v) {
+						$result["{$key}[{$k}]"] = $v;
+					}
+				} else {
+					// Otherwise, just store it regularly
+					$result[$key] = $value;
 				}
-			} else {
-				//otherwise just store it regularly
-				$result[$key] = $value;
 			}
 		}
 
@@ -103,7 +103,7 @@ class PLS_Saved_Search {
 
 	public static function save ($search_id, $value, $new = true) {
 		$key = self::generate_key( $search_id );
-		if ( $new ) {
+		if ($new) {
 			// Setting 'no' ensures these option-entries are NOT autoloaded on every request...
 			add_option($key, $value, '', 'no');
 		}
@@ -112,7 +112,7 @@ class PLS_Saved_Search {
 		}
 	}
 
-	public static function generate_key ( $search_id ) {
+	public static function generate_key ($search_id) {
 		$hash = sha1($search_id);
 		$key = self::$save_extension . $hash;
 		return $key;
@@ -126,25 +126,21 @@ class PLS_Saved_Search {
 	    }
 	}
 
-	public static function translate_key($key) {
-
+	public static function translate_key ($key) {
 		$translations = array(
-			'location[locality' => 'City',
-			'location[postal' => 'Zip Code',
-			'location[neighborhood' => 'Neighborhood',
-			'metadata[min_sqft' => 'Min Sqft',
-			'purchase_types[' => 'Purchase Type',
+			'location[locality]' => 'City',
+			'location[postal]' => 'Zip Code',
+			'location[neighborhood]' => 'Neighborhood',
+			'metadata[min_sqft]' => 'Min Sqft',
+			'purchase_types[]' => 'Purchase Type',
 			'price_off' => 'Min Price',
-			'metadata[min_beds' => 'Min Beds',
-			'metadata[min_baths' => 'Min Baths',
-			'metadata[min_price' => 'Min Price'
-			);
+			'metadata[min_beds]' => 'Min Beds',
+			'metadata[min_baths]' => 'Min Baths',
+			'metadata[min_price]' => 'Min Price'
+		);
 
-		if ( isset($translations[$key]) ) {
-			return $translations[$key];
-		} else {
-			return $key;
-		}
+		$val = ( isset($translations[$key]) ? $translations[$key] : $key );
+		return $val;
 	}
 
 }

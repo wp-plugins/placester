@@ -3,68 +3,7 @@
  * Displays main shortcode edit meta box used in the shortcode edit view for shortcodes related to property listings
  */
 
-// get list of shortcodes w/ attrs
-if (empty($pl_shortcodes_attr)) {
-	$pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
-}
-
 $options_class = $filters_class = '';
-
-// build list of sort options which will be the same for any sc that uses a sort list 
-$sort_list = array();
-foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {
-	if (!empty($sct_args['filters'])) {
-		foreach($sct_args['filters'] as $f_key=>$f_args) {
-			$skip = false;
-			switch($f_key) {
-				case 'metadata':
-					$key = 'cur_data';
-					break;
-				case 'custom':
-					$key = 'uncur_data';
-					break;
-				case 'rets':
-					$skip = true;
-					break;
-				default:
-					$key = $f_key;
-			}
-			if (!$skip) {
-				if (!empty($f_args['type'])) {
-					if ($f_args['type']=='bundle') {
-						if (isset($f_args['bound']) && is_array($f_args['bound'])) {
-							$params = ( isset($f_args['bound']['params']) ? $f_args['bound']['params'] : array() ) ;
-							// If "params" is a single element, encapsulate in an array...
-							if ( isset($params) && !is_array($params) ) {
-								$params = array($params);
-							}
-							$bundle_list = call_user_func_array(array($f_args['bound']['class'], $f_args['bound']['method']), $params);
-							foreach($bundle_list as $f_bargs) {
-								$sort_list[$key.'.'.$f_bargs['key']] = $f_bargs['name'];
-							}
-						}
-					}
-					elseif ($f_args['type']!='checkbox') {
-						$sort_list[$key] = $f_args['label'];
-					}
-				}
-				if (empty($f_args['type'])) {
-					// group of options
-					foreach($f_args as $f_bkey=>$f_bargs) {
-						if (!empty($f_bargs['type'])) {
-							if ($f_bargs['type']!='checkbox') {
-								if (strpos($f_bkey, 'min_')===false && strpos($f_bkey, 'max_')===false) {
-									$sort_list[$key.'.'.$f_bkey] = $f_bargs['label'];
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		break;
-	}
-}
 
 ?>
 <div class="postbox">
@@ -74,10 +13,10 @@ foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {
 	<div class="inside">
 
 		<!-- Type and Template -->
-		<div>
+		<div class="sc_type_and_template">
 
 			<!-- Type -->
-			<div class="post_types_list_wrapper row-fluid">
+			<div id="choose_type" class="row-fluid">
 
 				<div class="span2">
 					<label class="section-label" for="pl_sc_shortcode_type">Type:</label>
@@ -111,7 +50,7 @@ foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {
 
 				</div>
 
-			</div><!-- /.post_types_list_wrapper -->
+			</div><!-- /type -->
 
 			<!-- Template / Layout -->
 			<div id="choose_template" class="row-fluid" style="display:none;">
@@ -158,7 +97,7 @@ foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {
 				<?php
 				// build options for each shortcode type
 				foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {?>
-					<div class="pl_widget_block <?php echo $pl_shortcode;?>">
+					<div class="pl_widget_block sc_options <?php echo $pl_shortcode;?>">
 					<?php
 					foreach($sct_args['options'] as $field => &$f_args) {
 						if ($field == 'context') {
@@ -176,16 +115,6 @@ foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {
 								, $pl_shortcode);
 							continue;
 						}
-						elseif ($field == 'sort_by_options') {
-							// save the full list of sort by names so we can use on the front end
-							$f_args['options'] += $sort_list;
-							asort($f_args['options']);
-							update_option('pl_'.$pl_shortcode.'_formval_'.$field, $f_args['options']);
-						}
-						elseif ($field == 'sort_by') {
-							// should have the same options as sort_by_options
-							$f_args['options'] = $sct_args['options']['sort_by_options']['options'];
-						}				
 						$value = isset( $values[$pl_shortcode][$field] ) ? $values[$pl_shortcode][$field] : $f_args['default'];
 						$_POST[$pl_shortcode][$field] = $value;
 						$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $pl_shortcode;
@@ -204,33 +133,62 @@ foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {
 				</div>
 				<?php
 				// fill POST array for the forms (required after new widget is created)
+				$js_filters = array();
 				foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {
 					if (!empty($sct_args['filters'])) {
-						foreach($sct_args['filters'] as $f_key=>$f_args) {
-							$value = isset( $values[$pl_shortcode][$f_key] ) ? $values[$pl_shortcode][$f_key] : '';
-							if ($value) {
-								$_POST[$pl_shortcode][$f_key] = $value;
-							}
-						}
 						?>
-						<div class="pl_widget_block <?php echo $pl_shortcode?>">
-						<?php
-							PL_Form::generate_form($sct_args['filters'],
-								array('method' => "POST",
-									'title' => true,
-									'wrap_form' => false,
-									'include_submit' => false,
-									'id' => $pl_shortcode.'-filters',
-									'parent' => $pl_shortcode,
-									'echo_form' => true,
-								),
-								'sc_edit_');
-						?>
+						<div class="pl_widget_block filters <?php echo $pl_shortcode?>">
+							<?php
+								$select = $filter = $cat = '';
+								foreach($sct_args['filters'] as $f_args) {
+									$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $pl_shortcode;
+									$parent = 'filter_options['.$pl_shortcode.']';
+									$selectvalue = 'sc_edit-filter_options-'.$pl_shortcode.'-';
+									$value = '';
+									if ($f_args['group']) {
+										$parent .= '['.$f_args['group'].']';
+										$selectvalue .= $f_args['group'] . '-';
+										if (isset( $values[$pl_shortcode][$f_args['group']][$f_args['attribute']] )) {
+											$js_filters[] = array(
+												'shortcode'=>$pl_shortcode,
+												'id'=>$selectvalue.$f_args['attribute'],
+												'value'=>$values[$pl_shortcode][$f_args['group']][$f_args['attribute']]);
+										}
+									}
+									else {
+										if (isset( $values[$pl_shortcode][$f_args['attribute']] )) {
+											$js_filters[] = array(
+												'shortcode'=>$pl_shortcode,
+												'id'=>$selectvalue.$f_args['attribute'],
+												'value'=>$values[$pl_shortcode][$f_args['attribute']]);
+										}
+									}
+									$filter .= PL_Form::item($f_args['attribute'], $f_args, 'POST', $parent, 'sc_edit-', false);
+									if ($cat!=$f_args['cat']) {
+										if ($cat) {
+											$select .= '</optgroup>';
+										}
+										$cat = $f_args['cat'];
+										$select .= '<optgroup label="'.$cat.'">';
+									}
+									$select .='<option value="'.$selectvalue.$f_args['attribute'].'">'.$f_args['label'].'</option>';
+								}
+								if ($cat) {
+									$select .= '</optgroup>';
+								}
+							?>
+							<select name="<?php echo $pl_shortcode ?>[filter]" class="filter_select"><?php echo $select ?></select>
+							<div class="pl_filters">
+								<?php echo $filter ?>
+							</div>
+							<a href="#" class="button-secondary add_filter">Add Filter</a>
+							<div class="active_filters"></div>
 						</div>
 						<?php
 					}
 				}
 				?>
+				<script>var active_filters = <?php echo json_encode($js_filters) ?>;</script>
 			</div><!-- /.pl_widget_block -->
 
 			<?php wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );?>

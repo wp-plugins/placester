@@ -17,7 +17,7 @@ class PLS_Options_Manager {
 			$config = get_option('optionsframework');
 			$options = get_option( $config['id'], false );
 
-			$theme_name = strtolower(wp_get_theme()->Template);
+			$theme_name = strtolower(wp_get_theme()->template);
 			$filename = 'theme_options';
 			if ( isset($_GET['filename']) && !empty($_GET['filename'])) {
 				$filename = $_GET['filename'];

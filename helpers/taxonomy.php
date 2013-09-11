@@ -4,9 +4,10 @@ PL_Taxonomy_Helper::init();
 class PL_Taxonomy_Helper {
 
 	// List of taxonomies used to build a search UI
-	static $location_taxonomies = array('state' => 'State', 'zip' => 'Zip', 'city' => 'City', 'neighborhood' => 'Neighborhood');
+	public static $location_taxonomies = array('state' => 'State', 'zip' => 'Zip', 'city' => 'City', 'neighborhood' => 'Neighborhood');
+	
 	// List of taxonomies used to bulid URLs, etc.
-	static $all_loc_taxonomies = array('state', 'zip', 'city', 'neighborhood', 'street');
+	public static $all_loc_taxonomies = array('state', 'zip', 'city', 'neighborhood', 'street');
 
 	public static function init () {
 		add_action('init', array(__CLASS__, 'register_taxonomies'));

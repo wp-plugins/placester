@@ -63,12 +63,6 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
         wp_enqueue_script( 'underscore' );
 
         if ( pls_has_plugin_error() ) {
-            /** Register the nag script. */
-            // wp_register_script( 'pls-plugin-nags', trailingslashit( PLS_JS_URL ) . 'scripts/plugin-nags.js' , array( 'jquery' ), NULL, true );
-
-            /** Enqueue the nag script. */
-            // wp_enqueue_script( 'pls-plugin-nags' );
-
             /** Localize the script. Send the correct notification. */
             $l10n = array();
             if ( pls_has_plugin_error() == 'no_api_key' ) 
