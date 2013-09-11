@@ -33,14 +33,16 @@ class PLS_Meta_Tags {
             return true;
         }
 
-        // Is Yoast WordPress SEO plugin is enabled Network-wide?
-        $plugins = wp_get_active_network_plugins();
-        foreach ($plugins as $key => $plugin) {
-            // cut the last 24 char off each plugin
-            $plugin_name = substr($plugin, -24);
-            // check if it's Yoast plugin
-            if ($plugin_name == 'wordpress-seo/wp-seo.php') {
-                $enabled = true;
+        if (function_exists('wp_get_active_network_plugins')) {
+            // Is Yoast WordPress SEO plugin is enabled Network-wide?
+            $plugins = wp_get_active_network_plugins();
+            foreach ($plugins as $key => $plugin) {
+                // cut the last 24 char off each plugin
+                $plugin_name = substr($plugin, -24);
+                // check if it's Yoast plugin
+                if ($plugin_name == 'wordpress-seo/wp-seo.php') {
+                    $enabled = true;
+                }
             }
         }
 
