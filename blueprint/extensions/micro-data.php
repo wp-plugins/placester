@@ -56,14 +56,13 @@ class PLS_Micro_Data {
 		$itemtypes = self::get_itemtype_translations();
 		$itemprops = self::get_itemprop_library();
 
-		$itemprop = '';
-
+		$attr = '';
 		if (in_array($itemprop, $itemprops[$itemtypes[$itemtype]])) {
 	    	// Assemble itemprop string
-			$itemprop = 'itemprop="' . $itemprop . '"';
+			$attr = 'itemprop="' . $itemprop . '"';
 		}
 
-		return $itemprop;
+		return $attr;
 	}
 
 	private static function get_itemtype_translations () {
