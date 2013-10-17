@@ -10,7 +10,7 @@ class PL_Customizer
 
 	private static $priority = 0;
 
-	private function get_setting_opts( $args = array() )
+	private static function get_setting_opts( $args = array() )
 	{
 		$merged_opts = wp_parse_args($args, self::$def_setting_opts);
 		

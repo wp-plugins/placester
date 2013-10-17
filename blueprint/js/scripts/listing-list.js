@@ -19,7 +19,21 @@ List.prototype.init = function (params) {
 	this.total_results_id = params.total_results_id || '#pls_num_results';
 	this.limit_default = params.limit_default || 10;
 	this.limit_choices = params.limit_choices || [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]];
-	this.settings = params.settings || { "bFilter": false, "bProcessing": true, "bServerSide": true, "sServerMethod": "POST", 'sPaginationType': 'full_numbers', "sAjaxSource": info.ajaxurl, 'iDisplayLength': this.limit_default, 'aLengthMenu': this.limit_choices };
+	this.settings = params.settings || { 
+		"bFilter": false,
+		"bProcessing": true,
+		"bServerSide": true,
+		"sServerMethod": "POST",
+		'sPaginationType': 'full_numbers',
+		"sAjaxSource": info.ajaxurl,
+		'iDisplayLength': this.limit_default,
+		'aLengthMenu': this.limit_choices,
+		"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+			if ((iDisplayIndex + 1) % 3 == 0) {
+				jQuery(nRow).addClass('third');
+			};
+    	}
+	};
   	this.results_as_total = 0;
   	this.fnCallback = params.fnCallback || false;
   	this.manual_callback = params.manual_callback || false;

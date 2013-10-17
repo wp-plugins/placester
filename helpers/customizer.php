@@ -24,6 +24,14 @@ class PL_Customizer_Helper
 
 	public static function themedemo_admin () 
 	{
+		global $submenu;
+		if (!empty($submenu['themes.php'])) {
+			foreach ($submenu['themes.php'] as $i=>$item) {
+				if ($item[2] == 'customize.php') {
+					return;
+				}
+			}
+		}
 	    // add the Customize link to the admin menu
 	    add_theme_page( 'Customize', 'Customize', 'edit_theme_options', 'customize.php' );
 	}

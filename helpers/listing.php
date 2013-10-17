@@ -13,25 +13,21 @@ class PL_Listing_Helper {
 		add_action('wp_ajax_delete_listing', array(__CLASS__, 'delete_listing_ajax'));
 	}
 
-	/**
+	/*
 	 * If this is a single property listing, and the listing no longer exists, redirect
 	 */
 	public static function check_listing_exists() {
-
 		if (is_singular(PL_Pages::$property_post_type) && is_null(self::get_listing_in_loop())) {
 			$home = home_url();
 			wp_redirect($home);
 			exit;
 		}
-
 	}
 	
 	public static function results ($args = array(), $global_filters = true) {
 		// Handle edge-case $args formatting and value...
-		if (!is_array($args)) 
-			{ $args = wp_parse_args($args); } 
-		elseif (empty($args)) 
-			{ $args = $_GET; }
+		if (!is_array($args)) { $args = wp_parse_args($args); } 
+		elseif (empty($args)) { $args = $_GET; }
 
 		/* REMOVE */
 		// if ($global_filters) {
@@ -40,20 +36,24 @@ class PL_Listing_Helper {
 		// }
 
 		// If a list of specific property IDs was passed in, handle acccordingly...
-		if (!empty($args['property_ids']))
-			{ $args['listing_ids'] = $args['property_ids']; }
+		if (!empty($args['property_ids'])) { 
+			$args['listing_ids'] = $args['property_ids']; 
+		}
 
 		// Respect the ability for this function to return results that do NOT respect global filters..
-		if ($global_filters) 
-			{ $args = PL_Global_Filters::merge_global_filters($args); }
+		if ($global_filters) { 
+			$args = PL_Global_Filters::merge_global_filters($args); 
+		}
 
 		/* REMOVE */
 		// if ($global_filters) {
 		// 	error_log("\n[[[AFTER:]]]\n" . var_export($args, true));
 		// }
 
-		// Respect block address setting...
-		$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
+		// Respect block address setting if it's already set, otherwise, defer to the plugin setting...
+		if (empty($args['address_mode'])) {
+			$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
+		}
 
 		// Call the API with the given args...
 		$listings = PL_Listing::get($args);
@@ -83,9 +83,6 @@ class PL_Listing_Helper {
 		return self::results($args, false);
 	}
 
-	/* For backwards compatibility with older themes stuck on old versions of Blueprint */
-	public static function many_details ($args) { return self::details($args); }
-
 	public static function single_listing ($property_id = null) {
 		// Sanity check...
 		if (empty($property_id)) { return null; }
@@ -100,7 +97,8 @@ class PL_Listing_Helper {
 	}
 
 	/*
-	 * Used primarily to fetch listing details for the property inferred from the URL structure (i.e., for the property details template). Returns null if listing no longer exists, and property post is deleted.
+	 * Used primarily to fetch listing details for the property inferred from the URL structure (i.e., for the property details template). 
+	 * Returns null if listing no longer exists, and property post is deleted.
 	 *
 	 * @returns 	array|null 
 	 */
@@ -132,8 +130,9 @@ class PL_Listing_Helper {
 
 	public static function datatable_ajax () {
 		$response = array();
-		//exact addresses should be shown. 
-		$_POST['address_mode'] = 'exact';
+
+		// Start the args array -- exact addresses should always be shown in this view...
+		$args = array('address_mode' => 'exact');
 
 		// Sorting
 		// Controls the order of columns returned to the datatable
@@ -152,47 +151,60 @@ class PL_Listing_Helper {
 			'cur_data.sqft',
 			'cur_data.avail_on'
 		);
-		$_POST['sort_by'] = $columns[$_POST['iSortCol_0']];
-		$_POST['sort_type'] = $_POST['sSortDir_0'];
+
+		$args['sort_by'] = $columns[$_POST['iSortCol_0']];
+		$args['sort_type'] = $_POST['sSortDir_0'];
 		
 		// text searching on address
-		$_POST['location']['address'] = @$_POST['sSearch'];
-		$_POST['location']['address_match'] = 'like';
+		$args['location']['address'] = @$_POST['sSearch'];
+		$args['location']['address_match'] = 'like';
 
 		// Pagination
-		$_POST['limit'] = $_POST['iDisplayLength'];
-		$_POST['offset'] = $_POST['iDisplayStart'];		
+		$args['limit'] = $_POST['iDisplayLength'];
+		$args['offset'] = $_POST['iDisplayStart'];		
 
 		// We need to check for and parse compound_type...
-		if ( !empty($_POST['compound_type']) ) {
-	      switch ($_POST['compound_type']) {
-	        case "res_sale":
-	          	$_POST['zoning_types'][] = 'residential';
-	          	$_POST['purchase_types'][] = 'sale';
-	          	break;
-	        case "res_rental":
-	          	$_POST['zoning_types'][] = 'residential';
-	          	$_POST['purchase_types'][] = 'rental';
-	          	break;
-	        case "comm_sale":
-	          	$_POST['zoning_types'][] = 'commercial';
-	          	$_POST['purchase_types'][] = 'sale';
-	          	break;
-	        case "comm_rental":
-	          	$_POST['zoning_types'][] = 'commercial';
-	          	$_POST['purchase_types'][] = 'rental';
-	          	break;
-	        case "vac_rental":
-	        case "park_rental":
-	        case "sublet":
-	        default:
-	          	$_POST['zoning_types'] = false;
-	          	$_POST['purchase_types'] = false;
-	      }
+		if (!empty($_POST['compound_type'])) {
+			// First copy to args...
+			$args['compound_type'] = $_POST['compound_type'];
+
+			// Infer other fields based on this field's value...
+			switch ($_POST['compound_type']) {
+				case "res_sale":
+				  	$args['zoning_types'][] = 'residential';
+				  	$args['purchase_types'][] = 'sale';
+				  	break;
+				case "res_rental":
+				  	$args['zoning_types'][] = 'residential';
+				  	$args['purchase_types'][] = 'rental';
+				  	break;
+				case "comm_sale":
+				  	$args['zoning_types'][] = 'commercial';
+				  	$args['purchase_types'][] = 'sale';
+				  	break;
+				case "comm_rental":
+				  	$args['zoning_types'][] = 'commercial';
+				  	$args['purchase_types'][] = 'rental';
+				  	break;
+				case "vac_rental":
+				case "park_rental":
+				case "sublet":
+				default:
+				  	$args['zoning_types'] = false;
+				  	$args['purchase_types'] = false;
+			}
+		}
+
+		// Transfer over pertinent groups of args...
+		$arg_groups = array('zoning_types', 'purchase_types', 'property_type', 'location', 'rets', 'metadata', 'custom');
+		foreach ($arg_groups as $key) {
+			if (!empty($_POST[$key])) {
+				$args[$key] = $_POST[$key];
+			}
 		}
 		
-		// Get listings from model
-		$api_response = PL_Listing::get($_POST);
+		// Get listings from model -- no global filters applied...
+		$api_response = PL_Listing::get($args);
 		
 		// build response for datatables.js
 		$listings = array();
@@ -335,8 +347,10 @@ class PL_Listing_Helper {
 		// If global filters related to location are set, incorporate those and use aggregates API...
 		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['location']) ) {
 			// TODO: Move these to a global var or constant...
-			$global_filters['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
-			$response = PL_Listing::aggregates($global_filters);
+			$args = array();
+			$args['location'] = $global_filters['location'];
+			$args['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
+			$response = PL_Listing::aggregates($args);
 		
 			// Remove "location." from key names to conform to data standard expected by caller(s)...
 			$alt = array();

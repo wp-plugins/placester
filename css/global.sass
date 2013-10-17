@@ -83,6 +83,10 @@ h3.hndle
 
 /* Cleaning up jqueryUI's styles
 
+// jquery-ui 1.10 removed zindex support in WP3.6.1. - needed to prevent CodeMirror and other things using z-index bleed through
+.ui-front
+  z-index: 500
+
 .ui-widget-header
   border: none !important
   background: none !important
@@ -97,6 +101,14 @@ h3.hndle
   opacity: 0.6 !important
   -moz-opacity: 0.6 !important
   filter: alpha(opacity = 0.6)
+
+// jquery-ui 1.10 positions this as absolute instead of fixed which does not work when its appended to the body element
+.ui-widget-overlay.ui-front
+  position: fixed
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%	
 
 /*    end
 

@@ -38,8 +38,6 @@ jQuery(document).ready(function($) {
         email = $(this).find('#reg_user_email').val();
         password = $(this).find('#reg_user_password').val();
         confirm = $(this).find('#reg_user_confirm').val();
-        name = $(this).find('#user_fname').val();
-        phone = $(this).find('#user_phone').val();
 
         data = {
             action: "pl_register_site_user",
@@ -47,9 +45,7 @@ jQuery(document).ready(function($) {
             email: email,
             nonce: nonce,
             password: password,
-            confirm: confirm,
-            name: name,
-            phone: phone
+            confirm: confirm
         };
 
         register_user(data);

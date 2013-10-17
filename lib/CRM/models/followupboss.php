@@ -210,45 +210,139 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 	}
 
 	public function createContact ($args) {
-		//
+		$placester_type = empty($args["action"]) ? "pl_general" : $args["action"];
+		$args["type"] = $this->translateEventType($placester_type);
+
+		$response = $this->pushEvent($args);
+		return $response;
+	}
+	
+	// Translate Placester event type to Follow Up Boss nomenclature...
+	public function translateEventType ($placester_type) {
+		$type = "";
+
+		switch ($placester_type) {
+			case "pl_register_site_user":
+				$type = "Registration";
+				break;
+			// case "":
+			// 	$type = "Property Inquiry"
+			// 	break;
+			// case "":
+			// 	$type = "Viewed Property"
+			// 	break;
+			// case "":
+			// 	$type = "Saved Property"
+			// 	break;
+			// case "":
+			// 	$type = "Property Search"
+			// 	break;
+			// case "":
+			// 	$type = "Saved Property Search"
+			// 	break;
+			case "pl_general":
+			default:
+				$type = "General Inquiry";
+		}
+
+		return $type;
 	}
 
-	public function pushEvent ($event) {
-		// NOTE: Use events endpoint for this!!!
-		// event data
-		$event = array(
-		    "source" => "MyAwesomeWebsite.com",
-		    "type" => "Property Inquiry",
-		    "message" => "I would like to receive more information about 1234 High Oak St, Rochester, WA 98579.",
-		    "person" => array(
-		        "firstName" => "John",
-		        "lastName" => "Smith",
-		        "emails" => array(array("value" => "john.smith@gmail.com", "type" => "home")),
-		        "phones" => array(array("value" => "555-555-5555", "type" => "home")),
-		        "tags" => "Buyer, South"
-		    ),
-		    "property" => array(
-		        "street" => "1234 High Oak St",
-		        "city" => "Rochester",
-		        "state" => "WA",
-		        "code" => "98579",
-		        "mlsNumber" => "1234567",
-		        "price" => 449000,
-		        "forRent" => false,
-		        "url" => "http://www.myawesomewebsite.com/property/1234567-1234-high-oak-st-rochester-wa-98579/",
-		        "type" => "Single-Family Home",
-		        "bedrooms" => 3,
-		        "bathrooms" => 2,
-		        "area" => 2888,
-		        "lot" => 0.98
-		    )
-		);
+	public function pushEvent ($event_args) {
+		// Create event array that will be the POSTFIELDS payload (encoded as JSON)...
+		// $event = array(
+		    // "property" => array(
+		    //     "street" => "1234 High Oak St",
+		    //     "city" => "Rochester",
+		    //     "state" => "WA",
+		    //     "code" => "98579",
+		    //     "mlsNumber" => "1234567",
+		    //     "price" => 449000,
+		    //     "forRent" => false,
+		    //     "url" => "http://www.myawesomewebsite.com/property/1234567-1234-high-oak-st-rochester-wa-98579/",
+		    //     "type" => "Single-Family Home",
+		    //     "bedrooms" => 3,
+		    //     "bathrooms" => 2,
+		    //     "area" => 2888,
+		    //     "lot" => 0.98
+		    // ),
+	    	// "propertySearch" => array(
+		    //     "type" => "Apartment",
+		    //     "neighborhood" => "East Boston",
+		    //     "city" => "Boston",
+		    //     "state" => "MA",
+		    //     "code" => "02128",
+		    //     "minPrice" => 50000,
+		    //     "maxPrice" => 850000,
+		    //     "minBedrooms" => 2,
+		    //     "maxBedrooms" => 3,
+		    //     "minBathrooms" => 1,
+		    //     "maxBathrooms" => 2,
+		    //     "minArea" => 1000,
+		    //     "maxArea" => 2000,
+		    //     "forRent" => false
+		    // ),
+		    // "campaign" => array(
+		    //     "source" => "google",
+		    //     "medium" => "organic",
+		    //     "term" => "east boston homes",
+		    //     "content" => "",
+		    //     "campaign" => ""
+		    // )
+		// );
+
+		$event = array();
+
+		// Necessary attributes...
+		$event["source"] = site_url();
+		$event["type"] = empty($event_args["type"]) ? "Site Lead" : $event_args["type"];
+		$event["person"] = array();
+
+		// Person attributes...
+		if (!empty($event_args["name"])) {
+			// Split first and last name by space...
+			$name_arr = explode(" ", $event_args["name"]);
+			
+			$event["person"]["firstName"] = @$name_arr[0];
+			$event["person"]["lastName"] = @$name_arr[1];
+		}
+		else {
+			// If no name is present, enter generic one using a random integer...
+			$event["person"]["firstName"] = "Site User";
+			$event["person"]["lastName"] = (string)rand();
+		}
+
+		if (!empty($event_args["email"])) {
+			$event["person"]["emails"] = array(array("value" => $event_args["email"], "type" => "home"));
+		}
+
+		if (!empty($event_args["phone"])) {
+			$event["person"]["phones"] = array(array("value" => $event_args["phone"], "type" => "home"));
+		}
+
+		// Include message if one exists...
+		if (!empty($event_args["question"])) {
+			$event["message"] = $event_args["question"];
+		}
+
+		// Property attributes...
+		// TODO!
+
+		// Property search attributes...
+		// TODO!
+
+		// Campaign attributes...
+		// TODO!
 
 		// Set field the caller is expecting to set request payload...
-		$args["body"] = $event;
+		$args = array("body" => $event);
 
 		// Make API Call...
-		$response = $this->callAPI("events", "GET", $args);
+		$response = $this->callAPI("events", "POST", $args);
+		
+		// error_log("Event push response: ");
+		// error_log(var_export($response, true));
+		return $response;
 	}
 }
 

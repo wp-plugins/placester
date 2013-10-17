@@ -144,11 +144,18 @@ jQuery(document).ready(function($) {
 
 	$('#preset_area_styles').live('change', function () {
 
-		$('#border-weight option[value='+$(this).find(':selected').data('borderWeight')+']').attr('selected','selected');
-		$('#border-opacity option[value="'+$(this).find(':selected').data('borderOpacity')+'"]').attr('selected','selected');
-		$('#fill-opacity option[value="'+$(this).find(':selected').data('fillOpacity')+'"]').attr('selected','selected');
-		$('#polygon_border div').css('background-color', $(this).find(':selected').data('polygon_border'))
-		$('#polygon_fill div').css('background-color', $(this).find(':selected').data('polygon_fill'))
+		if ($(this).val() == 'custom') {
+			if (!$('.advanced_area_controls').is(":visible")) {
+				$('#show_advanced_styles').trigger('click');
+			}
+		}
+		else {
+			$('#border-weight option[value='+$(this).find(':selected').data('borderWeight')+']').attr('selected','selected');
+			$('#border-opacity option[value="'+$(this).find(':selected').data('borderOpacity')+'"]').attr('selected','selected');
+			$('#fill-opacity option[value="'+$(this).find(':selected').data('fillOpacity')+'"]').attr('selected','selected');
+			$('#polygon_border div').css('background-color', $(this).find(':selected').data('polygon_border'))
+			$('#polygon_fill div').css('background-color', $(this).find(':selected').data('polygon_fill'))
+		}
 		
 	});
 
@@ -178,6 +185,7 @@ jQuery(document).ready(function($) {
 	$('#polygon_clear_drawing').live('click', function (event) {
 		event.preventDefault();
 		clearPolyLine();
+		hide_create_overlay();
 	});
 
 	$('#polygon_edit_drawing').live('click', function (event) {
@@ -268,6 +276,7 @@ jQuery(document).ready(function($) {
 		event.preventDefault();
 		var polygon = {};
 		console.log($(this).parent().find('input#id'));
+		$('#create_new_polygon').hide();
 		polygon['id'] = $(this).parent().find('input#id').val();
 		polygon['action'] = 'get_polygon';
 		$.post(ajaxurl, polygon, function(data, textStatus, xhr) {
@@ -277,12 +286,16 @@ jQuery(document).ready(function($) {
 				for (var i = data.polygon.vertices.length - 1; i >= 0; i--) {
 					path.push(new google.maps.LatLng(data.polygon.vertices[i].lat, data.polygon.vertices[i].lng));
 				};
+				$('#preset_area_styles').val('custom');
+				if (!$('.advanced_area_controls').is(":visible")) {
+					$('#show_advanced_styles').trigger('click');
+				}
 				$('.polygon_controls form #name').val(data.polygon.name);
-				$('.polygon_controls form #[border][weight]').val(data.polygon.settings.border.weight);
-				$('.polygon_controls form #[border][opacity]').val(data.polygon.settings.border.opacity);
-				$('.polygon_controls form #polygon_border div').val(data.polygon.settings.border.color);
-				$('.polygon_controls form #[fill][opacity]').val(data.polygon.settings.fill.opacity);
-				$('.polygon_controls form #polygon_fill div').val(data.polygon.settings.fill.color);
+				$('.polygon_controls form #border-weight').val(data.polygon.settings.border.weight);
+				$('.polygon_controls form #border-opacity').val(data.polygon.settings.border.opacity);
+				$('.polygon_controls form #polygon_border div').css('background-color', data.polygon.settings.border.color);
+				$('.polygon_controls form #fill-opacity').val(data.polygon.settings.fill.opacity);
+				$('.polygon_controls form #polygon_fill div').css('background-color', data.polygon.settings.fill.color);
 				$('.polygon_controls form #poly_taxonomies').val(data.polygon.tax);
 				$('.polygon_controls form .poly_taxonmy_values#' + data.polygon.tax).val(data.polygon.slug);
 				$('#edit_id').val(data.polygon.id);

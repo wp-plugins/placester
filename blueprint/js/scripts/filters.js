@@ -43,9 +43,8 @@ Filters.prototype.get_values = function () {
 
 Filters.prototype.set_values = function (search_id) {
 	var that = this;
-	jQuery.post(info.ajaxurl, {action: 'get_saved_search_filter', search_id: search_id}, function(data, textStatus, xhr) {
-		jQuery(that.listener.elements).find('input, select').each(function(i) {
-			
+	jQuery.post(info.ajaxurl, {action: 'get_saved_search_filters', search_id: search_id}, function (data, textStatus, xhr) {
+		jQuery(that.listener.elements).find('input, select').each(function (i) {
 			if (this.name == 'purchase_types[]') {
 				// Special case for purchase types
 				if (data['purchase_types[0]']) {

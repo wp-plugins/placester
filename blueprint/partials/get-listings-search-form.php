@@ -1025,10 +1025,13 @@ class PLS_Partials_Listing_Search_Form {
     );
 
     /** Filter the form. */
-    $return = apply_filters( pls_get_merged_strings( array( "pls_listings_search_form_outer", $context ), '_', 'pre', false ), $form, $form_html, $form_options, $section_title, @$form_data, $form_id, $context_var ) . '<script type="text/javascript" src="' . trailingslashit(PLS_JS_URL) . 'scripts/filters.js"></script>';
+    $result = apply_filters( pls_get_merged_strings( array( "pls_listings_search_form_outer", $context ), '_', 'pre', false ), $form, $form_html, $form_options, $section_title, @$form_data, $form_id, $context_var ); 
+    
+    // Load the filters.js script...
+    $result .= '<script type="text/javascript" src="' . trailingslashit(PLS_JS_URL) . 'scripts/filters.js"></script>';
 
-    $cache->save($return);
-    return $return;
+    $cache->save($result);
+    return $result;
 	}
 
   public static function create_custom_select_element ($post_param, $post_sub_param, $options = array(), $placeholder = 'Any', $multi_select = false) {

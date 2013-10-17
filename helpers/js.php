@@ -174,7 +174,7 @@ class PL_Js_Helper {
 		}
 
 		if ( defined('PL_ANALYTICS_SCRIPT_URL') && PL_Analytics::can_collect() ) {
-			self::register_enqueue_if_not('infobar', PL_ANALYTICS_SCRIPT_URL);
+			self::register_enqueue_if_not('analytics', PL_ANALYTICS_SCRIPT_URL);
 		}
 	}
 

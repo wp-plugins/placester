@@ -129,10 +129,11 @@ class PL_Taxonomy_Helper {
 		foreach ($preset_styes as $style_name => $presets) {
 			$options .= '<option ';
 			foreach ($presets as $style => $value) {
-				$options .= 'data-' . $style . '="'.$value.'"';
+				$options .= ' data-' . $style . '="'.$value.'"';
 			}
 			$options .= ' >' . $style_name . '</option>';
 		}
+		$options .= '<option value="custom">Custom</option>';
 		return $options;
 	}
 
@@ -417,23 +418,23 @@ class PL_Taxonomy_Helper {
         
         if ( !empty($permalink) && $post->post_type == 'property' && !in_array($post->post_status, array('draft', 'pending', 'auto-draft')) ) {
             if (strpos($permalink, '%state%')) {
-            	$state = self::get_obj_term($post->ID, 'state', 'unassigned-state');
+            	$state = self::get_obj_term($post->ID, 'state', 'state');
             }
 
             if (strpos($permalink, '%zip%')) {
-            	$zip = self::get_obj_term($post->ID, 'zip', 'unassigned-zip');
+            	$zip = self::get_obj_term($post->ID, 'zip', 'zip');
             }
 
 	        if (strpos($permalink, '%city%')){
-            	$city = self::get_obj_term($post->ID, 'city', 'unassigned-city');
+            	$city = self::get_obj_term($post->ID, 'city', 'city');
 	        } 
 
 	        if (strpos($permalink, '%neighborhood%')){
-	        	$neighborhood = self::get_obj_term($post->ID, 'neighborhood', 'unassigned-neighborhood');
+	        	$neighborhood = self::get_obj_term($post->ID, 'neighborhood', 'neighborhood');
 	        } 
 
 	        if (strpos($permalink, '%street%')){
-	        	$street = self::get_obj_term($post->ID, 'street', 'unassigned-street');
+	        	$street = self::get_obj_term($post->ID, 'street', 'street');
 	        }           
 
 	        $rewritereplace = array( $state, $city, $zip, $neighborhood, $street, $post->post_name, $post->post_name, $post->post_name, $post->post_name, $post->post_name);

@@ -316,7 +316,7 @@ function ajax_placester_contact() {
       // Check to make sure sure that a valid email address is submitted
       if( trim($_POST['email']) == '' || trim($_POST['email']) == 'Email Address' )  {
         $error .= "An email address is required<br/>";
-      } else if ( !eregi("^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$", trim($_POST['email'])) ) {
+      } else if ( !preg_match("/^[A-Z0-9._%-]+@[A-Z0-9._%-]+\.[A-Z]{2,4}$/i", trim($_POST['email'])) ) {
         $error .= "A valid email address is required<br/>";
       } else {
         $message .= "Email Address: " . trim($_POST['email']) . " \n";

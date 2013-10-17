@@ -343,7 +343,7 @@
 					if (!empty($dir)) {
 						while ($filename = readdir($dir)) { 
 							// Only look at files with a .css extension...
-							if ( eregi("\.css", $filename) ) {
+							if (stristr($filename, ".css")) {
 						    	$filename = substr( $filename, 0, -strlen('.css') ); // Omit file extension...
 						    	$preset_colors[ucfirst($filename)] = $filename;
 						  	}

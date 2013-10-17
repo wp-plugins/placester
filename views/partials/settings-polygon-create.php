@@ -6,18 +6,18 @@
 							<input type="text" name="name" id="name">	
 						</div>
 						<div class="form-item">
-							<label for="">Area Style</label>	
+							<label for="preset_area_styles">Area Style</label>	
 							<select id="preset_area_styles">
 								<?php echo PL_Taxonomy_Helper::get_preset_polygon_styles() ?>
 							</select>
 							<a href="#" id="show_advanced_styles">Show Advanced Controls</a>
 						</div>
 						<div class="form-item advanced_area_controls">
-							<label for="">Border Weight</label>	
+							<label for="border-weight">Border Weight</label>	
 							<select name="[border][weight]" id="border-weight">
 								<option value="1">1</option>
 								<option value="2">2</option>
-								<option value="3" selected>3</option>
+								<option value="3" selected="selected">3</option>
 								<option value="4">4</option>
 								<option value="5">5</option>
 								<option value="6">6</option>
@@ -28,7 +28,7 @@
 							</select>
 						</div>
 						<div class="form-item advanced_area_controls">
-							<label>Border Opacity</label>
+							<label for="border-opacity">Border Opacity</label>
 							<select name="[border][opacity]" id="border-opacity">
 								<option value="0.2">0.2</option>
 								<option value="0.3">0.3</option>
@@ -41,7 +41,7 @@
 								<option value="1" selected>1.0</option>
 							</select>	
 						</div>
-						<div class="form-item advanced_area_controls" id="colorpicker">
+						<div class="form-item advanced_area_controls">
 							<label>Border Color</label>
 							<div id="polygon_border" class="another_colorpicker">
 								<div style="background-color: #FF0000"></div>
@@ -61,22 +61,22 @@
 								<option value="1">1.0</option>
 							</select>	
 						</div>
-						<div class="form-item advanced_area_controls" id="colorpicker">
+						<div class="form-item advanced_area_controls">
 							<label>Fill Color</label>
 							<div id="polygon_fill" class="another_colorpicker">
 								<div style="background-color: #FF0000"></div>
 							</div>
 						</div>
 						<div class="form-item">
-							<label for="">Area Type</label>
+							<label for="poly_taxonomies">Area Type</label>
 							<?php echo PL_Taxonomy_Helper::types_as_selects(); ?>
 						</div>
 						<div class="form-item">
-							<label for="">Attached to existing area?</label>
+							<label for="neighborhood">Attached to existing area?</label>
 							<?php echo PL_Taxonomy_Helper::taxonomies_as_selects(); ?>
 						</div>
 						<div class="form-item" id="custom_name" style="display: none">
-							<label for="name">New Area Name</label>
+							<label for="custom_taxonomy_name">New Area Name</label>
 							<input type="text" name="custom_taxonomy_name" id="custom_taxonomy_name">	
 						</div>
 						<input type="hidden" id="edit_id" name="id">
@@ -85,6 +85,6 @@
 							<a id="polygon_edit_drawing" class="button" href="#">Edit Drawing</a>
 							<a id="polygon_save_drawing" class="button-primary" href="#">Save as Custom Area</a>	
 						</div>
-						
+
 					</form>
 				</div>

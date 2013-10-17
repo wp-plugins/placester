@@ -431,9 +431,6 @@ class Placester_Blueprint {
         /** Load the shortcodes functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'shortcodes.php' );
 
-        /** Load the saved search functions. */
-        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'saved-search.php' );
-
         /** Load the internationalization functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'internationalization.php' );
         

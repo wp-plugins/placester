@@ -15,7 +15,7 @@ class PL_Lead_Capture_Helper {
 		$email_addresses = explode(',', $_POST['email_addresses']);
 		PL_Options::set(self::$forward_address_options_key, $email_addresses);
 		
-		echo true;
+		echo json_encode(array("success" => true));
 		die();
 	}
 

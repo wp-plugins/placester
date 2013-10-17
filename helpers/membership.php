@@ -9,14 +9,14 @@ class PL_Membership_Helper {
 	}
 
 	public static function admin_bar () {
-		if (current_user_can( 'placester_lead' )) {
+		if (current_user_can('placester_lead')) {
 			add_filter('show_admin_bar', '__return_false');
 		}
 	}
 
 	public static function get_client_settings () {
-		$send_client_message = get_option('pls_send_client_option');
-		$send_client_message_text = get_option('pls_send_client_text');
+		$send_client_message = PL_Options::get('pls_send_client_option');
+		$send_client_message_text = PL_Options::get('pls_send_client_text');
 		if (!$send_client_message_text) {
 			$send_client_message_text = "Hey %client_email%,\n";
 			$send_client_message_text .= "\n";

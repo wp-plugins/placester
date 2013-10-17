@@ -737,7 +737,11 @@ class PLS_Format {
 		$url = 'http://maps.googleapis.com/maps/api/geocode/json?address='.$address.'&sensor=false';
 		$url = str_replace(',', '', $url);
 		$url = str_replace(' ', '+', $url);
-		$source = file_get_contents($url);
+		$result = wp_remote_get($url);
+		if (!is_array($result) || !isset($result['body']) || !$result['body']) {
+			return;
+		}
+		$source = $result['body'];
 		$obj = json_decode($source);
 		$lat_lng_array['lat'] = $obj->results[0]->geometry->location->lat;
 		$lat_lng_array['lng'] = $obj->results[0]->geometry->location->lng;

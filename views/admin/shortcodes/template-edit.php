@@ -120,7 +120,7 @@ $used_by = PL_Shortcode_CPT::template_used_by($ID);
 
 									<div id="misc-publishing-actions">
 										<div class="misc-pub-section">
-											<label for="pl_sc_tpl_csc_link">Status:</label> <span
+											<span>Status:</span> <span
 												id="post-status-display">
 												<?php echo ($ID=='' ? __('Draft') : ($used_by ? '<a id="pl_sc_tpl_csc_link" href="#">'.__('In Use').'</a>' : __('Not In Use')))?></span>
 											<div id="pl_sc_tpl_csc_list" style="display:none">

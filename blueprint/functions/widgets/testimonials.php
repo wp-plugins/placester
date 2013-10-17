@@ -29,6 +29,20 @@ class PLS_Widget_Testimonials extends WP_Widget {
     $number_of_posts = isset($instance['number_of_posts']) ? $instance['number_of_posts'] : 5;
     $widget_id = isset($instance['widget_id']) ? $instance['widget_id'] : 1;
 
+    /** Define the default argument array. */
+    $defaults = array(
+      'before_widget' => '<section class="testimonials-widget widget">',
+      'after_widget' => '</section>',
+      'before_title' => '<h3 class="widget-title">',
+      'after_title' => '</h3>',
+    );
+
+    /** Merge the arguments with the defaults. */
+    $args = wp_parse_args( $args, $defaults );
+
+    extract($args, EXTR_SKIP);
+
+
     if ( !post_type_exists('testimonial')) {
       return false;
     }

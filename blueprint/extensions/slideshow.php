@@ -232,10 +232,10 @@ class PLS_Slideshow {
 	                // Get image, but only Dragonfly listing images
                     switch ($data['type'][$index]) {
                         case "listing":
-                            $slide_src = PLS_Image::load($slide_src, array('resize' => array('w' => $width, 'h' => $height), 'fancybox' => false, 'as_html' => false, 'allow_dragonfly' => false));
+                            $slide_src = PLS_Image::load($slide_src, array('resize' => array('w' => $width, 'h' => $height), 'fancybox' => false, 'as_html' => false));
                             break;
                         case "custom":
-                            $slide_src = PLS_Image::load($slide_src, array('allow_resize' => false, 'fancybox' => false, 'as_html' => false, 'allow_dragonfly' => false));
+                            $slide_src = PLS_Image::load($slide_src, array('allow_resize' => false, 'fancybox' => false, 'as_html' => false));
                             break;
                     }
 	            }
@@ -296,7 +296,7 @@ class PLS_Slideshow {
             }
             else {
                 foreach ($listing['images'] as $image) {
-                    $slide_array['images'][] = PLS_Image::load($image['url'], array('resize' => array('w' => $width, 'h' => $height), 'fancybox' => false, 'as_html' => false, 'allow_dragonfly' => false));
+                    $slide_array['images'][] = PLS_Image::load($image['url'], array('resize' => array('w' => $width, 'h' => $height), 'fancybox' => false, 'as_html' => false));
                     $slide_array['captions'] = array('');
                 }
             }

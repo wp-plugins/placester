@@ -259,12 +259,33 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 	}
 
 	public function createContact ($args) {
+		// error_log("Contactually 'createContact' called...");
+		// error_log(var_export($args, true));
+
+		// If a full name has been passed, Split first and last name by the space...
+		$name_arr = empty($args["name"]) ? array() : explode(" ", $args["name"]);
+		
+		// If first name doesn't exist use generic string -- if no last name exists, use a random integer...
+		$contact["first_name"] = empty($name_arr[0]) ? "Site User" : $name_arr[0];
+		$contact["last_name"] = empty($name_arr[1]) ? (string)rand() : $name_arr[1];
+
+		// Set e-mail...
+		$contact["email"] = empty($args["email"]) ? "<none provided>" : $args["email"];
+
+		// TODO: Pass the site's URL as a note, push to a site-specific bucket, pass along the message, etc.
 		//
+		// Can't do this until Contactually actually documents their API properly AND gives us the ability to
+		// create a contact along with appropriate tags, notes + identify the correct bucket in a single call...
+
+		$response = $this->callAPI("contacts", "POST", array("body" => $contact));
+
+		return $response;
 	}
 
-	public function pushEvent ($event) {
-		//
+	public function pushEvent ($event_args) {
+		// Nothing here yet...
 	}
+
 }
 
 ?>

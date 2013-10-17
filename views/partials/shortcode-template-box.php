@@ -100,7 +100,7 @@ $listing_attributes = PL_Shortcode_CPT::get_listing_attributes();
 									<?php $subcodes .= '<div class="description subcode-help">'. $atts['help'] .'</div>';?>
 								<?php endif;?>
 							<?php endforeach;?>
-							<p>Use the following tags to customize your shortcode template:<br /><?php echo $subcodes?></p>
+							<div>Use the following tags to customize your shortcode template:<br /><?php echo $subcodes?></div>
 						</div>
 					<?php endif;?>
 				<?php endforeach;?>

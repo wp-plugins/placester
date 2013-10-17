@@ -108,13 +108,21 @@ class PLS_Plugin_API {
     public static function get_listings_fav_ids () {
         return self::try_call_func( array("PL_People_Helper", "get_favorite_ids"), array(), false );
     }
+    
+    public static function merge_bcc_forwarding_addresses_for_sending ($headers) {
+        return self::try_call_func( array("PL_Lead_Capture_Helper", "merge_bcc_forwarding_addresses_for_sending"), $headers);   
+    }
+
+    /*
+     * Saved Search Funcs
+     */
+    
+    public static function save_search ($search_id, $search_filters) {
+        return self::_try_for_exceptions( array("PL_Saved_Search", "save_search"), $search_id, $search_filters );
+    }
 
     public static function get_user_saved_searches () {
         return self::try_call_func( array("PL_Saved_Search", "get_user_saved_searches"), false, array() );
-    }
-
-    public static function save_a_search ($user_id, $save_searches) {
-        return self::try_call_func( array("PL_Saved_Search", "save_a_search"), array($user_id, $save_searches));
     }
 
     public static function get_saved_search_registration_form () {
@@ -125,12 +133,12 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_Saved_Search", "get_saved_search_button") ); 
     }
 
-    public static function get_save_search_link () {
-        return self::try_call_func( array("PL_Saved_Search", "get_save_search_link"), array(), "");
+    public static function get_saved_search_filters ($search_id) {
+        return self::try_call_func( array("PL_Saved_Search", "get_saved_search_filters"), $search_id, false );
     }
 
-    public static function merge_bcc_forwarding_addresses_for_sending ($headers) {
-        return self::try_call_func( array("PL_Lead_Capture_Helper", "merge_bcc_forwarding_addresses_for_sending"), $headers);   
+    public static function translate_key ($key) {
+        return self::try_call_func( array("PL_Saved_Search", "translate_key"), $key, $key );
     }
     
     /*

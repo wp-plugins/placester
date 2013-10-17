@@ -11,22 +11,42 @@ class PL_People_Helper {
 		add_action('wp_ajax_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
 		add_action('wp_ajax_nopriv_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
 		add_action('wp_ajax_remove_favorite_property', array(__CLASS__,'ajax_remove_favorite_property'));
+
+		add_shortcode('favorite_link_toggle', array(__CLASS__,'placester_favorite_link_toggle'));
 	}
 
-	public static function get_user () {
-		$wp_user = wp_get_current_user();
-
-		return empty($wp_user->ID) ? false : $wp_user;
-	}	
-
 	public static function add_person ($args = array()) {
+		// Try to push lead to CRM (if one is linked/active)...
+		self::add_person_to_CRM($_POST);	
+
 		return PL_People::create($args);
 	}	
 
 	public static function add_person_ajax () {
 		$api_response = PL_People::create($_POST);
 		echo json_encode($api_response);
+
+		// Try to push lead to CRM (if one is linked/active)...
+		self::add_person_to_CRM($_POST);
+
 		die();
+	}
+
+	public static function add_person_to_CRM ($args = array()) {
+		// Check to see if site is actively linked to a CRM...
+		$activeCRMKey = 'pl_active_CRM';
+		$crm_id = PL_Options::get($activeCRMKey);
+		
+		if (!empty($crm_id)) {
+			// Load CRM libs...
+			$path_to_CRM = trailingslashit(PL_LIB_DIR) . 'CRM/controller.php';
+			include_once($path_to_CRM);
+
+			// Call necessary lib to add the contact to the active/registered CRM...
+			if (class_exists('PL_CRM_Controller')) {
+				PL_CRM_Controller::callCRMLib('createContact', $args);
+			}
+		}
 	}
 
 	public static function update_person_details ($person_details) {
@@ -34,19 +54,21 @@ class PL_People_Helper {
 		return PL_People::update(array_merge(array('id' => $placester_person['id']), $person_details));
 	}
 
-	// Fetch a site user's unique Placester ID (managed by Rails, stored in WP's usermeta table)
+	// Fetch a site user's details based on his/her unique Placester ID (managed by Rails, stored in WP's usermeta table)
 	public static function person_details () {
 		$details = array();
+		$wp_user = wp_get_current_user();
 
-		$wp_user = self::get_user();
-		$placester_id = get_user_meta($wp_user->ID, 'placester_api_id');
+		if (!empty($wp_user->ID)) {
+			$placester_id = get_user_meta($wp_user->ID, 'placester_api_id');
 		
-		if (is_array($placester_id)) { 
-			$placester_id = implode($placester_id, ''); 
-		}
-		
-		if (!empty($placester_id)) {
-			$details = PL_People::details(array('id' => $placester_id));
+			if (is_array($placester_id)) { 
+				$placester_id = implode($placester_id, ''); 
+			}
+			
+			if (!empty($placester_id)) {
+				$details = PL_People::details(array('id' => $placester_id));
+			}
 		}
 
 		return $details;

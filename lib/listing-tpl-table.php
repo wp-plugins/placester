@@ -130,14 +130,16 @@ class PL_Listing_Tpl_Table extends WP_List_Table {
 
 		add_filter( 'the_title', 'esc_html' );
 
-		foreach ( $templates as $id=>$template ) {
-			$this->single_row( $id, $template );
+		foreach ( $templates as $row_id=>$template ) {
+			$template['row_id'] = $row_id;
+			$this->single_row( $template );
 		}
 	}
 
-	public function single_row( $id, $template ) {
+	public function single_row( $template ) {
+		$row_class = ($template['row_id']%2 ? '' : ' alternate');
 		?>
-		<tr id="sc-template-<?php echo $id; ?>" class="sc-template-<?php echo $template['type']?>" valign="top">
+		<tr id="sc-template-<?php echo $template['row_id'] ?>" class="<?php echo $row_class ?> sc-template-<?php echo $template['type'] ?>" valign="top">
 		<?php
 
 		list( $columns, $hidden ) = $this->get_column_info();
@@ -161,8 +163,8 @@ class PL_Listing_Tpl_Table extends WP_List_Table {
 				case 'cb':
 					?>
 					<th scope="row" class="check-column">
-						<label class="screen-reader-text" for="cb-select-<?php $id; ?>"><?php printf( __( 'Select %s' ), $template['title'] ); ?></label>
-						<input id="cb-select-<?php $id; ?>" type="checkbox" name="post[]" value="<?php $id; ?>" />
+						<label class="screen-reader-text" for="cb-select-<?php echo $template['id'] ?>"><?php printf( __( 'Select %s' ), $template['title'] ) ?></label>
+						<input id="cb-select-<?php echo $template['id'] ?>" type="checkbox" name="post[]" value="<?php echo $template['id'] ?>" />
 					</th>
 					<?php
 					break;

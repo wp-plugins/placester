@@ -53,9 +53,14 @@ Neighborhood.prototype.init = function () {
 	    "data" : filters,
 	    "success" : function ( neighborhoods ) {
 	    	if ( neighborhoods.length > 0) {
+	    		var polygon_options, polygon;
 	    		for (var i = neighborhoods.length - 1; i >= 0; i--) {
-	    			var polygon_options = that.process_neighborhood_polygon( neighborhoods[i] );
-	    			var polygon = that.map.create_polygon( polygon_options );
+	    			// catch polygons with invalid permalink (missing term) and don't show
+	    			if (typeof neighborhoods[i].permalink !== 'string') {
+	    				continue;
+	    			}
+	    			polygon_options = that.process_neighborhood_polygon( neighborhoods[i] );
+	    			polygon = that.map.create_polygon( polygon_options );
 	    			if ( that.slug ) {
 	    				that.map.selected_polygon = polygon;
 	    				that.map.filter_by_bounds = true;

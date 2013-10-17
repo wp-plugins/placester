@@ -156,7 +156,12 @@ class PL_Pages {
     	}
 
 		$wpdb->query("DELETE FROM $wpdb->postmeta WHERE post_id IN ($id_str)");
-		self::delete_all_terms();
+		
+		// NOTE: This call produces highly negative side-effects, as neighborhood meta-info created by clients
+		// relies on the related term and taxonomy to exist, even after clearing properties...re-evaluate ASAP!
+		//
+		// self::delete_all_terms();
+
 		self::ping_yoast_sitemap();
 
     	return true;
@@ -196,7 +201,10 @@ class PL_Pages {
 	 * Deletes all terms (and their relationships) associated with Property taxonomies.
 	 * 
 	 * @todo can we prompt Yoast to rebuild its sitemap?
+	 * 
+	 * NOTE: Decomissioned until further evaluation -- see note in the call to this function inside of "delete_all"
 	 */
+/*
 	public static function delete_all_terms() {
 		global $wpdb;
 
@@ -223,6 +231,7 @@ class PL_Pages {
 		$wpdb->query("DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ($term_tax_str)");
 		$q_term_rel = $wpdb->query("DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id IN ($term_tax_str)");
 	}
+*/
 
 	public static function create_taxonomies () {
 		register_post_type(self::$property_post_type, array('labels' => array('name' => __( 'Properties' ),'singular_name' => __( 'property' )),'public' => true,'has_archive' => true, 'rewrite' => true, 'query_var' => true, 'taxonomies' => array('category', 'post_tag')));

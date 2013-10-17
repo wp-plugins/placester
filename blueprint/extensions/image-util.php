@@ -21,7 +21,7 @@ a link back to my site would be nice too.
 */
 
 // Include the GD image manipulation library. 
-include(trailingslashit ( PLS_EXT_DIR ) . 'image-util/image-resize-writer.php');
+include(trailingslashit (PLS_EXT_DIR) . 'image-util/image-resize-writer.php');
 
 PLS_Image::init();
 class PLS_Image {
@@ -127,8 +127,7 @@ class PLS_Image {
 
 	}
 	
-	private static function as_html ($old_image, $new_image = false, $args )
-	{
+	private static function as_html ($old_image, $new_image = false, $args ) {
 		extract( $args, EXTR_SKIP );
 		// echo 'here in html';
 		// pls_dump($html);
@@ -157,8 +156,7 @@ class PLS_Image {
 	
 
 	private static function process_defaults ($args) {
-
-		/** Define the default argument array. */
+		// Define the default argument array
 		$defaults = array(
 			'resize' => array(
 				'w' => false,
@@ -177,11 +175,10 @@ class PLS_Image {
 			'as_html' => false,
 			'as_url' => true,
 			'fancybox' => array(
-			'trigger_class' => 'pls_use_fancy',
-			'classes' => false,
-			'null_image' => false,
-			'allow_dragonfly' => true
-			),
+				'trigger_class' => 'pls_use_fancy',
+				'classes' => false,
+				'null_image' => false,
+			)
 		);
 
         /** Merge the arguments with the defaults. */
@@ -189,9 +186,8 @@ class PLS_Image {
         $args['resize'] = wp_parse_args( $args['resize'], $defaults['resize']);
         $args['html'] = wp_parse_args( $args['html'], $defaults['html']);
 
-        return $args;
-				
+        return $args;	
 	}
-}// end class 
-
+}
+// end class 
 ?>

@@ -22,7 +22,8 @@ $PL_CUSTOMIZER_THEMES = array(
         'Park City' => 'parkcity',
         'Phoenix' => 'phoenix',
         'Plymouth' => 'plymouth',
-        'Toronto' => 'toronto'
+        'Toronto' => 'toronto',
+        'Sedona' => 'sedona'
 	)
 );
 

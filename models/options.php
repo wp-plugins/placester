@@ -7,9 +7,12 @@ class PL_Options {
 		return get_option($option, $default);
 	}
 
-	public static function set ($option, $value) {
+	public static function set ($option, $value, $autoload = true) {
+		// Translate autoload boolean to expected WP string value...
+		$autoload = ($autoload ? 'yes' : 'no');
+
 		// Initially, try to add the option...
-		$outcome = add_option($option, $value);
+		$outcome = add_option($option, $value, '', $autoload);
 
 		// If add_option fails, it almost always indicates that an option with the provided key 
 		// already exists, so attempt to update the existing option's value...

@@ -66,6 +66,11 @@ abstract class PL_CRM_Base {
 
 		// Set the HTTP method...
 		curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $method);
+
+		// Set connection and transaction timeout values... (upper-bound of 10 seconds if a timeout value isn't defined)
+		$timeout = empty($args["timeout"]) ? 10 : $args["timeout"];
+		curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, $timeout);
+		curl_setopt($handle, CURLOPT_TIMEOUT, $timeout); 
 		
 		// Set payload if it exists...
 		if (!empty($args["body"])) {
@@ -129,7 +134,7 @@ abstract class PL_CRM_Base {
 	 * Events
 	 */
 
-	abstract public function pushEvent ($event);
+	abstract public function pushEvent ($event_args);
 
 	/*
 	 * Tasks
