@@ -111,7 +111,7 @@ class PL_Js_Helper {
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
 			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_ADMIN_URL) . 'shortcodes/all.js', array('jquery-ui-datepicker'));
 			self::register_enqueue_if_not('datatable', trailingslashit(PLS_JS_URL) . 'libs/datatables/jquery.dataTables.js' , array('jquery'), NULL, true);
-			self::register_enqueue_if_not('featured-listing', trailingslashit(OPTIONS_FRAMEWORK_DIRECTORY) . 'js/featured-listing.js', array('jquery'));
+			self::register_enqueue_if_not('featured-listing', trailingslashit(PLS_OPTRM_URL) . 'js/featured-listing.js', array('jquery'));
 			
 			wp_localize_script('shortcodes-admin', 'autosaveL10n', array(
 				'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
@@ -164,7 +164,11 @@ class PL_Js_Helper {
 	}
 
 	public static function frontend () {
+		// listings
 		self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
+		// favorites/contact form
+		self::register_enqueue_if_not('validator', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/validator.js' , array( 'jquery'), NULL, true );
+		self::register_enqueue_if_not('cookies', trailingslashit( PLS_JS_URL ) . 'libs/cookies/cookies.jquery.js' , array( 'jquery' ), NULL, false );
 		self::register_enqueue_if_not('membership', trailingslashit(PL_JS_PUB_URL) . 'membership.js', array('jquery'));
 		// self::register_enqueue_if_not('saved-search', trailingslashit(PL_JS_PUB_URL) . 'saved-search.js', array('jquery'));
 		self::register_enqueue_if_not('general', trailingslashit(PL_JS_PUB_URL) . 'general.js', array('jquery'));

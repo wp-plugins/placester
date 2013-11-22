@@ -66,6 +66,10 @@ List.prototype.update = function (ajax_response) {
 	this.total_results(ajax_response);
 	if (this.fnCallback) {
 		this.fnCallback(ajax_response);	
+    	// If reg form available or logged in then show add to favorites 
+    	if (jQuery('.pl_lead_register_form').length || jQuery('.pl_add_remove_lead_favorites #pl_add_favorite').length) {
+    		jQuery('div#pl_add_remove_lead_favorites,.pl_add_remove_lead_favorites').show();    	
+    	}
 	}
 	this.update_favorites_through_cache();
 	this.hide_loading();

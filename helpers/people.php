@@ -176,7 +176,8 @@ class PL_People_Helper {
             'add_text' => 'Add property to favorites',
             'remove_text' => 'Remove property from favorites',
             'spinner' => admin_url( 'images/wpspin_light.gif' ),
-            'property_id' => false
+            'property_id' => false,
+            'wrapping_div' => true
         );
 
         $args = wp_parse_args( $atts, $defaults );
@@ -187,27 +188,29 @@ class PL_People_Helper {
 
         ob_start();
         ?>
-            <div id="pl_add_remove_lead_favorites">
+            <?php pls_do_atomic( 'before_add_to_fav' ); ?>
 
-                <?php pls_do_atomic( 'before_add_to_fav' ); ?>
+            <?php if (is_user_logged_in()): ?>
+                <?php pls_do_atomic( 'before_add_to_fav_registered' ); ?>
+                <a href="<?php echo "#" . $property_id ?>" id="pl_add_favorite" class="pl_prop_fav_link" <?php echo $is_favorite ? 'style="display:none;"' : '' ?>><?php echo $add_text ?></a>
+            <?php else: ?>
+                <?php pls_do_atomic( 'before_add_to_fav_unregistered' ); ?>
+                <a class="pl_register_lead_favorites_link" href="#pl_lead_register_form"><?php echo $add_text ?> </a>
+            <?php endif ?>
 
-                <?php if (is_user_logged_in()): ?>
-                    <?php pls_do_atomic( 'before_add_to_fav_registered' ); ?>
-                    <a href="<?php echo "#" . $property_id ?>" id="pl_add_favorite" class="pl_prop_fav_link" <?php echo $is_favorite ? "style='display:none;'" : "" ?>><?php echo $add_text ?></a>
-                <?php else: ?>
-                    <?php pls_do_atomic( 'before_add_to_fav_unregistered' ); ?>
-                    <a class="pl_register_lead_favorites_link" href="#pl_lead_register_form"><?php echo $add_text ?> </a>
-                <?php endif ?>
+            <a href="<?php echo "#" . $property_id ?>" id="pl_remove_favorite" class="pl_prop_fav_link" <?php echo !$is_favorite ? 'style="display:none;"' : '' ?>><?php echo $remove_text ?></a>
+            <img class="pl_spinner" src="<?php echo $spinner ?>" alt="ajax-spinner" style="display:none; margin-left:5px;">
 
-                <a href="<?php echo "#" . $property_id ?>" id="pl_remove_favorite" class="pl_prop_fav_link" <?php echo !$is_favorite ? "style='display:none;'" : "" ?>><?php echo $remove_text ?></a>
-                <img class="pl_spinner" src="<?php echo $spinner ?>" alt="ajax-spinner" style="display: none; margin-left: 5px;">
+            <?php pls_do_atomic( 'after_add_to_fav' ); ?>
 
-                <?php pls_do_atomic( 'after_add_to_fav' ); ?>
-
-            </div>
         <?php
+        $contents = ob_get_clean();
 
-        return ob_get_clean();
+        if ($wrapping_div == true) {
+        	$contents = '<div id="pl_add_remove_lead_favorites" class="pl_add_remove_lead_favorites" style="display:none;">' . $contents . '</div>';
+        }
+
+        return $contents;
     }
 
 }

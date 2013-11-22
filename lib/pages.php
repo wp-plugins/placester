@@ -257,12 +257,12 @@ class PL_Pages {
 				// Update version in DB
 				update_option('pl_plugin_version', PL_PLUGIN_VERSION);
 				
-				global $wp_rewrite;
-				$wp_rewrite->flush_rules();
+				// global $wp_rewrite;
+				// $wp_rewrite->flush_rules();
 
 				PL_Cache::invalidate();
 
-				self::delete_all();
+				// self::delete_all();
 			}
 		}
 	}

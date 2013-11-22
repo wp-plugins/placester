@@ -118,7 +118,7 @@ class PL_Option_Helper {
 	}
 
 	public static function get_block_address () {
-		$result = PL_Options::get('pls_block_address', true);
+		$result = PL_Options::get('pls_block_address', false);
 		return $result;
 	}
 

@@ -106,13 +106,18 @@ $options_class = $filters_class = '';
 						}
 						elseif ($field == 'pl_featured_listing_meta') {
 							// create button and placeholder for selected listings
-							echo pls_generate_featured_listings_ui(array(
+							echo PLS_Featured_Listing_Option::init(array(
+								'value' => array(
 									'name' => 'Featured Meta',
 									'desc' => '',
 									'id' => $pl_shortcode.'-pl_featured_listing_meta',
 									'type' => 'featured_listing'
-								) ,$pl_featured_meta_value
-								, $pl_shortcode);
+								),
+								'val' => $pl_featured_meta_value,
+								'option_name' => $pl_shortcode,
+								'iterator' => false,
+								'for_slideshow' => false
+								));
 							continue;
 						}
 						$value = isset( $values[$pl_shortcode][$field] ) ? $values[$pl_shortcode][$field] : $f_args['default'];

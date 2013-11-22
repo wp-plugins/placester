@@ -11,9 +11,9 @@
             "content": "<h3>Not Just Real Estate Advertising</h3><p>We believe that real engineering can transform society. Millions of people have significant challenges related to finding property as do the professionals that seek to serve them. Everything we do is focused on closing that gap.</p><h4>Who Are We</h4><p>Placester was founded in 2008 by Matthew Barba and Frederick Townes, with over 15 years of real estate and technology experience and a genuine obsession with improving the industry through technology. We’re driven by a passion to reinvent, delight, and disrupt every single day. Our process begins with assembling a talented team and ends with the success of our customers. What happens in between is pure Placester.</p><p>Placester is based in Cambridge, Massachusetts.</p><h4>Our Mission</h4><p>Our company started with a question: How do we create intuitive, easy-to-use technology solutions for an industry as vast in scope and varied in practice as the real estate industry?</p><p>Placester is our answer to that question. At Placester, we build tools to create value for the real estate industry. We’re dedicated to providing massive distribution, premium listing services, and deep analytics to help real estate companies and professionals stay competitive and grow their business on the web.</p><h4>What We Do</h4><p>With Placester’s suite of software applications and products, agents, brokers, and owners can market and advertise their properties efficiently, find more prospects, and manage their relationships with all the people who impact their business, all from the same place. To date, we’ve helped hundreds of companies across the country distribute millions of listings, generating thousands of leads.</p><p>At Placester, we’re looking to create the future of real estate, and we want you with us. Sign up today and help us move our industry forward.</p>"
         },
         {
-            "title": "Search",
+            "title": "Listings Search",
             "template": "page-template-listings.php",
-            "slug": "listings"
+            "slug": "listings-search"
         },
         {
             "title": "Blog",

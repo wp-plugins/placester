@@ -9,11 +9,11 @@ class PL_Listing {
 	
 		// Check to see whether or not the request being processed is a listing AJAX call from the front-end
 		// (i.e., if it is NOT the single action we know is used by the "listings" admin page...)
-		$front_listing_ajax = ( defined('DOING_AJAX') && isset($_POST['action']) && ($_POST['action'] !== 'datatable_ajax') );
+		$admin_listing_ajax = ( defined('DOING_AJAX') && isset($_POST['action']) && ($_POST['action'] == 'datatable_ajax') );
 		
 		// If the user chose to use demo data, make requests using API key that corresponds to the demo listing account
 		// NOTE: Check for any calls from admin pages, as they should NEVER use demo data...
-		if ( PL_Option_Helper::get_demo_data_flag() && defined('DEMO_API_KEY') && (!is_admin() || $front_listing_ajax) ) {
+		if ( PL_Option_Helper::get_demo_data_flag() && defined('DEMO_API_KEY') && !(is_admin() && $admin_listing_ajax) ) {
 			$api_key = DEMO_API_KEY;
 		}
 

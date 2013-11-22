@@ -90,7 +90,7 @@ class PL_Css_Helper {
 		}
 
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
-			self::register_enqueue_if_not('featured-listings', trailingslashit(OPTIONS_FRAMEWORK_DIRECTORY) . 'css/featured-listings.css');
+			self::register_enqueue_if_not('featured-listings', trailingslashit(PLS_OPTRM_URL) . 'css/featured-listings.css');
 			self::register_enqueue_if_not('placester-widget', trailingslashit(PL_CSS_ADMIN_URL) . 'shortcodes/all.css');
 		}
 		

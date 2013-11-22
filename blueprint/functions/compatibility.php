@@ -11,6 +11,25 @@
  */
 class PLS_Plugin_API {
 
+    static public $default_company_details = array(
+        'description' => '',
+        'logo_url' => '',
+        'name' => '',
+        'phone' => '',
+        'email' => '',
+        'location' => array(
+            'address' => '',
+            'unit' => '',
+            'locality' => '',
+            'region' => '',
+            'postal' => '',
+            'neighborhood' => '',
+            'country' => '',
+            'latitude' => '',
+            'longitude' => ''
+        )
+    );
+
     /**
      * Verify if calling a plugin function throws any exceptions. If it throws 
      * a timeout exception, set the theme global error flag.
@@ -179,16 +198,17 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_Helper_User", "whoami"), array(), false );
     }
 
+    /**
+     * Return public-safe info for company
+     * @return array Public company info. Any fields not populated by user will be an empty string.
+     */
     public static function get_company_details () {
         $details = self::get_user_details();
-        $company_info = array();
+        $company_info = self::$default_company_details;
 
-        if ($details) {
-            $company_info['description'] = $details['slogan'];
-            $company_info['logo_url'] = $details['logo'];
-            $company_info['name'] = $details['name'];
-            $company_info['phone'] = $details['phone'];
-            $company_info['email'] = $details['email'];
+        if (is_array($details)) {
+            $r = array_replace_recursive($company_info, $details);
+            $company_info = array_intersect_key($r, $company_info);
         }
 
         return $company_info;
@@ -456,6 +476,10 @@ class PLS_Plugin_API {
         if ( empty($type) || !array_key_exists($type, $supported_types) ) { return; }
 
         return $supported_types[$type];
+    }
+
+    public static function resize_image($image_args) {
+    	return self::try_call_func(array("PL_Dragonfly", "resize"), $image_args, $image_args['old_image']);
     }
 }
 // end of class

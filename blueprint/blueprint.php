@@ -182,15 +182,16 @@ class Placester_Blueprint {
         switch ($this->boot_from)
         {
             case 'plugin':
-              $blueprint_url = plugin_dir_url(__FILE__);
-              break;
+                $base_url = defined('PL_PARENT_URL') ? trailingslashit( PL_PARENT_URL ) : trailingslashit( plugins_url() ) . 'placester';
+                $blueprint_url .= trailingslashit( $base_url ) . 'blueprint';
+                break;
             
             case 'theme':
-              $blueprint_url = trailingslashit( get_template_directory_uri() ) . 'blueprint';
-              break;
+                $blueprint_url = trailingslashit( get_template_directory_uri() ) . 'blueprint';
+                break;
 
             default:
-              die('Cannot load Blueprint: boot location type unknown');
+                die('Cannot load Blueprint: boot location type unknown');
         }
         
         /** Parent theme directory path and url */
@@ -257,6 +258,7 @@ class Placester_Blueprint {
 	 * @since 0.0.1
 	 */
     function default_theme_support() {
+    	global $i_am_a_placester_theme;
 
         add_theme_support( 'post-thumbnails' );
         
@@ -284,7 +286,7 @@ class Placester_Blueprint {
                 'lead-capture' => array('script' => true, 'style' => false)
             ) 
         );
-        if (!function_exists('optionsframework_options')) {
+        if ($i_am_a_placester_theme) {
             add_theme_support( 'pls-theme-options' );
         }
         add_theme_support( 'pls-image-util', array('fancybox') );
@@ -482,6 +484,10 @@ class Placester_Blueprint {
 
         /** Load the Options Framework extension if supported. */
         require_if_theme_supports( 'pls-theme-options', trailingslashit ( PLS_EXT_DIR ) . 'options-framework.php' );
+        if (!current_theme_supports( 'pls-theme-options' )) {
+        	// TODO: move when theme options are cleaned up
+        	include_once(trailingslashit(PLS_OPTRM_DIR).'featured-listing.php');
+        }
 
         /** Load the Style Util extension if supported. */
         require_if_theme_supports( 'pls-theme-options', trailingslashit ( PLS_EXT_DIR ) . 'style-util.php' );

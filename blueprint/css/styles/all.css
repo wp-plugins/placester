@@ -751,6 +751,10 @@ form, fieldset, .placester_listings_list_length {
     -moz-box-shadow: inset 0px 11px 9px -12px #cccccc;
     font-size: 13px; }
 
+select {
+  max-width: 90%;
+  width: 100%; }
+
 .chzn-container .chzn-search {
   float: none;
   display: none; }
@@ -993,7 +997,8 @@ body.single-property article #slideshow ul.property-image-gallery {
   margin: 10px 0 20px 0;
   width: 95%;
   padding: 15px;
-  float: left; }
+  float: left;
+  clear: both; }
   .comment-list p {
     clear: both; }
   .comment-list li {

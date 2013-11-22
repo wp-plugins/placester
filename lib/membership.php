@@ -13,8 +13,9 @@ class PL_Membership {
 		// add_action( 'wp_ajax_nopriv_connect_wp_fb', array(__CLASS__, 'connect_fb_with_wp' ));
 		// add_action( 'wp_ajax_nopriv_parse_signed_request', array(__CLASS__, 'fb_parse_signed_request' ));
 
-		add_shortcode('lead_user_navigation', array(__CLASS__,'placester_lead_control_panel'));
-
+		add_shortcode('lead_user_navigation', array(__CLASS__, 'placester_lead_control_panel'));
+		add_shortcode('pl_login_block', array(__CLASS__, 'placester_lead_control_panel'));
+		
 		$capabilities = array(
 			'add_roomates' => true,
 			'read_roomates' => true,

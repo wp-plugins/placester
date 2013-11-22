@@ -238,11 +238,21 @@ function optionsframework_page() {
 		<?php echo $return[0]; /* Settings */ ?>
 
 		<?php echo build_import_export(); ?>
-        
-        <div id="optionsframework-submit">
+
+		<script type="text/javascript">
+			function restoreDefaultsPrompt(event) {
+				var restore = prompt( 'By choosing to restore to default settings, \n\nALL OF YOUR THEME OPTION DATA FROM ALL TABS WILL BE RESET AND UNRECOVERABLE. \n\nType "DELETE" to continue...' );
+				console.log(restore);
+				if (restore != "DELETE") {
+					alert("Your Theme Options were not restored to default because you didn't correctly type 'DELETE'.");
+					event.preventDefault();
+				}
+			}
+		</script>
+    <div id="optionsframework-submit">
 			<input type="submit" class="button-primary" name="update" value="<?php echo 'Save Options'; ?>" />
-            <input type="submit" class="reset-button button-secondary" name="reset" value="<?php echo 'Restore Defaults' ; ?>" onclick="return confirm( '<?php print esc_js( 'Click OK to reset. Any theme settings will be lost!' ); ?>' );" />
-            <div class="clear"></div>
+      <input type="submit" id="reset-button" class="reset-button button-secondary" name="reset" value="<?php echo 'Restore Defaults' ; ?>" onclick="restoreDefaultsPrompt(event);" style="display:none;" />
+      <div class="clear"></div>
 		</div>
 	</form>
 </div> <!-- / #container -->

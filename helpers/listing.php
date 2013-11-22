@@ -52,7 +52,7 @@ class PL_Listing_Helper {
 
 		// Respect block address setting if it's already set, otherwise, defer to the plugin setting...
 		if (empty($args['address_mode'])) {
-			$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
+			$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'polygon' : 'exact' );
 		}
 
 		// Call the API with the given args...
@@ -322,9 +322,20 @@ class PL_Listing_Helper {
 	}
 
 	// helper sets keys to values
-	public static function types_for_options () {
+	public static function types_for_options ($return_only = false, $allow_globals = true) {
 		$options = array();
-		$response = PL_Listing::aggregates(array('keys' => array('cur_data.prop_type')));
+
+		// Use merge (with no arguments) to get the existing filters properly formatted for API calls...
+		$global_filters = PL_Global_Filters::merge_global_filters();
+
+		// If global filters related to location are set, incorporate those and use aggregates API...
+		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['property_type']) ) {
+			$response['cur_data.prop_type'] = (array)$global_filters['property_type'];
+		}
+		else {
+			$response = PL_Listing::aggregates(array('keys' => array('cur_data.prop_type')));
+		}
+
 		if(!$response) {
 			return array();
 		}
@@ -334,9 +345,9 @@ class PL_Listing_Helper {
 		}
 		ksort($options);
 		$options = array_merge(array('false' => 'Any'), $options);
-		return $options;	
+		return $options;
 	}
-	
+
 	public static function locations_for_options ($return_only = false, $allow_globals = true) {
 		$options = array();
 		$response = null;

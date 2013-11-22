@@ -237,3 +237,11 @@ function pls_document_title() {
 
     return $title;
 }
+
+/* Prevent search engines from indexing a URL that's a 404 */
+add_action('wp_head', 'pls_noindex_404s');
+function pls_noindex_404s() {
+	if ( is_404() ) {
+		echo '<meta name="robots" content="noindex" />' . PHP_EOL;
+	}
+}

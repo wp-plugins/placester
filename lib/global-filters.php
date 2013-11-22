@@ -22,10 +22,14 @@ class PL_Global_Filters {
 
 		// This whole thing basically traverses down the arrays for global filters...
   		foreach ($global_filters as $attribute => $value) {
+  			if ($attribute == 'custom') {
+  				$attribute = 'metadata';
+  			}
   			if (is_array($value)) {
   				// Used to determine whether or not $value is array of values representing filter type $attribute, or a subfilter 
   				// (i.e, location => array("state" => "AZ", "postal" => "85215") -- location contains subfilters, not values)
   				$keys_are_ints = true;
+  				$r_empty = empty($args[$attribute]);
 
   				foreach ($value as $k => $v) {
 	  				// Respect existing value if it is already set...
@@ -41,7 +45,7 @@ class PL_Global_Filters {
   				}
 
   				// Check whether or not to add the match key...
-  				if ($keys_are_ints && count($value) > 0) {
+  				if ($keys_are_ints && count($value) && $r_empty) {
   					$args["{$attribute}_match"] = "in";
   				}
   			}
@@ -142,7 +146,7 @@ class PL_Global_Filters {
 			$custom_attributes = call_user_func( array($attributes['custom']['bound']['class'], $attributes['custom']['bound']['method'] ) );
 							
 			foreach ($custom_attributes as $key => $option) {
-				$attributes[$option['cat']][] = array('label' => $option['name'], 'type' => $form_types[$option['attr_type']] );
+				$attributes[$option['cat']][$option['key']] = array('label' => $option['name'], 'type' => $form_types[$option['attr_type']] );
 			} 
 
 			unset($attributes['custom']);

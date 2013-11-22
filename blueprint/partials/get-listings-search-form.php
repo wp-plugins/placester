@@ -58,6 +58,10 @@ class PLS_Partials_Listing_Search_Form {
         'ajax' => false,
         'class' => 'pls_search_form_listings',
         'context' => '',
+        'form_data' => (object) array(
+        	'hidden_field' => '',
+        	'action' => ''
+        ),
         'theme_option_id' => '',
         'context_var' => null,
         'bedrooms' => 1,

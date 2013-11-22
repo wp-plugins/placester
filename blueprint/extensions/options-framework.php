@@ -41,21 +41,19 @@ function pls_get_option ($option, $default = '', $no_empty = false) {
 
     if ($option !== '') {
         if(isset($pls_options[$option])) {
-
-            if ( $no_empty && empty($options[$name]) ) {
+			if ($no_empty && empty($options[$option])) {
                 return $default;
             }
-            
             return $pls_options[$option];
         }
-        else {
+		elseif (function_exists('of_get_option')) {
             $value = of_get_option($option, $default, $no_empty);
             $pls_options[$option] = $value;
             return $value;
         }
-     } else {
-         return false;
-     }
+		return $default;
+	}
+	return false;
 }
 
 /**

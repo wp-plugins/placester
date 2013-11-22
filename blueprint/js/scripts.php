@@ -179,13 +179,11 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
             /** Register the script and style. */
             wp_register_script( 'tabs', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/tabs.js' , array( 'jquery'), NULL, true );
             wp_register_script( 'rangeinput', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/rangeinput.js' , array( 'jquery'), NULL, true );
-            wp_register_script( 'validator', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/validator.js' , array( 'jquery'), NULL, true );
             /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['jquery-tools'] ) ) {
                 if ( in_array( 'script', $js[0]['jquery-tools'] ) ) {
                     wp_enqueue_script( 'tabs' );
                     wp_enqueue_script( 'rangeinput' );
-                    wp_enqueue_script( 'validator' );
                 }
             }
         }
@@ -202,22 +200,6 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
             }
         }
         
-        /**
-         * The "Cookies" script.
-         * Deal with it only theme support has been added.
-         * {@link: http://code.google.com/p/cookies/wiki/License}
-         */
-        if ( array_key_exists( 'cookies', $js[0] ) ) {
-            /** Register the script and style. */
-            wp_register_script( 'cookies', trailingslashit( PLS_JS_URL ) . 'libs/cookies/cookies.jquery.js' , array( 'jquery' ), NULL, false );
-            /** Enqueue script and styles only if supported. */
-            if ( is_array( $js[0]['cookies'] ) ) {
-                if ( in_array( 'script', $js[0]['cookies'] ) ) {
-                  wp_enqueue_script( 'cookies' );
-                }
-            }
-        }
-
         if ( array_key_exists( 'lead-capture', $js[0] ) ) {
             /** Register the script and style. */
             wp_register_script( 'lead-capture', trailingslashit( PLS_JS_URL ) . 'scripts/lead-capture.js' , array( 'jquery' ), NULL, true );

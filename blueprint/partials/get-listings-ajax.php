@@ -319,6 +319,7 @@ class PLS_Partials_Get_Listings_Ajax {
                             <?php 
                                 $property_images = is_array($listing['images']) ? $listing['images'] : array();
                                 usort($property_images, array(__CLASS__, 'order_images'));
+                                $listing['images'] = $property_images;
                             ?>
                               
                              <a href="<?php echo @$listing['cur_data']['url']; ?>" itemprop="url">

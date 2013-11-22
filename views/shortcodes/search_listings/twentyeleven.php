@@ -138,7 +138,7 @@ $template = array(
 .pl-tpl-sl-twentyeleven #pl_add_remove_lead_favorites,
 .pl-tpl-sl-twentyeleven .pl_add_remove_lead_favorites,
 .pl-tpl-sl-twentyeleven .view-details {
-	display: inline-block !important;
+	float: left;
 	margin: 0 !important;
 	padding: 0 !important;
 }
