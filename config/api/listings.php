@@ -9,23 +9,6 @@ $PL_API_LISTINGS = array(
 		),
 		'args' => array(
 			'listing_ids'  => array(),
-			'compound_type' => array(
-				'attr_type' => 'text',
-				'multi' => '1',
-				'label' => 'Listing Type',
-				'type' => 'select',
-				'group' => 'Basic Details',
-				'options' => array(
-					'false' => 'Not Set',
-					'res_sale' => 'Residential Sale',
-					'res_rental' => 'Residential Rental',
-					'vac_rental' => 'Vacation Rental',
-					'park_rental' => 'Parking',
-					'comm_rental' => 'Commercial Rental',
-					'comm_sale' => 'Commercial Sale',
-					'sublet' => 'Sublet'
-				)
-			),
 			'zoning_types' => array(
 				'attr_type' => 'text',
 				'label' => 'Zoning',
@@ -265,21 +248,6 @@ $PL_API_LISTINGS = array(
                 	'type' => 'text', 
                 	'group' => 'advanced', 
                 ),
-                'ngb_shop' => array(),
-                'ngb_hgwy' => array(),
-                'grnt_tops' => array('type' => 'checkbox', 'group' => 'amenities', 'label' => 'Granite Countertops'),
-                'ngb_med' => array(),
-                'ngb_trails' => array(),
-                'cent_ht' => array('type' => 'checkbox', 'group' => 'amenities', 'label' => 'Central Heat'),
-                'pk_spce' => array('type' => 'checkbox', 'group' => 'amenities', 'label' => 'Parking'),
-                'air_cond' => array('type' => 'checkbox', 'group' => 'amenities', 'label' => 'A/C'),
-                'lse_trms' => array(),// => array('type' => 'select','options' => array('per_mnt' => 'Per Month')),
-                'ngb_trans' => array(),
-                'off_den' => array('type' => 'checkbox', 'group' => 'amenities', 'label' => 'Office/Den'),
-                'frnshed' => array('type' => 'checkbox', 'group' => 'amenities', 'label' => 'Furnished'),
-                'refrig' => array(),
-                'deposit' => array(),
-                'ngb_pubsch' => array(),
 
 				// TODO: Find a way to get rid of these (curently used to construct "My Listings" search form...)
 				'max_price' => array('type' => 'text', 'group' => 'basic', 'label' => 'Max Price'),
@@ -393,9 +361,11 @@ $PL_API_LISTINGS = array(
 		),
 		'args' => array(
 			'compound_type' => array(
+				'attr_type' => 'text',
+				'multi' => '1',
 				'label' => 'Listing Type',
-				'group' => 'Basic Details',
 				'type' => 'select',
+				'group' => 'Basic Details',
 				'options' => array(
 					'false' => 'Not Set',
 					'res_sale' => 'Residential Sale',

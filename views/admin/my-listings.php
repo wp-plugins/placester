@@ -1,11 +1,11 @@
 <?php 
-  //top filters, (that filter filters)
-  PL_Form::generate_form(PL_Config::PL_MY_LIST_FORM(), array('method' => "POST", 'title' => false, 'include_submit' => false, 'id' => 'pls_admin_my_listings_filters') );  ?>
-<?php 
-  // generates the search from   false, "POST", "pls_admin_my_listings", true, false
-  PL_Form::generate_form(PL_Config::PL_API_LISTINGS('get', 'args'),array('method' => "POST", 'title' => true, 'include_submit' => false, 'id' => 'pls_admin_my_listings'));
+//top filters, (that filter filters)
+PL_Form::generate_form(PL_Config::PL_MY_LIST_FORM(), array('method' => "POST", 'title' => false, 'include_submit' => false, 'id' => 'pls_admin_my_listings_filters') );
+
+// generates the search from   false, "POST", "pls_admin_my_listings", true, false
+PL_Form::generate_form(PL_Config::PL_API_LISTINGS('get', 'args'), array('method' => "POST", 'title' => true, 'include_submit' => false, 'id' => 'pls_admin_my_listings', 'textarea_as_text' => true));
 ?>
-<div id="container" style="width: 99%">
+<div id="container">
   <table id="placester_listings_list" class="widefat post fixed placester_properties" cellspacing="0">
     <thead>
       <tr>

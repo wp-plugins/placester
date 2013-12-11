@@ -43,6 +43,7 @@ class PL_Component_Entity {
 			'phone'			=> array('help' => 'Contact phone'),
 			'desc'			=> array('help' => 'Property description'),
 			'image'			=> array('help' => 'First property image'),
+			'image_url'		=> array('help' => 'Image URL for the listing if one exists. You can use the optional <code>index</code> attribute (defaults to 0, the first image) to specify the index of the listing image and <code>placeholder</code> to specify the URL of an image to use if the listing does not have an image, for example: <code>[image_url index=\'1\' placeholder=\'http://www.domain.com/path/to/image\']</code>'),
 			'mls_id'		=> array('help' => 'MLS #'),
 			'map'			=> array('help' => ''),
 			'listing_type'	=> array('help' => 'Type of listing'),
@@ -961,6 +962,12 @@ To add some text to your listings:<br />
 				?>
 				listings.init();
 
+				$('.dataTables_paginate').click(function(){
+					var y = $(this).parent('.dataTables_wrapper').offset().top;
+					if (y < $(window).scrollTop()) {
+						$(window).scrollTop(y);
+					}
+				});
 			});
 
 		</script>
@@ -1436,6 +1443,14 @@ To add some text to your listings:<br />
 				return self::do_templatetags(array(__CLASS__, 'listing_templatetag_callback'), self::$template_tags, $content);
 			}
 			return '';
+		}
+		if ($tag == 'image_url') {
+			$index = empty($atts['index']) ? 0 : (int)$atts['index'];
+			$placeholder = empty($atts['placeholder']) ? '' : $atts['placeholder'];
+			return PLS_Image::load(empty(self::$listing['images'][$index]['url']) ? $placeholder : self::$listing['images'][$index]['url'],
+					array('allowresize' => false,
+							'fancybox' => false,
+							'as_html' => false));
 		}
 		$content = self::listing_sub_entity( $atts, $content, $tag );
 		return self::wrap( 'listing_sub', $content );

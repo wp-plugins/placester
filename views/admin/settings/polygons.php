@@ -1,4 +1,4 @@
-<div class="wrap">
+
 	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
 	<div>
 		<div class="header-wrapper">
@@ -58,4 +58,3 @@
 			</div>
 		</div>
 	</div>
-</div>

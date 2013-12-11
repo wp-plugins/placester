@@ -10,22 +10,24 @@
 jQuery(document).ready(function($) {
 
     // Filter Filters
-    handle_custom_filter_choices();
+    get_custom_filter_choices();
 
     $('#pls_admin_my_listings_filters input').live('change', function (event) {
         event.preventDefault();
-        handle_custom_filter_choices($(this).attr('id'), $(this).is(":checked"));
-    });
-
-    function handle_custom_filter_choices(filter, value) {
-        var params = {action : 'filter_options'};
-        if (typeof filter == 'undefined' || typeof value == 'undefined') {
-            params['get'] = true;
-        } else  {
-            params['filter'] = filter;
-            params['value'] = value;
+        if ($(this).is(":checked")) {
+        	$('#pls_admin_my_listings section#' + $(this).attr('name')).slideDown();
+        } else {
+        	$('#pls_admin_my_listings section#' + $(this).attr('name')).hide();
         }
-        $.post(ajaxurl,params, function(data) {
+        var params = {action : 'filter_options'};
+        params['filter'] = $(this).attr('id');
+        params['value'] = $(this).is(":checked");
+        setTimeout(function() {set_custom_filter_choices(params);}, 100);
+    });
+    
+    function get_custom_filter_choices(params) {
+        var params = {action : 'filter_options', get : true};
+        $.post(ajaxurl, params, function(data) {
             if (data) {
                 $.each(data, function (index, value) {
                     $('input#' + index).prop("checked", value === 'true');
@@ -39,6 +41,10 @@ jQuery(document).ready(function($) {
                 $('#pls_admin_my_listings .form_group').hide();
             };
         }, "json");
+    }
+
+    function set_custom_filter_choices(params) {
+        $.post(ajaxurl, params, function(data) {}, "json");
     }
 
     //datepicker

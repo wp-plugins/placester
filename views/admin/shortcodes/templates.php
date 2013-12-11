@@ -15,7 +15,7 @@ PL_Router::load_builder_view('header.php');
 $search = (!empty($_REQUEST['s']) ? esc_attr($_REQUEST['s']) : '');
 
 ?>
-<div class="wrap pl-sc-wrap">
+<div class="pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Shortcode Templates'); ?>
 
 	<div id="pl_template_all">

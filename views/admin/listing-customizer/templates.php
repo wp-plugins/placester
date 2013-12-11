@@ -25,7 +25,7 @@ $template_list = PL_Listing_Customizer::get_template_list();
 $current_template_id = PL_Listing_Customizer::get_active_template_id();
 
 ?>
-<div class="wrap pl-sc-wrap">
+<div class="pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Listing Details Templates'); ?>
 
 	<div id="pl_template_all">

@@ -3,7 +3,7 @@ global $shortcode_subpages;
 
 $location = !empty($location) ? $location : '';
 ?>
-<div class="wrap pl-sc-wrap">
+<div class="pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Shortcode Templates'); ?>
 	<script type="text/javascript">
 	jQuery(function(){

@@ -1,6 +1,6 @@
 <?php extract(array('filters' => PL_Global_Filters::get_global_filters())); ?>
 <?php $_POST = $filters; ?>
-<div class="wrap">
+
 	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
 
 	<div class="settings_option_wrapper">
@@ -39,4 +39,3 @@
 			</div>	
 		</div>
 	</div>
-</div>

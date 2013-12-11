@@ -36,7 +36,7 @@ function check_api_key (api_key) {
 				$('#api_key_message').html("You've successfully changed your Placester API Key.").show().removeClass('red').addClass('green');
 				$('#api-key-message-icon').show().addClass('green');
 				$('#api_key_form #existing_placester_modal_api_key').addClass('green');
-				setTimeout(function () { window.location.href = window.location.href; }, 1000);
+				setTimeout(function () { window.location.reload(true); }, 1000);
 			} 
 			else {
 				$('#api_key_message').html(response.message).show().removeClass('green').addClass('red');

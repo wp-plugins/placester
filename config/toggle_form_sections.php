@@ -22,11 +22,6 @@ $PL_MY_LIST_FORM = array(
 		'group' => 'Show Filters',
 		'type' => 'checkbox'
 	),
-	'amenities' => array(
-		'label' => 'Amenity filters',
-		'group' => 'Show Filters',
-		'type' => 'checkbox'
-	),
 	'custom' => array(
 		'label' => 'Custom filters',
 		'group' => 'Show Filters',

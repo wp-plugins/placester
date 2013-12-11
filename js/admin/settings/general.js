@@ -63,7 +63,7 @@ jQuery(document).ready(function($) {
 						text: "Confirm Email",
 						class: "green-btn right-btn",
 						click: function () {
-							new_sign_up(function () { $(this).dialog("close"); });
+							new_sign_up(function() { setTimeout(function () {window.location.reload(true);}, 1000); });
 						}
 					}
 				}

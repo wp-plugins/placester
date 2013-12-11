@@ -30,7 +30,7 @@
 					<h3><?php echo $theme; ?></h3>
 					<a id="theme_info_link" target="_blank" href="<?php echo $meta['info_link']; ?>" class="">Take a tour</a>
 					<span>&nbsp;|&nbsp;</span>
-					<a id="install_theme" target="_blank" href="<?php echo $meta['download_link']; ?>" title="">Download</a>
+					<a class="install_theme" target="_blank" href="<?php echo $meta['download_link']; ?>" title="">Download</a>
 					<span class="note">(right-click and "Save As")</span>
 				</td>
 			<?php endforeach; ?>
@@ -42,6 +42,6 @@
 
 <div class="theme_wrapper">
 	<h1>Looking for more Placester Themes?</h1>
-	<h3>Take a look at our <a href="https://placester.com/themes/">Theme Portfolio</a></h3>
+	<h3>Take a look at our <a href="https://placester.com/themes/" target="_blank">Theme Portfolio</a></h3>
 	<h3>Give us a call at (800) 728-8391 if you have any questions!</h3>
 </div>

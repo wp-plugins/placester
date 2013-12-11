@@ -58,10 +58,6 @@ jQuery(document).ready(function($) {
 		  // console.log(data);
 		  if (data && data.plan && data.plan == 'pro') {
 		  	check_mls_credentials(success_callback);
-		  } else if (data && data.eligible_for_trial) {
-		  	// console.log('prompt free trial');
-		  	var success_handler = function () { check_mls_credentials(success_callback); }
-		  	prompt_free_trial('Start Your 15 Day Free Trial to Complete the MLS Integration', success_handler, display_cancel_message, 'wi');
 		  } else {
 		  	// console.log('not eligible');
 		  	var msg = '<h3>Sorry, your account isn\'t eligible to link with an MLS.</h3>';

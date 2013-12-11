@@ -57,7 +57,7 @@ $tpl_args = PL_Listing_Customizer::get_args();
 
 
 ?>
-<div class="wrap pl-sc-wrap">
+<div class="pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Listing Details Template'); ?>
 
 	<div id="pl_sc_tpl_edit">

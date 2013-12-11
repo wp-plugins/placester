@@ -7,7 +7,6 @@ class PL_Helper_User {
 		add_action( 'wp_ajax_set_placester_api_key', array(__CLASS__, 'set_placester_api_key') );
 		add_action( 'wp_ajax_existing_api_key_view', array(__CLASS__, 'existing_api_key_view') );
 		add_action( 'wp_ajax_new_api_key_view', array(__CLASS__, 'new_api_key_view') );
-		add_action( 'wp_ajax_free_trial_view', array(__CLASS__, 'free_trial_view') );
 		add_action( 'wp_ajax_create_account', array(__CLASS__, 'create_account') );
 
 		add_action( 'wp_ajax_ajax_log_errors', array(__CLASS__, 'ajax_log_errors') );
@@ -108,11 +107,6 @@ class PL_Helper_User {
 
 	public static function existing_api_key_view() {
 		PL_Router::load_builder_partial('existing-placester.php');
-		die();
-	}
-
-	public static function free_trial_view() {
-		PL_Router::load_builder_partial('free-trial.php');
 		die();
 	}
 

@@ -63,7 +63,7 @@ $form_action = 'edit';
 $used_by = PL_Shortcode_CPT::template_used_by($ID);
 
 ?>
-<div class="wrap pl-sc-wrap">
+<div class="pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Create Shortcode Template'); ?>
 
 	<div id="pl_sc_tpl_edit">

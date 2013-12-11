@@ -24,7 +24,7 @@ class PL_Form_CPT extends PL_SC_Base {
 		'width'				=> array( 'type' => 'int', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),
 		'height'			=> array( 'type' => 'int', 'label' => 'Height', 'default' => 250, 'description' => '(px)' ),
 		'widget_class'	=> array( 'type' => 'text', 'label' => 'CSS Class', 'default' => '', 'description' => '(optional)' ),
-		'formaction'		=> array( 'type' => 'text', 'label' => 'Enter URL of listings page', 'description'=>'Only required if different from the page where this shortcode will be used.', 'default' => '' ),
+		'formaction'		=> array( 'type' => 'text', 'label' => 'Enter URL of listings page', 'default' => '', 'description'=>'Only required if different from the page where this shortcode will be used.' ),
 		'modernizr'			=> array( 'type' => 'checkbox', 'label' => 'Drop Modernizr', 'default' => false ),
 	);
 
@@ -41,6 +41,7 @@ class PL_Form_CPT extends PL_SC_Base {
 		'zoning_types'		=> array('help' => 'Drop list to select the zoning (commercial/residential/etc).'),
 		'purchase_types'	=> array('help' => 'Drop list to select the purchase type (rent/buy).'),
 		'available_on'		=> array('help' => 'Drop list to select date of when the property should be available.'),
+		'neighborhood'		=> array('help' => 'Drop list to select a neighborhood.'),
 		'cities'			=> array('help' => 'Drop list to select a city.'),
 		'states'			=> array('help' => 'Drop list to select a state.'),
 		'zips'				=> array('help' => 'Drop list to select a zip/postal code.'),

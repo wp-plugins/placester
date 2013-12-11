@@ -13,6 +13,6 @@
 	<img id="loading_gif" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>"/>
     <input id="email" type="email" name="email" value="<?php echo $email; ?>" />
     <div id="api_key_validation"></div>
-    <a href="https://placester.com/support/why-do-i-need-to-create-an-account/" target="_blank" class="learn-more">Learn More</a>
+    <a href="https://placester.com/support/why-do-i-need-to-create-an-account/" target="pl_help" class="learn-more">Learn More</a>
     <div id= "api_key_success"></div>
 </div>

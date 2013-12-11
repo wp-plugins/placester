@@ -3,9 +3,11 @@
 class PL_Form {
 	
 	private static $args = array();
-
+	private static $textarea_as_text = false;
+	
 	public static function generate_form ($items, $args, $section_prefix = '') {
 		extract(self::process_defaults($args), EXTR_SKIP);
+		self::$textarea_as_text = $textarea_as_text;
 
 		$cache = new PL_Cache('form');
 		if ($result = $cache->get($items, $args)) {
@@ -77,6 +79,10 @@ class PL_Form {
 	public static function item ($item, $attributes, $method, $parent = false, $section_prefix = '', $echo = false) {
 		// Prepare args then extract them...
 		extract(self::prepare_item($item, $attributes, $method, $parent), EXTR_SKIP);
+		
+		if ($type == 'textarea' && self::$textarea_as_text) {
+			$type = 'text';
+		}
 		
 		ob_start();
 
@@ -323,7 +329,8 @@ class PL_Form {
 			'title' => false,
 			'include_submit' => true,
 			'wrap_form' => true,
-			'echo_form' => true
+			'echo_form' => true,
+			'textarea_as_text' => false
 		);
 
 		/** Merge the arguments with the defaults. */

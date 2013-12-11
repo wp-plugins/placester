@@ -113,7 +113,7 @@ To add some text to your listings:<br />
 		<a href="[url]">[address] [locality], [region]</a>
 	</p>
 	<p class="wf-basics">
-		<span class="hidden-phone">Beds: <strong>[beds]</strong>&nbsp;</span> <span class="hidden-phone">Baths: <strong>[baths]</strong>&nbsp;</span> <span class="wf-mls">MLS #: [mls_id]</span>
+		<span class="hidden-phone">Beds: <strong>[beds]</strong> </span> <span class="hidden-phone">Baths: <strong>[baths]</strong> </span> <span class="wf-mls">MLS #: [mls_id]</span>
 	</p>
 </div>
 			',
@@ -210,8 +210,8 @@ To add some text to your listings:<br />
 			'type' => 'textarea',
 			'label' => 'Add content after the listings',
 			'css' => 'mime_html',
-			'default' => '</div>',
-			'description' => 'You can use any valid HTML in this field and it will appear after the listings.'
+			'default' => '<div class="pl-tpl-footer">[compliance]</div></div>',
+			'description' => 'You can use any valid HTML in this field and it will appear after the listings. It is suggested that you include the [compliance] shortcode to display the compliance statement for your MLS.'
 		),
 	);
 

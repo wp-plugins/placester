@@ -9,7 +9,7 @@
 	$enable_community_pages = PL_Option_Helper::get_community_pages();
 	$demo_data_flag = PL_Option_Helper::get_demo_data_flag(); 
 ?>
-	<div class="wrap">
+
 	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
 	<?php if (PL_Option_Helper::api_key() && isset($email)): ?>
 		<div class="header-wrapper" id="settings-header-wrapper">
@@ -140,4 +140,3 @@
 			</li>
 		  <?php endif; ?>
 		</ul>
-	</div>

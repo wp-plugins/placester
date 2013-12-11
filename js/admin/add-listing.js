@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
 
 		//Parking
 		$('div#park_rental_details_admin_ui_basic').hide().find('input, select').prop('disabled', true);
-		$('div#park_rental_details_admin_ui_ad').hide().find('input, select').prop('disabled', true);
+		$('div#park_rental_details_admin_ui_advanced').hide().find('input, select').prop('disabled', true);
 
 		//show the right boxes
 		// console.log('#' + $('select#compound_type').val() + '_details_admin_ui_basic');

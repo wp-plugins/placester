@@ -1,4 +1,3 @@
-<div class="wrap">
 	<?php if (isset($_GET['id'])): ?>
 		<div id="loading_overlay" style="display:none">Updating Listing...</div>	
 	<?php else: ?>
@@ -375,4 +374,3 @@
 		</div>
 		<br class="clear">
 	</form>
-</div>

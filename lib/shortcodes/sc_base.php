@@ -93,7 +93,7 @@ abstract class PL_SC_Base {
 	 */
 	public function get_args($with_choices = false) {
 		if (empty($this->default_tpls)) {
-			$this->default_tpls = $this->_get_builtin_templates();
+			$this->default_tpls = $this->get_builtin_templates();
 		}
 		return array(
 				'shortcode'		=> $this->shortcode,

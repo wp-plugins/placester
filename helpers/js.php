@@ -15,7 +15,6 @@ class PL_Js_Helper {
 		// Inject premium themes logic into the themes admin page when visiting from any site on the hosted env...
 		if ($hook == 'themes.php' && defined('HOSTED_PLUGIN_KEY')) {
 			self::register_enqueue_if_not('premium', trailingslashit(PL_JS_ADMIN_URL) . 'premium.js', array('jquery'));
-			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_ADMIN_URL) . 'free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 
 			// Print global JS var containing premium theme list...
 			global $PL_CUSTOMIZER_THEMES;
@@ -45,7 +44,10 @@ class PL_Js_Helper {
 
 		// Load JS available to all of the plugin's pages...
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_ADMIN_URL) . 'global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
-
+		// Try to make old IE look decent
+		self::register_enqueue_if_not('modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
+		
+		
 		// If no API key is set, load the following JS files for use by the wizard on ANY plugin settings page...
 		if (!PL_Option_Helper::api_key()) {
 			global $i_am_a_placester_theme;
@@ -66,12 +68,10 @@ class PL_Js_Helper {
 
 		if ($hook == 'placester_page_placester_theme_gallery') {
 			self::register_enqueue_if_not('theme-gallery', trailingslashit(PL_JS_ADMIN_URL) . 'theme-gallery.js', array('jquery'));
-			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_ADMIN_URL) . 'free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 
 		if ($hook == 'placester_page_placester_integrations') {
 			self::register_enqueue_if_not('integration', trailingslashit(PL_JS_ADMIN_URL) . 'integration.js', array('jquery'));
-			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_ADMIN_URL) . 'free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 
 		if ($hook == 'placester_page_placester_lead_capture') {
@@ -167,8 +167,6 @@ class PL_Js_Helper {
 		// listings
 		self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
 		// favorites/contact form
-		self::register_enqueue_if_not('validator', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/validator.js' , array( 'jquery'), NULL, true );
-		self::register_enqueue_if_not('cookies', trailingslashit( PLS_JS_URL ) . 'libs/cookies/cookies.jquery.js' , array( 'jquery' ), NULL, false );
 		self::register_enqueue_if_not('membership', trailingslashit(PL_JS_PUB_URL) . 'membership.js', array('jquery'));
 		// self::register_enqueue_if_not('saved-search', trailingslashit(PL_JS_PUB_URL) . 'saved-search.js', array('jquery'));
 		self::register_enqueue_if_not('general', trailingslashit(PL_JS_PUB_URL) . 'general.js', array('jquery'));
@@ -189,7 +187,6 @@ class PL_Js_Helper {
 		}
 
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_ADMIN_URL) . 'global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
-		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_ADMIN_URL) . 'free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 
 		if ( isset($_GET['theme_changed']) && $_GET['theme_changed'] == 'true' && !PL_Customizer_Helper::is_onboarding() ) {
 			PL_Bootup::theme_switch_user_prompt();

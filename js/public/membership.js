@@ -231,13 +231,8 @@ jQuery(document).ready(function($) {
 			}
 
 			if ( response.id ) {
-				$(that).hide();
-				if ($(that).attr('id') == 'pl_add_favorite') {
-					$(that).parent().find('#pl_remove_favorite').show();
-				} 
-				else {
-					$(that).parent().find('#pl_add_favorite').show();
-				};
+				$(that).parent().find('#pl_add_favorite').hide();
+				$(that).parent().find('#pl_remove_favorite').show();
 			}
 		}, 'json');
 	});
@@ -258,8 +253,8 @@ jQuery(document).ready(function($) {
 			$spinner.hide();
 			// If request successfull
 			if ( response != 'errors' ) {
-				$('#pl_add_favorite').show();
-				$('#pl_remove_favorite').hide();
+				$(that).parent().find('#pl_remove_favorite').hide();
+				$(that).parent().find('#pl_add_favorite').show();
 			}
 		}, 'json');
 	}); 

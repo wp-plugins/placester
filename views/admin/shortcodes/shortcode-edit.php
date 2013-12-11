@@ -107,7 +107,7 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 
 
 ?>
-<div class="wrap pl-sc-wrap">
+<div class="pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Create Custom Shortcode'); ?>
 
 	<div id="pl_sc_edit">
