@@ -135,9 +135,6 @@ class PL_Helper_User {
 		$result = PL_Option_Helper::set_block_address($block_address);
 
 		if ($result) {
-			// All stored property pages must be erased, as their addresses will likely change...
-			PL_Pages::delete_all();
-			
 			$action = ($block_address ? 'on' : 'off');
 			$message = "You successfully turned {$action} block addresses";
 		} 

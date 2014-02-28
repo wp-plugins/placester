@@ -27,7 +27,7 @@ Author URI: https://www.placester.com/
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define('PL_PLUGIN_VERSION','1.1.26');
+define('PL_PLUGIN_VERSION','1.1.27');
 
 define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
 define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
@@ -102,6 +102,12 @@ if (defined('DOING_AJAX') && isset($_POST['action']) && $_POST['action'] == 'crm
     return;
 }
 
+// Sitemap support 
+if ((!is_admin() && file_exists(WP_PLUGIN_DIR.'/wordpress-seo/inc/class-sitemaps.php') && strpos($_SERVER["REQUEST_URI"],'sitemap')!==false)
+	|| is_admin()) {
+	include_once('lib/sitemaps.php');
+}
+
 //config
 include_once('config/toggle_form_sections.php');
 include_once('config/api/custom_attributes.php');
@@ -119,7 +125,6 @@ include_once('config/analytics.php');
 include_once('lib/config.php');
 include_once('lib/routes.php');
 include_once('lib/http.php');
-// include_once('lib/debug.php');
 include_once('lib/form.php');
 include_once('lib/validation.php');
 include_once('lib/pages.php');
@@ -138,6 +143,8 @@ include_once('lib/bootup.php');
 include_once('lib/global-filters.php');
 include_once('lib/listing-customizer.php');
 include_once('lib/dragonfly-resize.php');
+include_once('lib/fav-listings.php');
+include_once('lib/permalink-search.php');
 
 //models
 include_once('models/listing.php');
@@ -159,7 +166,6 @@ include_once('helpers/css.php');
 include_once('helpers/js.php');
 include_once('helpers/header.php');
 include_once('helpers/user.php');
-include_once('helpers/pages.php');
 include_once('helpers/people.php');
 include_once('helpers/compliance.php');
 include_once('helpers/integrations.php');
@@ -170,7 +176,6 @@ include_once('helpers/wordpress.php');
 include_once('helpers/education-com.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
-include_once('helpers/saved-search.php');
 include_once('helpers/lead-capture.php');
 include_once('helpers/customizer.php');
 include_once('helpers/logging.php');
@@ -180,6 +185,16 @@ include_once('third-party/tax-meta-class/tax-meta-class.php');
 include_once('third-party/convex-hull/convex-hull.php');
 include_once('third-party/mixpanel/mixpanel.php');
 
+// define('PL_LEADS_ENABLED', true);
+// If constant is set, use the new lead functionality (replaces 'people')...
+if (defined('PL_LEADS_ENABLED')) {
+    include_once('config/api/leads.php');
+    include_once('models/lead.php');
+    include_once('helpers/lead.php');
+
+    // Saved search ONLY works with the new lead ...
+    include_once('lib/saved-search.php');
+}
 
 // Register hook to load blueprint from plugin if the active theme has yet to do so...
 add_action( 'after_setup_theme', 'load_blueprint_from_plugin', 18 );
@@ -215,6 +230,10 @@ function placester_admin_menu () {
     add_submenu_page( 'placester', 'Listings','Listings', 'edit_pages', 'placester_properties', array('PL_Router','my_listings') );
     add_submenu_page( 'placester', 'Add Listing', 'Add Listing', 'edit_pages', 'placester_property_add', array('PL_Router','add_listings') );
     
+    if (defined('PL_LEADS_ENABLED')) {
+        add_submenu_page( 'placester', 'Leads', 'Leads', 'edit_pages', 'placester_my_leads', array('PL_Router','my_leads') );
+    }
+
     // If the site using the plugin is on our hosted network, don't show the theme gallery...
     if ( !defined('HOSTED_PLUGIN_KEY') ) {
     	add_submenu_page( 'placester', '', 'Theme Gallery', 'edit_pages', 'placester_theme_gallery', array('PL_Router','theme_gallery') );
@@ -223,16 +242,21 @@ function placester_admin_menu () {
     global $settings_subpages;
     $settings_subpages = array(
         'Settings' => '',
+        'Lead Capture' => '_lead_capture',
+        'CRM Integration' => '_crm',
         'Client Settings' => '_client',
         'Global Property Filtering' => '_filtering', 
         'Custom Drawn Areas' => '_polygons', 
         'Property Pages' => '_property_pages',
         'International Settings' => '_international'
     );
-
+    if (!current_theme_supports('pls-custom-polygons')) {
+    	unset($settings_subpages['Custom Drawn Areas']);
+    }
     foreach ($settings_subpages as $name => $page_url) {
         // Leave parent slug empty to add pages without adding them to the menu...
-        add_submenu_page( 'placester', $name, $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
+        $hook = add_submenu_page( 'placester', $name, $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
+        PL_Router::buffer_op($hook);
     }
 
     global $shortcode_subpages;
@@ -253,9 +277,9 @@ function placester_admin_menu () {
     add_submenu_page('placester', 'Shortcodes', 'Shortcodes', 'edit_pages', 'placester_shortcodes', array('PL_Router','shortcodes'));
     
     // TODO: Integrate shortcode and social pages into existing menu control structure...
-    add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
+    // add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
     add_submenu_page( 'placester', 'IDX / MLS', 'IDX / MLS', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );
-    add_submenu_page( 'placester', 'CRM', 'CRM', 'edit_pages', 'placester_crm', array('PL_Router','crm') );
+    // add_submenu_page( 'placester', 'CRM', 'CRM', 'edit_pages', 'placester_crm', array('PL_Router','crm') );
     add_submenu_page( 'placester', 'Support', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );
     // add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks','add_social_settings_cb') );
 }
@@ -274,7 +298,7 @@ function on_first_activation () {
         ?>
             <script type="text/javascript">    
                 window.location.href = "<?php echo trailingslashit(admin_url()) . 'admin.php?page=placester_properties' ?>";
-                mixpanel.track("Activation");
+                pls_track_event("Activation");
             </script>         
         <?php
         // Make sure this doesn't happen again...

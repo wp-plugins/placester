@@ -80,6 +80,24 @@ function of_sanitize_multicheck( $input, $option ) {
 }
 add_filter( 'of_sanitize_multicheck', 'of_sanitize_multicheck', 10, 2 );
 
+/* Multiselect */
+
+function of_sanitize_multiselect( $input, $option ) {
+	$output = array();
+	if ( is_array( $input ) ) {
+		foreach( $option['options'] as $key => $value ) {
+			foreach( $input as $selected_val ) {
+				if($key == $selected_val) {
+					$output[] = $key;
+				}
+			}
+		}
+	}
+	// store as a comma separated list
+	return implode(',', $output);
+}
+add_filter( 'of_sanitize_multiselect', 'of_sanitize_multiselect', 10, 2 );
+
 /* Color Picker */
 
 add_filter( 'of_sanitize_color', 'of_sanitize_hex' );
@@ -452,10 +470,9 @@ function of_recognized_font_styles() {
  */
 function of_recognized_border_styles() {
 	$default = array(
-		'default'     => 'default',
+		'solid'       => 'Solid',
 		'hidden'      => 'Hidden',
-		'dotted'      => 'Dotted',
-		'solid'        => 'Solid'
+		'dotted'      => 'Dotted'
 		);
 	return apply_filters( 'of_recognized_border_styles', $default );
 }

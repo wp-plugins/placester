@@ -277,6 +277,10 @@ class PLS_Style {
 						$css_style .= $value . ' ';
 					}
 					if($key == "color") {
+                        // if the color value are empty, return no border CSS
+                        if (empty($value)) {
+                            return false;
+                        }
 						$css_style .= $value . ' !important;';
 					}
 				}

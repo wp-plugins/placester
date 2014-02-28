@@ -3,8 +3,8 @@
 	$whoami = PL_Helper_User::whoami();
 	// error_log(serialize($whoami));
 
-	$org_phone_exists = ( isset($whoami['phone']) && !empty($whoami['phone']) );
-	$user_phone_exists = ( isset($whoami['user']) && isset($whoami['user']['phone']) && !empty($whoami['user']['phone']) );
+	$phone = !empty($whoami['phone']) ? $whoami['phone'] : (!empty($whoami['user']['phone']) ? $whoami['user']['phone'] : '');
+	$email = !empty($whoami['email']) ? $whoami['email'] : (!empty($whoami['user']['email']) ? $whoami['user']['email'] : '');
 ?>
 
 <?php if ( isset($wizard) && $wizard ): ?>
@@ -65,17 +65,25 @@
 	  </div>
 	</div>
 
-  <?php if ( !($user_phone_exists || $org_phone_exists) ): ?>
-	<div class="row">
+  	<div class="row">
 	  <div class="info">
 	    <h3>Phone Number</h3>
 		<p>This will help us provide prompt support to get your integration setup.</p>
 	  </div>
 	  <div class="elements">
-		<input id="phone" name="phone" type="text">
+		<input id="phone" name="phone" size="30" type="text" value="<?php echo $phone ?>">
 	  </div>
     </div>
-  <?php endif; ?>
+
+	<div class="row">
+	  <div class="info">
+	    <h3>Email Address</h3>
+	    <p>This will help us provide prompt support to get your integration setup.</p>
+	  </div>
+	  <div class="elements">
+	    <input id="email" name="email" size="30" type="text" value="<?php echo $email ?>">
+      </div>
+	</div>
 
   <?php if ( isset($submit) && $submit ): ?>
     <div class="row">

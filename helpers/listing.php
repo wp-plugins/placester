@@ -52,9 +52,18 @@ class PL_Listing_Helper {
 			}
 		}
 		
+		// fetch single inactive listing if specifically requested
+		if (!empty($args['listing_ids']) && count($args['listing_ids']) == 1 && !isset($args['include_disabled'])) {
+			$args['include_disabled'] = 1;
+		}
+
 		// Respect the ability for this function to return results that do NOT respect global filters..
 		if ($global_filters) { 
 			$args = PL_Global_Filters::merge_global_filters($args); 
+		}
+		// purchase_types is a special case in the API
+		if (!empty($args['purchase_types']) && !is_array($args['purchase_types'])) {
+			$args['purchase_types'] = array($args['purchase_types']);
 		}
 
 		/* REMOVE */
@@ -69,12 +78,14 @@ class PL_Listing_Helper {
 
 		// Call the API with the given args...
 		$listings = PL_Listing::get($args);
-
 		// Make sure it contains listings, then process accordingly...
 		if (!empty($listings['listings'])) {
 			foreach ($listings['listings'] as $key => $listing) {
-				$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
-				$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
+				$listings['listings'][$key]['cur_data']['url'] = PL_Pages::get_url($listing['id'], $listing);
+				// add unit number to address: if unit has a space assume it contains a unit descriptor. handle case where it has # already
+				// TODO: consider moving to mls import
+				$listings['listings'][$key]['location']['address'] = $listing['location']['address'] . (empty($listing['location']['unit']) || strpos($listing['location']['address'], $listing['location']['unit'].' ')===0 ? '' : (strpos($listing['location']['unit'],' ')===false && substr($listing['location']['unit'], 0, 1)!='#' ? ' #' : ' ') . $listing['location']['unit']);
+				$listings['listings'][$key]['location']['full_address'] = $listings['listings'][$key]['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
 			}
 		}
 
@@ -117,21 +128,12 @@ class PL_Listing_Helper {
 	public static function get_listing_in_loop () {
 		global $post;
 
-		// If the current $post is of type 'property', it's 'post_name' will be set to that listing's unique property ID (as set by the API)...
-		$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
-		$response = PL_Listing::get($args);
-		
-		// Despite the name we also call this outside of the loop. Make sure global $post is a Property before deleting.
 		$listing_data = null;
-		if ( empty($response['listings']) ) {
-			if ($post->post_type === PL_Pages::$property_post_type) {
-				wp_delete_post($post->ID, true);
-				PL_Pages::ping_yoast_sitemap();
-			}
-		} else {
-			$listing_data = $response['listings'][0];
+
+		if ($post->post_type === PL_Pages::$property_post_type) {
+			$listing_data = PL_Pages::get_listing_details();
 		}
-		
+
 		return $listing_data;		
 	}
 
@@ -248,7 +250,7 @@ class PL_Listing_Helper {
 		foreach ($api_response['listings'] as $key => $listing) {
 			$images = $listing['images'];
 			$listings[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
-			$listings[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '">' . $listing["location"]["address"] . ' ' . $listing["location"]["locality"] . ' ' . $listing["location"]["region"] . '</a><div class="row_actions"><a href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '" >Edit</a><span>|</span><a href=' . PL_Page_Helper::get_url($listing['id']) . '>View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$listing['id'].'">Delete</a></div>';
+			$listings[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '">' . $listing["location"]["address"] . ' ' . $listing["location"]["locality"] . ' ' . $listing["location"]["region"] . '</a><div class="row_actions"><a href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '" >Edit</a><span>|</span><a href=' . PL_Pages::get_url($listing['id'], $listing) . '>View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$listing['id'].'">Delete</a></div>';
 			$listings[$key][] = $listing["location"]["postal"];
 			$listings[$key][] = implode($listing["zoning_types"], ', ') . ' ' . implode($listing["purchase_types"], ', ');
 			$listings[$key][] = $listing["property_type"];
@@ -300,7 +302,6 @@ class PL_Listing_Helper {
 		$api_response = PL_Listing::update($_POST);
 		echo json_encode($api_response);
 		if (isset($api_response['id'])) {
-			PL_Pages::delete_by_name($api_response['id']);
 			PL_Listing::get( array('listing_ids' => array($api_response['id'])) );
 		}
 		die();
@@ -353,31 +354,31 @@ class PL_Listing_Helper {
 			}
 		}		
 		header('Vary: Accept');
-		header('Content-type: application/json');
+		header('Content-type: text/html');
 		echo json_encode($response);
 		die();
 	}
 
 	// helper sets keys to values
-	public static function types_for_options ($return_only = false, $allow_globals = true) {
+	public static function types_for_options ($return_only = false, $allow_globals = true, $type_key = 'property_type') {
 		$options = array();
 
 		// Use merge (with no arguments) to get the existing filters properly formatted for API calls...
 		$global_filters = PL_Global_Filters::merge_global_filters();
 
 		// If global filters related to location are set, incorporate those and use aggregates API...
-		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['property_type']) ) {
-			$response['cur_data.prop_type'] = (array)$global_filters['property_type'];
+		if ( $allow_globals && !empty($global_filters) && !empty($global_filters[$type_key]) ) {
+			$response[$type_key] = (array)$global_filters[$type_key];
 		}
 		else {
-			$response = PL_Listing::aggregates(array('keys' => array('cur_data.prop_type')));
+			$response = PL_Listing::aggregates(array('keys' => array($type_key)));
 		}
 
 		if(!$response) {
 			return array();
 		}
 		// might be able to do this faster with array_fill_keys() -pk
-		foreach ($response['cur_data.prop_type'] as $key => $value) {
+		foreach ($response[$type_key] as $key => $value) {
 			$options[$value] = $value;
 		}
 		ksort($options);
@@ -385,48 +386,61 @@ class PL_Listing_Helper {
 		return $options;
 	}
 
+	private static $memo_locations = array();
 	public static function locations_for_options ($return_only = false, $allow_globals = true) {
 		$options = array();
-		$response = null;
+		$response = array();
 		
-		// Use merge (with no arguments) to get the existing filters properly formatted for API calls...
-		$global_filters = PL_Global_Filters::merge_global_filters();
+		$global_flag = ($allow_globals == true) ? 'global_on' : 'global_off';
 
-		// If global filters related to location are set, incorporate those and use aggregates API...
-		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['location']) ) {
-			// TODO: Move these to a global var or constant...
-			$args = array();
-			$args['location'] = $global_filters['location'];
-			$args['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
-			$response = PL_Listing::aggregates($args);
-		
-			// Remove "location." from key names to conform to data standard expected by caller(s)...
-			$alt = array();
-			foreach ( $response as $key => $value ) {
-				$new_key = str_replace('location.', '', $key);
-				$alt[$new_key] = $value;
-			}
-			$response = $alt;
+		// Check if response is memoized for this request...
+		$memoized = empty(self::$memo_locations[$global_flag]) ? false : true;
+
+		if ($memoized) {
+			$response = self::$memo_locations[$global_flag];
 		}
 		else {
-			$response = PL_Listing::locations();
-		}
-		
-		// add custom drawn neighborhoods to the lists
-		$polygons = PL_Option_Helper::get_polygons();
-		foreach ($polygons as $polygon) {
-			switch($polygon['tax']) {
-				case 'neighborhood':
-					$response['neighborhood'][] = $polygon['name'];
+			// Use merge (with no arguments) to get the existing filters properly formatted for API calls...
+			$global_filters = $allow_globals ? PL_Global_Filters::merge_global_filters() : array();
+			
+			// If global filters related to location are set, incorporate those and use aggregates API...	
+			if (!empty($global_filters) && !empty($global_filters['location'])) {
+				// TODO: Move these to a global var or constant...
+				$args = array();
+				$args['location'] = $global_filters['location'];
+				$args['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
+				$response = PL_Listing::aggregates($args);
+			
+				// Remove "location." from key names to conform to data standard expected by caller(s)...
+				$alt = array();
+				foreach ( $response as $key => $value ) {
+					$new_key = str_replace('location.', '', $key);
+					$alt[$new_key] = $value;
+				}
+				$response = $alt;
 			}
-		}
+			else {
+				$response = PL_Listing::locations();
+			}
+			
+			// add custom drawn neighborhoods to the lists
+			$polygons = PL_Option_Helper::get_polygons();
+			foreach ($polygons as $polygon) {
+				switch($polygon['tax']) {
+					case 'neighborhood':
+						$response['neighborhood'][] = $polygon['name'];
+				}
+			}
+
+			// Memoize...
+			self::$memo_locations[$global_flag] = $response;
+		}	
 		
 		if (!$return_only) {
-			return $response;
+			$options = $response;
 		}
-
 		// Handle special case of 'return_only' being set to true...
-		if ($return_only && isset($response[$return_only])) {
+		else if ($return_only && isset($response[$return_only])) {
 			foreach ($response[$return_only] as $key => $value) {
 				$options[$value] = $value;
 			}
@@ -434,8 +448,23 @@ class PL_Listing_Helper {
 			ksort($options);
 			$options = array('false' => 'Any') + $options;	
 		}
-
+		
 		return $options;
+	}
+
+	public static function counts_for_locations ($args, $allow_globals = true) {
+		extract(wp_parse_args($args, array('locations'=>array(), 'type'=>'neighborhood')));
+		$result = array();
+		foreach($locations as $location) {
+			$result[$location] = 0;
+			if (!empty($location['type'])) {
+				$api_response = self::results(array('location'=>array($type=>$location),'limit'=>1), $allow_globals);
+				if ($api_response) {
+					$result[$location] = $api_response['total'];
+				}
+			}
+		}
+		return $result;
 	}
 
 	/* 

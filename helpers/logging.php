@@ -58,16 +58,16 @@ class PL_Logging {
 	 		?>
 		 		<script type="text/javascript">
 		 			jQuery('#signup_wizard').live('dialogopen', function () {
-		 				mixpanel.track("SignUp: Overlay Opened");			
+		 				pls_track_event("SignUp: Overlay Opened");			
 		 			});
 		 			jQuery('#signup_wizard').live('dialogclose', function () {
-		 				mixpanel.track("SignUp: Overlay Closed");			
+		 				pls_track_event("SignUp: Overlay Closed");			
 		 			});
 		 			jQuery('#pls_search_form input#email').live('focus', function() {
-		 				mixpanel.track("SignUp: Edit Sign Up Email");			
+		 				pls_track_event("SignUp: Edit Sign Up Email");			
 		 			});
 		 			jQuery('#confirm_email_button').live('click', function() {
-		 				mixpanel.track("SignUp: Confirm Email Click");			
+		 				pls_track_event("SignUp: Confirm Email Click");			
 		 			});
 		 		</script>	
 		 	<?php	
@@ -78,7 +78,7 @@ class PL_Logging {
 	 		?>
 		 		<script type="text/javascript">
 		 			//Log page views since wordpress always appears as admin.php :(. 
-		 			mixpanel.track("<?php echo $page ?>");		
+		 			pls_track_event("<?php echo $page ?>");		
 		 		</script>
 	 		<?php
 	 	}

@@ -332,6 +332,8 @@ class Placester_Blueprint {
         add_theme_support( 'pls-widget-office' );
         add_theme_support( 'pls-widget-quick-search' );
         add_theme_support( 'pls-widget-listings' );
+
+        add_theme_support( 'pls-custom-polygons' );
     }
 
 	/**
@@ -429,9 +431,6 @@ class Placester_Blueprint {
 
         /** Load the lead capture functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'lead-capture.php' );
-
-        /** Load the shortcodes functions. */
-        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'shortcodes.php' );
 
         /** Load the internationalization functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'internationalization.php' );

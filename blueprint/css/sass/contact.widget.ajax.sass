@@ -15,7 +15,7 @@ $green-background: #DFF0D8
   box-sizing: border-box
   -webkit-box-sizing: border-box
   -moz-box-sizing: border-box
-  
+
 .contact-form-validator-error
   z-index: 999999
   span
@@ -60,7 +60,9 @@ $green-background: #DFF0D8
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5)
     @include border-radius(3px)
 
-#pl_login_form, #pl_lead_register_form
+.pl_login_reg_form,
+.pl_lead_register_form,
+#edit_profile_form
   .success
     @include border-radius(3px)
     @include box-sizing
@@ -80,6 +82,33 @@ $green-background: #DFF0D8
   .invalid
     box-shadow: 0 0 1px 1px red
 
+.pl_login_reg_form,
+.pl_lead_register_form
+  padding: 20px
+  h2
+    margin: 0 0 .5em 0
+  label
+    display: none
+  input
+    &[type="text"], &[type="email"], &[type="password"]
+      box-sizing: border-box
+      min-width: 260px
+      margin: 0 0 0.5em 0
+  .reg_form_submit, .login-submit
+    text-align: right
+    a
+      float: left
+      margin: .4em 1em 0 0
+#edit_profile_form
+  label
+    display: block
+    margin: 0 0 0.5em 0
+  input
+    &[type="text"], &[type="email"], &[type="password"]
+      display: block
+      box-sizing: border-box
+      width: 100%
+      margin: 0 0 0.5em 0
 
 .placester_contact_form
   label

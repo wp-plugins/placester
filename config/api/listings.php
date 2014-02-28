@@ -25,10 +25,10 @@ $PL_API_LISTINGS = array(
 				'label' => 'Purchase',
 				'type' => 'select',
 				'group' => 'listing types',
-				'options' => array(
-					'false' => 'Any',
-					'sale' => 'Sale',
-					'rental' => 'Rental'
+				'bound' => array(
+					'class' => 'PL_Listing_Helper',
+					'method' => 'types_for_options',
+					'params' => array(false, true, 'purchase_types')
 				)
 			),
 			'property_type'  => array(

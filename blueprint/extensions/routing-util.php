@@ -340,7 +340,7 @@ class PLS_Route {
 
 		$templates[] = "single-{$object->post_type}.php";
 		$templates[] = "single.php";
-		
+
 		self::$request = array_merge(self::$request, $templates);
 	}
 
@@ -378,8 +378,9 @@ class PLS_Route {
 	}
 
 	public static function handle_taxonomy () {
-		global $query_string;
-		$args = wp_parse_args($query_string, array('state' => false, 'city' => false, 'neighborhood' => false, 'zip' => false, 'street' => false, 'mlsid' => false));
+		global $wp_query;
+
+		$args = wp_parse_args($wp_query->query_vars, array('state' => false, 'city' => false, 'neighborhood' => false, 'zip' => false, 'street' => false, 'mlsid' => false));
 		extract($args);
 
 		$templates = array();
@@ -399,7 +400,6 @@ class PLS_Route {
 				$templates[] = 'attribute-mlsid.php';
 			}
 			$templates[] = 'attribute.php';
-			self::$request = array_merge(self::$request, $templates);
 		} else {
 			$term = get_queried_object();
 			$taxonomy = $term->taxonomy;
@@ -407,7 +407,6 @@ class PLS_Route {
 			$templates[] = "taxonomy-$taxonomy-{$term->slug}.php";
 			$templates[] = "taxonomy-$taxonomy.php";
 			$templates[] = 'taxonomy.php';
-
 		}
 
 		self::$request = array_merge(self::$request, $templates);

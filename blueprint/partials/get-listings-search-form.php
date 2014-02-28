@@ -201,7 +201,13 @@ class PLS_Partials_Listing_Search_Form {
     // $form_options['zoning_types'] = PLS_Plugin_API::get_type_values( 'zoning' ); // for Multiple, not for single, see below
 
     /** Get the purchase type options. */
-    $form_options['purchase_types'] = array( 'pls_empty_value' => $pls_empty_value['purchase_types'] ) + PLS_Plugin_API::get_type_values( 'purchase' );
+    $get_type_response = PLS_Plugin_API::get_type_list(false, true, 'purchase_types');
+    // error_log("GET_TYPE_RESPONSE\n" . serialize($get_type_response) . "\n");
+	// if API serves up 'false' key in the array, remove it, because we're going to add one.
+	if (isset($get_type_response['false'])) {
+		unset($get_type_response['false']);
+	}
+	$form_options['purchase_types'] = array_merge( array('pls_empty_value' => $pls_empty_value['purchase_types']), $get_type_response );
 
 		// removed "All" - it's not giving all listings. jquery needs to change to not include "[]"s
 		// $form_options['purchase_types'] = PLS_Plugin_API::get_type_values( 'purchase' );
@@ -736,7 +742,7 @@ class PLS_Partials_Listing_Search_Form {
       
         $form_html['purchase_types'] = pls_h(
             'select',
-            array( 'name' => 'purchase_types[]' ) + $form_opt_attr['purchase_types'],
+            array( 'name' => 'purchase_types' ) + $form_opt_attr['purchase_types'],
             pls_h_options( $form_options['purchase_types'], $purchase_types_select )
         );
     }

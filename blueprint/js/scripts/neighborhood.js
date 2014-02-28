@@ -75,8 +75,8 @@ Neighborhood.prototype.init = function () {
 	    		//manually set filters, force the map to update;
 	    		that.neighborhood_override = true;
 	    		that.map.listings.filter_override = [];
-          that.map.listings.filter_override.push({ "name": "location["+that.type+"]", "value" : that.name });
-          that.map.listings.filter_override.push({ "name": "location["+that.type+"_match]", "value" : 'eq' });
+          		that.map.listings.filter_override.push({ "name": "location["+that.type+"]", "value" : that.name });
+          		that.map.listings.filter_override.push({ "name": "location["+that.type+"_match]", "value" : 'eq' });
 
 	    		that.map.listings.get();
 	    	}

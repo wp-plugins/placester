@@ -74,6 +74,11 @@ To add some text to your listings:<br />
 <code>[if group=\'rets\' attribute=\'aid\' value=\'MY_MLS_AGENT_ID\']&lt;span&gt;Featured Listing&lt;/span&gt;[/if]</code>'),
 	);
 
+	private static $shortcode_groups = array();
+	private static $current_shortcode_group = '';
+
+
+
 	public static function init() {
 		// add_action('init', array( __CLASS__, 'filter_featured_context' ) );
 
@@ -102,6 +107,8 @@ To add some text to your listings:<br />
 		foreach ($neighborhood_templates as $id => $attr) {
 			add_filter( 'pls_neighborhood_html_' . $id, array(__CLASS__, 'neighborhood_templates'), 10, 4 );
 		}
+
+		add_action('wp_footer', array(__CLASS__, 'add_js'));
 	}
 
 	public static function featured_listings_entity( $atts, $filters = '' ) {
@@ -199,7 +206,7 @@ To add some text to your listings:<br />
 		// TODO: move applyfilter to blueprint 
 		ob_start();
 		self::hide_unnecessary_controls($atts);
-		self::print_filters( $filters . $filters_string, 'static_listings', $atts['context'] );
+		self::add_to_group('static_listings', $atts, $filters.$filters_string);
 		PLS_Partials_Get_Listings_Ajax::load($atts);
 		// support shortcodes in the header or footer
 		$return = ob_get_clean();
@@ -261,7 +268,7 @@ To add some text to your listings:<br />
 				}
 			}
 		}
-		$atts = wp_parse_args($atts, array('sort_by' => 'cur_data.price'));
+		$atts = wp_parse_args($atts, array('table_id' => 'placester_listings_list'));
 		$atts['context'] = 'search_listings_'.(empty($atts['context']) ? 'shortcode' : $atts['context']);
 		
 		// set limit per page if any
@@ -281,7 +288,7 @@ To add some text to your listings:<br />
 		// we support a filter for wrapping the whole shortcode here
 		// TODO: move applyfilter to blueprint 
 		ob_start();
-		self::print_filters( $filters . $filters_string, 'search_listings', $atts['context'] );
+		self::add_to_group('search_listings', $atts, $filters.$filters_string);
 		PLS_Partials_Get_Listings_Ajax::load($atts);
 		$return = ob_get_clean();
 		return apply_filters('pls_listings_' . $atts['context'], $return, array(), '', $atts, null);
@@ -311,76 +318,17 @@ To add some text to your listings:<br />
 		}
 		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'type' => 'listings', 'sync_map_to_list' => false));
 		$atts['context'] = empty($atts['context']) ? 'shortcode' : $atts['context'];
-		
-		$encoded_atts = array(
-				'width' => $atts['width'],
-				'height' => $atts['height'],
-				'type' => $atts['type']
-		);
-
-		$encoded_atts = json_encode( $encoded_atts );
 
 		if (!has_filter('pls_search_map_' . $atts['context'])) {
 			add_filter('pls_search_map_' . $atts['context'], array(__CLASS__,'pls_search_map_callback'), 10, 3);
 		}
 
 		ob_start();
-		?>
-		<script type="text/javascript">
-		jQuery(document).ready(function( $ ) {
-
-			var map = new Map ();
-			var json_atts = jQuery.parseJSON(' <?php echo $encoded_atts; ?> ');
-
-			// var filter = new Filters ();
-			var listings = new Listings ({
-				map: map,
-				<?php if( $atts['sync_map_to_list'] ): ?>sync_map_to_list: true, <?php endif; ?>
-				<?php // echo "property_ids: ['" . implode("','", $property_ids) . "'],"; ?>
-				// filter: filter,
-			});
-			if(json_atts.type == 'lifestyle') {
-				var lifestyle = new Lifestyle( {
-					map: map
-				});
-			}
-			if(json_atts.type == 'lifestyle_polygon' ) {
-				var lifestyle_polygon = new Lifestyle_Polygon( {
-					map: map
-				});
-			}
-
-			// var status = new Status_Window ({map: map, listings:listings});
-
-			// fill map init args
-			var init_args = new Object();
-
-			init_args.type = json_atts.type;
-			init_args.listings = listings;
-			init_args.status_window = status;
-
-			if( json_atts.type == 'lifestyle' ) {
-				init_args.lifestyle = lifestyle;
-			}
-			else if( json_atts.type == 'lifestyle_polygon' ) {
-				init_args.lifestyle_polygon = lifestyle_polygon;
-			}
-
-			// init maps
-			map.init( init_args );
-			// type: 'neighborhood',
-			// type: 'listings',
-
-			listings.init();
-
-		});
-		</script>
-		<?php
-
 		// we support a filter for wrapping the whole shortcode here
 		// TODO: move applyfilter to blueprint 
 		$listings = null;
-		echo PLS_Map::listings( null, array('width' => $atts['width'], 'height' => $atts['height']) );
+		self::add_to_group('search_map', $atts);
+		echo PLS_Map::listings(null, $atts);
 		$return = ob_get_clean();
 		return apply_filters('pls_search_map_' . $atts['context'], $return, $listings, $atts);
 	}
@@ -678,7 +626,7 @@ To add some text to your listings:<br />
 				$val = ob_get_clean();
 				break;
 			case 'favorite_link_toggle':
-				$val = PL_People_Helper::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
+				$val = PL_Favorite_Listings::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
 				break;
 			case 'custom':
 				// TODO: format based on data type
@@ -858,31 +806,7 @@ To add some text to your listings:<br />
 		}
 		$atts['ajax'] = empty($form_data['action']) ? true : false;
 		$atts['form_data'] = (object)$form_data;
-		/*
-		// add context and ajax support if missing
-		if( isset( $atts['ajax'] ) ) {
-			$atts['ajax'] = true;
-			$atts['context_var']['header'] = '
-			<script type="text/javascript" src="'.trailingslashit(PLS_JS_URL).'scripts/filters.js"></script>
-			<script type="text/javascript">
-				if (typeof bootloader !== \'object\') {
-					var bootloader;
-				}
-		
-				jQuery(document).ready(function( $ ) {
-					if (typeof bootloader !== \'object\') {
-						bootloader = new SearchLoader();
-						bootloader.add_param({filter: {context: "'.$atts['context'].'"}});
-					} else {
-						bootloader.add_param({filter: {context: "'.$atts['context'].'"}});
-					}
-				});
-			</script>
-			';
-		} else {
-			$atts['ajax'] = false;
-		}
-		*/
+
 		if (!has_filter('pls_listings_search_form_outer_' . $atts['context'])) {
 			add_filter( 'pls_listings_search_form_outer_' . $atts['context'], array(__CLASS__,'pls_listings_search_form_outer_callback'), 10, 7 );
 			add_filter( 'pls_listings_search_form_inner_' . $atts['context'], array(__CLASS__,'pls_listings_search_form_inner_callback'), 10, 5 );
@@ -919,59 +843,30 @@ To add some text to your listings:<br />
 		return $pl_featured_listing_meta;
 	}
 
-	private static function print_filters( $filters, $shortcode, $context = 'listings_search') {
+	private static function add_to_group($shortcode, $atts, $filters = '') {
 
-		wp_enqueue_script('filters-featured.js', trailingslashit(PLS_JS_URL) . 'scripts/filters.js', array('jquery'));
-		?>
-		<script type="text/javascript">
+		if (self::$current_shortcode_group === '') {
+			self::$current_shortcode_group = count(self::$shortcode_groups);
+			self::$shortcode_groups[self::$current_shortcode_group] = array();
+		}
+		$current_group = &self::$shortcode_groups[self::$current_shortcode_group];
 
-			jQuery(document).ready(function( $ ) {
-
-				var list = new List ();
-				var filter = new Filters ();
-				var listings = new Listings ({
-					filter: filter,
-					<?php echo do_action('featured_filters_featured_ids'); ?>
-					list: list
-				});
-
-				filter.init({
-					<?php if ($shortcode == 'search_listings'):?>
-						'class' : '.pls_search_form_listings',
-					<?php else: ?>
-						// static listings should ignore the search form
-						'class' : '.no_search_form__',
-					<?php endif; ?>
-					list : list,
-					listings : listings
-				});
-
-				list.init({
-					dom_id: '#placester_listings_list',
-					filter : filter,
-					'class': '.placester_listings_list',
-					listings: listings,
-					<?php echo do_action('listings_limit_default'); ?>
-					context: '<?php echo $context; ?>'
-				});
-
-				<?php
-				if( !empty( $filters ) ) {
-					echo $filters;
+		switch($shortcode) {
+			case 'search_listings':
+			case 'static_listings':
+				if (!empty($current_group['listings'])) {
+					self::$current_shortcode_group = count(self::$shortcode_groups);
+					self::$shortcode_groups[self::$current_shortcode_group] = array();
+					$current_group = &self::$shortcode_groups[self::$current_shortcode_group];
 				}
-				?>
-				listings.init();
-
-				$('.dataTables_paginate').click(function(){
-					var y = $(this).parent('.dataTables_wrapper').offset().top;
-					if (y < $(window).scrollTop()) {
-						$(window).scrollTop(y);
-					}
-				});
-			});
-
-		</script>
-		<?php
+				$current_group['listings']['shortcode'] = $shortcode;
+				$current_group['listings']['atts'] = $atts;
+				$current_group['listings']['filters'] = $filters;
+				break;
+			case 'search_map':
+				$current_group['map']['atts'] = $atts;
+				break;
+		}
 	}
 
 	public static function partial_one( $listing, $featured_listing_id ) {
@@ -1343,7 +1238,7 @@ To add some text to your listings:<br />
 	 */
 	public static function hide_unnecessary_controls( $atts ) {
 
-		$css = '<style type="text/css">';
+		$css = '';
 
 		if( ! empty( $atts ) ) {
 
@@ -1358,8 +1253,9 @@ To add some text to your listings:<br />
 			}
 		}
 
-		$css .= '</style>';
-
+		if ($css) {
+			$css = '<style type="text/css">' . $css . '</style>';
+		}
 		echo $css;
 	}
 	
@@ -1465,5 +1361,112 @@ To add some text to your listings:<br />
 		echo $content;
 		do_action( $shortcode . '_post_footer' );
 		return ob_get_clean();
+	}
+
+	public static function add_js() {
+		$js_files = array();
+
+		foreach(self::$shortcode_groups as $key=>$group) {
+		?>
+		<script type="text/javascript">
+
+			jQuery(document).ready(function($) {
+				<?php if (!empty($group['map'])):?>
+					<?php $js_files['map'] = true ?>
+					var map = new Map ();
+					<?php
+					if (empty($group['map']['atts']['type'])) {
+						$group['map']['atts']['type'] = empty($group['listings']) ? 'lifestyle' : 'listings';
+					}
+					?>
+				<?php endif ?>
+
+				<?php if (!empty($group['listings'])):?>
+					var list = new List ();
+				<?php endif ?>
+				var filter = new Filters ();
+				<?php $js_files['filters'] = true ?>
+				var listings = new Listings ({
+						filter: filter,
+						<?php if (!empty($group['listings'])):?>
+						list: list,
+						<?php endif ?>
+						disable_saved_search: <?php echo count(self::$shortcode_groups)>1 ? '1' : '0' ?>,
+						<?php if (!empty($group['map'])):?>
+						map: map,
+						<?php endif ?>
+						<?php echo do_action('featured_filters_featured_ids') ?>
+					});
+
+				<?php if (!empty($group['map'])):?>
+					var init_args = new Object();
+					init_args.listings = listings;
+					<?php if ($group['map']['atts']['sync_map_to_list']): ?>
+						init_args.sync_map_to_list = true;
+					<?php endif ?>
+					<?php if ($group['map']['atts']['lat'] && $group['map']['atts']['lng']): ?>
+						init_args.lat = '<?php echo $group['map']['atts']['lat'] ?>';
+						init_args.lng = '<?php echo $group['map']['atts']['lng'] ?>';
+					<?php endif ?>
+					init_args.type = '<?php echo $group['map']['atts']['type'] ?>';
+					init_args.filter_by_bounds = false;
+
+					<?php if ($group['map']['atts']['type'] == 'lifestyle'): ?>
+						var lifestyle = new Lifestyle({
+							map: map
+						});
+						init_args.lifestyle = lifestyle;
+						<?php $js_files['lifestyle'] = true ?>
+					<?php elseif ($group['map']['atts']['type'] == 'lifestyle_polygon'): ?>
+						var lifestyle_polygon = new Lifestyle_Polygon({
+							map: map
+						});
+						init_args.lifestyle_polygon = lifestyle_polygon;
+						<?php $js_files['lifestyle_polygon'] = true ?>
+					<?php endif ?>
+
+					map.init(init_args);
+				<?php endif ?>
+
+				<?php if (!empty($group['listings'])):?>
+					filter.init({
+						list: list,
+						listings: listings,
+						<?php if ($group['listings']['shortcode'] == 'search_listings'):?>
+							'class': '.pls_search_form_listings',
+						<?php else: ?>
+							// static listings should ignore the search form
+							'class': '.no_search_form__',
+						<?php endif ?>
+					});
+
+					list.init({
+						filter : filter,
+						listings: listings,
+						context: '<?php echo $group['listings']['atts']['context'] ?>',
+						dom_id: '#<?php echo $group['listings']['atts']['table_id'] ?>',
+						limit_default: <?php echo $group['listings']['atts']['query_limit'] ?>
+					});
+
+					<?php if (!empty($group['listings']['filters'])): ?>
+						<?php echo $group['listings']['filters'] ?>
+					<?php endif ?>
+					listings.init();
+				<?php endif ?>
+
+			});
+		</script>
+		<?php
+		}
+
+		if (!empty($js_files['filters'])) {
+			wp_enqueue_script('pl-filters.js', trailingslashit(PLS_JS_URL) . 'scripts/filters.js', array('jquery'));
+		}
+		if (!empty($js_files['lifestyle'])) {
+			wp_enqueue_script('pl-lifestyle.js', trailingslashit(PLS_JS_URL) . 'scripts/lifestyle.js', array('jquery'));
+		}
+		if (!empty($js_files['lifestyle_polygon'])) {
+			wp_enqueue_script('pl-lifestyle_polygon.js', trailingslashit(PLS_JS_URL) . 'scripts/lifestyle_polygon.js', array('jquery'));
+		}
 	}
 }

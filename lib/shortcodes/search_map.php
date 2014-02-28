@@ -17,6 +17,8 @@ class PL_Map_CPT extends PL_SC_Base {
 		'width'			=> array( 'type' => 'int', 'label' => 'Width', 'default' => 600, 'description' => '(px)' ),
 		'height'		=> array( 'type' => 'int', 'label' => 'Height', 'default' => 400, 'description' => '(px)' ),
 		'widget_class'	=> array( 'type' => 'text', 'label' => 'CSS Class', 'default' => '', 'description' => '(optional)' ),
+		'lat'		=> array( 'type' => 'text', 'label' => 'Center Map On Latitude', 'default' => '', 'description' => 'Enter the latitude for the map center (optional)' ),
+		'lng'		=> array( 'type' => 'text', 'label' => 'Center Map On Longitude', 'default' => '', 'description' => 'Enter the longitude for the map center (optional)' ),
 //		'type'			=> array( 'type' => 'select', 'label' => 'Map Type',
 //				'options' => array('listings' => 'listings', 'lifestyle' => 'lifestyle', 'lifestyle_polygon' => 'lifestyle_polygon' ),
 //				'default' => '' ),

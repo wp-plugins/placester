@@ -4,15 +4,8 @@ PLS_Lead_Capture::init();
 class PLS_Lead_Capture {
 
     public static function init () {
-        add_action('wp_ajax_pls_update_client_profile', array(__CLASS__, 'update'));
-    }
-
-    public static function update () {
-        $person_details = $_POST;
-        $result = PLS_Plugin_API::update_person_details($person_details);
-
-        echo json_encode($result);
-        die();
+        // Add shortcode for template...
+        add_shortcode('lead_capture_template', array(__CLASS__, 'lead_capture_shortcode'));
     }
 
 	public static function get_contact_form () {
@@ -90,6 +83,53 @@ class PLS_Lead_Capture {
         $form = ob_get_clean();
 
         return $form;
+    }
+
+    // Lead Capture
+    public static function lead_capture_shortcode($args) {
+        $args_with_overrides = shortcode_atts(
+            array(
+                // Lead Capture Wrapper
+                'width' => '',
+                'height' => '',
+                'title_visible' => true,
+                // Contact Form
+                'title_text' => '',
+                'title' => '',
+                'success_message' => '',
+                'cc_value' => '',
+                'bcc_value' => '',
+                // Name
+                'name_placeholder' => 'Full Name',
+                'name_required' => true,
+                'name_error' => 'Your name is required.',
+                // Email
+                'email_placeholder' => 'Email Address',
+                'email_required' => true,
+                'email_error' => 'A valid email is required.',
+                // Phone
+                'phone_include' => true,
+                'phone_placeholder' => 'Phone Number',
+                'phone_required' => "false",
+                'phone_error' => 'Your phone number is required.',
+                // Subject
+                'subject_placeholder' => 'Subject',
+                'subject_required' => "false",
+                'subject_error' => 'Please add a subject.',
+                // Question
+                'question_placeholder' => 'Comments',
+                'question_required' => true,
+                'question_error' => "Don't forget to leave a question or comment.",
+                'button_text' => 'Submit',
+                // Description
+                'description_visible' => true,
+                // Form Options
+                'back_on_lc_cancel' => ''
+            ), 
+            $args
+        );
+
+        echo self::get_contact_form($args_with_overrides);
     }
 
 } // end class

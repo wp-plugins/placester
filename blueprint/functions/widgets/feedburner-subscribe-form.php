@@ -36,20 +36,20 @@ class PLS_Widget_Feedburner_Widget extends WP_Widget {
     $instructions = empty($instance['instructions']) ? ' ' : apply_filters('instructions', $instance['instructions']);
     $email_placeholder = empty($instance['email_placeholder']) ? ' ' : apply_filters('email_placeholder', $instance['email_placeholder']);
 
+    $feedburner_url = pls_get_option('pls-feedburner-uri');
+    $feedburner_id = str_replace("http://feeds.feedburner.com/", "", $feedburner_url);
     ?>
-
-    
+   
      <?php echo $before_widget; ?>
 
       <?php echo $before_title . $title . $after_title; ?>
 
-      <form action="http://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('http://feedburner.google.com/fb/a/mailverify?uri=<?php echo pls_get_option('pls-feedburner-uri') ?>', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
-
+      <form action="http://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('http://feedburner.google.com/fb/a/mailverify?uri=<?php echo $feedburner_id; ?>', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
         <p><?php echo $instructions; ?></p>
 
         <input type="email" name="email" placeholder="<?php echo $email_placeholder; ?>" />
 
-        <input type="hidden" value="<?php echo pls_get_option('pls-feedburner-uri') ?>" name="uri"/>
+        <input type="hidden" value="<?php echo $feedburner_id; ?>" name="uri"/>
         <input type="hidden" name="loc" value="en_US"/>
         <input type="submit" value="Subscribe" class="button-primary" />
 

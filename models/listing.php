@@ -33,10 +33,6 @@ class PL_Listing {
 		if (isset($response) && isset($response['listings']) && is_array($response['listings'])) {
 			foreach ($response['listings'] as $key => $listing) {
 				$response['listings'][$key] = PL_Validate::attributes($listing, PL_Config::PL_API_LISTINGS('get','returns'));
-				$post_exists = (PL_Pages::details($listing['id']) > 0);
-				if (!$post_exists) {
-					PL_Pages::manage_listing($response['listings'][$key]);
-				}
 			}
 		} 
 		else {
@@ -88,6 +84,7 @@ class PL_Listing {
 		
 		return PL_Validate::attributes(PL_HTTP::send_request($config['request']['url'], $request), $config['returns']);
 	}
+	
 	public static function aggregates ($args = array()) {
 		$config = PL_Config::PL_API_LISTINGS('get.aggregate');
 		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));

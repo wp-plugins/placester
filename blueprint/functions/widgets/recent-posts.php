@@ -35,9 +35,9 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 		);
 
 		/* Create the widget. */
-        parent::__construct( "pls-recent-posts", 'Placester: Recent Blog Posts', $widget_options );
+    parent::__construct( "pls-recent-posts", 'Placester: Recent Blog Posts', $widget_options );
 
-        /** Delete the widget cache if a post is modified, deleted, or a the theme is switched. */
+    /** Delete the widget cache if a post is modified, deleted, or a the theme is switched. */
 		add_action( 'save_post', array( $this, 'flush_widget_cache' ) );
 		add_action( 'deleted_post', array( $this, 'flush_widget_cache' ) );
 		add_action( 'switch_theme', array( $this, 'flush_widget_cache' ) );
@@ -63,108 +63,111 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 			return;
 		}
 
-        /** Start output buffering. */
-        ob_start();
+    /** Start output buffering. */
+    ob_start();
 
-        $args = self::process_defaults($args, $instance);
+    $args = self::process_defaults($args, $instance);
 		extract( $args, EXTR_SKIP );
 
         /** If conversion to non-negative integer results in 0, set the number of posts to 5. */
 		if ( ! $number = absint( $instance['number'] ) )
  			$number = 5;
-	
+	 
         /** Get the posts. */
-        $query = new WP_Query( array(
+        $query = get_posts( array(
+            'post_type' => 'post',
             'posts_per_page' => $number,
             'cat' => $cat,
             'no_found_rows' => true,
             'post_status' => 'publish'
         ) );
-
+        // error_log(var_export($query, true));
         /** If there are posts... */
-        if ( $query->have_posts() ) {
+        if (isset($query[0]->ID)) {
+        
+          /* If a title was input by the user, store it. */
+          $widget_title = '';
+          if ( !empty( $instance['title'] ) )
+              $widget_title = $before_title . apply_filters( 'widget_title',  $instance['title'], $instance, $this->id_base ) . $after_title;
 
-            /* If a title was input by the user, store it. */
-            $widget_title = '';
-            if ( !empty( $instance['title'] ) )
-                $widget_title = $before_title . apply_filters( 'widget_title',  $instance['title'], $instance, $this->id_base ) . $after_title;
+          /* Output the theme's $before_widget wrapper. */
+          echo $before_widget;
+         
+          /** Will hold the combined posts html. */
+          $widget_body = '';
 
-            /* Output the theme's $before_widget wrapper. */
-            echo $before_widget;
-           
-            /** Will hold the combined posts html. */
-            $widget_body = '';
+          /** The loop. */
+          foreach ( $query as $post ) {
 
-            /** The loop. */
-            while ( $query->have_posts() ) {
+            setup_postdata( $post );
 
-                /** Setup post data. */
-                $query->the_post();
+              /** This array will hold the html elements for each post and will be passed to the filters. */
+              $post_html = $instance;
+              unset( $post_html['title'] );
 
-                /** This array will hold the html elements for each post and will be passed to the filters. */
-                $post_html = $instance;
-                unset( $post_html['title'] );
+              $post_html['post_title'] = empty( $instance['post_title'] ) ? ''
+                                         : pls_h_a( post_permalink($post->ID), esc_attr( $post->post_title ), array('class' => 'title') );
 
-                $post_html['post_title'] = empty( $instance['post_title'] ) ? ''
-                                           : pls_h_a( get_permalink(), esc_attr( get_the_title() ? get_the_title() : get_the_ID() ), array('class' => 'title') );
+              $post_html['author'] = empty( $instance['author'] ) ? ''
+                                     : sprintf( ' ' . 'by <span class="author">%1$s</span>', $post->post_author );
 
-                $post_html['author'] = empty( $instance['author'] ) ? ''
-                                       : sprintf( ' ' . 'by <span class="author">%1$s</span>', get_the_author() );
+              $date = new DateTime($post->post_date);
+              $post_html['date'] = empty( $instance['date'] ) ? ''
+                                   : sprintf( ' ' . 'on <time datetime="%1$s">%2$s</time>', $date->format('m-d-Y'), $date->format('M d, Y') );
 
-                $post_html['date'] = empty( $instance['date'] ) ? ''
-                                     : sprintf( ' ' . 'on <time datetime="%1$s">%2$s</time>', get_the_date( 'Y-m-d' ), get_the_date() );
+              $post_html['excerpt'] = empty( $instance['excerpt'] ) ? ''
+                                      : pls_h_div( ( $post->post_excerpt ? $post->post_excerpt : '' ), array( 'class' => 'excerpt' ) );
 
-                $post_html['excerpt'] = empty( $instance['excerpt'] ) ? ''
-                                        : pls_h_div( ( has_excerpt() ? get_the_excerpt() : '' ), array( 'class' => 'excerpt' ) );
+              $post_html['url'] = post_permalink($post->ID);
+              
+              $post_html['read_more'] = empty( $instance['read_more'] ) ? ''
+                                       : pls_h_a( $post->guid, 'Read more', array( 'class' => 'read-more' ) );
 
-                $post_html['url'] = empty( $instance['excerpt'] ) ? '' : get_permalink();
-               
-                $post_html['read_more'] = empty( $instance['read_more'] ) ? ''
-                                          : pls_h_a( get_permalink(), 'Read more', array( 'class' => 'read-more' ) );
+              $post_html['id'] = empty( $post->ID ) ? '' : $post->ID;
 
-                /** Combine the post information. */
-                $post_item = pls_get_if_not_empty( $post_html['post_title'] ) .
-                    ( ! empty( $post_html['author'] ) || ! empty( $post_html['date'] ) ?
-                    pls_h_p( sprintf( 'Posted%1$s%2$s.', pls_get_if_not_empty( $post_html['author'] ), pls_get_if_not_empty( $post_html['date'] ) ), array( 'class' => 'meta p3' ) ) :
-                    '' ) .
-                    pls_get_if_not_empty( $post_html['excerpt'] ) .
-                    pls_get_if_not_empty( $post_html['read_more'] );
+              /** Combine the post information. */
+              $post_item = pls_get_if_not_empty( $post_html['post_title'] ) .
+                  ( ! empty( $post_html['author'] ) || ! empty( $post_html['date'] ) ?
+                  pls_h_p( sprintf( 'Posted%1$s%2$s.', pls_get_if_not_empty( $post_html['author'] ), pls_get_if_not_empty( $post_html['date'] ) ), array( 'class' => 'meta p3' ) ) :
+                  '' ) .
+                  pls_get_if_not_empty( $post_html['excerpt'] ) .
+                  pls_get_if_not_empty( $post_html['read_more'] );
 
-                /** Wrap the post in an article element and filter its contents. */
-                $post_item = pls_h('article', array('class' => 'recent-post-single', 'itemscope' => '', 'itemtype' => "http://schema.org/BlogPosting"), apply_filters( 'pls_widget_recent_posts_post_inner', $post_item, $post_html, $instance, $widget_id ));
-                
-                /** Append the filtered post to the post list. */
-                $widget_body .= apply_filters( 'pls_widget_recent_posts_post_outer', $post_item, $post_html, $instance, $widget_id );
+              /** Wrap the post in an article element and filter its contents. */
+              $post_item = pls_h('article', array('class' => 'recent-post-single', 'itemscope' => '', 'itemtype' => "http://schema.org/BlogPosting"), apply_filters( 'pls_widget_recent_posts_post_inner', $post_item, $post_html, $instance, $widget_id ));
+              
+              /** Append the filtered post to the post list. */
+              $widget_body .= apply_filters( 'pls_widget_recent_posts_post_outer', $post_item, $post_html, $instance, $widget_id );
 
-            } /** while $query->have_posts() */
-           
-            /** Wrap the widget body in a section element. */
-            $widget_body = pls_h(
-                'section',
-                array( 'class' => 'widget-inner', 'itemscope' => '', 'itemtype' => 'http://schema.org/Blog' ),
-                /** Apply a filter on the combined list of posts. */
-                apply_filters( 'pls_widget_recent_posts_inner', $widget_body, $instance, $widget_id )
-            );
-           
-            // Now we need to put the "read more" strip at the bottom, linking to the selected category page
-            // should come back and use pls_ methods
-			$category_link = get_category_link( $cat );
-			$widget_body .= "<section class='more_posts'><a href='" . esc_url( $category_link ) . "' title='View More News'>View More News</a></section>";
+          } /** while $query->have_posts() */
+         
+          /** Wrap the widget body in a section element. */
+          $widget_body = pls_h(
+              'section',
+              array( 'class' => 'widget-inner', 'itemscope' => '', 'itemtype' => 'http://schema.org/Blog' ),
+              /** Apply a filter on the combined list of posts. */
+              apply_filters( 'pls_widget_recent_posts_inner', $widget_body, $instance, $widget_id )
+          );
+         
+          // Now we need to put the "read more" strip at the bottom, linking to the selected category page
+          // should come back and use pls_ methods
+	        $category_link = get_category_link( $cat );
+		      $widget_body .= "<section class='more_posts'><a href='" . esc_url( $category_link ) . "' title='View More News'>View More News</a></section>";
 
-            /** Output and apply a filter on the whole widget. */
-            echo apply_filters( 'pls_widget_recent_posts', $widget_title . $widget_body, $widget_title, $before_title, $after_title, $widget_body, $instance, $widget_id );
+          /** Output and apply a filter on the whole widget. */
+          echo apply_filters( 'pls_widget_recent_posts', $widget_title . $widget_body, $widget_title, $before_title, $after_title, $widget_body, $instance, $widget_id );
 
-            /* Output the theme's $after_widget wrapper. */
-            echo $after_widget;
+          /* Output the theme's $after_widget wrapper. */
+          echo $after_widget;
 
-            /** Reset the global $the_post as this query will have stomped on it. */
-            wp_reset_postdata();
+          /** Reset the global $the_post as this query will have stomped on it. */
+          wp_reset_postdata();
 
-        } /** if $query->have_posts() */
+      } /** if $query->have_posts() */
 
-        /** Cache the widget contents */
-		$cache[$args['widget_id']] = ob_get_flush();
-		wp_cache_set( 'pls_widget_recent_posts', $cache, 'widget' );
+      /** Cache the widget contents */
+  		$cache[$args['widget_id']] = ob_get_flush();
+      wp_cache_set( 'pls_widget_recent_posts', $cache, 'widget' );
 	}
 
     /**
@@ -210,13 +213,13 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 		/** Set up the default form values. */
 		$defaults = array(
 			'title' => 'Latest Blog Posts',
-            'post_title' => true,
-            'author' => true,
-            'date' => true,
-            'excerpt' => true,
-            'read_more' => true,
-            'number' => 5,
-            'cat' => ''
+      'post_title' => true,
+      'author' => true,
+      'date' => true,
+      'excerpt' => true,
+      'read_more' => true,
+      'number' => 5,
+      'cat' => ''
 		);
 
 		/** Merge the user-selected arguments with the defaults. */

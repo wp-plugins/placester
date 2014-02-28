@@ -32,7 +32,7 @@ jQuery(window).load( function () {
 
 window.onbeforeunload = function () {
 	if (customizer_global.stateAltered) {
-		mixpanel.track("Customizer - Leaving with unsaved changes");
+		pls_track_event("Customizer - Leaving with unsaved changes");
 		return 'You have unsaved changes that will be lost!';
 	}
 }
@@ -143,7 +143,7 @@ jQuery(document).ready(function($) {
 			activeLi.each( function() { $(this).toggleClass('active'); } );
 
 			//record the user closing the pane.
-			mixpanel.track("Customizer - Pane Closed", {'theme' : $('#theme_choices').val() });
+			pls_track_event("Customizer - Pane Closed", {'theme' : $('#theme_choices').val() });
 		}
 	});
 
@@ -151,7 +151,7 @@ jQuery(document).ready(function($) {
 		event.preventDefault();
 
 		// Pass pane opened event to mixpanel
-		mixpanel.track("Customizer - Pane Opened", {'type' : $(this).attr('id'), 'theme' : $('#theme_choices').val() });
+		pls_track_event("Customizer - Pane Opened", {'type' : $(this).attr('id'), 'theme' : $('#theme_choices').val() });
 
 		// If activated menu section is clicked OR preview is refreshing/loading, do nothing...
 		if ( $(this).hasClass('active') || customizer_global.refreshing ) { return; }
@@ -188,7 +188,7 @@ jQuery(document).ready(function($) {
 		// when re-directing back to homepage...
 		customizer_global.stateAltered = false;
 
-		mixpanel.track("Customizer - Saved");
+		pls_track_event("Customizer - Saved");
 		
 		var home_url = ( window.location.origin ) ? window.location.origin : ( window.location.protocol + "//" + window.location.host );
 
@@ -211,7 +211,7 @@ jQuery(document).ready(function($) {
 	$('#customize_integration_submit').on('click', function() {
 		$.post(ajaxurl, {action: "start_subscription_trial", source: "wci"}, function (result) {
 			// Instrument...
-			mixpanel.track("Registration - Trial Started",  {'source' : 'Customizer'});
+			pls_track_event("Registration - Trial Started",  {'source' : 'Customizer'});
 		}, "json");
 
 		// Show the phone number section.
@@ -230,7 +230,7 @@ jQuery(document).ready(function($) {
 		// Functionality specifically for when the user enters a valid phone number...
 		if (valid) {
 			// Instrument...
-			mixpanel.track("Customizer - Phone - Submitted");
+			pls_track_event("Customizer - Phone - Submitted");
 
 			// Update user's account with phone number in Rails...
 			$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) { phone_success(); }, "json");
@@ -243,7 +243,7 @@ jQuery(document).ready(function($) {
 	});
 
 	function phone_success() {
-		mixpanel.track("Customizer - Phone - Saved");
+		pls_track_event("Customizer - Phone - Saved");
 		
 		// Show integration video + hide the form...
 		$('#mls_submitted').show();
@@ -313,7 +313,7 @@ jQuery(document).ready(function($) {
 		submitElem.addClass('bt-disabled');
 
 		// Pass pane opened event to mixpanel
-		mixpanel.track("Customizer - Theme Changed", {'theme' : $('#theme_choices').val() });
+		pls_track_event("Customizer - Theme Changed", {'theme' : $('#theme_choices').val() });
 
 		$.post(ajaxurl, data, function (response) {
 	        if ( response && response.success ) {
@@ -529,7 +529,7 @@ jQuery(document).ready(function($) {
 	    	if (response && response.styles) {
 
 				//pass pane opened event to mixpanel
-				mixpanel.track("Customizer - Color Changed", {'theme' : $('#theme_choices').val(), 'color' : data.color });
+				pls_track_event("Customizer - Color Changed", {'theme' : $('#theme_choices').val(), 'color' : data.color });
 
 	    		// Change the linked CSS textarea to trigger an update of the preview pane...
 	    		updateCustomCSS(response.styles);

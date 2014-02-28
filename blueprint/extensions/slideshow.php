@@ -135,7 +135,7 @@ class PLS_Slideshow {
                                 $first_valid_img_url = null;
 
                                 // Overwrite the placester url with the local url...
-                                $listing_url = PLS_Plugin_API::get_property_url( $listing['id'] );
+                                $listing_url = PLS_Plugin_API::get_property_url( $listing['id'], $listing );
                                 $data['links'][] = $listing_url;
 
                                 // Try to retrieve the image url if order is set...
@@ -194,7 +194,7 @@ class PLS_Slideshow {
                 
                 foreach ($api_response['listings'] as $index => $listing) {
                     if (empty($listing['id'])) { continue; }
-                    $listing_url = PLS_Plugin_API::get_property_url( $listing['id'] );
+                    $listing_url = PLS_Plugin_API::get_property_url( $listing['id'], $listing );
                     
                     /** Overwrite the placester url with the local url. */
                     $data['links'][] = $listing_url;

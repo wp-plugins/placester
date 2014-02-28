@@ -128,18 +128,11 @@ class PLS_Partial_Get_Listings {
             }
 
             if (empty($listing_html)) {
-                // Use the placeholder image if the property has no photo
-                if ( !$listing_data['images'] ) {
-                    $listing_data['images'][0]['url'] = '';
-                    $listing_data['images'][0]['order'] = 0;
-                }
+                // Sort images and use the placeholder image if the property has no photo
+                $property_images = !empty($listing_data['images']) ? $listing_data['images'] : array(array('url' => '', 'order' => 0));
+                usort($property_images, array(__CLASS__, 'order_listing_images'));
+                $listing_data['images'] = $property_images;
 
-                // Remove the ID for each image (not needed by theme developers) and add the image HTML
-                foreach ($listing_data['images'] as $image) {
-                    unset( $image['id'] );
-                    $image['html'] = pls_h_img( $image['url'], $listing_data['location']['address'], $listing_img_attr );
-                }
-              
                 $location = $listing_data['location'];
                 $full_address = $location['address'] . ' ' . $location['region'] . ', ' . $location['locality'] . ' ' . $location['postal'];
               
@@ -149,19 +142,13 @@ class PLS_Partial_Get_Listings {
 
                   <div class="listing-thumbnail grid_3 alpha">
                     <a href="<?php echo @$listing_data['cur_data']['url']; ?>">
-
-                      <?php $property_images = ( is_array($listing_data['images']) ? $listing_data['images'] : array() );
-                        usort($property_images, array(__CLASS__, 'order_listing_images')); ?>
-                      
                       <?php echo PLS_Image::load($property_images[0]['url'], array('resize' => array('w' => 210, 'h' => 140), 'fancybox' => true, 'as_html' => true, 'html' => array('alt' => $listing_data['location']['full_address'], 'itemprop' => 'image'))); ?>
-                    
-
                     </a>
                   </div>
 
                   <div class="listing-item-details grid_5 omega">
                     <p class="listing-item-address h4" itemprop="name">
-                      <a href="<?php echo PLS_Plugin_API::get_property_url($listing_data['id']); ?>" rel="bookmark" title="<?php echo $listing_data['location']['address'] ?>" itemprop="url">
+                      <a href="<?php echo PLS_Plugin_API::get_property_url($listing_data['id'], $listing_data); ?>" rel="bookmark" title="<?php echo $listing_data['location']['address'] ?>" itemprop="url">
                         <?php echo $listing_data['location']['address'] . ', ' . $listing_data['location']['locality'] . ' ' . $listing_data['location']['region'] . ' ' . $listing_data['location']['postal']  ?>
                       </a>
                     </p>
@@ -201,7 +188,7 @@ class PLS_Partial_Get_Listings {
                   </div>
 
                   <div class="actions">
-                    <a class="more-link" href="<?php echo PLS_Plugin_API::get_property_url($listing_data['id']); ?>" itemprop="url">View Property Details</a>
+                    <a class="more-link" href="<?php echo PLS_Plugin_API::get_property_url($listing_data['id'], $listing_data); ?>" itemprop="url">View Property Details</a>
                     <?php echo PLS_Plugin_API::placester_favorite_link_toggle(array('property_id' => $listing_data['id'])); ?>
                   </div>
 

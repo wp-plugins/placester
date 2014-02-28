@@ -88,7 +88,12 @@ class PL_Membership {
 			update_user_meta($wordpress_user_id, 'primary_blog', $first_blog->userblog_id);
 
             // Push the new WP user as a lead to the API...
-			$response = PL_People_Helper::add_person($lead_object);
+            if (defined('PL_LEADS_ENABLED')) {
+            	$response = PL_Lead_Helper::add_lead($lead_object);
+            }
+            else {
+				$response = PL_People_Helper::add_person($lead_object);
+			}
             
 			if (isset($response['code'])) {
 				$errors[] = $response['message'];
@@ -100,7 +105,19 @@ class PL_Membership {
 
 			// If the API call was successful, inform the user that his/her password and set the password change
 			if (empty($errors)) {
-				update_user_meta($wordpress_user_id, 'placester_api_id', $response['id']);
+				if (defined('PL_LEADS_ENABLED')) {
+					$meta_key = PL_Lead_Helper::USER_META_KEY;
+					$id = $response['uuid'];
+				}
+				else {
+					$meta_key = PL_People_Helper::USER_META_KEY;
+					$id = $response['id'];
+				}
+
+				// Add API key to new user's meta...
+				update_user_meta($wordpress_user_id, $meta_key, $id);
+
+				// Notify blog admin(s) of new user...
 				wp_new_user_notification($wordpress_user_id);
 			}
 			
@@ -122,7 +139,7 @@ class PL_Membership {
 	//  AJAX endpoint for authenticating a site user from the frontend
 	public static function ajax_login_site_user () {
         extract($_POST);
-
+        
 		$sanitized_username = sanitize_user($username);
         $errors = array();
 
@@ -159,6 +176,18 @@ class PL_Membership {
 			wp_set_current_user($user->ID);
 
             $result = array("success" => true);
+
+            if (defined('PL_LEADS_ENABLED')) {
+				// Make sure this existing user has a Lead entity...
+				$lead_id = PL_Lead_Helper::get_lead_id($user->ID);
+
+				if (empty($lead_id)) {
+					$response = PL_Lead_Helper::create_lead($creds);
+
+					// Store Lead ID in user meta...
+					update_user_meta($user->ID, PL_Lead_Helper::USER_META_KEY, $response['uuid']);
+				}
+			}
 		}
 
         echo json_encode($result);
@@ -435,6 +464,7 @@ class PL_Membership {
 						<?php pls_do_atomic( 'register_form_before_submit' ); ?>
 
 						<p class="reg_form_submit">
+							<a id="switch_to_login" class="" href="#">Already a User?</a>
 							<input type="submit" tabindex="28" class="submit button" value="Register" id="pl_register" name="pl_register">
 						</p>
 						<?php echo wp_nonce_field( 'placester_true_registration', 'register_nonce_field' ); ?>

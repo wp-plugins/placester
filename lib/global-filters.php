@@ -21,41 +21,46 @@ class PL_Global_Filters {
 		if (!is_array($global_filters)) { return $args; }
 
 		// This whole thing basically traverses down the arrays for global filters...
-  		foreach ($global_filters as $attribute => $value) {
-  			if ($attribute == 'custom') {
-  				$attribute = 'metadata';
-  			}
-  			if (is_array($value)) {
-  				// Used to determine whether or not $value is array of values representing filter type $attribute, or a subfilter 
-  				// (i.e, location => array("state" => "AZ", "postal" => "85215") -- location contains subfilters, not values)
-  				$keys_are_ints = true;
-  				$r_empty = empty($args[$attribute]);
+		foreach ($global_filters as $attribute => $value) {
+			if ($attribute == 'custom') {
+				$attribute = 'metadata';
+			}
+			if (is_array($value)) {
+				// Used to determine whether or not $value is array of values representing filter type $attribute, or a subfilter
+				// (i.e, location => array("state" => "AZ", "postal" => "85215") -- location contains subfilters, not values)
+				$key_is_list = count(array_filter(array_keys($value), 'is_string')) == 0;
 
-  				foreach ($value as $k => $v) {
-	  				// Respect existing value if it is already set...
-	  				if (empty($args[$attribute][$k])) {
-	  					$args[$attribute][$k] = is_string($v) ? self::translate_string($v) : $v;
-	  					
-	  					if (is_array($v) && count($value) > 0) {
-	  						$args[$attribute]["{$k}_match"] = "in";
-	  					}
-		  			}
-		  			// If this key isn't an integer, make sure 'false' carries throughout the rest of the loop...
-		  			$keys_are_ints = $keys_are_ints && is_int($k);
-  				}
-
-  				// Check whether or not to add the match key...
-  				if ($keys_are_ints && count($value) && $r_empty) {
-  					$args["{$attribute}_match"] = "in";
-  				}
-  			}
-  			// Respect existing value if it is already set...
-  			elseif (empty($args[$attribute])) {
+				if ($key_is_list) {
+					// Respect existing value if it is already set...
+					if (empty($args[$attribute])) {
+						foreach ($value as $k => $v) {
+							$args[$attribute][] = is_string($v) ? self::translate_string($v) : $v;
+						}
+						if (count($value) && count($value) > 0) {
+							$args["{$attribute}_match"] = "in";
+						}
+					}
+				}
+				else {
+					// subkeys present
+					foreach ($value as $k => $v) {
+						// Respect existing value if it is already set...
+						if (empty($args[$attribute][$k])) {
+							$args[$attribute][$k] = is_string($v) ? self::translate_string($v) : $v;
+							if (is_array($v) && count($v) > 0) {
+								$args[$attribute]["{$k}_match"] = "in";
+							}
+						}
+					}
+				}
+			}
+			// Respect existing value if it is already set...
+			elseif (empty($args[$attribute])) {
 				$args[$attribute] = is_string($value) ? self::translate_string($value) : $value;
-  			}
-  		}
+			}
+		}
 
-	    return $args;
+		return $args;
 	}
 
 	/* Updates strings that represent boolean values to the correct format for API calls */

@@ -3,7 +3,7 @@ Contributors: Placester, MattBarba
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress, homes, property, property management, estate, realestate, real estate crm, real estate maps
 Requires at least: 3.0
 Tested up to: 3.7.1
-Stable tag: 1.1.26
+Stable tag: 1.1.27
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -141,6 +141,9 @@ Absolutely, [reach out](mailto:support@placester.com) to us and let us know what
 In general - real-time. But if you use 3rd party property management services, the updates will only be as recent as your provider allows.
 
 == Changelog ==
+
+= 1.1.27 =
+* Virtual property posts and terms have been introduced to greatly increase performance and vastly decrease what's stored in the DB
 
 = 1.1.26 =
 * New shortcode [favorite_listings] displays user's favorited listings if they are logged in and allows them to edit their profile.

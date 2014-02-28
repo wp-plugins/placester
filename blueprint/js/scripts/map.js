@@ -265,7 +265,15 @@ Map.prototype.create_listing_marker = function ( listing ) {
 	    var parsedTemplate = _.template(this.infotemplate, data );
 	    marker_options.content = parsedTemplate;
     } else {
-    // Default infowindow markup
+    	
+    	// format price
+    	if (typeof listing['cur_data']['price'] == 'number') {
+    		var price = '$' + listing['cur_data']['price'].toFixed().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");	
+    	} else {
+    		var price = listing['cur_data']['price'];
+    	};
+    	
+    	// Default infowindow markup
 	    marker_options.content = '<div id="content">'+
 			    	'<div id="siteNotice">'+'</div>'+
 				    '<h2 id="firstHeading" class="firstHeading"><a href="'+ listing['cur_data']['url'] + '">' + listing['location']['full_address'] +'</a></h2>'+
@@ -274,7 +282,7 @@ Map.prototype.create_listing_marker = function ( listing ) {
 					    '<ul style="float: right; width: 130px">' +
 						    '<li> Beds: '+ listing['cur_data']['beds'] +'</li>' +
 						    '<li> Baths: '+ listing['cur_data']['baths'] +'</li>' +
-						    '<li> Price: '+ listing['cur_data']['price'] +'</li>' +
+						    '<li> Price: '+ price +'</li>' +
 					    '</ul>' +
 				    '</div>' +
 					'<div class="viewListing" style="margin: 15px 70px; float: left; font-size: 16px; font-weight: bold;"><a href="'+listing['cur_data']['url']+'">View Details</a></div>' +

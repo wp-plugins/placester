@@ -14,7 +14,7 @@ class PL_Validate {
 
 	// build request, respect incoming args, populate defaults as passed via configs
 	public static function request ($args, $config) {
- 		// pls_dump($args);
+ 		// error_log(var_export($args, true));
  		foreach ($config as $arg => $value) {
  			if( !isset($args[$arg]) && is_array($value) && isset($value['default']) && !empty($value['default'])) {
  				$args[$arg] = $value['default'];
@@ -33,10 +33,6 @@ class PL_Validate {
  			}
  		}
 		return $args;
-	}
-
-	public static function route ($args, $default = array()) {
-		return wp_parse_args($args, $default);
 	}
 	
 //ends class

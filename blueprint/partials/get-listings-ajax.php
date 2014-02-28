@@ -37,13 +37,14 @@ class PLS_Partials_Get_Listings_Ajax {
         add_action('wp_ajax_pls_listings_ajax', array(__CLASS__, 'get' ) );
         add_action('wp_ajax_nopriv_pls_listings_ajax', array(__CLASS__, 'get' ) );
 
-        add_action( 'wp_ajax_pls_listings_fav_ajax', array(__CLASS__,'get_favorite_listings'));
-        add_action( 'wp_ajax_nopriv_pls_listings_fav_ajax', array(__CLASS__,'get_favorite_listings'));
+        // Endpoints for rendering favorite listings in a search results datatable...
+        add_action('wp_ajax_listings_fav_ajax', array(__CLASS__,'get_favorite_listings'));
+        add_action('wp_ajax_nopriv_listings_fav_ajax', array(__CLASS__,'get_favorite_listings'));
     }
 
     public static function get_favorite_listings () {
         $favorite_ids = PLS_Plugin_API::get_listings_fav_ids();
-
+        
         // Will echo listings as a JSON-encoded output...
         self::get(array('property_ids' => $favorite_ids, 'allow_id_empty' => true));
 
@@ -51,26 +52,18 @@ class PLS_Partials_Get_Listings_Ajax {
     }
 
     public static function load ($args = array()) {
-        // Set "Sort By" (default to number of total images)
-        $sort_by = isset($args['sort_by']) ? $args['sort_by'] : 'total_images';
-        
-        // Respect the "Sort By" theme option if it's set..
-        $sort_by_theme_option = pls_get_option('listings_default_sort_by');
-        if (!empty($sort_by_theme_option)) { $sort_by = $sort_by_theme_option; }
-      
-        // Set sort order (default to number of desc)
-        $sort_type = isset($args['sort_type']) ? $args['sort_type'] : 'desc';
+        // Respect the "Sort By" theme option if it's set..(default to number of total images)
+        $sort_by_dflt = pls_get_option('listings_default_sort_by', 'total_images');
 
-        // Respect sort type theme option if it's set...
-        $sort_type_theme_option = pls_get_option('listings_default_sort_type');
-        if (!empty($sort_type_theme_option)) { $sort_type = $sort_type_theme_option; }
+        // Respect sort type theme option if it's set...(default to number of desc)
+        $sort_type_dflt = pls_get_option('listings_default_sort_type', 'desc');
 
         // Set default options...
         $defaults = array(
             'loading_img' => admin_url('images/wpspin_light.gif'),
             'image_width' => 100,
-            'sort_type' => $sort_type,
-            'sort_by' => $sort_by,
+            'sort_type' => $sort_type_dflt,
+            'sort_by' => $sort_by_dflt,
             'show_sort' => true,
             'crop_description' => 0,
             'listings_per_page' => pls_get_option('listings_default_list_length'),
@@ -330,7 +323,7 @@ class PLS_Partials_Get_Listings_Ajax {
                         <div class="listing-item-details grid_5 omega">
                             <header>
                                 <p class="listing-item-address h4" itemprop="name">
-                                    <a href="<?php echo PLS_Plugin_API::get_property_url($listing['id']); ?>" rel="bookmark" title="<?php echo $listing['location']['address'] ?>" itemprop="url">
+                                    <a href="<?php echo PLS_Plugin_API::get_property_url($listing['id'], $listing); ?>" rel="bookmark" title="<?php echo $listing['location']['address'] ?>" itemprop="url">
                                         <?php echo $listing['location']['address'] . ', ' . $listing['location']['locality'] . ' ' . $listing['location']['region'] . ' ' . $listing['location']['postal']  ?>
                                     </a>
                                 </p>
@@ -371,7 +364,7 @@ class PLS_Partials_Get_Listings_Ajax {
                         </div>
 
                         <div class="actions">
-                            <a class="more-link" href="<?php echo PLS_Plugin_API::get_property_url($listing['id']); ?>" itemprop="url">View Property Details</a>
+                            <a class="more-link" href="<?php echo PLS_Plugin_API::get_property_url($listing['id'], $listing); ?>" itemprop="url">View Property Details</a>
                             <?php echo PLS_Plugin_API::placester_favorite_link_toggle(array('property_id' => $listing['id'])); ?>
                         </div>
 

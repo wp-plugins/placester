@@ -42,19 +42,44 @@ jQuery(document).ready(function($) {
 			$(elem).removeClass('invalid');
 		});
 
-		$('#rets_form_message').html('Checking Account Status...');
+        $('#rets_form_message').html('');
+        var errors = [];
 
-		// Check to see if phone number input exists--if it exists and has invalid input, act accordingly...
+        // Error checking...
+        if ( $('#mls_id').length != 0 && $('#mls_id').val() == '' ) {
+            $('#mls_id').addClass('invalid');
+            $('#mls_id').closest('div .row').find('h3').first().addClass('invalid');
+            errors.push('Please select an MLS');
+        }
+        if ( $('#office_name').length != 0 && $('#office_name').val().length < 2 ) {
+            $('#office_name').addClass('invalid');
+            $('#office_name').closest('div .row').find('h3').first().addClass('invalid');
+            errors.push('Please enter a valid office name');
+        }
+        if ( $('#feed_agent_id').length != 0 && $('#feed_agent_id').val().length < 2 ) {
+            $('#feed_agent_id').addClass('invalid');
+            $('#feed_agent_id').closest('div .row').find('h3').first().addClass('invalid');
+            errors.push('Please enter a valid agent id');
+        }
 		if ( $('#phone').length != 0 && !validate_phone_number($('#phone').val()) ) {
 			$('#phone').addClass('invalid');
 			$('#phone').closest('div .row').find('h3').first().addClass('invalid');
-
-			$('#rets_form_message').html('');
-			$('#pls_integration_form').prepend('<div id="message" class="error"><h3>Please enter a valid phone number</h3></div>');
-			return;
+            errors.push('Please enter a valid phone number');
 		}
+        if ( $('#email').length != 0 && !validate_email_address($('#email').val()) ) {
+            $('#email').addClass('invalid');
+            $('#email').closest('div .row').find('h3').first().addClass('invalid');
+            errors.push('Please enter a valid email address');
+        }
+        if (errors.length) {
+            var error = errors.join('<br/>');
+            $('#pls_integration_form').prepend('<div id="message" class="error"><h3>'+error+'</h3></div>');
+            return;
+        }
 
-		$.post(ajaxurl, {action: 'subscriptions'}, function(data, textStatus, xhr) {
+        $('#rets_form_message').html('Checking Account Status...');
+
+        $.post(ajaxurl, {action: 'subscriptions'}, function(data, textStatus, xhr) {
 		  // console.log(data);
 		  if (data && data.plan && data.plan == 'pro') {
 		  	check_mls_credentials(success_callback);

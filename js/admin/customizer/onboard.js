@@ -64,7 +64,7 @@ var wizard_global = {
           });
 
           // Instrument...
-          mixpanel.track("Customizer - Loaded");
+          pls_track_event("Customizer - Loaded");
         }
         else {
           this.active_state = 'theme';
@@ -199,7 +199,7 @@ jQuery(document).ready(function($) {
             }
 
             // Instrument...
-            mixpanel.track("Customizer - Intro Dismissed");
+            pls_track_event("Customizer - Intro Dismissed");
 		}
 		else {
             // console.log('Here!');

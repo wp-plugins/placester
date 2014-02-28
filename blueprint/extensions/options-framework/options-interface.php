@@ -58,16 +58,23 @@ function optionsframework_fields() {
 				$class .= ' ' . $value['class'];
 			}
 
+
+			// Set default visibility of option
+			$hide = '';
+			if (isset($value['visible']) && $value['visible'] == 'hidden') {
+				$hide = 'style="display:none;"';
+			}
+
 			$output .= '<div id="' . esc_attr( $id ) .'" class="' . esc_attr( $class ) . '">'."\n";
-			$output .= '<h4 class="heading">' . esc_html( $value['name'] ) . '</h4>' . "\n";
-			$output .= '<div class="option">' . "\n" . '<div class="controls">' . "\n";
+			$output .= '<h4 class="heading" '.$hide.'>' . esc_html( $value['name'] ) . '</h4>' . "\n";
+			$output .= '<div class="option" '.$hide.'>' . "\n" . '<div class="controls">' . "\n";	
 		 }
 		
 		// Set default value to $val
 		if ( isset( $value['std']) ) {
 			$val = $value['std'];
 		}
-		
+
 		// If the option is already saved, ovveride $val
 		if ( ($value['type'] != 'heading') && ($value['type'] != 'info')) {
 			if ( isset($settings[($value['id'])]) ) {
@@ -179,9 +186,35 @@ function optionsframework_fields() {
 				$output .= '</li>';
 			}
 			$output .= '</ul>';
-
 		break;
 		
+		// Multiselect
+		case "multiselect":
+			$output .= '<select multiple="multiple" class="of-input" name="' . $option_name . '[' . $value['id'] . '][]" id="' . $option_name . '-' . $value['id'] . '">';
+			if (empty($value['options'])) {
+				$value['options'] = array();
+			}
+			// option stored as a comma separated list
+			if (!isset($val) || !is_string($val)) {
+				$val = array();
+			}
+			else {
+				$val = explode(',', $val);
+			}
+			foreach ($value['options'] as $key => $option) {
+				$selected = '';
+				$label = $option;
+				$option = preg_replace('/[^a-zA-Z0-9._\-]/', '', strtolower($key));
+				$id = $option_name . '-' . $value['id'] . '-'. $option;
+				$name = $option_name . '[' . $value['id'] . '][' . $option .']';
+				if( in_array($key, $val)) {
+					$selected = ' selected="selected" ';
+				}
+				$output .= '<option'. $selected .' value="' . esc_attr( $key ) . '">' . esc_html( $label ) . '</option>';
+			}
+			$output .= '</select>';
+			break;
+
 		// Color picker
 		case "color":
 			$output .= '<div id="' . esc_attr( $value['id'] . '_picker' ) . '" class="colorSelector"><div style="' . esc_attr( 'background-color:' . $val ) . '"></div></div>';
@@ -443,10 +476,12 @@ function optionsframework_fields() {
 									<label for="">Click-to Link</label>
 									<input type="text" value="<?php echo $val[$i]['link'] ?>" name="<?php echo esc_attr( $option_name . '[' . $value['id'] . '][' . $i . '][link]') ?>">
 								</div>
-								<div class="item_row">
-									<label for="">HTML/Text Displayed</label>
-									<textarea name="<?php echo esc_attr( $option_name . '[' . $value['id'] . '][' . $i . '][html]') ?>" id="" cols="30" rows="10"><?php echo $val[$i]['html'] ?></textarea>	
-								</div>
+								<?php if (!isset($value['slide_captions']) || $value['slide_captions'] != 'none'): ?>
+									<div class="item_row">
+										<label for="">HTML/Text Displayed</label>
+										<textarea name="<?php echo esc_attr( $option_name . '[' . $value['id'] . '][' . $i . '][html]') ?>" id="" cols="30" rows="10"><?php echo $val[$i]['html'] ?></textarea>	
+									</div>
+								<?php endif ?>
 							</div>
 							<div class="type_controls" id="listing_type">
 								<?php echo pls_generate_featured_listings_ui($value, $val[$i], $option_name, $i, $for_slideshow = true) ?>		

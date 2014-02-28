@@ -88,7 +88,7 @@ class PLS_Widget_Mortgage_Calculator extends WP_Widget {
 
 	public function form( $instance ) {
 		// Output admin widget options form
-		$instance = wp_parse_args( (array) $instance, array( 'title' => 'Mortgage Calculator', 'home_price' => '250000' ) );
+		$instance = wp_parse_args( (array) $instance, array( 'title' => 'Mortgage Calculator', 'home_price' => '250,000' ) );
 		$title = strip_tags($instance['title']);
 		$home_price = strip_tags($instance['home_price']);
 		?>
@@ -112,7 +112,8 @@ class PLS_Widget_Mortgage_Calculator extends WP_Widget {
 					$.each($(this).closest('form').serializeArray(), function(i, field) {
 							 data[field.name] = field.value;
 					});
-					
+					// remove commas from price
+					data.price = data.price.replace(/,/g, "");
 					M = parseInt(data.price) ? parseInt(data.price) : function () { alert('You must enter a number for the price (rather then a word)'); return false; }()
 					n = parseInt( data.term ) * 12;
 					r = parseFloat( data.rate ) / 1200;

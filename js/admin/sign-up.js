@@ -98,7 +98,7 @@ jQuery(document).ready(function($) {
 				// Start free trial...
 				$.post(ajaxurl, {action: "start_subscription_trial", source: "wi"}, function (result) {
 					// Instrument...
-					mixpanel.track("Registration - Trial Started",  {'source' : 'Activation Modal'});
+					pls_track_event("Registration - Trial Started",  {'source' : 'Activation Modal'});
 				}, "json");
             }
         },
@@ -266,7 +266,7 @@ jQuery(document).ready(function($) {
 		setTimeout(
 			function() {
 				try {
-					mixpanel.track(string);
+					pls_track_event(string);
 				}
 				catch(err) {
 					if (typeof console !== "undefined") {
@@ -281,7 +281,7 @@ jQuery(document).ready(function($) {
 	construct_modal(new_acct_args);
 
 	// Instrument...
-	mixpanel.track("Registration - Opportunity", {'type' : 'Activation Modal'});
+	pls_track_event("Registration - Opportunity", {'type' : 'Activation Modal'});
 
 	// Prevent any clicks...
 	$('.wrapper').on('click', function() {

@@ -6,6 +6,7 @@ class PL_Cache {
 
 	const TTL_LOW  = 1800; // 30 minutes
 	const TTL_HOUR = 3600; // 1 hour
+	const TTL_HOURS = 10800; // 3 hours
 	const TTL_MID = 43200; // 12 hours
 	const TTL_DAY = 86400; // 24 hours
 	const TTL_HIGH = 172800; // 48 hours
@@ -20,10 +21,12 @@ class PL_Cache {
 
 	public $group; // set by constructor...
 	public $transient_id = false;
+	private $always_cache = false;
 
-	function __construct ($group = 'general') {
+	function __construct ($group = 'general', $always_cache = false) {
 		self::$offset = get_option(self::$offset_key, 0);
 		$this->group = preg_replace( "/\W/", "_", strtolower($group) );
+		$this->always_cache = $always_cache;
 	}
 
 	public static function init() {
@@ -52,8 +55,12 @@ class PL_Cache {
 		// Backdoor to ignore the cache completely...
 		$cache_escape = ( isset($_GET['no_cache']) || isset($_POST['no_cache']) );
 
+		// Allow for the "always_cache" breaker...
+		$allow_caching = self::allow_caching() || $this->always_cache;
+		// error_log($allow_caching ? 'true' : 'false');
+
 		// Do not cache if it is not allowed OR if escape mechanism is set...
-		if ( !self::allow_caching() || $cache_escape) {
+		if ( !$allow_caching || $cache_escape) {
 			// error_log("Cache bypassed...");
 			// error_log("group: {$this->group}");
 			// error_log("Is AJAX: " . (defined('DOING_AJAX') ? "YES" : "NO"));
@@ -62,10 +69,14 @@ class PL_Cache {
 			// error_log("key/id/args: " . var_export(func_get_args(), true) . "\n");
 			return false;
 		}
-	
+		// error_log("CACHING!!!");
+
 		// Create and store item's cache key...
 		$args = func_get_args();
 		$this->transient_id = self::build_cache_key($this->group, $args);
+
+		// error_log(var_export($args, true));
+		// error_log($this->transient_id);
 
         $transient = get_transient($this->transient_id);
         // Return as is -- if transient doesn't exist, it's up to the caller to check...
@@ -75,7 +86,7 @@ class PL_Cache {
 	public function save ($result, $duration = 172800) {
 		// Make sure the transient_id was properly set in the "get" call, and that caching is permitted...
 		if ( $this->transient_id && self::allow_caching() ) {
-			set_transient($this->transient_id, $result , $duration);
+			set_transient($this->transient_id, $result, $duration);
 		}
 	}
 
@@ -86,7 +97,7 @@ class PL_Cache {
 	public static function allow_caching() {
 		// Allow caching as long as user is not an admin AND is not in the admin panel...
 		// return ( !current_user_can('manage_options') && !is_admin() );
-
+		
 		// For now, refuse caching for ALL authenticated users + devs with debug turned on...
 		return ( !is_user_logged_in() && !defined('PL_DISABLE_CACHE') );
 	}

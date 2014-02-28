@@ -308,7 +308,7 @@ function ajax_placester_contact() {
 
       // Check to make sure that the name field is not empty
       if( trim($_POST['name']) == '' || trim($_POST['name']) == 'Name' ) {
-        $error .= "Your name is required<br/>";
+        // $error .= "Your name is required<br/>";
       } else {
         $message .= "Name: " . trim($_POST['name']) . " \n";
       }
@@ -325,7 +325,7 @@ function ajax_placester_contact() {
       // Check to make sure that the phone number field is not empty
       if (isset($_POST['phone'])) {
         if( trim($_POST['phone']) == '' || trim($_POST['phone']) == 'Phone Number' ) {
-          $error .= "Your phone number is required<br/>";
+          // $error .= "Your phone number is required<br/>";
         } else {
           $message .= "Phone Number: " . trim($_POST['phone']) . " \n";
         }

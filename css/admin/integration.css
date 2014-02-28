@@ -1,16 +1,8 @@
 .rets_form {
 	float: left;
 }
-.rets_form form {
-	width: 650px
-}
-
 .rets_form form.wizard-mls {
 	width: 750px !important;
-}
-
-.rets_form form #message.error {
-	margin-right: 20px;
 }
 .rets_form form #message.error ul li {
 	margin-left: 15px;

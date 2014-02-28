@@ -249,17 +249,16 @@ function optionsframework_page() {
 				}
 			}
 		</script>
-    <div id="optionsframework-submit">
+		<div id="optionsframework-submit">
 			<input type="submit" class="button-primary" name="update" value="<?php echo 'Save Options'; ?>" />
-      <input type="submit" id="reset-button" class="reset-button button-secondary" name="reset" value="<?php echo 'Restore Defaults' ; ?>" onclick="restoreDefaultsPrompt(event);" style="display:none;" />
-      <div class="clear"></div>
+			<input type="submit" id="reset-button" class="reset-button button-secondary" name="reset" value="<?php echo 'Restore Defaults' ; ?>" onclick="restoreDefaultsPrompt(event);" style="display:none;" />
+			<div class="clear"></div>
 		</div>
 	</form>
-</div> <!-- / #container -->
-</div>
-</div> <!-- / .wrap -->
-
-<?php
+	</div> <!-- / #container -->
+	</div>
+	</div> <!-- / .wrap -->
+	<?php
 }
 }
 

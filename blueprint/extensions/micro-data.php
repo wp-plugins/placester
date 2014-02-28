@@ -5,31 +5,8 @@
  * to elements in the site.
  *
  */
-PLS_Micro_Data::init();
 
 class PLS_Micro_Data {
-
-	public static function init () {
-		add_filter('wp_head', array(__CLASS__, 'schema_org_head_tags'));
-	}
-
-	public static function schema_org_head_tags () {
-	    // Take meta tag designations, and apply them to the HTML elements
-	    $tags = PLS_Meta_Tags::determine_appropriate_tags();
-
-	    ob_start();
-		?>
-			<!-- Schema.org Tags -->
-			<meta itemprop="name" content="<?php echo $tags['title']; ?>">
-			<meta itemprop="email" content="<?php echo $tags['email']; ?>">
-			<meta itemprop="address" content="<?php echo $tags['address']; ?>">
-			<meta itemprop="description" content="<?php echo $tags['description']; ?>">
-			<meta itemprop="url" content="<?php echo $tags['url']; ?>">
-		<?php
-		$tags_html = ob_get_clean();
-
-		echo $tags_html;
-	}
 
 	public static function itemtype ($section_template, $include_itemscope = true) {
 		$schema_url = 'http://schema.org/';

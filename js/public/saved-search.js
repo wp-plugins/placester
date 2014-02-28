@@ -1,11 +1,23 @@
 jQuery(document).ready(function($) {
 
-    $('.pls_save_search').fancybox({
-        hideOnContentClick: false,
-        scrolling: true,
-        onStart: function () { append_search_filters(); },
-        onClosed: function () { $('.login-form-validator-error').remove(); }
-    });
+    /* 
+     * Bindings for UI that allow for saving and deletion of searches
+     */
+
+	if (typeof $.fancybox == "function") {
+	    $('.pls_save_search').fancybox({
+	        hideOnContentClick: false,
+	        scrolling: true,
+	        onStart: function () { 
+	        	append_search_filters(); 
+	        },
+	        onCleanup: function () { 
+	        	$('#fancybox-content').find('form').each(function() {
+	        		this.reset();
+	        	});
+	        }
+	    });
+	}
 
     $('#pl_submit').on('click', function (event) {
         event.preventDefault();
@@ -15,7 +27,7 @@ jQuery(document).ready(function($) {
         var url_path = window.location.pathname + search_hash;
         
         var data = {
-            action: "add_saved_search_to_user",
+            action: "add_user_saved_search",
             search_url_path: url_path,
             search_name: $('#user_search_name').val(),
             search_filters: get_search_filters()
@@ -42,8 +54,62 @@ jQuery(document).ready(function($) {
       
     });
 
-    // Method to retrieve all the keys and values of the search form on the page
-    //
+    $('.pl_ss-remove-search').live('click', function (event) {
+        event.preventDefault();
+        
+        var data = {
+            action: 'delete_user_saved_search',
+            search_hash: $(this).attr('href')
+        };
+
+        $.post(info.ajaxurl, data, function (response, textStatus, xhr) {
+            // console.log(response);
+            if (response && response.success === true) {
+                $('.pl_saved-search--single#' + data.search_hash).remove();
+            }
+        }, 'json');
+    });
+
+    function updateNotification(flag, elem) {
+        var data = {
+            action: 'update_search_notification',
+            search_hash: $(elem).attr('href'),
+            update_flag: flag
+        };
+        
+        $.post(info.ajaxurl, data, function (response, textStatus, xhr) {
+            // console.log(response);
+            if (response && response.success === true) {
+                if (flag) {
+                    $(elem).attr('class', 'pl_ss-disable-notification');
+                    $(elem).text('Disable Email Notification');
+                }
+                else {
+                    $(elem).attr('class', 'pl_ss-enable-notification');
+                    $(elem).text('Enable Email Notification');
+                }
+            }
+        }, 'json');
+    }
+
+    $('.pl_ss-enable-notification').live('click', function (event) {
+        event.preventDefault();
+
+        // Enable an e-mail notification for the given saved search...
+        updateNotification(true, this);
+    });
+
+    $('.pl_ss-disable-notification').live('click', function (event) {
+        event.preventDefault();
+
+        // Disable an e-mail notification for the given saved search...
+        updateNotification(false, this);
+    });
+
+    /*
+     * Bindings and functions for V2.1 Listing API...
+     */
+
     // NOTE: These key value pairs are used to "save" the search in the DB so that it can be re-applied later
     function get_search_filters () {
         var raw_filters = {};
@@ -107,45 +173,7 @@ jQuery(document).ready(function($) {
         "metadata[min_beds]": "Min Beds",
         "metadata[min_baths]": "Min Baths",
         "metadata[min_price]": "Min Price",
-        "metadata[max_price]": "Max Price",
-        "sort_by": "Sort By",
-        "sort_type": "Sort Order"
+        "metadata[max_price]": "Max Price"
     }
-
-    /* 
-     * Bindings for UI that generates the list of saved searches in the user's client profile... 
-     */
-
-    $('.pls_remove_search').live('click', function (event) {
-        event.preventDefault();
-        
-        // So we can keep the HTML object context for use in the success call back
-        var that = this;
-        var data = {
-            action: 'delete_user_saved_search',
-            unique_search_hash: $(this).attr('href')
-        };
-
-        $.post(info.ajaxurl, data, function(response, textStatus, xhr) {
-            // Optional stuff to do after success
-            // console.log(response);
-            if (response && response.success) {
-                $('.saved_search_block#' + data.unique_search_hash).remove();
-            } 
-            else {
-                // show error message
-            }
-        }, 'json');
-        
-    });
-
-    $('#pls_view_search').on('click', function (event) {
-        event.preventDefault();
-        
-        // Act on the event
-        $.post(info.ajaxurl, {param1: 'value1'}, function (data, textStatus, xhr) {
-            //optional stuff to do after success
-        });
-    });
 
 });

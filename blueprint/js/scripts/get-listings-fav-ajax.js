@@ -1,6 +1,7 @@
+// TODO: see if we still need this
 jQuery(document).ready(function($) {
 	// for wp.org, to prevent errors when theme used w/o plugin
-	if (typeof dataTable === 'undefined') {
+	if (typeof $.fn.dataTable === 'undefined') {
 		return;
 	}
 
@@ -13,7 +14,7 @@ jQuery(document).ready(function($) {
 		"sServerMethod": "POST",
 		"sAjaxSource": info.ajaxurl, //wordpress url thing
 		"fnServerData": function ( sSource, aoData, fnCallback ) {
-			aoData.push( { "name": "action", "value" : "pls_listings_fav_ajax"} );
+			aoData.push( { "name": "action", "value" : "listings_fav_ajax"} );
 			aoData = my_listings_search_params(aoData);
 			$.ajax({
 				"dataType" : 'json',
