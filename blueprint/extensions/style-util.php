@@ -45,6 +45,7 @@ class PLS_Style {
         require_if_theme_supports("pls-post-options", PLS_Route::locate_blueprint_option('post.php'));
         require_if_theme_supports("pls-widget-options", PLS_Route::locate_blueprint_option('widget.php'));
         require_if_theme_supports("pls-footer-options", PLS_Route::locate_blueprint_option('footer.php'));
+        require_if_theme_supports("pls-compliance-options", PLS_Route::locate_blueprint_option('compliance.php'));
         require_if_theme_supports("pls-css-options", PLS_Route::locate_blueprint_option('css.php'));
 
         // Cache options

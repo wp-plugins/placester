@@ -273,7 +273,7 @@ class PLS_Meta_Tags {
 
 				$tags['description'] = PLS_Format::shorten_excerpt($post, 155);
 				$tags['address'] = @pls_get_option('pls-company-street') . ", " . @pls_get_option('pls-company-locality') . ", " . @pls_get_option('pls-company-region');
-				$tags['author'] = $post->post_author;
+				$tags['author'] = get_the_author();
 
 				break;
 

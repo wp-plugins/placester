@@ -38,17 +38,17 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
         wp_enqueue_script('cookies');
         
         // declare the URL to the file that handles the AJAX request (wp-admin/admin-ajax.php)
-//         wp_localize_script( 'jquery', 'info', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
-		add_action( 'wp_print_scripts', 'pls_print_info_var' );
+        // wp_localize_script( 'jquery', 'info', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+        add_action( 'wp_print_scripts', 'pls_print_info_var' );
         
         /**
          *  If the plugin is inactive, register the script that deals with adding 
          *  notification about needing the plugin. Localize the notification 
          *  message. Accompanied by plugin-nags.css.
          */
-		wp_register_script( 'jquery-placeholder', trailingslashit( PLS_JS_URL ) . 'libs/jquery-placeholder/jquery.placeholder.min.js' , array( 'jquery' ), '1.0.1', true );
-		wp_enqueue_script( 'jquery-placeholder' );
-		
+        wp_register_script( 'jquery-placeholder', trailingslashit( PLS_JS_URL ) . 'libs/jquery-placeholder/jquery.placeholder.min.js' , array( 'jquery' ), '1.0.1', true );
+        wp_enqueue_script( 'jquery-placeholder' );
+
         wp_register_script( 'listings-object', trailingslashit( PLS_JS_URL ) . 'scripts/listings.js' , array( 'jquery' ), '1.0.1', true );
         wp_enqueue_script('listings-object');
 
@@ -66,8 +66,9 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
 
         wp_register_script( 'search-bootloader', trailingslashit( PLS_JS_URL ) . 'scripts/search-loader.js' , array( 'jquery' ), NULL, true );
         wp_enqueue_script('search-bootloader');
-        
-        wp_enqueue_script( 'underscore' );
+
+        wp_register_script( 'underscore', trailingslashit( PLS_JS_URL ) . 'libs/underscore/underscore-min.js');
+        wp_enqueue_script('underscore');
 
         if ( pls_has_plugin_error() ) {
             /** Localize the script. Send the correct notification. */

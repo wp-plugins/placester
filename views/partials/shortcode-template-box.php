@@ -16,7 +16,6 @@ $listing_attributes = PL_Shortcode_CPT::get_listing_attributes();
 	<h3>Create Shortcode Template</h3>
 
 	<div class="inside">
-
 		<!-- Template Type -->
 		<section class="row-fluid">
 
@@ -87,13 +86,18 @@ $listing_attributes = PL_Shortcode_CPT::get_listing_attributes();
 							<?php foreach($sct_args['subcodes'] as $subcode=>$atts): ?>
 								<?php $subcodes .= '<h4 class="subcode"><a href="#">[' . $subcode . ']</a></h4>';?>
 								<?php if (!empty($atts['help'])):?>
-									<?php 
+									<?php
 									if ($subcode=='custom' || $subcode=='if') {
 										switch($pl_shortcode) {
 											case 'search_listings':
 											case 'static_listings':
 											case 'featured_listings':
+											case 'favorite_listings':
 												$atts['help'] = $atts['help'] . '<br />Click <a href="#" class="show_listing_attributes">here</a> to see a list of available listing attributes.';
+												break;
+											case 'search_form':
+												$atts['help'] = $atts['help'] . '<br />Click <a href="#" class="show_search_form_attributes">here</a> to see a list of available listing attributes.';
+												break;
 										}
 									}
 									?>
@@ -119,6 +123,26 @@ $listing_attributes = PL_Shortcode_CPT::get_listing_attributes();
 							<td>
 							<?php if ($attr['group']):?>
 								<?php echo $attr['group']?>
+							<?php endif;?>
+							</td>
+						</tr>
+					<?php endforeach;?>
+				</table>
+			</div>
+			<div id="search_form_attributes" style="display:none;">
+				<table>
+					<tr>
+						<th>Listing Field</th>
+						<th>Attribute</th>
+						<th>Group</th>
+					</tr>
+					<?php foreach($listing_attributes as $attr) :?>
+						<tr>
+							<td><strong><?php echo $attr['label']?></strong></td>
+							<td><?php echo $attr['attribute']?></td>
+							<td>
+							<?php if ($attr['search_form_group']):?>
+								<?php echo $attr['search_form_group']?>
 							<?php endif;?>
 							</td>
 						</tr>

@@ -112,8 +112,8 @@ class PLS_Partials_Get_Listings_Ajax {
         $sort_type_options = apply_filters("pls_listings_list_ajax_sort_type_options", $sort_type_options);
 
         // Ultimately, sort params in the $_POST array take precedence if they exist...
-        $sort_by = isset($_POST['sort_by']) ? $_POST['sort_by'] : $sort_by;
-        $sort_type = isset($_POST['sort_type']) ? $_POST['sort_type'] : $sort_type;
+        $sort_by = isset($_POST['sort_by']) ? $_POST['sort_by'] : $sort_by_dflt;
+        $sort_type = isset($_POST['sort_type']) ? $_POST['sort_type'] : $sort_type_dflt;
 
         ob_start();
         ?>
@@ -390,6 +390,8 @@ class PLS_Partials_Get_Listings_Ajax {
         $api_total = isset($api_response['total']) ? $api_response['total'] : 0; 
         $response['iTotalRecords'] = $api_total;
         $response['iTotalDisplayRecords'] = $api_total;
+        $response['iDisplayStart'] = isset($_POST['offset']) ? $_POST['offset'] : 0;
+        $response['iDisplayLength'] = isset($_POST['limit']) ? $_POST['limit'] : 0;
 
         $cache->save($response);
 

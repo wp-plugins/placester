@@ -81,7 +81,7 @@
 	    <p>This will help us provide prompt support to get your integration setup.</p>
 	  </div>
 	  <div class="elements">
-	    <input id="email" name="email" size="30" type="text" value="<?php echo $email ?>">
+	    <input id="broker_email" name="broker_email" size="30" type="text" value="<?php echo $email ?>">
       </div>
 	</div>
 
