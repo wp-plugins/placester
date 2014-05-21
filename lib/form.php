@@ -110,7 +110,7 @@ class PL_Form {
 					<label for="<?php echo $id ?>" class="<?php echo $type ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
 					<select name="<?php echo $name ?>" id="<?php echo $id ?>" data-multi="<?php echo $multi ?>" >
 						<?php foreach ($options as $key => $text): ?>
-							<option value="<?php echo htmlentities($key, ENT_QUOTES) ?>" <?php echo ($key === $value ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text, ENT_QUOTES, 'UTF-8', false) ?></option>
+							<option value="<?php echo htmlentities($key, ENT_QUOTES) ?>" <?php echo ($key === $value || (gettype($key)=='integer' && (string)$key === $value) ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text, ENT_QUOTES, 'UTF-8', false) ?></option>
 						<?php endforeach ?>
 					</select>
 				</section>

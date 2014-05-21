@@ -66,9 +66,9 @@ jQuery(document).ready(function($) {
 			$('#phone').closest('div .row').find('h3').first().addClass('invalid');
             errors.push('Please enter a valid phone number');
 		}
-        if ( $('#email').length != 0 && !validate_email_address($('#email').val()) ) {
-            $('#email').addClass('invalid');
-            $('#email').closest('div .row').find('h3').first().addClass('invalid');
+        if ( $('#broker_email').length != 0 && !validate_email_address($('#broker_email').val()) ) {
+            $('#broker_email').addClass('invalid');
+            $('#broker_email').closest('div .row').find('h3').first().addClass('invalid');
             errors.push('Please enter a valid email address');
         }
         if (errors.length) {

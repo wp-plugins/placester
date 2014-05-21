@@ -111,6 +111,10 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_Membership", "placester_lead_control_panel"), false, $args );
     }
 
+    public static function get_client_area_url () {
+        return self::try_call_func( array("PL_Membership", "get_client_area_url"), false, false );
+    }
+
     public static function get_person_details () {
         return self::try_call_func( array("PL_People_Helper", "person_details"), array(), array() );
     }
@@ -237,6 +241,10 @@ class PLS_Plugin_API {
         }
 
         return $company_info;
+    }
+
+    public static function get_default_location () {
+        return self::try_call_func( array("PL_Option_Helper", "get_default_location"), array('lat' => 42.3596681, 'lng' => -71.0599325));
     }
 
     public static function mls_message ($context) {

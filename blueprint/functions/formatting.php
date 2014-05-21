@@ -712,9 +712,10 @@ class PLS_Format {
     } else {
       return '';
     }
-    
+
+    if (strlen($excerpt) <= $length) { return $excerpt; }
+
     $shortened_excerpt = preg_replace('/\s+?(\S+)?$/', '', substr($excerpt, 0, $length));
-    
     if ($ellipsis == true) {
       $shortened_excerpt .= '...';
     }

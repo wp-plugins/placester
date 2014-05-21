@@ -13,7 +13,7 @@ class PL_Dragonfly {
 		//finds the extension, "jpeg" in this case
 		$pathinfo = pathinfo($path);
 		$ext = $pathinfo['extension'];
-		$size = $args['resize']['w'] . 'x' . $args['resize']['h'] . '#';
+		$size = $args['resize']['w'] . 'x' . $args['resize']['h'] . ($args['nocrop'] ? '!' : '#');
 		$action = 'thumb';
 		// $action = 'resize';
 		// $action = 'crop';

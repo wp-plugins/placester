@@ -80,7 +80,7 @@ class PLS_Route {
 		
 		// If wrapper is being used, it will load attempt to load the various wrapper iterations.
 		// wrapper() needs to have PLS_Route::handle_dynamic to actually load the requested page after wrapper is loaded. 
-		return self::router($templates, true);
+		return self::router($templates, true, null, null, self::CACHE_PER_PAGE);
 	}
 
 	/* Checks for a user defined file, if not present returns the required blueprint template.
@@ -206,12 +206,12 @@ class PLS_Route {
 	 */
 
 	public static function handle_dynamic () {
-		return self::router(self::$request, true, null, null, self::CACHE_PER_PAGE);
+		return self::router(self::$request, true, null, null, self::CACHE_NONE);
 	}
 
 	public static function handle_header () {
 		// Header is loaded directly rather than being set as a request and then looping the routing table.
-		return self::router(array('header.php'), true, null, null, self::CACHE_PER_PAGE);
+		return self::router(array('header.php'), true, null, null, self::CACHE_NONE);
 	}
 
 	public static function handle_sidebar () {
@@ -221,7 +221,7 @@ class PLS_Route {
             $sidebars[] = 'sidebar-' . $item;
         }
         $sidebars[] = 'sidebar.php';
-		return self::router($sidebars, true, null, null, self::CACHE_PER_PAGE);
+		return self::router($sidebars, true, null, null, self::CACHE_NONE);
 	}
 
 	public static function handle_default_sidebar () {
@@ -231,12 +231,12 @@ class PLS_Route {
             $sidebars[] = 'default-sidebar-' . $item;
         }
         $sidebars[] = 'default-sidebar.php';
-		return self::router($sidebars, true, null, null, self::CACHE_PER_PAGE);
+		return self::router($sidebars, true, null, null, self::CACHE_NONE);
 	}
 
 	public static function handle_footer () {
 		// Footer is loaded directly rather then being set as a request and then looping the routing table.
-		return self::router(array('footer.php'), true, null, null, self::CACHE_PER_PAGE);
+		return self::router(array('footer.php'), true, null, null, self::CACHE_NONE);
 	}
 
 

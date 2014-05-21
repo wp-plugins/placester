@@ -18,7 +18,7 @@ List.prototype.init = function (params) {
 	this.context = params.context || false;
 	this.total_results_id = params.total_results_id || '#pls_num_results';
 	this.limit_default = params.limit_default || 10;
-	this.limit_choices = params.limit_choices || [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]];
+	this.limit_choices = params.limit_choices || [[10, 25, 50], [10, 25, 50]];
 	this.settings = params.settings || { 
 		"bFilter": false,
 		"bProcessing": true,
@@ -72,6 +72,18 @@ List.prototype.update = function (ajax_response) {
     	}
 	}
 	this.update_favorites_through_cache();
+  
+  if (ajax_response.iDisplayStart && ajax_response.iDisplayLength) {
+    var curOffset = this.datatable.fnSettings()._iDisplayStart;
+    var offset = Number(ajax_response.iDisplayStart);
+    if (offset !== curOffset) {
+      var limit = Number(ajax_response.iDisplayLength);
+      var page = Math.round(offset/limit);
+      this.datatable.fnPageChange(page, false);
+      jQuery.fn.dataTableExt.oPagination.full_numbers.fnUpdate(this.datatable.fnSettings());
+    }
+  }
+
 	this.hide_loading();
 	if (ajax_response.aaData.length > 0) {
 		this.hide_empty();

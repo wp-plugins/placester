@@ -73,7 +73,7 @@ class PLS_Widget_Testimonials extends WP_Widget {
         ob_start();
         ?>
         <article class="featured-testimonial" itemscope itemtype="http://schema.org/Review">
-          <h4 itemprop="name"><?php echo $post_item['title']; ?></h4>
+          <a href="<?php echo $post_item['url']; ?>" itemprop="url"><h4 itemprop="name"><?php echo $post_item['title']; ?></h4></a>
           <blockquote itemprop="review">
             <p><?php echo PLS_Format::shorten_text($post_item['content'], 130); ?></p>
           </blockquote>

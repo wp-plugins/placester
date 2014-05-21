@@ -75,6 +75,7 @@ class PLS_Image {
 		}
 
 	    $args = self::process_defaults($args);
+	    // doesn't really disable dragonfly, but disables cropping -- for mls compliance
 	    $disable_dragonfly = pls_get_option('pls-disable-dragonfly');
 	    
 	    // use standard default image
@@ -86,10 +87,11 @@ class PLS_Image {
 				$old_image = PLS_IMG_URL . "/null/listing-1200x720.jpg";
 			}
 		} 
-		elseif ( $args['allow_resize'] && $args['resize']['w'] && $args['resize']['h'] && get_theme_support('pls-dragonfly') && ($disable_dragonfly != true)) {
+		elseif ( $args['allow_resize'] && $args['resize']['w'] && $args['resize']['h'] && get_theme_support('pls-dragonfly')) {
 			
 			$img_args = array(
 				'resize' => $args['resize'],
+				'nocrop' => $disable_dragonfly,
 				'old_image' => $old_image
 			);
 
