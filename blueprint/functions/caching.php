@@ -52,7 +52,7 @@ class PLS_Widget_Cache {
 		add_action('wp', array(__CLASS__,'widget_cache_redirect_callback'), 99999);
 	}
 
-	public static function widget_cache_redirect_callback()
+	public function widget_cache_redirect_callback()
 	{
 		global $wp_registered_widgets;
 
@@ -68,7 +68,7 @@ class PLS_Widget_Cache {
 		}
 	}
 
-	public static function widget_cache_redirected_callback()
+	public function widget_cache_redirected_callback()
 	{
 		global $wp_registered_widgets;
 

@@ -24,7 +24,7 @@ class PLS_Widget_Listings extends WP_Widget {
 	 * Set up the widget's unique name, ID, class, description, and other options.
 	 * @since 0.0.1
 	 */
-	public function __construct() {
+	function __construct() {
 
 		/* Set the widget textdomain. */
 		$this->textdomain = pls_get_textdomain();
@@ -50,7 +50,7 @@ class PLS_Widget_Listings extends WP_Widget {
      *
 	 * @since 0.0.1
 	 */
-	public function widget( $args, $instance ) {
+	function widget( $args, $instance ) {
         list($args, $instance) = self::process_defaults($args, $instance);
 
         /** Extract the arguments into separate variables. */
@@ -99,7 +99,7 @@ class PLS_Widget_Listings extends WP_Widget {
      *
 	 * @since 0.0.1
 	 */
-	public function update( $new_instance, $old_instance ) {
+	function update( $new_instance, $old_instance ) {
 
         $instance = $old_instance;
 
@@ -125,7 +125,7 @@ class PLS_Widget_Listings extends WP_Widget {
      *
 	 * @since 0.0.1
 	 */
-	public function form( $instance ) {
+	function form( $instance ) {
 
 		/** Set up the default form values. */
 		$defaults = array(
@@ -261,7 +261,7 @@ class PLS_Widget_Listings extends WP_Widget {
         ); 
 	}
 
-    public static function custom_widget_html_filter ($listing_html, $listing_data) {
+    function custom_widget_html_filter ($listing_html, $listing_data) {
         ob_start();
         ?>
             <section class="listing-item">
@@ -290,7 +290,7 @@ class PLS_Widget_Listings extends WP_Widget {
          return $listing_html;
     }
 
-    private static function process_defaults ($args, $instance) {
+    function process_defaults ($args, $instance) {
 
         /** Define the default argument array. */
         $arg_defaults = array(

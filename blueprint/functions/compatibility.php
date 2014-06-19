@@ -11,25 +11,6 @@
  */
 class PLS_Plugin_API {
 
-    static public $default_company_details = array(
-        'description' => '',
-        'logo_url' => '',
-        'name' => '',
-        'phone' => '',
-        'email' => '',
-        'location' => array(
-            'address' => '',
-            'unit' => '',
-            'locality' => '',
-            'region' => '',
-            'postal' => '',
-            'neighborhood' => '',
-            'country' => '',
-            'latitude' => '',
-            'longitude' => ''
-        )
-    );
-
     /**
      * Verify if calling a plugin function throws any exceptions. If it throws 
      * a timeout exception, set the theme global error flag.
@@ -40,19 +21,14 @@ class PLS_Plugin_API {
      * didn't throw any exceptions, false otherwise.
      * @since 0.0.1
      */
-    private static function try_call_func () {
+    private static function _try_for_exceptions () {
         // Don't proceed if there's an issue with the plugin...
         if (pls_has_plugin_error()) {
             return false;
         }
             
         $parameters = func_get_args();
-
-        // Assume first function arg is a PHP callback array...
         $function_name = array_shift($parameters);
-
-        // Assume the second function arg is a value that will be returned if the call fails...
-        $if_fail = array_shift($parameters);
 
         try {
             // Call the function with its parameters...
@@ -63,8 +39,18 @@ class PLS_Plugin_API {
             if ( !isset($e->message) ) {
                 pls_has_plugin_error('timeout');
             }
-            
-            // If invalid, set to value specified by 'if_fail'
+            $return = false;
+        }
+        
+        return $return;
+    }
+
+    private static function try_call_func ($callback, $params = array(), $if_fail = null) {
+        // Call the function and test for any exceptions...
+        $return = self::_try_for_exceptions($callback, $params);
+        
+        // If invalid, set to value specified by 'if_fail'
+        if (!$return) {
             $return = $if_fail;
         }
         
@@ -75,122 +61,76 @@ class PLS_Plugin_API {
      * Taxonomies
      */
 
-    public static function get_term ($params = array()) {
-        return self::try_call_func( array("PL_Taxonomy_Helper","get_term"), false, $params );
-    }
-
-    public static function get_permalink_templates ($params = array()) {
-        return self::try_call_func( array("PL_Taxonomy_Helper","get_permalink_templates"), false, $params );
-    }
-
     public static function get_polygon_listings ($params = array()) {
-        return self::try_call_func( array("PL_Taxonomy_Helper","get_listings_polygon_name"), array("listings" => array()), $params );
+        return self::try_call_func( array("PL_Taxonomy_Helper","get_listings_polygon_name"), $params, array("listings" => array()) );
     }
 
     public static function get_polygon_links ($params = array()) {
-        return self::try_call_func( array("PL_Taxonomy_Helper","get_polygon_links"), array(), $params );
+        return self::try_call_func( array("PL_Taxonomy_Helper","get_polygon_links"), $params, array() );
     }
 
     public static function get_taxonomies_by_type ($params = array()) {
-        return self::try_call_func( array("PL_Taxonomy_Helper","get_polygons_by_type"), array(), $params );
+        return self::try_call_func( array("PL_Taxonomy_Helper","get_polygons_by_type"), $params, array() );
     }
 
     public static function get_taxonomies_by_slug ($params = array()) {
-        return self::try_call_func( array("PL_Taxonomy_Helper","get_polygons_by_slug"), array(), $params );
+        return self::try_call_func( array("PL_Taxonomy_Helper","get_polygons_by_slug"), $params, array() );
     }
 
     public static function get_polygon_detail ($params = array()) {
-        return self::try_call_func( array("PL_Taxonomy_Helper","get_polygon_detail"), array(), $params );
+        return self::try_call_func( array("PL_Taxonomy_Helper","get_polygon_detail"), $params, array() );
     }
 
     /*
-     * Membership + People Funcs
+     * Leads (Membership + People) Funcs
      */
 
-    public static function placester_lead_control_panel ($args) {
-        return self::try_call_func( array("PL_Membership", "placester_lead_control_panel"), false, $args );
+    public static function get_listings_fav_ids () {
+        return self::try_call_func( array("PL_Membership", "get_favorite_ids"), array(), false );
     }
 
-    public static function get_client_area_url () {
-        return self::try_call_func( array("PL_Membership", "get_client_area_url"), false, false );
+    public static function placester_lead_control_panel ($args) {
+        return self::try_call_func( array("PL_Membership", "placester_lead_control_panel"), $args, false );
+    }
+
+    public static function placester_favorite_link_toggle ($args) {
+        return self::try_call_func( array("PL_Membership", "placester_favorite_link_toggle"), $args, false );
+    }
+
+    public static function get_save_search_link () {
+        return self::try_call_func( array("PL_Membership_Helper", "get_save_search_link"), array(), "" );
     }
 
     public static function get_person_details () {
         return self::try_call_func( array("PL_People_Helper", "person_details"), array(), array() );
     }
 
-    public static function update_person ($person_details) {
-        return self::try_call_func( array("PL_People_Helper", "update_person"), false, $person_details );
+    public static function update_person_details ($person_details) {
+        return self::try_call_func( array("PL_People_Helper", "update_person_details"), $person_details, false );
     }
 
     public static function create_person ($person_details) {
-        return self::try_call_func( array("PL_People_Helper", "add_person"), false, $person_details );
+        return self::try_call_func( array("PL_People_Helper", "add_person"), $person_details, false );
     }
-
-    /* 
-     * Lead Funcs 
-     * 
-     * NOTE: Will eventually REPLACE 'People' funcs above -- for now, they co-exist... 
-     */
-
-    public static function get_lead_details ($args = array(), $wp_user_id = null) {
-        return self::try_call_func( array("PL_Lead_Helper", "lead_details"), array(), $args, $wp_user_id );
-    }
-
-    public static function create_lead ($args) {
-        return self::try_call_func( array("PL_Lead_Helper", "create_lead"), array(), $args );
-    }
-
-    public static function update_lead ($args) {
-        return self::try_call_func( array("PL_Lead_Helper", "update_lead"), array(), $args );
-    }
-
-    /*
-     * Favorite Listing(s) Funcs
-     */
-
-    public static function get_listings_fav_ids () {
-        return self::try_call_func( array("PL_Favorite_Listings", "get_favorite_ids"), false, array() );
-    }
-
-    public static function placester_favorite_link_toggle ($args) {
-        return self::try_call_func( array("PL_Favorite_Listings", "placester_favorite_link_toggle"), false, $args );
-    }
-    
-    public static function merge_bcc_forwarding_addresses_for_sending ($headers) {
-        return self::try_call_func( array("PL_Lead_Capture_Helper", "merge_bcc_forwarding_addresses_for_sending"), false, $headers);   
-    }
-
-    /*
-     * Permalink Search Funcs
-     */
-    
-    public static function save_search ($search_id, $search_filters) {
-        return self::try_call_func( array("PL_Permalink_Search", "save_search"), false, $search_id, $search_filters );
-    }
-
-    public static function get_saved_search_filters ($search_id) {
-        return self::try_call_func( array("PL_Permalink_Search", "get_saved_search_filters"), false, $search_id );
-    }
-
-    /*
-     * Saved Search Funcs
-     */
 
     public static function get_user_saved_searches () {
-        return self::try_call_func( array("PL_Saved_Search", "get_saved_searches"), array() );
+        return self::try_call_func( array("PL_Saved_Search", "get_user_saved_searches"), false, array() );
+    }
+
+    public static function save_a_search ($user_id, $save_searches) {
+        return self::try_call_func( array("PL_Saved_Search", "save_a_search"), array($user_id, $save_searches));
     }
 
     public static function get_saved_search_registration_form () {
-        return self::try_call_func( array("PL_Saved_Search", "get_saved_search_registration_form") );   
+        return self::try_call_func( array("PL_Saved_Search", "get_saved_search_registration_form"));   
     }
 
     public static function get_saved_search_button () {
-        return self::try_call_func( array("PL_Saved_Search", "get_saved_search_button") ); 
+        return self::try_call_func( array("PL_Saved_Search", "get_saved_search_button"));   
     }
 
-    public static function translate_key ($key) {
-        return self::try_call_func( array("PL_Saved_Search", "translate_key"), $key, $key );
+    public static function merge_bcc_forwarding_addresses_for_sending ($headers) {
+        return self::try_call_func( array("PL_Lead_Capture_Helper", "merge_bcc_forwarding_addresses_for_sending"), $headers);   
     }
     
     /*
@@ -212,47 +152,46 @@ class PLS_Plugin_API {
     }
 
     public static function get_schools ($params = array()) {
-        return self::try_call_func( array("PL_Education_Helper","get_schools"), array(), $params );
+        return self::try_call_func( array("PL_Education_Helper","get_schools"), $params, array() );
     }
 
     public static function get_walkscore ($params = array()) {
-        return self::try_call_func( array("PL_Walkscore","get_score"), array(), $params );
+        return self::try_call_func( array("PL_Walkscore","get_score"), $params, array() );
     }
 
     public static function get_translations () {
-        return self::try_call_func( array("PL_Custom_Attribute_Helper", "get_translations"), array() );
+        return self::try_call_func( array("PL_Custom_Attribute_Helper", "get_translations"), array(), array() );
     }
 
-    public static function get_user_details ($args = array(), $api_key = null) {
-        return self::try_call_func( array("PL_Helper_User", "whoami"), null,  $args, $api_key);
+    public static function create_page ($page_list) {
+        return self::try_call_func( array("PL_Pages", "create_once"), $page_list, false );
+    }    
+
+    public static function get_user_details () {
+        return self::try_call_func( array("PL_Helper_User", "whoami"), array(), false );
     }
 
-    /**
-     * Return public-safe info for company
-     * @return array Public company info. Any fields not populated by user will be an empty string.
-     */
     public static function get_company_details () {
         $details = self::get_user_details();
-        $company_info = self::$default_company_details;
+        $company_info = array();
 
-        if (is_array($details)) {
-            $r = array_replace_recursive($company_info, $details);
-            $company_info = array_intersect_key($r, $company_info);
+        if ($details) {
+            $company_info['description'] = $details['slogan'];
+            $company_info['logo_url'] = $details['logo'];
+            $company_info['name'] = $details['name'];
+            $company_info['phone'] = $details['phone'];
+            $company_info['email'] = $details['email'];
         }
 
         return $company_info;
     }
 
-    public static function get_default_location () {
-        return self::try_call_func( array("PL_Option_Helper", "get_default_location"), array('lat' => 42.3596681, 'lng' => -71.0599325));
-    }
-
     public static function mls_message ($context) {
-        return self::try_call_func( array("PL_Compliance", "mls_message"), false, $context );
+        return self::try_call_func( array("PL_Compliance", "mls_message"), $context, false );
     }
 
     public static function log_snippet_js ($event, $attributes) {
-        return self::try_call_func( array("PL_Analytics", "log_snippet_js"), false, $event, $attributes );
+        return self::_try_for_exceptions( array("PL_Analytics", "log_snippet_js"), $event, $attributes );
     }
 
     /*
@@ -264,28 +203,48 @@ class PLS_Plugin_API {
     }
 
     public static function get_listing_aggregates ($keys) {
-        return self::try_call_func( array("PL_Listing_Helper", "basic_aggregates"), array(), $keys );
+        return self::try_call_func( array("PL_Listing_Helper", "basic_aggregates"), $keys, array() );
     }
     
-    public static function get_property_url ($id = false, $listing = array()) {
+    public static function get_property_url ($id = false) {
         // Make sure $id is set...
         if (!$id) { return false; }
 
+        $cache = new PLS_Cache("Property URL");
+        if ($url = $cache->get($id)) {
+            return $url;
+        }
+
         // Test the function for any exceptions
-        return self::try_call_func( array("PL_Pages", "get_url"), false, $id, $listing );
+        $return = self::_try_for_exceptions( array("PL_Page_Helper", "get_url"), $id );
+
+        // If no exceptions were detected, return the result
+        if ($return) {
+            $cache->save($return, PLS_Cache::TTL_LOW);
+            return $return;
+        }
+
+        if (pls_has_plugin_error()) {
+            $page = get_page_by_title('Sample Listing', 'ARRAY_A');
+            if ($page && isset($page['guid'])) {
+                return $page['guid'];        
+            }
+        }
+
+        return false;
     }
 
     /**
-     * Returns a list of type values (property types, by default) valid for current site for use in search dropdowns
+     * Returns a list of property_types valid for current site for use in search dropdown.
      * 
      * @static
-     * @return array the options available for the given type key
+     * @return array The property_type(s) used on current site
      */
-    public static function get_type_list ($return_only = false, $allow_globals = true, $type_key = 'property_type') {
-        return self::try_call_func( array("PL_Listing_Helper","types_for_options"), array(), $return_only, $allow_globals, $type_key );
+    public static function get_type_list () {
+        return self::try_call_func( array("PL_Listing_Helper","types_for_options"), array(), false );
     }
-
-	/**
+    
+    /**
      * Gets an object containing the list of cities, zip codes and states of 
      * the available properties.
      *
@@ -303,15 +262,11 @@ class PLS_Plugin_API {
      * @since 0.0.1
      */
     public static function get_location_list ($return_only = false) {
-        return self::try_call_func( array("PL_Listing_Helper","locations_for_options"), array(), $return_only );
+        return self::try_call_func( array("PL_Listing_Helper","locations_for_options"), $return_only, false );
     }
 
     public static function get_location_list_polygons ($return_only = false) {
-        return self::try_call_func( array("PL_Listing_Helper","polygon_locations"), array(), $return_only );
-    }
-
-    public static function get_locations_counts ($params = array()) {
-        return self::try_call_func( array("PL_Listing_Helper","counts_for_locations"), array(), $params );
+        return self::try_call_func( array("PL_Listing_Helper","polygon_locations"), $return_only, array() );
     }
 
     /**
@@ -320,12 +275,165 @@ class PLS_Plugin_API {
      * @return list of property details
      * @since 0.0.1
      */
-    public static function get_listings ($args, $global_filters = true, $caching_on = false) {
-        return self::try_call_func(array("PL_Listing_Helper", "results"), array(), $args, $global_filters);
+    public static function get_listings ($args, $caching_on = false, $global_filters = true) {
+        // Default value...
+        $val = false;
+
+        // See if it's cached...
+        $cache = new PLS_Cache("Get Listings List");
+        $val = $cache->get($args);
+        if ($val && $caching_on) {
+            return $val;
+        }
+
+        $val = self::_try_for_exceptions(array("PL_Listing_Helper", "results"), $args, $global_filters);
+        if ($val && $caching_on)  {
+            $cache->save($val, PLS_Cache::TTL_LOW);
+        }
+
+        return $val;
     }
 
     public static function get_listing_details ($args) {
-        return self::try_call_func(array("PL_Listing_Helper", "details"), array(), $args);
+        // Default value...
+        $val = false;
+
+        // See if it's cached...
+        $cache = new PLS_Cache("Listings Details List");
+        if ($val = $cache->get($args)) {
+            return $val;
+        }
+
+        $val = self::_try_for_exceptions(array("PL_Listing_Helper", "details"), $args);
+        if ($val) {
+            $cache->save($val, PLS_Cache::TTL_LOW);
+        }
+
+        return $val;
+    }
+
+    /**
+     * Processes a list of arguments and selects only the valid ones that can 
+     * be used to make a request to the API.
+     * 
+     * @static
+     * @param array $args The argument array.
+     * @uses PLS_Plugin_API::get_property_list_fields();
+     * @since 0.0.1
+     */
+    public static function get_valid_property_list_fields (&$args) {
+
+        /** Get the list of arguments accepted by the api function. */
+        $api_valid_args = self::get_property_list_fields();
+
+        /** Process arguments that need to be sent to the API. */
+        $request_params = array();
+        foreach( $args as $key => $value ) {
+            /** If the argument is meant for the API request. */
+            if ( array_key_exists( $key, $api_valid_args ) ) {
+
+                /** The field valid type. */
+                $api_valid_args_type = $api_valid_args[$key];
+
+                /** Verify if the argument value is valid. */
+                $has_valid_value = empty( $api_valid_args_type ) ||
+                    ( 
+                        is_array( $api_valid_args_type ) && 
+                        array_key_exists( $value, $api_valid_args_type )
+                    ) ||
+                    ( 
+                        is_string( $api_valid_args_type ) && 
+                        function_exists( "is_{$api_valid_args_type}" ) && 
+                        call_user_func( "is_{$api_valid_args_type}", $value )
+                    );
+
+                /** If it's valid, add the argument to the request parameters. */ 
+                if ( $has_valid_value ) {
+                    $request_params[$key] = $value;
+                    unset( $args[$key] );
+                }
+
+            }
+        }
+
+        return $request_params;
+    }
+
+    /**
+     * The value of the array contains the allowed type of the argument, the 
+     * subset of allowed values if it's an array, or anything if empty.
+     * 
+     * @static
+     * @return array The allowed arguments array>
+     */
+    public static function get_property_list_fields ($field = '') {
+
+        $return = array(
+            'only_verified' => '',
+            'include_disabled' => '',
+            'property_ids' => 'array',
+            'property_type' => array(
+                'apartment' => true,
+                'penthouse' => true,
+                'townhouse' => true,
+                'brownstone' => true,
+                'family_home' => true,
+                'multi_fam_home' => true,
+                'flat' => true,
+                'loft' => true,
+                'cottage' => true,
+                'villa' => true,
+                'mansion' => true,
+                'ranch' => true,
+                'island' => true,
+                'log_cabin' => true,
+                'tent' => true,
+            ) ,
+            'listing_types' => 'array', 
+            'zoning_types' => 'array', 
+            'purchase_types' => 'array', 
+            'bedrooms' => 'numeric', 
+            'bathrooms' => 'numeric', 
+            'half_baths' => 'numeric', 
+            'min_price' => 'float', 
+            'max_price' => 'float', 
+            'price' => 'float', 
+            'available_on' => '', 
+            'location[zip]' => 'string', 
+            'location[state]' => 'string', 
+            'location[city]' => 'string', 
+            /** Country not supported by the API. */
+            'box[min_latitude]' => 'numeric',
+            'box[max_latitude]' => 'numeric',
+            'box[min_longitude]' => 'numeric',
+            'box[max_longitude]' => 'numeric',
+            'address_mode' => array( 'polygon' => true, 'exact' => true ),
+            'limit' => 'numeric',
+            'skip' => 'numeric',
+            'is_featured' => '',
+            'is_new' => '',
+            /** The commented ones are not supported by the list of listings. */
+            'sort_by' => array( 
+                'price' => 'Price',
+                // 'sqft' => 'Square Feet',
+                // 'description' => 'Description', 
+                // 'bedrooms' => 'Bedroom',
+                // 'half_baths' => 'Half Baths',
+                // 'available_on' => 'Available On',
+                'location.address' => 'Address',
+                'location.city' => 'City',
+                'location.state' => 'State',
+                'location.zip' => 'Zip',
+                // 'location.neighborhood' => 'Neighborhood',
+                // 'location.country' => 'Country',
+            ),
+            'sort_type' => array( 'asc' => true, 'desc' => true )
+        );
+
+        if ( ! empty( $field ) && array_key_exists( $field, $return ) )
+            return $return[$field];
+
+        return $return;
     }
 
     public static function get_type_values ($type) {
@@ -369,10 +477,6 @@ class PLS_Plugin_API {
         if ( empty($type) || !array_key_exists($type, $supported_types) ) { return; }
 
         return $supported_types[$type];
-    }
-
-    public static function resize_image($image_args) {
-    	return self::try_call_func(array("PL_Dragonfly", "resize"), $image_args['old_image'], $image_args);
     }
 }
 // end of class

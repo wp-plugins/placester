@@ -21,7 +21,7 @@ a link back to my site would be nice too.
 */
 
 // Include the GD image manipulation library. 
-include(trailingslashit (PLS_EXT_DIR) . 'image-util/image-resize-writer.php');
+include(trailingslashit ( PLS_EXT_DIR ) . 'image-util/image-resize-writer.php');
 
 PLS_Image::init();
 class PLS_Image {
@@ -75,7 +75,6 @@ class PLS_Image {
 		}
 
 	    $args = self::process_defaults($args);
-	    // doesn't really disable dragonfly, but disables cropping -- for mls compliance
 	    $disable_dragonfly = pls_get_option('pls-disable-dragonfly');
 	    
 	    // use standard default image
@@ -87,15 +86,27 @@ class PLS_Image {
 				$old_image = PLS_IMG_URL . "/null/listing-1200x720.jpg";
 			}
 		} 
-		elseif ( $args['allow_resize'] && $args['resize']['w'] && $args['resize']['h'] && get_theme_support('pls-dragonfly')) {
-			
-			$img_args = array(
-				'resize' => $args['resize'],
-				'nocrop' => $disable_dragonfly,
-				'old_image' => $old_image
-			);
+		elseif ( $args['allow_resize'] && $args['resize']['w'] && $args['resize']['h'] && get_theme_support('pls-dragonfly') && ($disable_dragonfly != true)) {
 
-			$new_image = PLS_Plugin_API::resize_image($img_args);
+			extract(wp_parse_args(parse_url($old_image), array('query' => '') ));
+
+			//finds the extension, "jpeg" in this case
+			$pathinfo = pathinfo($path);
+			$ext = $pathinfo['extension'];
+			$host = 'd2frgvzmtkrf4d.cloudfront.net';
+			$size = $args['resize']['w'] . 'x' . $args['resize']['h'] . '#';
+			$action = 'thumb';
+			// $action = 'resize';
+			// $action = 'crop';
+
+			//corrects image path to remove starting "/" included in $path
+			$path = ltrim($path, '/');
+
+			$request_tabs_newlines = "f\t" . $path . "\np" . "\t". $action . "\t". $size . "\ne" . "\t" . $ext;
+			$request_clean = 'f' . $path . 'p' . $action . $size . 'e' . $ext;
+			$job = base64_encode($request_tabs_newlines);
+			$secret = substr(sha1($request_clean . PLACESTER_DF_SECRET), 0, 16);
+			$new_image = $scheme . '://' . $host . '/' . $secret . '/' . rtrim($job, '=') . '.' . $ext . '?' . $query;
 		}
 
 		if ( $args['fancybox'] || $args['as_html']) {
@@ -116,7 +127,8 @@ class PLS_Image {
 
 	}
 	
-	private static function as_html ($old_image, $new_image = false, $args ) {
+	private static function as_html ($old_image, $new_image = false, $args )
+	{
 		extract( $args, EXTR_SKIP );
 		// echo 'here in html';
 		// pls_dump($html);
@@ -145,7 +157,8 @@ class PLS_Image {
 	
 
 	private static function process_defaults ($args) {
-		// Define the default argument array
+
+		/** Define the default argument array. */
 		$defaults = array(
 			'resize' => array(
 				'w' => false,
@@ -158,16 +171,16 @@ class PLS_Image {
 				'a_classes' => '',
 				'img_classes' => '',
 				'alt' => '',
-				'title' => '',
-				'itemprop' => ''
+				'title' => ''
 			),
 			'as_html' => false,
 			'as_url' => true,
 			'fancybox' => array(
-				'trigger_class' => 'pls_use_fancy',
-				'classes' => false,
-				'null_image' => false,
-			)
+			'trigger_class' => 'pls_use_fancy',
+			'classes' => false,
+			'null_image' => false,
+			'allow_dragonfly' => true
+			),
 		);
 
         /** Merge the arguments with the defaults. */
@@ -175,8 +188,9 @@ class PLS_Image {
         $args['resize'] = wp_parse_args( $args['resize'], $defaults['resize']);
         $args['html'] = wp_parse_args( $args['html'], $defaults['html']);
 
-        return $args;	
+        return $args;
+				
 	}
-}
-// end class 
+}// end class 
+
 ?>

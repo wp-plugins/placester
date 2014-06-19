@@ -18,9 +18,9 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 		</p>';
 
 	protected $options = array(
-		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
-		'width'				=> array( 'type' => 'int', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),
-		'height'			=> array( 'type' => 'int', 'label' => 'Height', 'default' => 250, 'description' => '(px)' ),
+		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
+		'width'				=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
+		'height'			=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
 		'pl_featured_listing_meta' => array( 'type' => 'featured_listing_meta', 'default' => '' ),
 	);
 
@@ -54,7 +54,7 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 	</div>
 </div>
 ',
-			'description' => 'You can use any valid HTML in this field to format the template tags.' 
+			'description' => 'You can use any valid HTML in this field to format the subcodes.' 
 		),
 
 		'css' => array(
@@ -193,16 +193,10 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 	}
 
 	/**
-	 * No additional options
-	 */
-	public function get_options_list($with_choices = false) {
-		return $this->options;
-	}
-
-	/**
 	 * No filters
+	 * @see PL_SC_Base::_get_filters()
 	 */
-	public function get_filters_list($with_choices = false) {
+	protected function _get_filters() {
 		return array();
 	}
 }

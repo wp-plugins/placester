@@ -2,7 +2,7 @@
 
 class PLS_Internationalization {
 
-	public static function get_currency_symbol ( ) {
+	function get_currency_symbol ( ) {
 		$current_symbol = pls_get_option('pls-currency-symbol');
 		if (! $current_symbol) {
 			return '$';

@@ -2,11 +2,11 @@
 PLS_Featured_Listing_Option::register();
 class PLS_Featured_Listing_Option {
 
-	public static function register () {
+	function register () {
 		add_action('wp_ajax_list_options', array(__CLASS__, 'get_listings' ));
 	}
 
-	public static function init ( $params = array() ) {
+	function init ( $params = array() ) {
 		// pls_dump($params);
 		ob_start();
 			do_action( 'pl_featured_listings_head' );
@@ -15,28 +15,28 @@ class PLS_Featured_Listing_Option {
 		return ob_get_clean();
 	}
 
-	public static function load ( $params = array() ) {
+	function load ( $params = array() ) {
 		ob_start();
 			extract( $params );
 			include( trailingslashit( PLS_OPTRM_DIR ) . 'views/featured-listings.php' );
 		echo ob_get_clean();
 	}
 
-	public static function get_filters ( $params = array() ) {
+	function get_filters ( $params = array() ) {
 		ob_start();
 			extract( $params );
 			include( trailingslashit( PLS_OPTRM_DIR ) . 'views/featured-listings-filters.php' );
 		echo ob_get_clean();	
 	}
 
-	public static function get_datatable ( $params = array() ) {
+	function get_datatable ( $params = array() ) {
 		ob_start();
 			extract( $params );
 			include( trailingslashit( PLS_OPTRM_DIR ) . 'views/featured-listings-datatable.php' );
 		echo ob_get_clean();	
 	}
 
-	public static function get_listings () {
+	function get_listings () {
 		$response = array();
 		//exact addresses should be shown. 
 		$_POST['address_mode'] = 'exact';
@@ -61,16 +61,14 @@ class PLS_Featured_Listing_Option {
 		$_POST['offset'] = $_POST['iDisplayStart'];		
 		
 		// Get listings from model
-		$api_response = PLS_Plugin_API::get_listings($_POST, false);
+		$api_response = PL_Listing::get($_POST);
 		
 		// build response for datatables.js
 		$listings = array();
-		if (!empty($api_response['listings'])) {
-			foreach ($api_response['listings'] as $key => $listing) {
-				$listings[$key][] = $listing['location']['address'] . ', ' . $listing['location']['locality'] . ' ' . $listing['location']['region']; 
-				$listings[$key][] = !empty($listing['images']) ? '<a id="listing_image" href="' . $listing['images'][0]['url'] . '"  style="display: inline-block" onclick=\'return false;\'>Preview</a>' :  'No Image'; 
-				$listings[$key][] = '<a id="pls_add_option_listing" href="#" ref="'.$listing['id'].'">Make Featured</a>';
-			}
+		foreach ($api_response['listings'] as $key => $listing) {
+			$listings[$key][] = $listing['location']['address'] . ', ' . $listing['location']['locality'] . ' ' . $listing['location']['region']; 
+			$listings[$key][] = !empty($listing['images']) ? '<a id="listing_image" href="' . $listing['images'][0]['url'] . '"  style="display: inline-block" onclick=\'return false;\'>Preview</a>' :  'No Image'; 
+			$listings[$key][] = '<a id="pls_add_option_listing" href="#" ref="'.$listing['id'].'">Make Featured</a>';
 		}
 
 		// Required for datatables.js to function properly.

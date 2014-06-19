@@ -128,7 +128,7 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 	}
 
 	public function no_items() {
-		_e("No shortcode templates found.");
+		return "No shortcode templates found.";
 	}
 
 	public function get_views() {
@@ -170,16 +170,18 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 
 		add_filter( 'the_title', 'esc_html' );
 
-		foreach ( $templates as $row_id=>$template ) {
-			$template['row_id'] = $row_id;
-			$this->single_row( $template );
+		// Create array of post IDs.
+		$post_ids = array();
+
+		foreach ( $templates as $id=>$template ) {
+			$this->single_row( $id, $template );
 		}
 	}
 
-	public function single_row( $template ) {
-		$row_class = ($template['row_id']%2 ? '' : ' alternate');
+	public function single_row( $id, $template ) {
+
 		?>
-		<tr id="sc-template-<?php echo $template['row_id'] ?>" class="<?php echo $row_class ?> sc-template-<?php echo $template['type'] ?>" valign="top">
+		<tr id="sc-template-<?php echo $id; ?>" class="sc-template-<?php echo $template['type']?>" valign="top">
 		<?php
 
 		list( $columns, $hidden ) = $this->get_column_info();
@@ -187,7 +189,6 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 		$edit_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=edit&id=');
 		$delete_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=delete&id=');
 		$copy_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=copy&id=');
-		$builtin_copy_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=copy');
 		
 		foreach ( $columns as $column_name => $column_display_name ) {
 			$class = "class=\"$column_name column-$column_name\"";
@@ -204,8 +205,8 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 				case 'cb':
 					?>
 					<th scope="row" class="check-column">
-						<label class="screen-reader-text" for="cb-select-<?php echo $template['id'] ?>"><?php printf( __( 'Select %s' ), $template['title'] ) ?></label>
-						<input id="cb-select-<?php echo $template['id'] ?>" type="checkbox" name="post[]" value="<?php echo $template['id'] ?>" />
+						<label class="screen-reader-text" for="cb-select-<?php $id; ?>"><?php printf( __( 'Select %s' ), $template['title'] ); ?></label>
+						<input id="cb-select-<?php $id; ?>" type="checkbox" name="post[]" value="<?php $id; ?>" />
 					</th>
 					<?php
 					break;
@@ -227,7 +228,6 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 					}
 					else {
 						$actions['edit'] = __('Non-editable built-in template.');
-						$actions['copy'] = '<a href="' . $builtin_copy_link . '&default='.$template['id'].'&shortcode='.$template['shortcode'].'" title="' . esc_attr( __( 'Copy this item' ) ) . '">' . __( 'Copy' ) . '</a>';
 					}
 					echo $this->row_actions( $actions, true );
 					?>
@@ -237,7 +237,7 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 
 				case 'shortcode':
 					?>
-					<td <?php echo $attributes ?>><strong><?php echo $template['shortcode_name']?></strong><br /><?php echo '['.$template['shortcode'].']'?></td>
+					<td <?php echo $attributes ?>><strong><?php echo $template['shortcode_name']?></strong><br/><?php echo '['.$template['shortcode'].']'?></td>
 					<?php
 					break;
 

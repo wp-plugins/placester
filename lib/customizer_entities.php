@@ -1,5 +1,8 @@
 <?php
 
+// Can't nest class definitions in PHP, so these have to be placed in a global function...
+function define_custom_controls() 
+{	
 	class PL_Customize_TextArea_Control extends WP_Customize_Control 
     {
         public $type = 'textarea';
@@ -82,7 +85,7 @@
 					</div>
 
 					<div class="row" id="customizer_mls_request_buttons">
-						<input type="button" id="customize_integration_no" class="bt-norm" value="Manually enter listings" />
+						<input type="button" id="customize_integration_no" class="bt-norm" value="Manually enter listings." />
 						<input type="button" id="customize_integration_submit" class="bt-norm bt-green" value="Request IDX Integration" />
 					</div>
 					
@@ -211,7 +214,7 @@
 
    		public function render() {
    			?>
-   			  <div id="create_listing">
+   			  <div id='create_listing'>
 
    			  	<div id="listing_message" class="error" style="display: none">
    			  	  <!-- Inject error message(s) here... -->
@@ -284,7 +287,7 @@
 	          
 				<div class="button-container">	          
 	              <input id="submit_listing" class="bt-norm" type="button" value="Post Listing">
-		        </div>
+		        <div>
 		      </div>
    			<?php
    		}
@@ -302,7 +305,7 @@
    			?>
    			  <div id="create_post">
    			  	<div id="blogpost_message" class="error" style="display: none">
-   			  	  <h3>Make sure to fill-in the <strong>title</strong> and <strong>content</strong> of your post</h3>
+   			  	  <h3>Make sure to fill-in the <u>title</u> and <u>content</u> of your post</h3>
    			  	</div>
 
 	            <label>Title</label>
@@ -335,7 +338,7 @@
    			  <div id="color_scheme">
    			  	<?php
 	 				$preset_colors = array('---' => 'none', 'Default' => 'default');
-	 				$curr_theme = wp_get_theme()->template;
+	 				$curr_theme = wp_get_theme()->Template;
 	   			  	$skin_dir = ( trailingslashit(PL_THEME_SKIN_DIR) . trailingslashit($curr_theme) );
 					
 					// Generate list of available skins by filename...
@@ -343,7 +346,7 @@
 					if (!empty($dir)) {
 						while ($filename = readdir($dir)) { 
 							// Only look at files with a .css extension...
-							if (stristr($filename, ".css")) {
+							if ( eregi("\.css", $filename) ) {
 						    	$filename = substr( $filename, 0, -strlen('.css') ); // Omit file extension...
 						    	$preset_colors[ucfirst($filename)] = $filename;
 						  	}
@@ -438,5 +441,6 @@
    		  <?php
    		}
    }
+}
 
 ?>

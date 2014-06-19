@@ -2,26 +2,24 @@
 
 class PL_Custom_Attribute_Helper {
 
-	private static $translations = null;
-
 	public static function get_translations () {
-		// Check for memoized version...
-		if (!is_null(self::$translations)) {
-			// error_log("Using memoized translations!!!");
-			return self::$translations;
-		}
-
-		$api_dictionary = PL_Custom_Attributes::get();
-		$dictionary = array();
-
-		foreach ($api_dictionary as $item) {
-			$dictionary[$item['key']] = $item['name'];
-		}
-
-		// Memoize translations...
-		self::$translations = $dictionary;
-		// error_log("Memoizing translations...");
-
+		$dictionary = PL_Option_Helper::get_translations();
+		self::update_translations($dictionary);
 		return $dictionary;
+	}
+
+	private static function update_translations () {
+		$old_dictionary = PL_Option_Helper::get_translations();
+		$new_dictionary = PL_Custom_Attributes::get();
+		foreach ($new_dictionary as $item) {
+			if (isset($old_dictionary[$item['key']])) {
+				continue;
+			} 
+			else {
+				$old_dictionary[$item['key']] = $item['name'];
+			}
+		}
+		PL_Option_Helper::set_translations($old_dictionary);	
+		return $old_dictionary;
 	}
 }

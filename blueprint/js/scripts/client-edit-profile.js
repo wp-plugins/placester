@@ -1,71 +1,49 @@
 jQuery(document).ready(function($) {
 
-	if ( jQuery().dialog ) { //since this can be called through shortcodes with no way of confirming that dialog has been loaded
+	$('#edit_profile_button').live('click', function(event) {
+		event.preventDefault();
 
-		$('#edit_profile').dialog({		
+		$( "#edit_profile" ).dialog();		
+		$("#edit_profile").dialog({		
 			autoOpen: false,
 			draggable: false,
-			dialogClass: 'edit_profile_dialog',
 			modal: true,
 			width: 700,
-			title: 'Update Contact Info',
+			title: "<h2>Update Contact Info</h2>",
 			buttons: {
-				'Close': function() {
-					$(this).dialog('close');
-				},
-				'Update Contact Info': {
-					id: 'update_contact_info',
-					text: 'Update Contact Info',
-					click: function() {
-						update_contact_info();
+					"Close": function() {
+						$( this ).dialog( "close" );
+					},
+					"Update Contact Info": {
+						id: "update_contact_info",
+						text: "Update Contact Info",
+						click: function() {
+							 update_contact_info();
+						}
 					}
-				}
 			}
 		});
-
-		$('#edit_profile_button').live('click', function(event) {
-			event.preventDefault();
-			$('#edit_profile').dialog('open');
-		});
-
-	}
+	});
 
 	function update_contact_info () {
 		data = {};
 		$.each($('#edit_profile_form').serializeArray(), function(i, field) {
-			data[field.name] = field.value;
-		});
-		data['action'] = 'update_person';
-		$('#edit_profile_message').html('').removeClass('error');
-		$('#edit_profile span.error').remove();
+            data[field.name] = field.value;
+        });
+		data['action'] = 'pls_update_client_profile';
 
 		$.post(info.ajaxurl, data, function(data, textStatus, xhr) {
-			if (data) {
-				if (data.id) {
-					$('#edit_profile_message').html('You successfully updated your profile.');
-					$('#edit_profile form').hide();
-					$('#edit_profile').siblings('.ui-dialog-buttonpane').hide();
-					setTimeout(function () {
-						window.location.reload(true);
-					}, 700);
-				}
-				else {
-					if (data.message) {
-						$('#edit_profile_message').html(data.message).addClass('error');
-					}
-					if (data.validations) {
-						for (group in data.validations) {
-							for (key in data.validations[group]) {
-								$('#edit_profile input[name="'+group+'['+key+']"]').after('<span class="error">*</span>');
-							}
-						}
-					}
-				}
-			}
-			else {
-				$('#edit_profile_message').html('Unable to update profile at this time.').addClass('error');
-			};
+		  if (data && data.id) {
+		  	$('#edit_profile_message').html('You successfully updated your profile.');
+		  	setTimeout(function () {
+		  		window.location.href=window.location.href;
+		  	}, 700);
+		  	
+		  };
 		}, 'json');
+
+
+		
 		// console.log('update_contact_info');
 	}
 

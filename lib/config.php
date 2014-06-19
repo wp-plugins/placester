@@ -1,91 +1,84 @@
-<?php
+<?php 
 
 class PL_Config {
-
-	public static function PL_API_LISTINGS () {
+	
+	public function PL_API_LISTINGS () {	
 		global $PL_API_LISTINGS;
 		$args = func_get_args();
 		$num_args = func_num_args();
 		return self::config_finder($PL_API_LISTINGS, $args, $num_args);
 	}
 
-	public static function PL_API_CUST_ATTR () {
+	public function PL_API_CUST_ATTR () {
 		global $PL_API_CUST_ATTR;
 		$args = func_get_args();
 		$num_args = func_num_args();
 		return self::config_finder($PL_API_CUST_ATTR, $args, $num_args);
 	}
 
-	public static function PL_API_USERS () {
+	public function PL_API_USERS () {
 		global $PL_API_USERS;
 		$args = func_get_args();
 		$num_args = func_num_args();
 		return self::config_finder($PL_API_USERS, $args, $num_args);
 	}
 
-	public static function PL_API_PEOPLE () {
+	public function PL_API_PEOPLE () {
 		global $PL_API_PEOPLE;
 		$args = func_get_args();
 		$num_args = func_num_args();
 		return self::config_finder($PL_API_PEOPLE, $args, $num_args);
 	}
 
-	public static function PL_API_LEAD () {
-		global $PL_API_LEAD;
-		$args = func_get_args();
-		$num_args = func_num_args();
-		return self::config_finder($PL_API_LEAD, $args, $num_args);
-	}
-
-	public static function PL_API_INTEGRATION () {
+	public function PL_API_INTEGRATION () {
 		global $PL_API_INTEGRATION;
 		$args = func_get_args();
 		$num_args = func_num_args();
 		return self::config_finder($PL_API_INTEGRATION, $args, $num_args);
 	}
 
-	public static function PL_API_WORDPRESS () {
+	public function PL_API_WORDPRESS () {	
 		global $PL_API_WORDPRESS;
 		$args = func_get_args();
 		$num_args = func_num_args();
 		return self::config_finder($PL_API_WORDPRESS, $args, $num_args);
 	}
 
-	public static function PL_MY_LIST_FORM () {
+	public function PL_MY_LIST_FORM () {	
 		global $PL_MY_LIST_FORM;
 		$args = func_get_args();
 		$num_args = func_num_args();
 		return self::config_finder($PL_MY_LIST_FORM, $args, $num_args);
 	}
 
-	public static function PL_TP_GOOGLE_PLACES () {
+	public function PL_TP_GOOGLE_PLACES () {	
 		global $PL_TP_GOOGLE_PLACES;
 		$args = func_get_args();
 		$num_args = func_num_args();
 		return self::config_finder($PL_TP_GOOGLE_PLACES, $args, $num_args);
 	}
 
-	public static function bundler ($config_function, $keys, $bundle) {
+	public function bundler ($config_function, $keys, $bundle) {	
 		$config_items = array();
 		foreach ($bundle as $key) {
 			if (is_array($key)) {
 				foreach ($key as $k => $v) {
 					if (is_array($v)) {
 						foreach ($v as $item) {
-							$config_items[$k][$item] = call_user_func_array(array(__CLASS__, $config_function), array_merge($keys,(array)$k,(array)$item));
-						}
+							$config_items[$k][$item] = call_user_func_array(array(__CLASS__, $config_function), array_merge($keys,(array)$k,(array)$item));			
+						}			
 					} else {
-						$config_items[$k][$v] = call_user_func_array(array(__CLASS__, $config_function), array_merge($keys,(array)$k,(array)$v));
+						$config_items[$k][$v] = call_user_func_array(array(__CLASS__, $config_function), array_merge($keys,(array)$k,(array)$v));			
 					}
 				}
 			} else {
-				$config_items[$key] = call_user_func_array(array(__CLASS__, $config_function), array_merge($keys,(array)$key));
+				$config_items[$key] = call_user_func_array(array(__CLASS__, $config_function), array_merge($keys,(array)$key));		
 			}
 		}
 		return $config_items;
 	}
 
-	private static function config_finder($config, $args, $num_args) {
+	private function config_finder($config, $args, $num_args) {
 		switch ($num_args) {
 			case '0':
 				return $config;

@@ -36,9 +36,9 @@ class PLS_Partials {
     public static function get_listings_list_ajax ($args = '') {
         return PLS_Partials_Get_Listings_Ajax::load($args);       
     }
-    
+
     // Wrapper for property details page content
     public static function custom_property_details_html_filter ($content) {
-        return PLS_Partials_Property_Details::init($content);
+        echo PLS_Partials_Property_Details::init($content);
     } 
 }

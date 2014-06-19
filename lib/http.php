@@ -75,15 +75,15 @@ Class PL_HTTP extends WP_Http {
 	 * @param string $method
 	 * @return array
 	 */
-	public static function send_request ($url, $request, $method = 'GET', $allow_cache = true, $allow_empty_values = false, $force_return = false, $use_encoding = true) {
+	public static function send_request ($url, $request, $method = 'GET', $allow_cache = true, $allow_empty_values = false, $force_return = false, $use_ecoding = true) {
 
 		$request_string = self::build_request($request, $allow_empty_values);
 	    // error_log($url);
 	    // error_log($request_string);
-	    if (!$use_encoding) {
+	    if (!$use_ecoding) {
 	    	$request_string = urldecode($request_string);
 	    }
-	    // error_log(var_export(debug_backtrace(), true));
+
 	    // error_log("Endpoint Logged As: {$method} {$url}?{$request_string}");
 
 	    $wp_http = self::_get_object();
@@ -120,7 +120,7 @@ Class PL_HTTP extends WP_Http {
 					if ( (is_array($response) && isset($response['headers']) && isset($response['headers']['status']) && $response['headers']['status'] == 200) || $force_return) {
 						if (!empty($response['body'])) {
 							$body = json_decode($response['body'], true);
-							$cache->save($body, PL_Cache::TTL_HOURS);
+							$cache->save($body);
 							return $body;
 						} else {
 							return false;

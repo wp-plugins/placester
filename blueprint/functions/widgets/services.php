@@ -5,7 +5,7 @@ class PLS_Widget_Services extends WP_Widget {
 	/**
 	 * Widget Constuctor
 	 */
-	public function __construct() {
+	function PLS_Widget_Services() {
 		$widget_ops = array( 'classname' => 'pls_services_widget', 'description' => 'Featured Services Widget' );
 
 		/* Widget control settings. */
@@ -21,7 +21,7 @@ class PLS_Widget_Services extends WP_Widget {
    * @param $args (array)
    * @param $instance (array) Widget values.
    */
-  public function widget( $args, $instance ) {
+  function widget( $args, $instance ) {
     // widget output
     extract($args);
 
@@ -95,7 +95,7 @@ class PLS_Widget_Services extends WP_Widget {
 	 *
 	 * @return (array) New values.
 	 */
-	public function update( $new_instance, $old_instance ) {
+	function update( $new_instance, $old_instance ) {
 		// Save widget options
 		$instance = $old_instance;
 
@@ -112,7 +112,7 @@ class PLS_Widget_Services extends WP_Widget {
 	 *
 	 * @param $instance (array) Widget values.
 	 */
-	public function form( $instance ) {
+	function form( $instance ) {
 
 		// Defaults
 		$instance = wp_parse_args( (array) $instance, array( 

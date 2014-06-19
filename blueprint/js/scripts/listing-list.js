@@ -18,22 +18,8 @@ List.prototype.init = function (params) {
 	this.context = params.context || false;
 	this.total_results_id = params.total_results_id || '#pls_num_results';
 	this.limit_default = params.limit_default || 10;
-	this.limit_choices = params.limit_choices || [[10, 25, 50], [10, 25, 50]];
-	this.settings = params.settings || { 
-		"bFilter": false,
-		"bProcessing": true,
-		"bServerSide": true,
-		"sServerMethod": "POST",
-		'sPaginationType': 'full_numbers',
-		"sAjaxSource": info.ajaxurl,
-		'iDisplayLength': this.limit_default,
-		'aLengthMenu': this.limit_choices,
-		"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-			if ((iDisplayIndex + 1) % 3 == 0) {
-				jQuery(nRow).addClass('third');
-			};
-    	}
-	};
+	this.limit_choices = params.limit_choices || [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]];
+	this.settings = params.settings || { "bFilter": false, "bProcessing": true, "bServerSide": true, "sServerMethod": "POST", 'sPaginationType': 'full_numbers', "sAjaxSource": info.ajaxurl, 'iDisplayLength': this.limit_default, 'aLengthMenu': this.limit_choices };
   	this.results_as_total = 0;
   	this.fnCallback = params.fnCallback || false;
   	this.manual_callback = params.manual_callback || false;
@@ -66,24 +52,8 @@ List.prototype.update = function (ajax_response) {
 	this.total_results(ajax_response);
 	if (this.fnCallback) {
 		this.fnCallback(ajax_response);	
-    	// If reg form available or logged in then show add to favorites 
-    	if (jQuery('.pl_lead_register_form').length || jQuery('.pl_add_remove_lead_favorites #pl_add_favorite').length) {
-    		jQuery('div#pl_add_remove_lead_favorites,.pl_add_remove_lead_favorites').show();    	
-    	}
 	}
 	this.update_favorites_through_cache();
-  
-  if (ajax_response.iDisplayStart && ajax_response.iDisplayLength) {
-    var curOffset = this.datatable.fnSettings()._iDisplayStart;
-    var offset = Number(ajax_response.iDisplayStart);
-    if (offset !== curOffset) {
-      var limit = Number(ajax_response.iDisplayLength);
-      var page = Math.round(offset/limit);
-      this.datatable.fnPageChange(page, false);
-      jQuery.fn.dataTableExt.oPagination.full_numbers.fnUpdate(this.datatable.fnSettings());
-    }
-  }
-
 	this.hide_loading();
 	if (ajax_response.aaData.length > 0) {
 		this.hide_empty();

@@ -100,21 +100,14 @@ class PL_Shortcode_CPT {
 	 * construct admin pages for creating a custom instance of a shortcode
 	 * @return array	: array of shortcode type arrays
 	 */
-	public static function get_shortcode_attrs($shortcode='', $with_choices = false) {
-		if ($shortcode) {
-			if (empty(self::$shortcodes[$shortcode])) {
-				return array();
-			}
-			if (empty(self::$shortcode_config[$shortcode]) || $with_choices) {
-				$instance = self::$shortcodes[$shortcode];
-				self::$shortcode_config[$shortcode] = $instance->get_args($with_choices);
-			}
-			return self::$shortcode_config[$shortcode];
-		}
-		if (empty(self::$shortcode_config) || $with_choices) {
+	public static function get_shortcode_attrs($shortcode='') {
+		if (empty(self::$shortcode_config)) {
 			foreach(self::$shortcodes as $sc => $instance){
-				self::$shortcode_config[$sc] = $instance->get_args($with_choices);
+				self::$shortcode_config[$sc] = $instance->get_args();
 			}
+		}
+		if ($shortcode) {
+			return isset(self::$shortcode_config[$shortcode]) ? self::$shortcode_config[$shortcode] : array();
 		}
 		return self::$shortcode_config;
 	}
@@ -237,7 +230,7 @@ class PL_Shortcode_CPT {
 		if (!empty($sc)) {
 			// clean it up to just the options needed to wrap the shortcode body
 			// (width, height, context, etc)
-			$sc_attrs = self::get_shortcode_attrs($sc['shortcode']);
+			$sc_attrs = $this->get_shortcode_attrs($sc['shortcode']);
 			foreach($sc as $key=>$val) {
 				if (!empty($sc_attrs['options'][$key]) && !empty($val)) {
 					$args[$key] = $val;
@@ -324,7 +317,7 @@ class PL_Shortcode_CPT {
 	 * @return int				: record id if saved
 	 */
 	public static function save_shortcode($id, $shortcode, $args) {
-		$sc_attrs = self::get_shortcode_attrs($shortcode, true);
+		$sc_attrs = self::get_shortcode_attrs($shortcode);
 		if (!empty($sc_attrs)) {
 			if ($id) {
 				// sanity check and make sure we are not changing the shortcode type
@@ -363,7 +356,7 @@ class PL_Shortcode_CPT {
 								update_post_meta($id, $key, 'true');
 							}
 							break;
-						case 'int':
+						case 'numeric':
 							if( !empty($args) && !empty($args[$option])) {
 								$args[$option] = (int)$args[$option];
 							}
@@ -382,7 +375,7 @@ class PL_Shortcode_CPT {
 							if(!empty($args[$option])) {
 								$val = $args[$option];
 							}
-							update_post_meta( $id, $key, json_encode($val, JSON_HEX_APOS) );
+							update_post_meta( $id, $key, json_encode($val) );
 							break;
 						case 'select':
 						default:
@@ -397,16 +390,21 @@ class PL_Shortcode_CPT {
 					}
 				}
 
-				// Save filters - only save if they are valid
+				// Save filters - only save if they diverge from default
 				$filters = array();
-				foreach( $sc_attrs['filters'] as $filter ) {
-					if ($filter['group']) {
-						if (!empty($args[$filter['group']][$filter['attribute']])) {
-							$filters[$filter['group']][$filter['attribute']] = $args[$filter['group']][$filter['attribute']];
-						}						
-					}
-					elseif(!empty($args[$filter['attribute']])) {
-						$filters[$filter['attribute']] = $args[$filter['attribute']];
+				foreach( $sc_attrs['filters'] as $filter => $values ) {
+					if( !empty($args) && !empty($args[$filter])) {
+						if (!empty($values['type']) && $values['type'] == 'subgrp') {
+							$subargs = $args[$filter];
+							foreach($values['subgrp'] as $subfilter => $sf_values) {
+								if(!empty($subargs[$subfilter]) && $subargs[$subfilter] !== $sf_values['default']) {
+									$filters[$filter][$subfilter] = $subargs[$subfilter];
+								}
+							}
+						}
+						else {
+							$filters[$filter] = $args[$filter];
+						}
 					}
 				}
 				$db_key = 'pl_filters';
@@ -534,9 +532,9 @@ class PL_Shortcode_CPT {
 	 * @return array
 	 */
 	public static function load_template($id, $shortcode) {
-		$default = array();
+		$default = array('shortcode'=>'', 'title'=>'');
 
-		if ($id && $shortcode && !empty(self::$shortcodes[$shortcode])) {
+		if ($shortcode && !empty(self::$shortcodes[$shortcode])) {
 			// Get template from shortcode's template list in case we are using
 			// default or builtin template
 
@@ -549,10 +547,6 @@ class PL_Shortcode_CPT {
 
 			// get builtin/default templates
 			$tpls = self::get_builtin_templates($shortcode);
-			if (!in_array($id, $tpls)) {
-				// use twenty ten if there's no template or it's not found
-				$id = 'twentyten';
-			}	
 			if (in_array($id, $tpls)) {
 				$template = array();
 				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $id . '.php');
@@ -734,138 +728,6 @@ class PL_Shortcode_CPT {
 		$tpl_list_DB_key = ('pls_' . $shortcode . '_list');
 		update_option($tpl_list_DB_key, $tpl_list);
 		return $tpl_list;
-	}
-	
-	
-	public static function get_listing_attributes($sort = false) {
-		global $PL_API_CUST_ATTR;
-
-		$attrs = array();
-		$config = PL_Config::PL_API_LISTINGS('get', 'args');
-		$form_types = PL_Config::PL_API_CUST_ATTR('get');
-		$form_types = $form_types['args']['attr_type']['options'];
-
-		foreach($config as $g_key => &$g_attrs) {
-
-			$group = '';
-			$search_form_group = '';
-			switch($g_key) {
-				case 'include_disabled':
-					continue;
-				// TODO: fields used for fetching data that aren't relevant to a single listing
-				case 'location':
-				case 'rets':
-					$group = $g_key;
-					$search_form_group = $g_key;
-					break;
-				case 'metadata':
-					$group = 'cur_data';
-					$search_form_group = $g_key;
-					break;
-				case 'custom':
-					$group = 'uncur_data';
-					$search_form_group = 'metadata';
-					break;
-			}
-			if (!empty($g_attrs['type']) && $g_attrs['type']=='bundle') {
-				if (!empty($g_attrs['bound']) && is_array($g_attrs['bound'])) {
-					$params = ( isset($g_attrs['bound']['params']) ? $g_attrs['bound']['params'] : array() ) ;
-					$params = array($params);
-					$g_attrs = call_user_func_array(array($g_attrs['bound']['class'], $g_attrs['bound']['method']), $params);
-					if (!$group) $group = $g_key;
-					foreach($g_attrs as $f_attrs ) {
-						$attr_type = (!isset($f_attrs['attr_type']) || empty($form_types[$f_attrs['attr_type']])) ? 'text' : $form_types[$f_attrs['attr_type']];
-						$attr_cat = empty($f_attrs['cat']) ? $g_key : $f_attrs['cat'];
-						if (!empty($f_attrs['name'])) {
-							$f_attrs['label'] = $f_attrs['name'];
-							unset($f_attrs['name']);
-						}
-						if ($f_attrs['key'] == 'days_on_market' && $group == 'uncur_data')	{
-							// TODO: remove when we no longer have days_on_market in uncur_data
-							foreach ($attrs as $key=>$attr) {
-								if ($attr['attribute'] == 'dom') {
-									unset($attrs[$key]);
-									break;
-								}
-							}
-						}
-						$attrs[] = array_merge($f_attrs, array('attribute' => $f_attrs['key'], 'group' => $group, 'search_form_group' => $search_form_group, 'attr_type' => $attr_type, 'type' => $attr_type, 'cat'=>ucwords($attr_cat)));
-					}
-				}
-				continue;
-			}
-			if ($group) {
-				foreach($g_attrs as $f_key => $f_attrs ) {
-					if (!empty($f_attrs['label']) && strpos($f_key, 'min_')!==0 && strpos($f_key, 'max_')!==0) {
-						$attr_type = isset($f_attrs['attr_type']) ? $f_attrs['attr_type'] : $f_attrs['type'];
-						$attr_cat = empty($f_attrs['cat']) ? $f_attrs['group'] : $f_attrs['cat'];
-						$attrs[] = array_merge($f_attrs, array('attribute' => $f_key, 'group' => $group, 'search_form_group' => $search_form_group, 'attr_type' => $attr_type, 'cat'=>ucwords($attr_cat)));
-					}
-				}
-			}
-			else {
-				if (!empty($g_attrs['label'])) {
-					$attr_type = isset($g_attrs['attr_type']) ? $g_attrs['attr_type'] : $g_attrs['type'];
-					$attr_cat = $g_attrs['group'];
-					$attrs[] = array_merge($g_attrs, array('attribute' => $g_key, 'group' => $group, 'search_form_group' => $search_form_group, 'attr_type' => $attr_type, 'cat'=>ucwords($attr_cat)));
-				}
-			}
-		}
-		if ($sort) {
-			uasort($attrs, array(__CLASS__, '_attr_sort'));
-		}
-		else {
-			uasort($attrs, array(__CLASS__, '_cat_sort'));
-		}
-		return $attrs;
-	}
-
-	public static function get_listing_filters($sort = false, $with_choices = false) {
-		$filters = array();
-		$attrs = self::get_listing_attributes($sort);
-		foreach ($attrs as $attr) {
-			if ($attr['type'] == 'select' && !empty($attr['bound']['class'])) {
-				// get options for this filter
-				$attr['options'] = $with_choices ? call_user_func_array(array($attr['bound']['class'], $attr['bound']['method']), $attr['bound']['params']) : array();
-				unset($attr['bound']);
-			}
-			elseif ($attr['type'] == 'textarea') {
-				$attr['type'] = 'text';
-			}
-			$key = $attr['group'];
-			switch ($attr['group']) {
-				case 'cur_data':
-					$key = $attr['group'] = 'metadata';
-					break;
-				// note: we store custom filters as 'custom', but in requests they are 'metadata'
-				case 'uncur_data':
-					$attr['group'] = 'custom';
-					$key = 'metadata';
-					break;
-			}
-			$key .= empty($key) ? '' : '.';
-			$filters[$key.$attr['attribute']] = $attr;
-			if ($attr['attr_type'] == 'int' || $attr['attr_type'] == 'date') {
-				$label = empty($attr['label_min']) ? 'Min ' . $attr['label'] : $attr['label_min'];
-				$filters[$key.$attr['attribute'].'_min'] = array_merge($attr, array('attribute' => 'min_'.$attr['attribute'], 'label' => $label, 'multi'=>false));
-				$label = empty($attr['label_max']) ? 'Max ' . $attr['label'] : $attr['label_max'];
-				$filters[$key.$attr['attribute'].'_max'] = array_merge($attr, array('attribute' => 'max_'.$attr['attribute'], 'label' => $label, 'multi'=>false));
-			}
-		}
-		
-		return $filters;
-	}
-	
-	private static function _attr_sort($a, $b) {
-		return strcmp($a['label'], $b['label']);
-	}
-	
-	private static function _cat_sort($a, $b) {
-		$comp = strcmp($a['cat'], $b['cat']);
-		if ($comp == 0) {
-			$comp = strcmp($a['label'], $b['label']);
-		}
-		return $comp;
 	}
 }
 

@@ -3,7 +3,7 @@
 PLS_Options_Manager::init();
 class PLS_Options_Manager {
 
-	public static function init() {
+	function init() {
 		// add_action('wp_ajax_export_theme_options', array(__CLASS__, 'export_ajax'));
 		add_action('admin_init', array(__CLASS__,'export_http'));
 		add_action('wp_ajax_import_theme_options', array(__CLASS__, 'import_ajax'));
@@ -17,7 +17,7 @@ class PLS_Options_Manager {
 			$config = get_option('optionsframework');
 			$options = get_option( $config['id'], false );
 
-			$theme_name = strtolower(wp_get_theme()->template);
+			$theme_name = strtolower(wp_get_theme()->Template);
 			$filename = 'theme_options';
 			if ( isset($_GET['filename']) && !empty($_GET['filename'])) {
 				$filename = $_GET['filename'];

@@ -127,9 +127,7 @@ class Facebook extends BaseFacebook
     }
 
     $session_var_name = $this->constructSessionVariableName($key);
-    if (isset($_SESSION[$session_var_name])) {
-      unset($_SESSION[$session_var_name]);
-    }
+    unset($_SESSION[$session_var_name]);
   }
 
   protected function clearAllPersistentData() {

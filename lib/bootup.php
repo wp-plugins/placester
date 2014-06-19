@@ -3,19 +3,27 @@
 PL_Bootup::init();
 class PL_Bootup {
 
+    private static $switching = false;
     private static $items_that_can_be_created = array(
         'pages' => array(),
         'menus' => array(),
         'posts' => array(),
         'agents' => array(),
         'testimonials' => array(),
-        'services' => array(),
-        'videos' => array(),
         'settings' => array()
     );
 
     public static function init () {
+        // Make sure this action is NOT added/executed for an AJAX request...
+        if ( !defined('DOING_AJAX') ) {
+            add_action('after_switch_theme', array( __CLASS__, 'theme_switch_user_prompt' ));
+        }
+
         add_action('wp_ajax_add_dummy_data', array( __CLASS__, 'add_dummy_data_ajax') );
+    }
+
+    public static function is_theme_switched () {
+        return self::$switching;
     }
 
     public static function add_dummy_data () {
@@ -30,9 +38,6 @@ class PL_Bootup {
         if ( !empty($menus) ) {
             self::create_menus( $menus );
         }
-        if ( !empty($settings['taxonomies']) ) {
-            self::create_taxonomies( $settings['taxonomies'] );
-        }
         if ( !empty($posts) ) {
             self::create_posts( $posts, 'post', $settings );
         }
@@ -41,8 +46,7 @@ class PL_Bootup {
         $all_cpts = array(
             'agent' => $agents,
             'testimonial' => $testimonials,
-            'service' => $services,
-            'video' => $videos
+            'service' => $services
         );
 
         // create CPT posts
@@ -70,17 +74,20 @@ class PL_Bootup {
         PL_Menus::create( $menus );
     }
 
-    private static function create_taxonomies ( $taxonomies ) {
-        PL_Taxonomy_Helper::create( $taxonomies );
-    }
-
     private static function create_posts ( $posts, $post_type, $settings ) {
         PL_Posts::create( $posts, $post_type, $settings );
     }
 
     public static function theme_switch_user_prompt () {
-        PL_Router::load_builder_partial('theme-switch.php');
-        PL_Router::load_builder_partial('dummy-data-confirmation.php');
+        self::$switching = true;
+
+        if (!PL_Customizer_Helper::is_onboarding()) {
+            PL_Router::load_builder_partial('theme-switch.php');
+            PL_Router::load_builder_partial('dummy-data-confirmation.php');
+        }
+        else {
+            self::add_dummy_data();
+        }
     }
 
 	private static function parse_manifest_to_array () {

@@ -2,7 +2,7 @@
 
 class PLS_Widget_Feedburner_Widget extends WP_Widget {
 
-  public function __construct() {
+  function PLS_Widget_Feedburner_Widget() {
     $widget_ops = array( 
       'classname' => 'pls-feedburner-widget',
       'description' => 'Set your Feedburner URI in theme options.'
@@ -15,7 +15,7 @@ class PLS_Widget_Feedburner_Widget extends WP_Widget {
     $this->WP_Widget( 'PLS_Widget_Feedburner_Widget', 'Placester: Feedburner Subscription', $widget_ops, $control_ops );
   }
 
-  public function widget( $args, $instance ) {
+  function widget( $args, $instance ) {
     // Widget output
 
     /** Define the default argument array. */
@@ -36,20 +36,20 @@ class PLS_Widget_Feedburner_Widget extends WP_Widget {
     $instructions = empty($instance['instructions']) ? ' ' : apply_filters('instructions', $instance['instructions']);
     $email_placeholder = empty($instance['email_placeholder']) ? ' ' : apply_filters('email_placeholder', $instance['email_placeholder']);
 
-    $feedburner_url = pls_get_option('pls-feedburner-uri');
-    $feedburner_id = str_replace("http://feeds.feedburner.com/", "", $feedburner_url);
     ?>
-   
+
+    
      <?php echo $before_widget; ?>
 
       <?php echo $before_title . $title . $after_title; ?>
 
-      <form action="http://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('http://feedburner.google.com/fb/a/mailverify?uri=<?php echo $feedburner_id; ?>', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
+      <form action="http://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('http://feedburner.google.com/fb/a/mailverify?uri=<?php echo pls_get_option('pls-feedburner-uri') ?>', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
+
         <p><?php echo $instructions; ?></p>
 
         <input type="email" name="email" placeholder="<?php echo $email_placeholder; ?>" />
 
-        <input type="hidden" value="<?php echo $feedburner_id; ?>" name="uri"/>
+        <input type="hidden" value="<?php echo pls_get_option('pls-feedburner-uri') ?>" name="uri"/>
         <input type="hidden" name="loc" value="en_US"/>
         <input type="submit" value="Subscribe" class="button-primary" />
 
@@ -60,7 +60,7 @@ class PLS_Widget_Feedburner_Widget extends WP_Widget {
 <?php
   }
 
-  public function update( $new_instance, $old_instance ) {
+  function update( $new_instance, $old_instance ) {
     // Save widget options
     $instance = $old_instance;
     $instance['title'] = strip_tags($new_instance['title']);
@@ -69,7 +69,7 @@ class PLS_Widget_Feedburner_Widget extends WP_Widget {
     return $instance;
   }
 
-  public function form( $instance ) {
+  function form( $instance ) {
     // Output admin widget options form
     $instance = wp_parse_args( (array) $instance, array( 'title' => 'Newsletter Signup', 'instructions' => 'Sign up for our newsletter.', 'email_placeholder' => 'Email Address' ) );
     $title = strip_tags($instance['title']);

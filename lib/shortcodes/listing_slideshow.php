@@ -20,18 +20,18 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 
 	protected $options = array(
 		'context'		=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
-		'width'			=> array( 'type' => 'int', 'label' => 'Width', 'default' => 610, 'description' => '(px)' ),
-		'height'		=> array( 'type' => 'int', 'label' => 'Height', 'default' => 320, 'description' => '(px)' ),
-		'widget_class'	=> array( 'type' => 'text', 'label' => 'CSS Class', 'default' => '', 'description' => '(optional)' ),
-		'animation' 	=> array( 'type' => 'select', 'label' => 'Transition Between Images', 'options' => array(
+		'width'			=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 610 ),
+		'height'		=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 320 ),
+		'widget_class'	=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
+		'animation' 	=> array( 'type' => 'select', 'label' => 'Animation', 'options' => array(
 				'fade' => 'fade',
 				'horizontal-slide' => 'horizontal-slide',
 				'vertical-slide' => 'vertical-slide',
 				'horizontal-push' => 'horizontal-push',
 			),
 			'default' => 'fade' ),
-		'animationSpeed'	=> array( 'type' => 'int', 'label' => 'Transition Speed', 'default' => 800, 'description' => 'How long the transition takes, ms' ),	// how fast animtions are
-		'advanceSpeed'		=> array( 'type' => 'int', 'label' => 'Advance Speed', 'default' => 5000, 'description' => 'How long to wait before transitioning to next image, ms' ),	// if timer is enabled, time between transitions
+		'animationSpeed'	=> array( 'type' => 'numeric', 'label' => 'Animation Speed(ms)', 'default' => 800 ),	// how fast animtions are
+		'advanceSpeed'		=> array( 'type' => 'numeric', 'label' => 'Advance Speed(ms)', 'default' => 5000 ),		// if timer is enabled, time between transitions
 		'timer'				=> array( 'type' => 'checkbox', 'label' => 'Timer', 'default' => true ),				// true or false to have the timer
 		'pauseOnHover'		=> array( 'type' => 'checkbox', 'label' => 'Pause on hover', 'default' => true ),		// if you hover pauses the slider
 		'pl_featured_listing_meta' => array( 'type' => 'featured_listing_meta', 'default' => '' ),
@@ -57,7 +57,7 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 	<p class="caption-subtitle"><span class="price">[ls_beds] beds</span>, <span class="baths">[ls_baths] baths</span></p>
 	<a class="button details" href="[ls_url]"><span></span></a>
 </div>',
-			'description' => 'You can use any valid HTML in this field to format the template tags, but you must ensure that it is contained in a block similar to:
+			'description' => 'You can use any valid HTML in this field to format the subcodes, but you must ensure that it is contained in a block similar to:
 <div id="caption-[ls_index]" class="orbit-caption">...</div>.'
 		),
 

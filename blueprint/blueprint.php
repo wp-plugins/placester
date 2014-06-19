@@ -182,16 +182,15 @@ class Placester_Blueprint {
         switch ($this->boot_from)
         {
             case 'plugin':
-                $base_url = defined('PL_PARENT_URL') ? trailingslashit( PL_PARENT_URL ) : trailingslashit( plugins_url() ) . 'placester';
-                $blueprint_url .= trailingslashit( $base_url ) . 'blueprint';
-                break;
+              $blueprint_url = plugin_dir_url(__FILE__);
+              break;
             
             case 'theme':
-                $blueprint_url = trailingslashit( get_template_directory_uri() ) . 'blueprint';
-                break;
+              $blueprint_url = trailingslashit( get_template_directory_uri() ) . 'blueprint';
+              break;
 
             default:
-                die('Cannot load Blueprint: boot location type unknown');
+              die('Cannot load Blueprint: boot location type unknown');
         }
         
         /** Parent theme directory path and url */
@@ -258,7 +257,6 @@ class Placester_Blueprint {
 	 * @since 0.0.1
 	 */
     function default_theme_support() {
-    	global $i_am_a_placester_theme;
 
         add_theme_support( 'post-thumbnails' );
         
@@ -278,7 +276,7 @@ class Placester_Blueprint {
                 'floating' => array('script' => true, 'style' => true), 
                 'datatable' => array('script' => true, 'style' => true), 
                 'jquery-ui' => array('script' => true, 'style' => true), 
-                'spinner' => array( 'script' => true ), 
+                'spinner' => array( 'script' => true, 'style' => true ), 
                 'masonry' => array('script' => true, 'style' => false),
                 'jquery-tools' => array('script' => true, 'style' => false),
                 'form' => array('script' => true, 'style' => true),
@@ -286,16 +284,12 @@ class Placester_Blueprint {
                 'lead-capture' => array('script' => true, 'style' => false)
             ) 
         );
-        if ($i_am_a_placester_theme) {
-            add_theme_support( 'pls-theme-options' );
-        }
+        add_theme_support( 'pls-theme-options' );
         add_theme_support( 'pls-image-util', array('fancybox') );
         add_theme_support( 'pls-slideshow', array( 'script', 'style' ) );
         add_theme_support( 'pls-maps-util');
         add_theme_support( 'pls-debug');
-        add_theme_support( 'pls-meta-data');
-        add_theme_support( 'pls-meta-tags');
-        add_theme_support( 'pls-micro-data');
+        add_theme_support( 'pls-membership');
         add_theme_support( 'pls-custom-meta');
         add_theme_support( 'pls-walkscore');
 
@@ -332,8 +326,6 @@ class Placester_Blueprint {
         add_theme_support( 'pls-widget-office' );
         add_theme_support( 'pls-widget-quick-search' );
         add_theme_support( 'pls-widget-listings' );
-
-        add_theme_support( 'pls-custom-polygons' );
     }
 
 	/**
@@ -432,8 +424,17 @@ class Placester_Blueprint {
         /** Load the lead capture functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'lead-capture.php' );
 
+        /** Load the shortcodes functions. */
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'shortcodes.php' );
+
+        /** Load the saved search functions. */
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'saved_search.php' );
+
         /** Load the internationalization functions. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'internationalization.php' );
+        
+        /** Load the SEO Helper. */
+        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'seo-helper.php' );
         
         /** Load the Form Helper. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'form.php' );
@@ -443,9 +444,6 @@ class Placester_Blueprint {
 
         /** Load the scripts functions. */
         require_once( trailingslashit ( PLS_JS_DIR ) . 'scripts.php' );
-
-        /** Load the admin functions. */
-        require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'wp-defaults.php' );
 
         /** Load the menus if supported. */
         require_if_theme_supports( 'pls-menus', trailingslashit ( PLS_FUNCTIONS_DIR ) . 'menus.php' );
@@ -483,15 +481,11 @@ class Placester_Blueprint {
 
         /** Load the Options Framework extension if supported. */
         require_if_theme_supports( 'pls-theme-options', trailingslashit ( PLS_EXT_DIR ) . 'options-framework.php' );
-        if (!current_theme_supports( 'pls-theme-options' )) {
-        	// TODO: move when theme options are cleaned up
-        	include_once(trailingslashit(PLS_OPTRM_DIR).'featured-listing.php');
-        }
 
         /** Load the Style Util extension if supported. */
         require_if_theme_supports( 'pls-theme-options', trailingslashit ( PLS_EXT_DIR ) . 'style-util.php' );
 
-        /** Load the image handling if supported. */
+        /** Load the Options Framework extension if supported. */
         require_if_theme_supports( 'pls-image-util', trailingslashit ( PLS_EXT_DIR ) . 'image-util.php' );
 
         /** Load the Maps Util extension if supported. */
@@ -502,15 +496,15 @@ class Placester_Blueprint {
         require_if_theme_supports( 'pls-maps-util', trailingslashit ( PLS_EXT_DIR ) . 'maps/polygon.php' );
         require_if_theme_supports( 'pls-maps-util', trailingslashit ( PLS_EXT_DIR ) . 'maps/neighborhood.php' );
 
+        /** Load the Membership extension if supported. */
+        require_if_theme_supports( 'pls-membership', trailingslashit ( PLS_EXT_DIR ) . 'membership.php' );
+
         /** Load fallbacks last. */
         require_once( trailingslashit ( PLS_FUNCTIONS_DIR ) . 'fallback.php' );
         
         /** Load the Shuffle Bricks extension if requested. */
         require_if_theme_supports( 'pls-shuffle-bricks', trailingslashit( PLS_EXT_DIR ) . 'shuffle-bricks.php' );
-
-        /** Load the Meta Data, Micro Data, Meta Tags extension if requested. */
-        require_if_theme_supports( 'pls-meta-tags', trailingslashit( PLS_EXT_DIR ) . 'meta-tags.php' );
-        require_if_theme_supports( 'pls-micro-data', trailingslashit( PLS_EXT_DIR ) . 'micro-data.php' );
+        
   }
 
 }

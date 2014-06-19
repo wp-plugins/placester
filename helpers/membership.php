@@ -8,15 +8,15 @@ class PL_Membership_Helper {
 		add_action('wp', array(__CLASS__, 'admin_bar')); 
 	}
 
-	public static function admin_bar () {
-		if (current_user_can('placester_lead')) {
+	public static function admin_bar() {
+		if (current_user_can( 'placester_lead' )) {
 			add_filter('show_admin_bar', '__return_false');
 		}
 	}
 
 	public static function get_client_settings () {
-		$send_client_message = PL_Options::get('pls_send_client_option');
-		$send_client_message_text = PL_Options::get('pls_send_client_text');
+		$send_client_message = get_option('pls_send_client_option');
+		$send_client_message_text = get_option('pls_send_client_text');
 		if (!$send_client_message_text) {
 			$send_client_message_text = "Hey %client_email%,\n";
 			$send_client_message_text .= "\n";
@@ -25,7 +25,6 @@ class PL_Membership_Helper {
 			$send_client_message_text .= "Best,\n";
 			$send_client_message_text .= "%full_name%\n";
 		}
-		
 		return array('send_client_message' => $send_client_message, 'send_client_message_text' => $send_client_message_text);
 	}
 
@@ -34,7 +33,6 @@ class PL_Membership_Helper {
 		$send_client_message_text = isset($_POST['send_client_message_text']) ? $_POST['send_client_message_text'] : false;
 		PL_Options::set('pls_send_client_option', $send_client_message);
 		PL_Options::set('pls_send_client_text', $send_client_message_text);
-		
 		echo json_encode(array('result' => true, 'message' => 'You\'ve successfully updated your options'));
 		die();
 	}
@@ -47,7 +45,14 @@ class PL_Membership_Helper {
 		foreach ($replacements as $key => $value) {
 			$send_client_message_text = str_replace($key, $value, $send_client_message_text);
 		}
-		
 		return $send_client_message_text;
 	}
+	
+	/**
+	 * Helper functions for saved search
+	 */
+	public static function get_save_search_link() {
+		return '<a href="#" class="pls_save_search">Save Search</a>';
+	}
+	
 }

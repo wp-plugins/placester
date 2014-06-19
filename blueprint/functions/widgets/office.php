@@ -1,8 +1,8 @@
 <?php
 
 class PLS_Widget_Office extends WP_Widget {
-
-	function __construct() {
+	
+	function PLS_Widget_Office() {
 
 		$widget_ops = array(
 			'classname' => 'pls-office-widget',
@@ -14,16 +14,15 @@ class PLS_Widget_Office extends WP_Widget {
 
 		/* Create the widget. */
 		$this->WP_Widget( 'OurOfficeWidget', 'Placester: Our Office Widget', $widget_ops, $control_ops );
-			
+				
 	}
-
-	public function widget( $args, $instance ) {
+	function widget( $args, $instance ) {
 		// Widget output
 		?>
 		<?php extract($args); ?>
 
     <?php $agent = PLS_Plugin_API::get_user_details(); ?>
-   
+    
 		<section class="widget pls-map widget-pls-map" itemscope itemtype="http://schema.org/LocalBusiness">
 			<?php $title = empty($instance['title']) ? ' ' : apply_filters('widget_title', $instance['title']); ?>
 			<?php $subtitle = empty($instance['subtitle']) ? ' ' : apply_filters('subtitle', $instance['subtitle']); ?>
@@ -48,10 +47,10 @@ class PLS_Widget_Office extends WP_Widget {
 									zoom: 12,
 									mapTypeId: google.maps.MapTypeId.ROADMAP
 								};
-							
+								
 								var map = new google.maps.Map(document.getElementById("simple_map"),
 									myOptions);
-							
+								
 								var position = new google.maps.LatLng(<?php echo $lat; ?>, <?php echo $lng; ?>);
 								var marker = new google.maps.Marker({
 									position: position,
@@ -71,8 +70,7 @@ class PLS_Widget_Office extends WP_Widget {
 		</section><!-- /.widget-pls-quick-search -->
 		<?php
 	}
-
-	public function update( $new_instance, $old_instance ) {
+	function update( $new_instance, $old_instance ) {
 		// Save widget options
 		$instance = $old_instance;
 			$instance['title'] = strip_tags($new_instance['title']);
@@ -86,8 +84,7 @@ class PLS_Widget_Office extends WP_Widget {
 
 		return $instance;
 	}
-
-	public function form( $instance ) {
+	function form( $instance ) {
 		// Output admin widget options form
 			$instance = wp_parse_args( (array) $instance, array( 'title' => 'Our Office', 'subtitle' => 'Stop by our office, we would love to see you!', 'street_address' => 'One Broadway', 'city_state_zip' => 'Cambridge, MA, 02142', 'lat' => '42.3630663', 'lng' => '-71.0838938', 'width' => '240', 'height' => '130' ) );
 			$title = strip_tags($instance['title']);

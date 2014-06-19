@@ -23,7 +23,7 @@ class PLS_Widget_Agent extends WP_Widget {
 	 * Set up the widget's unique name, ID, class, description, and other options.
 	 * @since 0.0.1
 	 */
-	public function __construct() {
+	function __construct() {
 
 		/* Set the widget textdomain. */
 		$this->textdomain = pls_get_textdomain();
@@ -48,7 +48,7 @@ class PLS_Widget_Agent extends WP_Widget {
      *
 	 * @since 0.0.1
 	 */
-	public function widget( $args, $instance ) {
+	function widget( $args, $instance ) {
 
         list($args, $instance) = self::process_defaults($args, $instance);
 
@@ -207,7 +207,7 @@ class PLS_Widget_Agent extends WP_Widget {
      *
 	 * @since 0.0.1
 	 */
-	public function update( $new_instance, $old_instance ) {
+	function update( $new_instance, $old_instance ) {
 
         $instance = $old_instance;
 
@@ -231,7 +231,7 @@ class PLS_Widget_Agent extends WP_Widget {
      *
 	 * @since 0.0.1
 	 */
-	public function form( $instance ) {
+	function form( $instance ) {
 
 		/** Set up the default form values. */
 		$defaults = array(
@@ -459,7 +459,7 @@ class PLS_Widget_Agent extends WP_Widget {
 	}
 
 
-    private static function process_defaults ($args, $instance) {
+    function process_defaults ($args, $instance) {
 
         /** Define the default argument array. */
         $arg_defaults = array(
@@ -497,8 +497,8 @@ class PLS_Widget_Agent extends WP_Widget {
         return array($args, $instance);
     }
 
-    public function checkForCustom ($instance, $attribute) {
-        if ( !empty( $instance[$attribute.'_custom'] ) ) {
+    function checkForCustom ($instance, $attribute) {
+        if ( !empty( $instance[$attribute] ) ) {
             $agent_html[$attribute] = $instance[$attribute.'_custom'];
         } else {
             $agent_html[$attribute] = '';

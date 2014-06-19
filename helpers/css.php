@@ -42,14 +42,6 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('add-listing', trailingslashit(PL_CSS_ADMIN_URL) . 'add-listing.css');			
 		}
 
-		if ($hook == 'placester_page_placester_my_leads') {
-			if (!isset($_GET['id'])) {
-				self::register_enqueue_if_not('my-leads', trailingslashit(PL_CSS_ADMIN_URL) . 'my-leads.css');					
-			} else {
-				self::register_enqueue_if_not('leads-details', trailingslashit(PL_CSS_ADMIN_URL) . 'lead-details.css');					
-			}
-		}
-
 		if ($hook == 'placester_page_placester_support') {
 			self::register_enqueue_if_not('support', trailingslashit(PL_CSS_ADMIN_URL) . 'support.css');			
 		}
@@ -58,7 +50,7 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('support', trailingslashit(PL_CSS_ADMIN_URL) . 'theme-gallery.css');			
 		}
 
-		if ($hook == 'placester_page_placester_settings_lead_capture') {
+		if ($hook == 'placester_page_placester_lead_capture') {
 			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/all.css');					
 			self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) . 'lead-capture/general.css');
 		}
@@ -78,9 +70,18 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('colorpicker', trailingslashit(PL_JS_URL) . 'lib/colorpicker/css/colorpicker.css');					
 		}
 
-		if ($hook == 'placester_page_placester_settings_international') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/all.css');					
+		if ($hook == 'placester_page_placester_settings_property_pages') {
+			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/all.css');		
+			self::register_enqueue_if_not('settings-pages', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/pages.css');					
 		}
+		
+		// if ($hook == 'placester_page_placester_settings_international') {
+		// 	self::register_enqueue_if_not('settings', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/all.css');					
+		// }
+		
+		// if ($hook == 'placester_page_placester_settings_neighborhood') {
+		// 	self::register_enqueue_if_not('settings', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/all.css');					
+		// }
 		
 		if ($hook == 'placester_page_placester_settings_client') {
 			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/all.css');					
@@ -93,7 +94,7 @@ class PL_Css_Helper {
 		}
 
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
-			self::register_enqueue_if_not('featured-listings', trailingslashit(PLS_OPTRM_URL) . 'css/featured-listings.css');
+			self::register_enqueue_if_not('featured-listings', trailingslashit(OPTIONS_FRAMEWORK_DIRECTORY) . 'css/featured-listings.css');
 			self::register_enqueue_if_not('placester-widget', trailingslashit(PL_CSS_ADMIN_URL) . 'shortcodes/all.css');
 		}
 		
@@ -103,13 +104,7 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('placester-widget-chosen', trailingslashit(PL_JS_URL) . 'lib/chosen/chosen.css');
 		}
 		
-		if ( $hook == 'placester_page_placester_shortcodes_listing_template_edit') {
-			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_URL) . 'lib/codemirror/codemirror.css');
-			self::register_enqueue_if_not('placester-widget', trailingslashit(PL_CSS_ADMIN_URL) . 'shortcodes/all.css');
-			self::register_enqueue_if_not('placester-widget-chosen', trailingslashit(PL_JS_URL) . 'lib/chosen/chosen.css');
-		}
-		
-		if ($hook == 'placester_page_placester_settings_crm') {
+		if ($hook == 'placester_page_placester_crm') {
 			self::register_enqueue_if_not('crm', trailingslashit(PL_CSS_ADMIN_URL) . 'crm.css');	
 		}
 	}
@@ -118,7 +113,10 @@ class PL_Css_Helper {
 		self::register_enqueue_if_not('customizer-css', trailingslashit(PL_CSS_URL) . 'customizer.css');
 		self::register_enqueue_if_not('onboard-css', trailingslashit(PL_CSS_URL) . 'onboard.css');
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) . 'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
-		self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) . 'global.css');
+
+		if ( PL_Bootup::is_theme_switched() && !PL_Customizer_Helper::is_onboarding() ) {
+			self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) . 'global.css');
+	    }
 	}
 
 	private static function register_enqueue_if_not($name, $path, $dependencies = array()) {

@@ -58,10 +58,6 @@ class PLS_Partials_Listing_Search_Form {
         'ajax' => false,
         'class' => 'pls_search_form_listings',
         'context' => '',
-        'form_data' => (object) array(
-        	'hidden_field' => '',
-        	'action' => ''
-        ),
         'theme_option_id' => '',
         'context_var' => null,
         'bedrooms' => 1,
@@ -201,13 +197,7 @@ class PLS_Partials_Listing_Search_Form {
     // $form_options['zoning_types'] = PLS_Plugin_API::get_type_values( 'zoning' ); // for Multiple, not for single, see below
 
     /** Get the purchase type options. */
-    $get_type_response = PLS_Plugin_API::get_type_list(false, true, 'purchase_types');
-    // error_log("GET_TYPE_RESPONSE\n" . serialize($get_type_response) . "\n");
-	// if API serves up 'false' key in the array, remove it, because we're going to add one.
-	if (isset($get_type_response['false'])) {
-		unset($get_type_response['false']);
-	}
-	$form_options['purchase_types'] = array_merge( array('pls_empty_value' => $pls_empty_value['purchase_types']), $get_type_response );
+    $form_options['purchase_types'] = array( 'pls_empty_value' => $pls_empty_value['purchase_types'] ) + PLS_Plugin_API::get_type_values( 'purchase' );
 
 		// removed "All" - it's not giving all listings. jquery needs to change to not include "[]"s
 		// $form_options['purchase_types'] = PLS_Plugin_API::get_type_values( 'purchase' );
@@ -698,7 +688,7 @@ class PLS_Partials_Listing_Search_Form {
 
     /** Add the property type select element. */
     if ($property_type == 1) {
-    	$selected_property_type = isset( $_POST['property_type']  ) ? wp_kses_post( $_POST['property_type'] ) : false;
+    	$selected_property_type = isset( $_POST['metadata']['property_type']  ) ? wp_kses_post( $_POST['metadata']['property_type'] ) : false;
         
         $form_html['property_type'] = pls_h(
             'select',
@@ -710,7 +700,7 @@ class PLS_Partials_Listing_Search_Form {
 
     /** Add the listing type select element. */
     if ($listing_types == 1) {
-    	$selected_listing_types = isset( $_POST['listing_types']  ) ? wp_kses_post( $_POST['listing_types'] ) : false;
+    	$selected_listing_types = isset( $_POST['metadata']['listing_types']  ) ? wp_kses_post( $_POST['metadata']['listing_types'] ) : false;
         
         $form_html['listing_types'] = pls_h(
             'select',
@@ -721,7 +711,7 @@ class PLS_Partials_Listing_Search_Form {
     
     /** Add the zoning type select element. */
     if ($zoning_types == 1) {
-    	$selected_zoning_types = isset( $_POST['zoning_types']  ) ? wp_kses_post( $_POST['zoning_types'] ) : false;
+    	$selected_zoning_types = isset( $_POST['metadata']['zoning_types']  ) ? wp_kses_post( $_POST['metadata']['zoning_types'] ) : false;
         
         $form_html['zoning_types'] = pls_h(
             'select',
@@ -742,7 +732,7 @@ class PLS_Partials_Listing_Search_Form {
       
         $form_html['purchase_types'] = pls_h(
             'select',
-            array( 'name' => 'purchase_types' ) + $form_opt_attr['purchase_types'],
+            array( 'name' => 'purchase_types[]' ) + $form_opt_attr['purchase_types'],
             pls_h_options( $form_options['purchase_types'], $purchase_types_select )
         );
     }
@@ -1035,13 +1025,10 @@ class PLS_Partials_Listing_Search_Form {
     );
 
     /** Filter the form. */
-    $result = apply_filters( pls_get_merged_strings( array( "pls_listings_search_form_outer", $context ), '_', 'pre', false ), $form, $form_html, $form_options, $section_title, @$form_data, $form_id, $context_var ); 
-    
-    // Load the filters.js script...
-    $result .= '<script type="text/javascript" src="' . trailingslashit(PLS_JS_URL) . 'scripts/filters.js"></script>';
+    $return = apply_filters( pls_get_merged_strings( array( "pls_listings_search_form_outer", $context ), '_', 'pre', false ), $form, $form_html, $form_options, $section_title, @$form_data, $form_id, $context_var ) . '<script type="text/javascript" src="' . trailingslashit(PLS_JS_URL) . 'scripts/filters.js"></script>';
 
-    $cache->save($result);
-    return $result;
+    $cache->save($return);
+    return $return;
 	}
 
   public static function create_custom_select_element ($post_param, $post_sub_param, $options = array(), $placeholder = 'Any', $multi_select = false) {

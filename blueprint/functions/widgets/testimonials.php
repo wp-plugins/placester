@@ -5,7 +5,7 @@ class PLS_Widget_Testimonials extends WP_Widget {
 	/**
 	 * Widget Constuctor
 	 */
-	public function __construct() {
+	function PLS_Widget_Testimonials() {
 		$widget_ops = array( 'classname' => 'pls_testimonials_widget', 'description' => 'Featured Testimonials Widget' );
 
 		/* Widget control settings. */
@@ -21,27 +21,13 @@ class PLS_Widget_Testimonials extends WP_Widget {
    * @param $args (array)
    * @param $instance (array) Widget values.
    */
-  public function widget( $args, $instance ) {
+  function widget( $args, $instance ) {
     // widget output
     extract($args);
 
     $title = empty( $instance['title'] ) ? ' ' : apply_filters( 'widget_title', $instance['title'] );
     $number_of_posts = isset($instance['number_of_posts']) ? $instance['number_of_posts'] : 5;
     $widget_id = isset($instance['widget_id']) ? $instance['widget_id'] : 1;
-
-    /** Define the default argument array. */
-    $defaults = array(
-      'before_widget' => '<section class="testimonials-widget widget">',
-      'after_widget' => '</section>',
-      'before_title' => '<h3 class="widget-title">',
-      'after_title' => '</h3>',
-    );
-
-    /** Merge the arguments with the defaults. */
-    $args = wp_parse_args( $args, $defaults );
-
-    extract($args, EXTR_SKIP);
-
 
     if ( !post_type_exists('testimonial')) {
       return false;
@@ -73,7 +59,7 @@ class PLS_Widget_Testimonials extends WP_Widget {
         ob_start();
         ?>
         <article class="featured-testimonial" itemscope itemtype="http://schema.org/Review">
-          <a href="<?php echo $post_item['url']; ?>" itemprop="url"><h4 itemprop="name"><?php echo $post_item['title']; ?></h4></a>
+          <h4 itemprop="name"><?php echo $post_item['title']; ?></h4>
           <blockquote itemprop="review">
             <p><?php echo PLS_Format::shorten_text($post_item['content'], 130); ?></p>
           </blockquote>
@@ -115,7 +101,7 @@ class PLS_Widget_Testimonials extends WP_Widget {
 	 *
 	 * @return (array) New values.
 	 */
-	public function update( $new_instance, $old_instance ) {
+	function update( $new_instance, $old_instance ) {
 		// Save widget options
 		$instance = $old_instance;
 
@@ -132,7 +118,7 @@ class PLS_Widget_Testimonials extends WP_Widget {
 	 *
 	 * @param $instance (array) Widget values.
 	 */
-	public function form( $instance ) {
+	function form( $instance ) {
 
 		// Defaults
 		$instance = wp_parse_args( (array) $instance, array( 

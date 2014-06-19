@@ -87,8 +87,7 @@ class PLS_Slideshow {
             'data' => false,
             'post_id' => false,
             'post_meta_key' => false,
-            'fluid' => false,
-            'span_not_img' => false
+            'fluid' => false
         );
         $args = wp_parse_args( $args, $defaults );
         
@@ -136,7 +135,7 @@ class PLS_Slideshow {
                                 $first_valid_img_url = null;
 
                                 // Overwrite the placester url with the local url...
-                                $listing_url = PLS_Plugin_API::get_property_url( $listing['id'], $listing );
+                                $listing_url = PLS_Plugin_API::get_property_url( $listing['id'] );
                                 $data['links'][] = $listing_url;
 
                                 // Try to retrieve the image url if order is set...
@@ -195,7 +194,7 @@ class PLS_Slideshow {
                 
                 foreach ($api_response['listings'] as $index => $listing) {
                     if (empty($listing['id'])) { continue; }
-                    $listing_url = PLS_Plugin_API::get_property_url( $listing['id'], $listing );
+                    $listing_url = PLS_Plugin_API::get_property_url( $listing['id'] );
                     
                     /** Overwrite the placester url with the local url. */
                     $data['links'][] = $listing_url;
@@ -233,21 +232,16 @@ class PLS_Slideshow {
 	                // Get image, but only Dragonfly listing images
                     switch ($data['type'][$index]) {
                         case "listing":
-                            $slide_src = PLS_Image::load($slide_src, array('resize' => array('w' => $width, 'h' => $height), 'fancybox' => false, 'as_html' => false));
+                            $slide_src = PLS_Image::load($slide_src, array('resize' => array('w' => $width, 'h' => $height), 'fancybox' => false, 'as_html' => false, 'allow_dragonfly' => false));
                             break;
                         case "custom":
-                            $slide_src = PLS_Image::load($slide_src, array('allow_resize' => false, 'fancybox' => false, 'as_html' => false));
+                            $slide_src = PLS_Image::load($slide_src, array('allow_resize' => false, 'fancybox' => false, 'as_html' => false, 'allow_dragonfly' => false));
                             break;
                     }
 	            }
 	            
-	            /** Create the img or span element. */
-                if ($span_not_img) {
-                    $slide = '<span style="background-image: url(' . $slide_src . ');"></span>';
-                } else {
-                    $slide = pls_h_img($slide_src, false, $extra_attr);
-                }
-	            
+	            /** Create the img element. */
+	            $slide = pls_h_img($slide_src, false, $extra_attr);
 	
 	            /** Wrap it in an achor if the anchor exists. */
 	            if ( isset( $data['links'][$index] ) )
@@ -302,7 +296,7 @@ class PLS_Slideshow {
             }
             else {
                 foreach ($listing['images'] as $image) {
-                    $slide_array['images'][] = PLS_Image::load($image['url'], array('resize' => array('w' => $width, 'h' => $height), 'fancybox' => false, 'as_html' => false));
+                    $slide_array['images'][] = PLS_Image::load($image['url'], array('resize' => array('w' => $width, 'h' => $height), 'fancybox' => false, 'as_html' => false, 'allow_dragonfly' => false));
                     $slide_array['captions'] = array('');
                 }
             }

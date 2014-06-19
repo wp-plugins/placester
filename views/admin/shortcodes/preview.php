@@ -21,7 +21,6 @@ wp_enqueue_script( 'script-history', trailingslashit( PLS_JS_URL ) . 'libs/histo
 wp_enqueue_script( 'search-bootloader', trailingslashit( PLS_JS_URL ) . 'scripts/search-loader.js' , array( 'jquery' ), NULL, true );
 
 add_filter('show_admin_bar', '__return_false');
-remove_action('wp_head', 'placester_info_bar');
 
 ?><html style="margin-top: 0 !important; overflow: auto;">
 	<head>
@@ -52,7 +51,7 @@ remove_action('wp_head', 'placester_info_bar');
 
 		<div class="pls_embedded_widget_wrapper">
 			<?php
-			echo do_shortcode( html_entity_decode($sc_str) );
+			echo do_shortcode( $sc_str );
 			?>
 		<div>
 

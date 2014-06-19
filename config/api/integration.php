@@ -38,6 +38,9 @@ $PL_API_INTEGRATION = array(
 			'type' => 'GET'
 		),
 		'args' => array(),
-		'returns' => array()
+		'returns' => array(
+			// 'name' => false,
+			// 'id' => false
+		)
 	)	
 );

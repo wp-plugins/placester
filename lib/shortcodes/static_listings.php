@@ -21,28 +21,14 @@ class PL_Static_Listing_CPT extends PL_Search_Listing_CPT {
 		</p>';
 
 	protected $options = array(
-		'context'				=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
-		'width'					=> array( 'type' => 'int', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),
-		'height'				=> array( 'type' => 'int', 'label' => 'Height', 'default' => 250, 'description' => '(px)' ),
-		'widget_class'	=> array( 'type' => 'text', 'label' => 'CSS Class', 'default' => '', 'description' => '(optional)' ),
-		'sort_by_options'		=> array( 'type' => 'multiselect', 'label' => 'Items in "Sort By" list', 
-			'options'	=> array(	// options we always want to show even if they are not part of the filter set
-				'location.address'	=> 'Address', 
-				'cur_data.price'	=> 'Price',
-				'cur_data.sqft'		=> 'Square Feet',
-				'cur_data.lt_sz'	=> 'Lot Size',
-				'compound_type'		=> 'Listing Type',
-				'cur_data.avail_on'	=> 'Available On',
-			),
-			'default'	=> array('cur_data.price','cur_data.beds','cur_data.baths','cur_data.sqft','location.locality','location.postal'), 
-		),
-		'sort_by'				=> array( 'type' => 'select', 'label' => 'Default sort by', 'options' => array(), 'default' => 'cur_data.price' ),
-		'sort_type'				=> array( 'type' => 'select', 'label' => 'Default sort direction', 'options' => array('asc'=>'Ascending', 'desc'=>'Descending'), 'default' => 'desc' ),
-		'hide_sort_by'			=> array( 'type' => 'checkbox', 'label' => 'Hide "Sort By" dropdown', 'default' => false ),
-		'hide_sort_direction'	=> array( 'type' => 'checkbox', 'label' => 'Hide "Sort Direction" dropdown', 'default' => false ),
-		'hide_num_results'		=> array( 'type' => 'checkbox', 'label' => 'Hide "Show # entries" dropdown', 'default' => false ),
-		// TODO: sync up with js list			
-		'query_limit'			=> array( 'type' => 'int', 'label' => 'Number of results to display', 'default' => 10 ),
+		'context'				=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
+		'width'					=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
+		'height'				=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
+		'hide_sort_by'			=> array( 'type' => 'checkbox', 'label' => 'Hide "Sort By" dropdown', 'default' => true ),
+		'hide_sort_direction'	=> array( 'type' => 'checkbox', 'label' => 'Hide "Sort Direction" dropdown', 'default' => true ),
+		'hide_num_results'		=> array( 'type' => 'checkbox', 'label' => 'Hide "Show # entries" dropdown', 'default' => true ),
+		'query_limit'			=> array( 'type' => 'numeric', 'label' => 'Number of results to display', 'default' => 5 ),
+		'widget_class'			=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
 	);
 
 

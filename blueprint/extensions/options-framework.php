@@ -41,19 +41,21 @@ function pls_get_option ($option, $default = '', $no_empty = false) {
 
     if ($option !== '') {
         if(isset($pls_options[$option])) {
-			if ($no_empty && empty($options[$option])) {
+
+            if ( $no_empty && empty($options[$name]) ) {
                 return $default;
             }
+            
             return $pls_options[$option];
         }
-		elseif (function_exists('of_get_option')) {
+        else {
             $value = of_get_option($option, $default, $no_empty);
             $pls_options[$option] = $value;
             return $value;
         }
-		return $default;
-	}
-	return false;
+     } else {
+         return false;
+     }
 }
 
 /**
@@ -123,7 +125,7 @@ class PLS_Options_Cache implements ArrayAccess {
 
 class PLS_Options_Framework {
 
-    public static function init(){
+    static function init(){
 
         /** Initialize the framework constant and import it. */
         if ( ! function_exists( 'optionsframework_init' ) && ! defined( 'OPTIONS_FRAMEWORK_URL' ) && ! defined( 'OPTIONS_FRAMEWORK_DIRECTORY' ) ) {
@@ -143,7 +145,7 @@ class PLS_Options_Framework {
         add_action( 'wp_before_admin_bar_render', array( __CLASS__, 'adminbar' ) );
     }
 
-    public static function setup() {
+    static function setup() {
 
         /** Replace the admin submenu with a page. */
     	if( ! defined( 'PLS_WPORG_THEME' ) ) {
@@ -164,7 +166,7 @@ class PLS_Options_Framework {
      * 'optionsframework_options()' functions are missing.
      * 
      */
-    public static function add_default_options() {
+    static function add_default_options() {
 
         if ( ! function_exists( 'optionsframework_options' ) ) {
             function optionsframework_options() { 
@@ -194,7 +196,7 @@ class PLS_Options_Framework {
      * 
      * Its name can be filtered using "pls_admin_bar_menu_page".
      */
-    public static function adminbar() {
+    static function adminbar() {
 
         global $wp_admin_bar;
         global $i_am_a_placester_theme;
@@ -222,7 +224,7 @@ class PLS_Options_Framework {
      *
      * Its title can be filtered using "pls_theme_options_menu_page_title".
      */
-    public static function add_page() {
+    static function add_page() {
 
     	global $i_am_a_placester_theme;
     	

@@ -21,7 +21,7 @@ if ( !defined( 'PLS_LOAD_STYLES' ) || ( defined( 'PLS_LOAD_STYLES' ) && ( PLS_LO
 				/**
          *  If the plugin is inactive, or the api key is missing from the 
          *  plugin enqueue a css file that deals with styling the plugin 
-         *  notifications.
+         *  notifications. Accompanied by plugin-nags.js.
          */
         if ( pls_has_plugin_error() ) {
             wp_enqueue_style( 'pls-plugin-nags', trailingslashit( PLS_CSS_URL ) . 'styles/plugin-nags.css' );

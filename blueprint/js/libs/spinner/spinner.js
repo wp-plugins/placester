@@ -1,4 +1,4 @@
 jQuery(document).ready(function($) {
-  var spinningBars = '<img id="spinner" src="/wp-content/plugins/placester/blueprint/js/libs/spinner/preview_load_spin.gif" width="50" />';
+  var spinningBars = '<div id="spinner"><div class="bar1"></div><div class="bar2"></div><div class="bar3"></div><div class="bar4"></div><div class="bar5"></div><div class="bar6"></div><div class="bar7"></div><div class="bar8"></div></div>';
   $('.dataTables_processing').html(spinningBars);
 });

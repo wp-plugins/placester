@@ -23,10 +23,9 @@
 
 /* Search Filter Filters*/
 .form_group#Show_Filters .pls_search_form.address_search {
-  float: right;
-  width: auto;
+  width: 400px;
+  float: right !important;
   font-size: 18px;
-  overflow: hidden;
 }
 .form_group#Show_Filters .pls_search_form.address_search label {
   float: none;
@@ -34,7 +33,7 @@
 }
 .form_group#Show_Filters .pls_search_form.address_search input {
   float: none;
-  width: 200px;
+  width: auto !important;
 }
 .form_group#Show_Filters section.pls_search_form {
   width: 120px;
@@ -54,18 +53,13 @@
   float: left;
   padding: 5px;
 }
-
-.form_group,
-.form_subgroup {
-  float: none;
+section.pls_search_form {
+  height: 36px;
+}
+.form_group {
+  float: left;
   clear: both;
   margin: 10px 0;
-  overflow: hidden;
-  position: relative;
-  padding-left: 120px;
-}
-.form_subgroup {
-  margin-left: -120px;
 }
 .form_group section.pls_search_form {
   width: 200px;
@@ -74,7 +68,6 @@
 .form_group section.pls_search_form label {
   width: 170px;
   float: left;
-  background: none;
 }
 .form_group section.pls_search_form input, .form_group section.pls_search_form select {
   width: 150px;
@@ -86,29 +79,22 @@
 }
 
 .form_group h3 {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 120px;
-  margin: 10px 0 10px 0;
+  float: left;
+  width: 100px;
+  margin: 10px 10px 10px 0;
+  height: 40px;
 }
 
 #Show_Filters {
   margin-top:0px;
   margin-bottom:-5px;
+  width: 100%;
 }
 #Show_Filters h3 {
   height: 20px;
   font-weight: normal;
   font-size:13px;
 }
-
-
-/* Search Filters */
-#pls_admin_my_listings .form_group {
-	display: none;
-}
-
 
 .row_actions {
   display: none;

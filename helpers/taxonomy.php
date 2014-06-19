@@ -1,23 +1,22 @@
-<?php
+<?php 
 
 PL_Taxonomy_Helper::init();
 class PL_Taxonomy_Helper {
 
 	// List of taxonomies used to build a search UI
-	private static $location_taxonomies = array('state' => 'State', 'zip' => 'Zip', 'city' => 'City', 'neighborhood' => 'Neighborhood');
+	static $location_taxonomies = array('state' => 'State', 'zip' => 'Zip', 'city' => 'City', 'neighborhood' => 'Neighborhood');
+	// List of taxonomies used to bulid URLs, etc.
+	static $all_loc_taxonomies = array('state', 'zip', 'city', 'neighborhood', 'street');
 
-	// List of taxonomies used to build URLs, etc.
-	private static $all_loc_taxonomies = array('state', 'zip', 'city', 'neighborhood', 'street');
-	private static $tax_loc_map = array('state'=>'region', 'zip'=>'postal', 'city'=>'locality', 'neighborhood'=>'neighborhood', 'street'=>'address');
-
-	public static function init () {
+	function init () {
 		add_action('init', array(__CLASS__, 'register_taxonomies'));
+		add_filter('post_type_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
 		add_action('wp_ajax_save_polygon', array(__CLASS__, 'save_polygon'));
 		add_action('wp_ajax_update_polygon', array(__CLASS__, 'update_polygon'));
 		add_action('wp_ajax_delete_polygon', array(__CLASS__, 'delete_polygon'));
 		add_action('wp_ajax_get_polygons_datatable', array(__CLASS__, 'get_polygons_datatable'));
 		add_action('wp_ajax_get_polygon', array(__CLASS__, 'get_polygon'));
-
+		
 		add_action('wp_ajax_get_polygons_by_type', array(__CLASS__, 'ajax_get_polygons_by_type'));
 		add_action('wp_ajax_nopriv_get_polygons_by_type', array(__CLASS__, 'ajax_get_polygons_by_type'));
 
@@ -30,30 +29,20 @@ class PL_Taxonomy_Helper {
 		add_action('wp_ajax_nopriv_polygon_listings', array(__CLASS__, 'ajax_polygon_listings'));
 	}
 
-	public static function register_taxonomies () {
-		// do not make public or Yoast will create sitemaps - we are making our own elsewhere
-		register_taxonomy('state', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('State'), 'name'=>__('States')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true, 'rewrite'=>array('with_front'=>false, 'hierarchical'=>false)));
-		register_taxonomy('zip', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('Zip Codes'), 'name'=>__('Zip Codes')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
-		register_taxonomy('city', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('City'), 'name'=>__('Cities')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
-		register_taxonomy('neighborhood', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('Neighborhood'), 'name'=>__('Neighborhoods')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
+	function register_taxonomies () {
+		register_taxonomy('state', array('property', 'post', 'page', 'mediapage', 'attachment'), array('hierarchical' => TRUE,'label' => __('States'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+		register_taxonomy('zip', array('property', 'post', 'page', 'mediapage', 'attachment'), array('hierarchical' => TRUE,'label' => __('Zip Codes'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+		register_taxonomy('city', array('property', 'post', 'page', 'mediapage', 'attachment'), array('hierarchical' => TRUE,'label' => __('Cities'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+		register_taxonomy('neighborhood', array('property', 'post', 'page', 'mediapage', 'attachment'), array('hierarchical' => TRUE,'label' => __('Neighborhoods'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+		register_taxonomy('street', array('property', 'post', 'page', 'mediapage', 'attachment'), array('hierarchical' => TRUE,'label' => __('Streets'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+		
+		register_taxonomy('beds', 'property', array('hierarchical' => TRUE,'label' => __('Beds'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
+		register_taxonomy('baths', 'property', array('hierarchical' => TRUE,'label' => __('Baths'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
+		register_taxonomy('half-baths', 'property', array('hierarchical' => TRUE,'label' => __('Half-baths'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
+		register_taxonomy('mlsid', 'property', array('hierarchical' => TRUE,'label' => __('MLS ID'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
 	}
 
-	public static function create_object($tax, $name, $slug = '') {
-		$slug = $slug ? $slug : sanitize_title_with_dashes($name);
-		$qo = new stdClass();
-		$qo->term_id = -1;
-		$qo->name = $name;
-		$qo->slug = $slug;
-		$qo->term_group = 0;
-		$qo->term_taxonomy_id = -1;
-		$qo->taxonomy = $tax;
-		$qo->description = '';
-		$qo->parent = 0;
-		$qo->count = 0;
-		return $qo;
-	}
-
-	public static function ajax_polygon_listings () {
+	function ajax_polygon_listings () {
 		if (isset($_POST['polygon'])) {
 			$polygon = $_POST['polygon'];
 			if (!empty($polygon)) {
@@ -65,19 +54,15 @@ class PL_Taxonomy_Helper {
 		die();
 	}
 
-	public static function get_polygon_links () {
+	function get_polygon_links () {
 		$polygons = PL_Option_Helper::get_polygons();
-		$response = array();
-		foreach ($polygons as $polygon) {
-			$polygon['url'] = get_term_link($polygon['slug'], $polygon['tax']);
-			if (!is_wp_error($polygon['url'])) {
-				$response[] = $polygon;
-			}
+		foreach ($polygons as $key => $value) {
+			$polygons[$key]['url'] = get_term_link($value['slug'], $value['tax']);
 		}
-		return $response;
+		return $polygons;
 	}
 
-	public static function get_listings_polygon_name ($params) {
+	function get_listings_polygon_name ($params) {
 		$polygons = PL_Option_Helper::get_polygons();
 		$neighborhood_polygons = preg_replace("/[\\\\]+'/", "\\\\'", $params['neighborhood_polygons']);
 		foreach ($polygons as $polygon) {
@@ -87,7 +72,7 @@ class PL_Taxonomy_Helper {
 		}
 	}
 
-	public static function get_preset_polygon_styles () {
+	function get_preset_polygon_styles () {
 		$preset_styes = array(
 				'Red' => array(
 					'border-weight' => 3,
@@ -143,15 +128,14 @@ class PL_Taxonomy_Helper {
 		foreach ($preset_styes as $style_name => $presets) {
 			$options .= '<option ';
 			foreach ($presets as $style => $value) {
-				$options .= ' data-' . $style . '="'.$value.'"';
+				$options .= 'data-' . $style . '="'.$value.'"';
 			}
 			$options .= ' >' . $style_name . '</option>';
 		}
-		$options .= '<option value="custom">Custom</option>';
 		return $options;
 	}
 
-	public static function polygon_listings ($polygon, $additional_params = array()) {
+	function polygon_listings ($polygon, $additional_params = array()) {
 		$request = '';
 		foreach ($polygon as $key => $point) {
 			$request .= 'polygon['.$key. '][lat]=' . $point['lat'] .'&';
@@ -161,7 +145,7 @@ class PL_Taxonomy_Helper {
 		return PL_Listing_Helper::results($request);
 	}
 
-	public static function lifestyle_polygon () {
+	function lifestyle_polygon () {
 		$request = wp_parse_args(wp_kses_post($_POST), array('location' => '', 'radius' => '', 'types' => ''));
 		$places_response = PL_Google_Places_Helper::search($request);
 		$points = array();
@@ -178,7 +162,7 @@ class PL_Taxonomy_Helper {
 		die();
 	}
 
-	public static function find_hull ($points = array(), $settings = array()) {
+	function find_hull ($points = array(), $settings = array()) {
 		extract(wp_parse_args($settings, array('include_listings' => false)));
 		$response = array();
 		if (!empty($points)) {
@@ -201,12 +185,12 @@ class PL_Taxonomy_Helper {
 		return $response;
 	}
 
-	public static function update_polygon () {
+	function update_polygon () {
 		PL_Option_Helper::set_polygons(array(), (int)$_POST['id']);
 		self::save_polygon();
 	}
 
-	public static function save_polygon () {
+	function save_polygon () {
 		$polygon = array();
 		$polygon['name'] = $_POST['name'];
 		$polygon['tax'] = $_POST['tax'];
@@ -226,20 +210,20 @@ class PL_Taxonomy_Helper {
 		}
 		$response = PL_Option_Helper::set_polygons($polygon);
 		if ($response) {
-			echo json_encode(array('response' => true, 'message' => 'Polygon successfully saved. Updating list...'));
+			echo json_encode(array('response' => true, 'message' => 'Polygon successfully saved. Updating list...'));	
 		} else {
-			echo json_encode(array('response' => false, 'message' => 'There was an error. Please try again.'));
+			echo json_encode(array('response' => false, 'message' => 'There was an error. Please try again.'));	
 		}
-		die();
+		die();	
 	}
 
-	public static function delete_polygon () {
+	function delete_polygon () {
 		$response = PL_Option_Helper::set_polygons(array(), (int)$_POST['id']);
 		echo json_encode($response);
-		die();
+		die();		
 	}
 
-	public static function get_polygon () {
+	function get_polygon () {
 		$polygons = PL_Option_Helper::get_polygons();
 		if ($polygons[$_POST['id']]) {
 			$polygons[$_POST['id']]['id'] = $_POST['id'];
@@ -250,12 +234,12 @@ class PL_Taxonomy_Helper {
 		die();
 	}
 
-	public static function ajax_polygons_as_items () {
+	function ajax_polygons_as_items () {
 		echo json_encode(self::polygons_as_items());
 		die();
 	}
 
-	public static function get_polygons_datatable () {
+	function get_polygons_datatable () {
 		$raw_polygons = PL_Option_Helper::get_polygons();
 		// pls_dump($raw_polygons);
 		$polygons = array();
@@ -280,70 +264,57 @@ class PL_Taxonomy_Helper {
 
 	public static function get_polygons_by_type ($type = false) {
 		if (!$type) {
-			$type = isset($_POST['type']) ? $_POST['type'] : '';
+			$type = $_POST['type'];
 		}
 		$response = array();
 		$polygons = PL_Option_Helper::get_polygons();
-		foreach ($polygons as $polygon) {
+		foreach ($polygons as $key => $polygon) {
+			$polygon['permalink'] = get_term_link( $polygon['slug'], $polygon['tax'] );
 			if ($polygon['tax'] == $type) {
-				$polygon['permalink'] = get_term_link( $polygon['slug'], $polygon['tax'] );
-				if (!is_wp_error($polygon['permalink'])) {
-					$response[] = $polygon;
-				}
+				$response[] = $polygon;
 			}
 		}
 		return $response;
 	}
 
-	public static function ajax_get_polygons_by_slug () {
-		echo json_encode(self::get_polygons_by_slug($_POST['slug'], $_POST['type']));
+	function ajax_get_polygons_by_slug () {
+		echo json_encode(self::get_polygons_by_slug($_POST['slug']));
 		die();
 	}
 
-	public static function get_polygons_by_slug ($slug = false, $type = 'neighborhood') {
+	function get_polygons_by_slug ($slug = false) {
 		$response = array();
-		$tax = '';
-		// map location type to tax
-		foreach (self::$tax_loc_map as $mtax=>$mloc) {
-			if ($mloc == $type) {
-				$tax = $mtax;
-				break;
-			}
-		}
 		$polygons = PL_Option_Helper::get_polygons();
-		foreach ($polygons as $polygon) {
-			if ($polygon['slug'] == $slug && $polygon['tax'] == $tax) {
-				$polygon['permalink'] = get_term_link( $polygon['slug'], $polygon['tax'] );
-				if (!is_wp_error($polygon['permalink'])) {
-					$response[] = $polygon;
-				}
+		foreach ($polygons as $key => $polygon) {
+			$polygon['permalink'] = get_term_link( $polygon['slug'], $polygon['tax'] );
+			if ($polygon['slug'] == $slug) {
+				$response[] = $polygon;
 			}
 		}
 		return $response;
 	}
 
-	public static function get_polygon_detail ($args = array()) {
+	function get_polygon_detail ($args = array()) {
 		extract(wp_parse_args($args, array('tax' => false, 'slug' => false)));
+		$response = array();
 		$polygons = PL_Option_Helper::get_polygons();
 		if ($slug && $tax) {
-			foreach ($polygons as $polygon) {
+			foreach ($polygons as $key => $polygon) {
 				if ($polygon['slug'] == $slug && $polygon['tax'] == $tax) {
 					$polygon['permalink'] = get_term_link( $polygon['slug'], $polygon['tax'] );
-					if (!is_wp_error($polygon['permalink'])) {
-						return $polygon;
-					}
+					return $polygon;
 				}
 			}
 		}
 		return array();
 	}
 
-	public static function ajax_get_polygons_by_type ($type = false) {
+	function ajax_get_polygons_by_type ($type = false) {
 		echo json_encode(self::get_polygons_by_type($type));
 		die();
 	}
 
-	public static function types_as_selects () {
+	function types_as_selects () {
 		$taxonomies = self::get_taxonomies();
 		ob_start();
 		?>
@@ -356,7 +327,7 @@ class PL_Taxonomy_Helper {
 		return ob_get_clean();
 	}
 
-	public static function taxonomies_as_selects () {
+	function taxonomies_as_selects () {
 		$taxonomies = self::get_taxonomies();
 		ob_start();
 		?>
@@ -372,7 +343,7 @@ class PL_Taxonomy_Helper {
 		return ob_get_clean();
 	}
 
-	public static function taxonomies_as_checkboxes () {
+	function taxonomies_as_checkboxes () {
 		$taxonomies = self::get_taxonomies();
 		ob_start();
 		?>
@@ -382,13 +353,13 @@ class PL_Taxonomy_Helper {
 						<input type="radio" id="<?php echo $slug ?>" name="type" value="<?php echo $slug ?>">
 						<label for="<?php echo $slug ?>"><?php echo $label ?></label>
 					</section>
-				<?php endforeach ?>
-			</form>
+				<?php endforeach ?>	
+			</form>		
 		<?php
 		return ob_get_clean();
 	}
 
-	public static function get_taxonomies () {
+	function get_taxonomies () {
 		return self::$location_taxonomies;
 	}
 
@@ -396,102 +367,77 @@ class PL_Taxonomy_Helper {
 		$terms = get_terms( $tax, $args );
 		$response = array();
 		foreach ($terms as $key => $term) {
-			$response[$key] = (array)$term;
-			$response[$key]['permalink'] = get_term_link($response[$key]['slug'], $tax);
+			foreach ($term as $term_key => $term_value) {
+				$response[$key][$term_key] = $term_value;
+			}
+			$response[$key]['permalink'] = get_term_link($response[$key]['slug'], $tax);	
 		}
 		return $response;
+		// pls_dump($response);
 	}
 
 	/**
-	 * Called from BP: Get taxonomy object either from db if user saved data or from the dynamic page
+	 * Retrieves all terms for an object & caches them for subsequent requests.
+	 * @param int $obj_id Object ID (post ID)
+	 * @param string $taxonomy name of the taxonomy to return
+	 * @param string $default Value returned if no matching taxonomy found
+	 * @return string
 	 */
-	public static function get_term ($args = array()) {
-		extract(wp_parse_args($args, array('field'=>'slug', 'value'=>'', 'taxonomy'=>'', 'get_polygon'=>false)));
-		$term = get_term_by($field, $value, $taxonomy);
-		if (!$term && $field == 'slug') {
-			// no match in tax db - see if this is a dynamically created location page
-			$cterm = PL_Pages::get_taxonomy_object();
-			// slug for current page?
-			if ($cterm && $cterm->taxonomy == $taxonomy && $cterm->slug == sanitize_title_with_dashes($value)) {
-				$term = $cterm;
-			}
-		}
+	private function get_obj_term($obj_id, $taxonomy, $default) {
+		
+		static $cache = array();
 
-		if ($taxonomy) {
-			// if we have a taxonomy we can use api location information
-			if (($loc_type = self::$tax_loc_map[$taxonomy]) && ($locations = PL_Listing_Helper::locations_for_options())) {
-
-				if (!$term && $field == 'name') {
-					// is the incoming value an mls location?
-					if (in_array($value, $locations[$loc_type])) {
-						// check to see if the neighborhood already exists but has been renamed by the user
-						if(!$term = get_term_by('slug', sanitize_title_with_dashes($value), $taxonomy)) {
-							// otherwise make an object dynamically
-							$term = self::create_object($taxonomy, $value);
-						}
-						$term->api_field = $loc_type;
-						$term->api_term = $value;
-					}
-				}
-
-				elseif($term) {
-					// already found a user-defined term - now verify or find the original mls location
-					if (in_array($term->name, $locations[$loc_type])) {
-						$term->api_field = $loc_type;
-						$term->api_term = $term->name;
-					}
-					elseif ($key = array_search($term->slug, array_map('sanitize_title_with_dashes', $locations[$loc_type]))) {
-						$term->api_field = $loc_type;
-						$term->api_term = $locations[$loc_type][$key];
-					}
-				}
-			}
-		}
-
-		if ($term) {
-			if ($term->term_id > 0 && $get_polygon) {
-				$term->polygon = self::get_polygon_detail(array('slug'=>$term->slug, 'tax'=>$term->taxonomy));
-			}
-			else {
-				$term->polygon = array();
-			}
-		}
-
-		return $term;
-	}
-
-	/**
-	 * Return templates for building taxonomy permalinks - useful when creating lots of links at once
-	 */
-	public function get_permalink_templates () {
-		$permalink_struct = get_option('permalink_structure');
-		if (empty($permalink_struct)) {
-			// non pretty format
-			$templates = array('state'=>'?state=%state%', 'city'=>'?city=%city%', 'zip'=>'?zip=%zip%', 'neighborhood'=>'?neighborhood=%neighborhood%');
+		if(isset($cache[$obj_id])) {
+			$terms_for_obj = $cache[$obj_id];
 		}
 		else {
-			$templates = array('state'=>'state/%state%/', 'city'=>'city/%city%/', 'zip'=>'zip/%zip%/', 'neighborhood'=>'neighborhood/%neighborhood%/');
+			$terms_for_obj = wp_get_object_terms($obj_id, self::$all_loc_taxonomies);
+			$cache[$obj_id] = $terms_for_obj;
 		}
-		foreach($templates as $key=>&$template) {
-			$template = home_url($template);
+
+		foreach($terms_for_obj as $term) {
+			if($term->taxonomy == $taxonomy) {
+				return $term->slug;
+			}
 		}
-		return $templates;
+
+		// Not found
+		return $default;
 	}
 
-	public static function create ($taxonomies) {
-      	foreach ($taxonomies as $taxonomy) {
-      		if ( !taxonomy_exists( $taxonomy['taxonomy_name'] ) ) {
-      			return false;
-      		}
+	function get_property_permalink ($permalink, $post_id, $leavename) {
+		$post = get_post($post_id);
+		$state = '';
+		$zip = '';
+		$city = '';
+		$street = '';
+		$neighborhood = '';
+        $rewritecode = array('%state%','%city%','%zip%','%neighborhood%','%street%', $leavename ? '' : '%postname%', $leavename ? '' : '%pagename%', $leavename ? '' : '%pagename%');
+        
+        if ( !empty($permalink) && $post->post_type == 'property' && !in_array($post->post_status, array('draft', 'pending', 'auto-draft')) ) {
+            if (strpos($permalink, '%state%')) {
+            	$state = self::get_obj_term($post->ID, 'state', 'unassigned-state');
+            }
 
-            // create terms in taxonomy
-      		foreach ($taxonomy['terms'] as $term) {
-                wp_insert_term( $term['term_name'], $taxonomy['taxonomy_name'], $term['args'] );
-      		}
-      	}
-    }
+            if (strpos($permalink, '%zip%')) {
+            	$zip = self::get_obj_term($post->ID, 'zip', 'unassigned-zip');
+            }
 
-    public static function get_tax_loc_map() {
-		return self::$tax_loc_map;
+	        if (strpos($permalink, '%city%')){
+            	$city = self::get_obj_term($post->ID, 'city', 'unassigned-city');
+	        } 
+
+	        if (strpos($permalink, '%neighborhood%')){
+	        	$neighborhood = self::get_obj_term($post->ID, 'neighborhood', 'unassigned-neighborhood');
+	        } 
+
+	        if (strpos($permalink, '%street%')){
+	        	$street = self::get_obj_term($post->ID, 'street', 'unassigned-street');
+	        }           
+
+	        $rewritereplace = array( $state, $city, $zip, $neighborhood, $street, $post->post_name, $post->post_name, $post->post_name, $post->post_name, $post->post_name);
+	        $permalink = str_replace($rewritecode, $rewritereplace, $permalink);
+        }
+        return $permalink;
 	}
 }

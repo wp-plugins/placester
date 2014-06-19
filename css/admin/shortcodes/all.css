@@ -5,18 +5,16 @@
 }
 
 #poststuff .sc-meta-section h3 {
-	clear: both;
 	margin-bottom: .4em;
 	background: none;
 	padding-left: 0;
 }
 
 .sc-meta-section .pl_widget_block {
-	clear: both;
 	width: 100%;
 }
 
-.pl-sc-wrap .row-fluid,
+.pl-sc-wrap section,
 .sc-meta-section .pl_widget_block section,
 .sc-meta-section #pl_static_listing_block section { /* required to override featured listings css */
 	overflow: hidden;
@@ -25,28 +23,23 @@
 
 .pl-sc-wrap .pl-sc-meta-box label {
 	display: block;
-	clear: both;
 	float: left;
-	margin: .3em 0;
-	background: none;
 	width: 20em;
-	line-height: 1.4em;
+	height: 2em;
+	line-height: 2em;
 	white-space: pre-wrap;
-}
-.pl-sc-wrap .pl-sc-meta-box section label {
-	clear: none;
 }
 
 .pl-sc-wrap label.textarea {
 	float: none;
 	margin: .8em 0 .2em 0;
 	width: auto;
+	height: auto;
 	line-height: 1.2em;
 	font-weight: bold;
 }
 
-.pl-sc-wrap span.description {
-	padding-left: .5em;
+.pl-sc-wrap label.textarea span.description {
 	font-weight: normal;
 }
 
@@ -55,67 +48,12 @@
 }
 
 .sc-meta-section input,
+.sc-meta-section select,
 .sc-meta-section #pl_static_listing_block input, 	/* required to override featured listings css */
 .sc-meta-section #pl_static_listing_block select {
-	display: block;
-	float: left;
+    float: left;
 	margin: 0 .5em .5em 0;
-	height: auto;
-}
-.sc-meta-section select {
-	display: block;
-	float: left;
-	margin: 0 .5em .5em 0;
-}
-.sc-meta-section select[multiple] {
-	height: 8em;
-	min-width: 15em;
-}
-.sc-meta-section input[type="checkbox"] {
-	clear: both;
-	margin: .3em .5em 0 0;
-}
-.sc-meta-section input.form_item_int {
-	width: 5em;
-}
-.sc-meta-section input.form_item_text {
-	width: 20em;
-}
-
-/* Filter list for sc editor */
-.pl_filters {
-	float: left;	
-}
-.pl_filters section {
-	display: none;	
-}
-.pl-sc-wrap .pl-sc-meta-box .pl_filters label {
-	display: none;	
-}
-.pl_widget_block .add_filter {
-	display: block;
-	float: left;	
-}
-.pl_widget_block .active_filters {
-	clear: both;
-}
-.pl_widget_block .active_filter {
-	clear: both;
-	margin-top: .3em;
-	border-top: 1px solid #dfdfdf;
-	padding-top: .3em;
-	overflow: hidden;
-}
-.pl-sc-wrap .pl-sc-meta-box .active_filter label,
-.pl_widget_block .active_filter .filter_value {
-	display: block;
-	float: left;
-	padding: 0 1em 0 0;
-	width: 40%;
-}
-.pl_widget_block .active_filter .remove_filter {
-	display: block;
-	float: right;
+	height: 2em;
 }
 
 /* CodeMirror for template */
@@ -153,9 +91,6 @@
     margin-top: 8px;
     padding: 0 10px 0 4px;
 }
-.embed-link span {
-	word-wrap: break-word;
-}
 
 .pl-sc-wrap .inside strong {
     color: #777777;
@@ -168,22 +103,22 @@
 .span2 {
 	float: left;
 	overflow: hidden;
-	margin: 0;
+	margin-right: 2%;
 }
 .span8 {
-	width: 80%;
+	width: 78%;
 }
 
 .span6 {
-	width: 60%;
+	width: 58%;
 }
 
 .span4 {
-	width: 40%;
+	width: 38%;
 }
 
 .span2 {
-	width: 20%;
+	width: 18%;
 }
 
 /* preview pane */
@@ -231,13 +166,10 @@
 /* Shortcode editor */
 
 
-.pl_template_block,
+.pl_template_block, 
 .edit-sc-template-edit {
 	float: left;
 	margin-right: 1em;
-}
-.edit-sc-template-edit {
-	padding-top: 2px;
 }
 
 
@@ -249,6 +181,10 @@
 	display: block;
 	width: 100%;
 	overflow: hidden;
+}
+
+.sc-meta-section a {
+	display: block;
 }
 
 #pl_sc_tpl_edit .pl_template_block {
@@ -263,19 +199,8 @@
 	clear: both;
 }
 
-h4.subcode {
-	margin: 0;
-	padding: 0;
-}
-
-.subcode-help {
-	display: none;
-}
-.subcode-help code {
-	margin: 0;
-	padding: 0;
-	font-style: normal;
-	word-wrap: break-word;
+.subcode {
+	margin-right: .8em;
 }
 
 .before_widget a,
@@ -288,14 +213,5 @@ h4.subcode {
 
 #options-filters .button {
 	height: auto;
-}
-
-
-/* Custom Attribute Lookup */
-.ui-dialog-content th {
-	text-align: left;
-}
-.ui-dialog-content td {
-	white-space: nowrap;
 }
 

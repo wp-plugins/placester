@@ -178,7 +178,7 @@ jQuery(document).ready(function($) {
     $('#listing_image').live('mouseover', function () {
         $('#image-preview').remove();
         var content = '<div id="image-preview"><img src="' + $(this).attr('href') + '" /></div>';
-        $(this).append(content);
+        $('body').append(content);
     });
 
     $('#listing_image').live('mouseout', function () {

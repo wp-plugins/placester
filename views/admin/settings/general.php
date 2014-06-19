@@ -3,13 +3,13 @@
 	if( is_array( $pls_whoami ) ) {
 		extract( $pls_whoami ); 
 	}
-	$places_api_key = PL_Option_Helper::get_google_places_key(); 
-	$error_logging = PL_Option_Helper::get_log_errors(); 
-	$block_address = PL_Option_Helper::get_block_address(); 
-	$enable_community_pages = PL_Option_Helper::get_community_pages();
+	extract(array('places_api_key' => PL_Option_Helper::get_google_places_key() ) ) ; 
+	extract(array('error_logging' => PL_Option_Helper::get_log_errors())); 
+	extract(array('block_address' => PL_Option_Helper::get_block_address())); 
+	extract(array('enable_community_pages' => PL_Option_Helper::get_community_pages_enabled()));
 	$demo_data_flag = PL_Option_Helper::get_demo_data_flag(); 
 ?>
-
+	<div class="wrap">
 	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
 	<?php if (PL_Option_Helper::api_key() && isset($email)): ?>
 		<div class="header-wrapper" id="settings-header-wrapper">
@@ -115,7 +115,7 @@
 		<ul>
 			<li>
 				<input id="block_address" type="checkbox" name="block_address" <?php echo $block_address ? 'checked="checked"' : '' ?>>
-				<label for="block_address">Use <b>Block Addresses</b> rather than exact addresses. Using block addresses will switch over all the addresses in your website to the nearest block or a close-by address, rather than exact address.</label>
+				<label for="block_address">Use <b>Exact Addresses</b> rather than block addresses. Using block addresses will switch over all the addresses in your website to the nearest block, rather than exact address.</label>
 			</li>
 			<li>
 				<input id="demo_data" type="checkbox" name="demo_data" <?php echo $demo_data_flag ? 'checked="checked"' : '' ?>>
@@ -140,3 +140,4 @@
 			</li>
 		  <?php endif; ?>
 		</ul>
+	</div>

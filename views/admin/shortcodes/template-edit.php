@@ -14,23 +14,13 @@ if ($action == 'delete' && $ID) {
 	wp_redirect(admin_url('admin.php?page=placester_shortcodes_templates'));
 	die;
 }
-if ($action == 'copy') {
-	$shortcode = (empty($_REQUEST['shortcode'])?'':$_REQUEST['shortcode']);
-	$default = empty($_REQUEST['default']) ? '' : $_REQUEST['default'];
-	$template = array();
-	if ($ID) {
-		$template = PL_Shortcode_CPT::load_custom_template($ID);
+if ($action == 'copy' && $ID) {
+	if ($tpl = PL_Shortcode_CPT::load_custom_template($ID)) {
+		$tpl['title'] = 'Copy of '.$tpl['title'];
+		PL_Shortcode_CPT::save_custom_template(0, $tpl);
 	}
-	elseif ($default && $shortcode) {
-		$template = PL_Shortcode_CPT::load_template($default, $shortcode);
-	}
-	if (!empty($template['shortcode'])) {
-		$template['title'] = 'Copy of '.$template['title'];
-		$action = 'edit';
-	}
-	else {
-		$action = '';
-	}
+	wp_redirect(admin_url('admin.php?page=placester_shortcodes_templates'));
+	die;
 }
 if ($action == 'edit' && !empty($_POST['save']) && !empty($_POST['shortcode'])) {
 	$data = array_merge($_POST, $_POST[$_POST['shortcode']]);
@@ -63,7 +53,7 @@ $form_action = 'edit';
 $used_by = PL_Shortcode_CPT::template_used_by($ID);
 
 ?>
-<div class="pl-sc-wrap">
+<div class="wrap pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Create Shortcode Template'); ?>
 
 	<div id="pl_sc_tpl_edit">
@@ -104,7 +94,7 @@ $used_by = PL_Shortcode_CPT::template_used_by($ID);
 									'values'=>$template,
 								));?>
 						</div>
-					</div><!-- /post-body-content -->
+					</div>
 
 					<div id="postbox-container-1" class="postbox-container">
 						<div id="submitdiv" class="postbox">
@@ -120,13 +110,13 @@ $used_by = PL_Shortcode_CPT::template_used_by($ID);
 
 									<div id="misc-publishing-actions">
 										<div class="misc-pub-section">
-											<span>Status:</span> <span
+											<label for="pl_sc_tpl_csc_link">Status:</label> <span
 												id="post-status-display">
 												<?php echo ($ID=='' ? __('Draft') : ($used_by ? '<a id="pl_sc_tpl_csc_link" href="#">'.__('In Use').'</a>' : __('Not In Use')))?></span>
 											<div id="pl_sc_tpl_csc_list" style="display:none">
 												<p>Used by the following custom shortcodes:</p>
 												<?php foreach($used_by as $csc):?>
-													- <a href="<?php echo admin_url('admin.php?page=placester_shortcodes_shortcode_edit&amp;ID='.$csc['ID'])?>"><?php echo $csc['post_title']?></a><br />
+													- <a href="<?php echo admin_url('admin.php?page=placester_shortcodes_shortcode_edit&amp;ID='.$csc['ID'])?>"><?php echo $csc['post_title']?></a><br/>
 												<?php endforeach;?>
 											</div>
 										</div>

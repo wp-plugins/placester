@@ -3,12 +3,136 @@
  * Header Template
  *
  */
+  global $post;
+  $itemtype = '';
+  $name = '';
+  $image = '';
+  $description = '';
+  $address = '';
+  $author = '';
+
+  if ( is_search() ) {
+    $itemtype = 'http://schema.org/LocalBusiness';
+    $name = 'Search results for: ' . get_search_query();
+    $image = pls_get_option('pls-site-logo');
+    $description = pls_get_option('pls-company-description');
+    $address = @pls_get_option('pls-company-street') . " " . @pls_get_option('pls-company-locality') . ", " . @pls_get_option('pls-company-region');
+    $author = pls_get_option('pls-user-name');
+
+  } elseif (is_category()) {
+
+    $category = get_the_category(); 
+
+    $itemtype = 'http://schema.org/Blog';
+    $name = $category[0]->cat_name;
+    $image = pls_get_option('pls-site-logo');
+    $description = $category[0]->description;
+    $address = @pls_get_option('pls-company-street') . " " . @pls_get_option('pls-company-locality') . ", " . @pls_get_option('pls-company-region');
+    $author = pls_get_option('pls-user-name');
+
+  } elseif (is_date()) {
+
+    $date = get_the_date('Y');
+
+    $itemtype = 'http://schema.org/Blog';
+    $name = $date . ' Archives';
+    $image = pls_get_option('pls-site-logo');
+    $description = pls_get_option('pls-company-description');
+    $address = @pls_get_option('pls-company-street') . " " . @pls_get_option('pls-company-locality') . ", " . @pls_get_option('pls-company-region');
+    $author = pls_get_option('pls-user-name');
+  
+  } elseif (is_tax('neighborhood')) {
+    // Single Neighborhood
+    $term = get_term_by( 'slug', get_query_var( 'term' ), get_query_var( 'taxonomy' ) );
+    $name = $term->name;
+    
+    $itemtype = 'http://schema.org/LocalBusiness';
+
+    $address = "";
+      $descrip = strip_tags($term->description);
+      $descrip_more = '';
+      if (strlen($descrip) > 155) {
+        $descrip = substr($descrip,0,155);
+        $descrip_more = ' ...';
+      }
+      $descrip = str_replace('"', '', $descrip);
+      $descrip = str_replace("'", '', $descrip);
+      $descripwords = preg_split('/[\n\r\t ]+/', $descrip, -1, PREG_SPLIT_NO_EMPTY);
+      array_pop($descripwords);
+    $description = implode(' ', $descripwords) . $descrip_more;
+    $image_array = get_tax_meta($term->term_id,'image_1');
+    if (isset($image_array['src'])) {
+      $image = $image_array['src'];
+    } else {
+      $image = '';
+    }
+    $author = @pls_get_option('pls-user-name');
+    $is_attribute_php = true;
+    
+  } elseif ( is_singular('property') ) { 
+    // Single Property
+    $content = get_option('placester_listing_layout');
+    if(isset($content) && $content != '') {return $content;}
+    $html = '';
+    $listing = PLS_Plugin_API::get_listing_in_loop();
+    
+    $itemtype = 'http://schema.org/Offer';
+    if (isset($listing['location']['unit']) && $listing['location']['unit'] != null) {
+      $name = @$listing['location']['address'] . ', ' . $listing['location']['unit'] . ' ' . @$listing['location']['locality'] . ', ' . @$listing['location']['region'];
+      $address = @$listing['location']['address'] . ', ' . $listing['location']['unit'] . ' ' . @$listing['location']['locality'] . ', ' . @$listing['location']['region'];
+    } else {
+      $name = @$listing['location']['address'] . ' ' . @$listing['location']['locality'] . ', ' . @$listing['location']['region'];
+      $address = @$listing['location']['address'] . ' ' . @$listing['location']['locality'] . ', ' . @$listing['location']['region'];
+    }
+  
+    $image = @$listing['images']['0']['url'];
+    $description = esc_html(strip_tags($listing['cur_data']['desc']));
+    $author = @pls_get_option('pls-user-name');
+
+
+  } elseif ( is_single() ) {
+
+  // Single Blog Post
+  $itemtype = 'http://schema.org/BlogPosting';
+  $name = $post->post_title;
+
+    if (has_post_thumbnail( $post->ID ) ) {
+      $post_image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-post-thumbnail' );
+      $image = $post_image[0];
+    }
+    $descrip = strip_tags($post->post_content);
+    $descrip_more = '';
+    if (strlen($descrip) > 155) {
+      $descrip = substr($descrip,0,155);
+      $descrip_more = ' ...';
+    }
+    $descrip = str_replace('"', '', $descrip);
+    $descrip = str_replace("'", '', $descrip);
+    $descripwords = preg_split('/[\n\r\t ]+/', $descrip, -1, PREG_SPLIT_NO_EMPTY);
+    array_pop($descripwords);
+  $description = implode(' ', $descripwords) . $descrip_more;
+  $address = @pls_get_option('pls-company-street') . " " . @pls_get_option('pls-company-locality') . ", " . @pls_get_option('pls-company-region');
+  $author = $post->post_author;
+
+  } else {
+    // Home and other pages
+    $itemtype = 'http://schema.org/LocalBusiness';
+    if (is_home()) {
+      $name = pls_get_option('pls-company-name');
+    } elseif (isset($post)) {
+      $name = $post->post_title;
+    }
+    $image = pls_get_option('pls-site-logo');
+    $description = pls_get_option('pls-company-description');
+    $address = @pls_get_option('pls-company-street') . " " . @pls_get_option('pls-company-locality') . ", " . @pls_get_option('pls-company-region');
+    $author = pls_get_option('pls-user-name');
+  }
 ?>
-<!DOCTYPE html>
-<!--[if lt IE 7]><html class="no-js ie6 oldie" xmlns:fb="http://ogp.me/ns/fb#" <?php language_attributes(); ?> <?php echo PLS_Micro_Data::itemtype('html'); ?>><![endif]-->
-<!--[if IE 7]><html class="no-js ie7 oldie" xmlns:fb="http://ogp.me/ns/fb#" <?php language_attributes(); ?> <?php echo PLS_Micro_Data::itemtype('html'); ?>><![endif]-->
-<!--[if IE 8]><html class="no-js ie8 oldie" xmlns:fb="http://ogp.me/ns/fb#" <?php language_attributes(); ?> <?php echo PLS_Micro_Data::itemtype('html'); ?>><![endif]-->
-<!--[if gt IE 8]><!--><html class="no-js" xmlns:fb="http://ogp.me/ns/fb#" <?php language_attributes(); ?> <?php echo PLS_Micro_Data::itemtype('html'); ?>><!--<![endif]-->
+<!doctype xmlns:fb="http://ogp.me/ns/fb#" html itemscope itemtype="<?php echo $itemtype; ?>">
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" <?php language_attributes(); ?>> <![endif]-->
+<!--[if IE 7]> <html class="no-js ie7 oldie" <?php language_attributes(); ?>> <![endif]-->
+<!--[if IE 8]> <html class="no-js ie8 oldie" <?php language_attributes(); ?>> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" <?php language_attributes(); ?>> <!--<![endif]-->
 <head>
 
   <meta charset="<?php bloginfo( 'charset' ); ?>">
@@ -20,7 +144,23 @@
   <!-- Mobile viewport optimized: j.mp/bplateviewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title><?php wp_title(''); ?></title>
+  <title><?php echo $name; ?></title>
+
+  <!-- Facebook Tags -->
+  <meta property="og:site_name" content="<?php echo pls_get_option('pls-site-title'); ?>" />
+  <meta property="og:title" content="<?php echo $name; ?>" />
+  <meta property="og:url" content="<?php the_permalink(); ?>" />
+  <meta property="og:image" content="<?php echo $image; ?>">
+  <meta property="fb:admins" content="<?php echo pls_get_option('pls-facebook-admins'); ?>">
+  <!-- Meta Tags -->
+  <meta name="description" content="<?php echo $description; ?>">
+  <meta name="author" content="<?php echo $author; ?>">
+  <!-- Schema.org Tags -->
+  <meta itemprop="name" content="<?php echo $name; ?>">
+  <meta itemprop="email" content="<?php echo @pls_get_option('pls-company-email') ?>">
+  <meta itemprop="address" content="<?php echo $address; ?>">
+  <meta itemprop="description" content="<?php echo $description; ?>">
+  <meta itemprop="url" content="<?php the_permalink(); ?>">
 
   <?php if ( pls_get_option('pls-site-favicon') ) { ?>
     <link href="<?php echo pls_get_option('pls-site-favicon'); ?>" rel="shortcut icon" type="image/x-icon" />
@@ -46,7 +186,7 @@
     <div class="container_12 clearfix">
 
     	<?php pls_do_atomic( 'before_header' ); ?>
-        <header id="branding" role="banner" class="grid_12" <?php echo PLS_Micro_Data::itemtype('organization'); ?>>
+        <header id="branding" role="banner" class="grid_12" itemscope itemtype="http://schema.org/Organization">
 
             <?php pls_do_atomic( 'open_header' ); ?>
             <div class="wrapper">
@@ -54,27 +194,23 @@
 
 									<?php if (pls_get_option('pls-site-logo')): ?>
 										<div id="logo">
-                      <a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo pls_get_option('pls-site-title'); ?>" rel="home" <?php echo PLS_Micro_Data::itemprop('organization', 'url'); ?>>
-											<img src="<?php echo pls_get_option('pls-site-logo') ?>" alt="<?php bloginfo( 'name' ); ?>" <?php echo PLS_Micro_Data::itemprop('organization', 'image'); ?> class="option-pls-site-logo">
+                      <a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo pls_get_option('pls-site-title'); ?>" rel="home" itemprop="url">
+											<img src="<?php echo pls_get_option('pls-site-logo') ?>" alt="<?php bloginfo( 'name' ); ?>" itemprop="image" class="option-pls-site-logo">
 											</a>
 										</div>
 									<?php endif; ?>
 
 									<?php if (pls_get_option('pls-site-title')): ?>
-										<h1 id="site-title" <?php echo PLS_Micro_Data::itemprop('organization', 'name'); ?>>
-                      <a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo pls_get_option('pls-site-title'); ?>" rel="home" <?php echo PLS_Micro_Data::itemprop('organization', 'url'); ?> class="option-pls-site-title"><?php echo pls_get_option('pls-site-title'); ?></a>
-                    </h1>
+										<h1 id="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo pls_get_option('pls-site-title'); ?>" rel="home" itemprop="url" class="option-pls-site-title"><?php echo pls_get_option('pls-site-title'); ?></a></h1>
 
 										<?php if (pls_get_option('pls-site-subtitle')): ?>
-											<h2 id="site-description" <?php echo PLS_Micro_Data::itemprop('organization', 'description'); ?> class="option-pls-site-subtitle"><?php echo pls_get_option('pls-site-subtitle'); ?></h2>
+											<h2 id="site-description" itemprop="description" class="option-pls-site-subtitle"><?php echo pls_get_option('pls-site-subtitle'); ?></h2>
 										<?php endif ?>
 									<?php endif; ?>
 
 									<?php if (!pls_get_option('pls-site-logo') && !pls_get_option('pls-site-title')): ?>
-										<h1 id="site-title" <?php echo PLS_Micro_Data::itemprop('organization', 'name'); ?>>
-                      <a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home" <?php echo PLS_Micro_Data::itemprop('organization', 'url'); ?> class="option-pls-site-title"><?php bloginfo( 'name' ); ?></a>
-                    </h1>
-										<h2 id="site-description" <?php echo PLS_Micro_Data::itemprop('organization', 'description'); ?> class="option-pls-site-subtitle"><?php bloginfo( 'description' ); ?></h2>
+										<h1 id="site-title" itemprop="name"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home" itemprop="url" class="option-pls-site-title"><?php bloginfo( 'name' ); ?></a></h1>
+										<h2 id="site-description" itemprop="description" class="option-pls-site-subtitle"><?php bloginfo( 'description' ); ?></h2>
 									<?php endif; ?>
 
                 </hgroup>

@@ -1,8 +1,8 @@
 <?php 
 
 class PLS_Format {
-	
-	public static function phone ($phone, $options = '') {
+  
+	static public function phone ($phone, $options = '') {
 		$new_phone = '';
 
 		/** Define the default argument array. */
@@ -43,7 +43,7 @@ class PLS_Format {
 
 	}
 
-	public static function listing_price ($listing, $args) {
+	static public function listing_price ($listing, $args) {
 
 		if (is_array($listing)) {
 		
@@ -72,7 +72,7 @@ class PLS_Format {
 	}
 
 	// formats the given number based on the supplied options. 
-	public static function number ( $number, $options = '') {
+	static public function number ( $number, $options = '') {
 
 		// Handle specific values AND types (this makes sure to allow '0' as a string and 0 as an integer)
 	    if ( $number === '' || $number === false || $number === null ) {
@@ -102,14 +102,14 @@ class PLS_Format {
 		
 		//insert $ sign.
 		if ($options['add_currency_sign']) {
-			$formatted_number =	pls_get_currency_symbol() . $formatted_number;	
+			$formatted_number =  pls_get_currency_symbol() . $formatted_number;	
 		}
 		
 		return $formatted_number;
 
 	}
 
-	public static function abbreviate_number ($number) {
+	static public function abbreviate_number ($number) {
 		$abbreviated_number = false;
 
 		
@@ -152,7 +152,7 @@ class PLS_Format {
 		return $abbreviated_number;
 	}
 
-	private static function validate_number (&$phone) {
+	static private function validate_number (&$phone) {
 		
 		//placester api dumps a + in there. 		
 		if (substr($phone, 0, 1) == '+') {
@@ -178,7 +178,7 @@ class PLS_Format {
 		return false;
 	}
 
-	private static function process_phone_parts ($phone) {
+	static private function process_phone_parts ($phone) {
     	
     	$phone_parts = array();
     	//area code in states
@@ -191,7 +191,7 @@ class PLS_Format {
     	return $phone_parts;
 	}
 
-	private static function format_phone ($phone_parts, $delimiter = '') {
+	static private function format_phone ($phone_parts, $delimiter = '') {
 		
 		$new_phone = '';
 		
@@ -206,7 +206,7 @@ class PLS_Format {
 		return $new_phone;
 	}
 
-	private static function format_phone_html ($phone_parts, $args) {
+	static private function format_phone_html ($phone_parts, $args) {
 		$new_phone = '';
 
 		/** Define the default argument array. */
@@ -248,7 +248,7 @@ class PLS_Format {
 		return $new_phone;
 	}
 
-	public static function translate_region($region) {
+  function translate_region($region) {
     
     // apply correct case to region to match library
     $region = ucwords($region);
@@ -271,7 +271,7 @@ class PLS_Format {
     return $region;
   }
 
-	public static function translate_property_type($listing) {
+  function translate_property_type($listing) {
 
     if (isset($listing['cur_data']['prop_type']) && ($listing['cur_data']['prop_type'] != null) && !empty($listing['cur_data']['prop_type'])) {
 
@@ -292,7 +292,7 @@ class PLS_Format {
     }
   }
 
-	public static function amenities_but($listing_data, $amenities_to_remove) {
+	function amenities_but($listing_data, $amenities_to_remove) {
 		$amenities = array();
 		$amenities['ngb'] = array();
 		$amenities['list'] = array();
@@ -330,7 +330,7 @@ class PLS_Format {
 		return $amenities;
 	}
 
-	public static function translate_lease_terms ($listing, $term = 'price_unit') {
+  function translate_lease_terms ($listing, $term = 'price_unit') {
     $lease_terms = array(
       'per_yr' => 'per year',
       'per_wk' => 'per week',
@@ -352,7 +352,7 @@ class PLS_Format {
 		}
   }
 
-	public static function translate_amenities ($amenities) {
+	function translate_amenities ($amenities) {
 		
 		$local_dictionary = array(
 				'half_baths' => 'Half Baths',
@@ -594,9 +594,6 @@ class PLS_Format {
         "ngb_pvtsch" => "Private School",
         "ngb_pubsch" => "Public School",
         "school_district" => "School District",
-        "sch_elm" => "Elementary School",
-        "sch_hgh" => "High School",
-        "sch_jnr" => "Junior High School",
         "zone" => "Zone",
         "road_surface" => "Road Surface",
         "utilities" => "Utilities",
@@ -700,25 +697,22 @@ class PLS_Format {
 		return $amenities;
 	}
 
-	public static function shorten_excerpt ( $post, $length = 50, $ellipsis = true ) {
+  static public function shorten_excerpt ( $post, $length = 50, $ellipsis = true ) {
     
     if ( !empty($post->post_excerpt) ) {
       // 1st priority: excerpt
-      // remove shortcodes, strip tags, and trim whitespace.
-      $excerpt_no_shortcodes = strip_shortcodes($post->post_excerpt);
-      $excerpt = trim(strip_tags($excerpt_no_shortcodes));
+      $excerpt = strip_shortcodes($post->post_excerpt);
     } elseif ( !empty($post->post_content) ) {
       // 2nd priority: content
-      // remove shortcodes, strip tags, and trim whitespace.
       $content = strip_shortcodes($post->post_content);
-      $excerpt = trim(strip_tags($content));
+      $content = strip_tags($content);
+      $excerpt = $content;
     } else {
       return '';
     }
-
-    if (strlen($excerpt) <= $length) { return $excerpt; }
-
+    
     $shortened_excerpt = preg_replace('/\s+?(\S+)?$/', '', substr($excerpt, 0, $length));
+    
     if ($ellipsis == true) {
       $shortened_excerpt .= '...';
     }
@@ -726,7 +720,7 @@ class PLS_Format {
     return $shortened_excerpt;
   }
 
-	public static function shorten_text ( $content, $length = 50, $ellipsis = true ) {
+  static public function shorten_text ( $content, $length = 50, $ellipsis = true ) {
     if (strlen($content) > $length) {
       $content = strip_tags($content);
       $shortened_content = preg_replace('/\s+?(\S+)?$/', '', substr($content, 0, $length));
@@ -737,21 +731,14 @@ class PLS_Format {
     }
   }
 
-	public static function get_lat_lng_of_address ($address) {
+  static public function get_lat_lng_of_address ($address) {
 		$url = 'http://maps.googleapis.com/maps/api/geocode/json?address='.$address.'&sensor=false';
-		$url = str_replace(',', '', $url);
-		$url = str_replace(' ', '+', $url);
-		$result = wp_remote_get($url);
-
-		$body = json_decode($result['body']);
-		if(isset($body->results) && isset($body->results[0]) && isset($body->results[0]->geometry)) {
-			return array(
-				'lat' => $body->results[0]->geometry->location->lat,
-				'lng' => $body->results[0]->geometry->location->lng);
-		}
-
-		return null;
-	}
+		$source = file_get_contents($url);
+		$obj = json_decode($source);
+		$lat_lng_array['lat'] = $obj->results[0]->geometry->location->lat;
+		$lat_lng_array['lng'] = $obj->results[0]->geometry->location->lng;
+		return $lat_lng_array;
+  }
 
 //end of class
 }

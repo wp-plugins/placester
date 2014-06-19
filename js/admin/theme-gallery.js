@@ -1,10 +1,8 @@
-/* Needs json files for themes in order to work
-
 jQuery(document).ready(function($) {
 	var that = {};
-	$('a.install_theme').live('click', function (event) {
+	$('#install_theme').live('click', function (event) {
 		event.preventDefault();
-		var link = $(this).attr('href');
+		var link = 'https://placester.com/wordpress/themes/download/' + $(this).attr('href');
 		that['download_link'] = link;
 		$.ajax({
 		    url: link,
@@ -19,6 +17,7 @@ jQuery(document).ready(function($) {
 					width: 700,
 				});
 				if (data && data.type == 'subscribe') {
+					prompt_free_trial('Start your 15 day free trial and begin the download', premium_theme_success, premium_theme_cancel, 'wtg');
 				} else {
 					window.location.href = adminurl + "?page=placester_theme_gallery&theme_url=" + encodeURIComponent(data.url);
 				};
@@ -39,6 +38,7 @@ jQuery(document).ready(function($) {
 					width: 700,
 				});
 				if (data && data.type == 'subscribe') {
+					prompt_free_trial('Start your 15 day free trial and begin the download', premium_theme_success, premium_theme_cancel, 'wtg');
 				} else {
 					window.location.href = adminurl + "?page=placester_theme_gallery&theme_url=" + encodeURIComponent(data.url);
 				};
@@ -52,5 +52,7 @@ jQuery(document).ready(function($) {
 			$('#theme-gallery-error-message #message').fadeOut('slow');
 		}, 1000)
 	}
+
+
+
 });
-*/

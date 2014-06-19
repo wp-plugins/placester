@@ -4,11 +4,12 @@ PL_Posts::init();
 
 class PL_Posts {
   
-  public static function init () {
+  function init () {
     self::register_dummy_data_post_status();
   }
 
-  public static function create ( $manifest_posts, $post_type, $settings ) {
+  public function create ( $manifest_posts, $post_type, $settings ) {
+
     // global $_wp_additional_image_sizes;
 
     // get existing posts... get_existing_posts() function
@@ -60,38 +61,10 @@ class PL_Posts {
           // }
         }
 
-        // find post again in case it was just created and it didn't have an ID
-        $post_with_id = @get_page_by_title($post_array['post_title'], ARRAY_A, $post_type);
-
-        // add taxonomies to posts
-        if ( !empty($post_array['taxonomies']) ) {
-            // add meta data to post
-            
-            foreach ($post_array['taxonomies'] as $tax_terms) {
-
-                if ( isset($tax_terms['taxonomy_terms']) ) {
-                  // add taxonomy ids to an array
-
-                  // get taxonomy IDs
-                  $taxonomy_ids = array();
-                  foreach ($tax_terms['taxonomy_terms'] as $tax_term) {
-                    $term = get_term_by('name', $tax_term, $tax_terms['taxonomy_name'], ARRAY_A);
-                    $taxonomy_ids[] = $term['term_id'];
-                  }
-
-                  // make sure taxonomy IDs are in correct form
-                  $tax_ids = array_map('intval', $taxonomy_ids);
-                  $tax_ids = array_unique( $tax_ids );
-
-                  // Add taxonomies to post
-                  wp_set_object_terms( $post_with_id['ID'], $tax_ids, $tax_terms['taxonomy_name'], true);
-                }
-
-            }
-        }
-
         // add meta data to posts - only good for new posts because we wouldnt want to override existing posts
-        if ( !empty($post_array['meta']) ) {
+        if (!empty($post_array['meta'])) {
+            // find post again in case it was just created and it didn't have an ID
+            $post_with_id = @get_page_by_title($post_array['post_title'], ARRAY_A, $post_type);
             // add meta data to post
             foreach ($post['meta'] as $key => $value) {
               $values = add_post_meta( $post_with_id["ID"], $key, $value );
@@ -108,7 +81,7 @@ class PL_Posts {
 
 
 
-  private static function register_dummy_data_post_status() {
+  private function register_dummy_data_post_status() {
     // http://codex.wordpress.org/Function_Reference/register_post_status
     // register_post_status("Dummy Data", array(
     //   'exclude_from_search' => true,

@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: Placester, MattBarba
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress, homes, property, property management, estate, realestate, real estate crm, real estate maps
-Requires at least: 3.0
-Tested up to: 3.9
-Stable tag: 1.2.1
+Requires at least: 2.8
+Tested up to: 3.5.1
+Stable tag: 1.1.14
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -29,15 +29,15 @@ From the creators of http://placester.com: Create your fully functional real est
 This is the only plugin you need to create a powerful WordPress powered real estate website. Watch our quick demo about how to get started:
 http://www.youtube.com/watch?v=a6sJi4iXObU&feature=plcp
 
-**Getting Started with a Non-Placester Theme**
+**Getting Started without a Non-Placester Theme**
 http://www.youtube.com/watch?v=pBneS5LjuNU&feature=player_embedded
 
 
-Check out some of the premium themes available to hosted users:
-[Franklin Theme](http://franklin.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=franklin)
-[Plymouth Theme](http://plymouth.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=plymouth)
-[Sedona Theme](http://sedona.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=sedona)
+Check out premium themes available to hosted users:
+[Manchester Theme](http://manchester.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=manchester)
+[Tampa Theme](http://tampa.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=tampa)
 [Highland Theme](http://highland.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=highland)
+[Slate Theme](http://slate.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=slate)
 
 
 Find the latest themes and theme updates at [Placester.com/portfolio/](https://placester.com/portfolio/)
@@ -54,7 +54,7 @@ Find the latest themes and theme updates at [Placester.com/portfolio/](https://p
 * Powerful search based on the Placester API and Google Maps
 * Easily promote featured properties across your site
 * Search engine optimized from top to bottom ^
-* Always up-to-date, Placester automatically updates itself with the the latest listings data
+* Always up-to-date, Placester automatically update itself with the the latest listings data
 
 Note ^: Feature requires a Placester-enabled theme.
 
@@ -141,138 +141,6 @@ Absolutely, [reach out](mailto:support@placester.com) to us and let us know what
 In general - real-time. But if you use 3rd party property management services, the updates will only be as recent as your provider allows.
 
 == Changelog ==
-
-= 1.2.1 =
-* Turned caching off by default for off-hosted users (enabled in wp-config)
-* Fixed Inactive, Agency, Non-MLS flags on plugin Listings page
-* Disabled permalink URL generation for shortcodes
-* Fixed links to Placester.com theme gallery
-
-= 1.2.0 =
-* The default location for search result maps is now determined from the user or office address on the Placester.com account
-* The [desc] shortcode tag now renders the full description on property detail pages, a shorter excerpt on search pages
-* Fixes:
-    * Updated the CRM interface to Contactually to reflect the new format of their API call
-    * Miscellaneous minor fixes to improve the clarity and robustness of Placester shortcodes
-
-= 1.1.27 =
-* Virtual property posts and terms have been introduced to greatly increase performance and vastly decrease what's stored in the DB
-
-= 1.1.26 =
-* New shortcode [favorite_listings] displays user's favorited listings if they are logged in and allows them to edit their profile.
-* New shortcode [pl_user_profile] displays user's profile if they are logged in.
-* Can use neighborhoods as a search option in [search_form] shortcode. 
-* Show custom neighborhoods in search forms along with neighborhoods from the MLS.
-* Update WordPress version compatability information.
-* Fixes:
-    * Make the Placester theme gallery links work a bit better.
-
-= 1.1.25 =
-* Search and static listing shortcodes now have sort_by drop downs.
-* Added new short code [pl_login_block] for use with non Placester themes - adds the login and register links and enables the 'add to favorites link' on non Placester themes.
-* Fixes:
-    * Block address behavior as set from Settings page.
-    * Featured listing image is not the appropriate image.
-    * Limit selections for property type in search form if global filters set.
-    * Agent Widget - Can not adjust email address on non-home page pages.
-    * Remove taxonomies (MLS IDs, half-baths, streets) from the nav menus page.
-    * Global filters not working for custom fields.
-    * 'Add to favorites' link does not work on non Placester theme - now works when [pl_login_block] short code is added to the page.
-
-= 1.1.24 =
-* Adding Dragonfly image resizing logic for property images.
-
-= 1.1.23 =
-* Minor updates in support of more fundamental BP changes
-* Cleaning the pipes for listing searches -- need to remove extraneous args for storage of saved-search filters
-* More CRM lead integration updates:
-    * Basic impl for Contactually solidified, need work with them to expose more constructive endpoints for push leads
-    * Substantial lead creation update -- site user registration flow corrected + integration with CRM platforms enhanced
-    * Lead fixes + CRM integration gaps filled...
-* Shortcodes template editor:
-    * Fix issue with dialog showing list of custom attributes not displaying correctly on WP 3.6.1
-    * HTML cleanup
-* Shortcode templates: 
-    * Better way to support image_url tag
-    * New template tag [image_url index placeholder] that displays listing image url
-* Deleting old, unnecessary files
-* Fix: WP 3.6.1/jquery-ui 10.1 - make sure the grey mask is on top and the modal dialog is on top of that
-* Fix: If a certain locality field is missing for a property, the permalink/URL generated will simply say the field, i.e., 'state' instead of 'unassigned-state'
-* Fix: Custom drawn polygons - allow existing polygons to be edited
-* Fix: Search form not showing available locations when global filters are set for a location attribute AND some other attribute.
-* Fix: Compatibility issues with PHP 5.4.
-
-= 1.1.22 =
-* Cleanup lead capture functionality.
-* Check requests for viewing invalid property listings and redirect.
-* Make sure defunct data is removed when expired listings are purged.
-* Updates to lead/membership handling, improved login time.
-* Clean up of some JS files.
-* Admin page for search, static listings shortcodes displays dynamic list of filters which expands as filters are added, also allows multiple values to be set for certain filters (eg City, Zip). 
-* Built in templates for search, static, featured listings shortcodes hide beds, baths fields if they are empty.
-* Allow theme to control how shortcodes are displayed when no template is specified by the shortcode.
-* Make property listing template return template instead of echoing which may have caused issues with the Yoast plugin.
-* Tweaks to built in templates for static, search, featured listings shortcodes.
-* Fix: Compatibility issue with PHP 5.2.
-* Fix: Search form - Number of beds set to zero returns properties that have zero bedrooms (eg studios). 
-
-= 1.1.21 =
-* Tweaks to built in template for individual property listings.
-* Added better descriptions to admin pages for shortcodes.
-* Added 'Search' button to built in templates for search form shortcode.
-* Added a lookup dialog to display all available property listing fields when creating templates for individual property listing pages.
-* Fix: Prevent static listings shortcode from interacting with a search form on the same page.
-* Fix: Search form shortcode was not going to supplied URL, plus various fixes to search form shortcode.
-
-= 1.1.20 =
-* Updates to twitter oauth.
-* Cleaning-up taxonomy functionality.
-* New admin page to list templates available for theming the individual property listing pages, with one built in template that can be copied and used to create custom templates. 
-* Added a lookup dialog to display all available property listing fields when creating templates for search/static/featured listings shortcodes.
-* Fix: Incompatibilities with PHP 5.4
-* Fix: Facebook SDK needed to check for session being set to avoid a notice.
-
-= 1.1.19 = 
-* Individual property page template editor allows conditional display of fields and display of any field available for the listing.
-* Individual property page template editor allows mls compliance statement as a footer.
-* Ensure that browser does not cache old versions of JS files.
-* Clarifying that block addresses aren't always block, but sometimes just a near-by address.
-* Fix: Error when adding listing under WordPress 3.6.
-
-= 1.1.18 =
-* Tweaks to shortcode templates 
-* Support mls compliance statement in shortcode template.
-* Added mls compliance statement to shortcode templates.
-* Support Favorite Link toggle in search, static and featured listings shortcodes.
-* Support conditional display of listing items in templates for search, static and featured listings shortcodes.
-* Fix: Signup wizard sometimesdoes not work on first install.
-* Fix: A PHP 5.2 compatibility issue.
-
-= 1.1.17 =
-* Signup Wizard improvements.
-* Create listings search page automatically at end of signup process using search form and listings shortcodes.
-* Tweaks to shortcode templates.
-* New shortcode template called Responsive.
-* Allow min max filters to be set on custom fields for search listings, static listings shortcodes.
-* Fixed: Allow featured listings generated from shortcode to show more than 5 listings.
-* Fixed: Some issues with IE8 on shortcode configuration page.
-
-= 1.1.16 =
-* Allow list of items in listings Sort By drop list to be chosen when creating a search or static listings custom shortcode.
-* Allow the default Sort By item to be selected when creating a search or static listings custom shortcode.
-* Allow filtering for properties near an address when creating a static listing custom shortcode. 
-* Re-built dummy data prompt/activation that appears when switching themes.
-
-= 1.1.15 =
-* Allow template to be created for formatting the page that displays individual property listings.
-* Allow new shortcode templates to be created from built in templates.
-* Allow shortcode templates to use built in form/listings renderer to generate content and CSS from the template.
-* Updated built in shortcode template format and made them somewhat liquid and render consistently in different themes.
-* JavaScript cleanup.
-* CRM updates.
-* Fix: resolved UI issues with the customizer.
-* Fix: caption was not appearing in first slide of slideshow shortcode.
-* Fix: URL encoding issues.
 
 = 1.1.9 =
 * Map enhancements

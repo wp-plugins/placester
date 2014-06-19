@@ -1,4 +1,4 @@
-
+<div class="wrap">
 	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
 	<div>
 		<div class="header-wrapper">
@@ -11,7 +11,7 @@
 			<div class="show_neighborhood_areas">
 				<span>Show Already Drawn Areas:</span>
 				<?php echo PL_Taxonomy_Helper::taxonomies_as_checkboxes(); ?>
-				<a id="clear_created_neighborhoods" href="#">Hide All</a>
+				<a id="clear_created_neighborhoods"href="#">Hide All</a>
 			</div>
 			<div class="create_new_wrapper">
 				<a href="#" id="create_new_polygon" class="button">Create New Custom Drawn Area</a>
@@ -31,6 +31,8 @@
 					<p>Click on the map to start tracing the outline of your custom area.</p>
 					<a href="#" id="close_create_overlay" class="button">Cancel</a>
 				</div>	
+				
+					
 
 				<div class="polygons" id="list_of_polygons">
 					<table id="polygon_listings_list" class="widefat post fixed placester_properties" cellspacing="0">
@@ -58,3 +60,4 @@
 			</div>
 		</div>
 	</div>
+</div>

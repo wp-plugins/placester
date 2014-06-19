@@ -30,25 +30,18 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
         /** Register Modernizr. Will be enqueued using 'wp_print_scripts'. */
         wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
 
-        // favorites/contact form/etc
-        wp_register_script( 'validator', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/validator.js' , array( 'jquery'), NULL, true );
-        wp_register_script( 'cookies', trailingslashit( PLS_JS_URL ) . 'libs/cookies/cookies.jquery.js' , array( 'jquery' ), NULL, false );
-        // TODO: enqueue when used
-        wp_enqueue_script('validator');
-        wp_enqueue_script('cookies');
-        
         // declare the URL to the file that handles the AJAX request (wp-admin/admin-ajax.php)
-        // wp_localize_script( 'jquery', 'info', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
-        add_action( 'wp_print_scripts', 'pls_print_info_var' );
+//         wp_localize_script( 'jquery', 'info', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+		add_action( 'wp_print_scripts', 'pls_print_info_var' );
         
         /**
          *  If the plugin is inactive, register the script that deals with adding 
          *  notification about needing the plugin. Localize the notification 
          *  message. Accompanied by plugin-nags.css.
          */
-        wp_register_script( 'jquery-placeholder', trailingslashit( PLS_JS_URL ) . 'libs/jquery-placeholder/jquery.placeholder.min.js' , array( 'jquery' ), '1.0.1', true );
-        wp_enqueue_script( 'jquery-placeholder' );
-
+		wp_register_script( 'jquery-placeholder', trailingslashit( PLS_JS_URL ) . 'libs/jquery-placeholder/jquery.placeholder.min.js' , array( 'jquery' ), '1.0.1', true );
+		wp_enqueue_script( 'jquery-placeholder' );
+		
         wp_register_script( 'listings-object', trailingslashit( PLS_JS_URL ) . 'scripts/listings.js' , array( 'jquery' ), '1.0.1', true );
         wp_enqueue_script('listings-object');
 
@@ -66,12 +59,16 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
 
         wp_register_script( 'search-bootloader', trailingslashit( PLS_JS_URL ) . 'scripts/search-loader.js' , array( 'jquery' ), NULL, true );
         wp_enqueue_script('search-bootloader');
-
-        // This is needed for templatized mapinfo popups, which are not currently used in any of our themes
-        // wp_register_script( 'underscore', trailingslashit( PLS_JS_URL ) . 'libs/underscore/underscore-min.js');
-        // wp_enqueue_script('underscore');
+        
+        wp_enqueue_script( 'underscore' );
 
         if ( pls_has_plugin_error() ) {
+            /** Register the nag script. */
+            // wp_register_script( 'pls-plugin-nags', trailingslashit( PLS_JS_URL ) . 'scripts/plugin-nags.js' , array( 'jquery' ), NULL, true );
+
+            /** Enqueue the nag script. */
+            // wp_enqueue_script( 'pls-plugin-nags' );
+
             /** Localize the script. Send the correct notification. */
             $l10n = array();
             if ( pls_has_plugin_error() == 'no_api_key' ) 
@@ -114,10 +111,12 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
         if ( array_key_exists( 'spinner', $js[0] ) ) {
             /** Register the script and style. */
             wp_register_script( 'spinner', trailingslashit( PLS_JS_URL ) . 'libs/spinner/spinner.js' , array( 'jquery'), NULL, true );
+            wp_register_style( 'spinner', trailingslashit( PLS_JS_URL ) . 'libs/spinner/spinner.css' );
             /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['spinner'] ) ) {
                 if ( in_array( 'script', $js[0]['spinner'] ) ) {
                     wp_enqueue_script( 'spinner' );
+                    wp_enqueue_style( 'spinner' );
                 }
             }
         }
@@ -186,11 +185,13 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
             /** Register the script and style. */
             wp_register_script( 'tabs', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/tabs.js' , array( 'jquery'), NULL, true );
             wp_register_script( 'rangeinput', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/rangeinput.js' , array( 'jquery'), NULL, true );
+            wp_register_script( 'validator', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/validator.js' , array( 'jquery'), NULL, true );
             /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['jquery-tools'] ) ) {
                 if ( in_array( 'script', $js[0]['jquery-tools'] ) ) {
                     wp_enqueue_script( 'tabs' );
                     wp_enqueue_script( 'rangeinput' );
+                    wp_enqueue_script( 'validator' );
                 }
             }
         }
@@ -207,6 +208,22 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
             }
         }
         
+        /**
+         * The "Cookies" script.
+         * Deal with it only theme support has been added.
+         * {@link: http://code.google.com/p/cookies/wiki/License}
+         */
+        if ( array_key_exists( 'cookies', $js[0] ) ) {
+            /** Register the script and style. */
+            wp_register_script( 'cookies', trailingslashit( PLS_JS_URL ) . 'libs/cookies/cookies.jquery.js' , array( 'jquery' ), NULL, false );
+            /** Enqueue script and styles only if supported. */
+            if ( is_array( $js[0]['cookies'] ) ) {
+                if ( in_array( 'script', $js[0]['cookies'] ) ) {
+                  wp_enqueue_script( 'cookies' );
+                }
+            }
+        }
+
         if ( array_key_exists( 'lead-capture', $js[0] ) ) {
             /** Register the script and style. */
             wp_register_script( 'lead-capture', trailingslashit( PLS_JS_URL ) . 'scripts/lead-capture.js' , array( 'jquery' ), NULL, true );

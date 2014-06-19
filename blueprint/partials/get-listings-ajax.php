@@ -37,33 +37,36 @@ class PLS_Partials_Get_Listings_Ajax {
         add_action('wp_ajax_pls_listings_ajax', array(__CLASS__, 'get' ) );
         add_action('wp_ajax_nopriv_pls_listings_ajax', array(__CLASS__, 'get' ) );
 
-        // Endpoints for rendering favorite listings in a search results datatable...
-        add_action('wp_ajax_listings_fav_ajax', array(__CLASS__,'get_favorite_listings'));
-        add_action('wp_ajax_nopriv_listings_fav_ajax', array(__CLASS__,'get_favorite_listings'));
+        add_action( 'wp_ajax_pls_listings_fav_ajax', array(__CLASS__,'get_favorites'));
+        add_action( 'wp_ajax_nopriv_pls_listings_fav_ajax', array(__CLASS__,'get_favorites'));
     }
 
-    public static function get_favorite_listings () {
+    public static function get_favorites () {
         $favorite_ids = PLS_Plugin_API::get_listings_fav_ids();
-        
-        // Will echo listings as a JSON-encoded output...
         self::get(array('property_ids' => $favorite_ids, 'allow_id_empty' => true));
-
-        die();
     }
 
     public static function load ($args = array()) {
-        // Respect the "Sort By" theme option if it's set..(default to number of total images)
-        $sort_by_dflt = pls_get_option('listings_default_sort_by', 'total_images');
+        // Set "Sort By" (default to number of total images)
+        $sort_by = ( isset($args['sort_by']) ? $args['sort_by'] : 'total_images' );
+        
+        // Respect the "Sort By" theme option if it's set..
+        $sort_by_theme_option = pls_get_option('listings_default_sort_by');
+        if (!empty($sort_by_theme_option)) { $sort_by = $sort_by_theme_option; }
+      
+        // Set sort order (default to number of desc)
+        $sort_type = ( isset($args['sort_type']) ? $args['sort_type'] : 'desc' );
 
-        // Respect sort type theme option if it's set...(default to number of desc)
-        $sort_type_dflt = pls_get_option('listings_default_sort_type', 'desc');
+        // Respect sort type theme option if it's set...
+        $sort_type_theme_option = pls_get_option('listings_default_sort_type');
+        if (!empty($sort_type_theme_option)) { $sort_type = $sort_type_theme_option; }
 
         // Set default options...
         $defaults = array(
             'loading_img' => admin_url('images/wpspin_light.gif'),
             'image_width' => 100,
-            'sort_type' => $sort_type_dflt,
-            'sort_by' => $sort_by_dflt,
+            'sort_type' => $sort_type,
+            'sort_by' => $sort_by,
             'show_sort' => true,
             'crop_description' => 0,
             'listings_per_page' => pls_get_option('listings_default_list_length'),
@@ -83,37 +86,40 @@ class PLS_Partials_Get_Listings_Ajax {
 
         // Now we need to pass the 'limit' parameter from defaults into the search_query to honor corresponding theme option...
         $query_limit = (int) $query_limit;
-
         // If limit is invalid or greater than API's upper limit, adjust accordingly... 
-        // TODO: this seems to break the prop# form option
         $search_query['limit'] = ( (is_int($query_limit) && $query_limit <= 50) ? $query_limit : 50 );
         
-		if (empty($sort_by_options) || !is_array($sort_by_options)) {
-            $sort_by_options = array(
-                'total_images' => 'Total Images',
-                'location.address' => 'Address',
-                'location.locality' => 'City',
-                'location.region' => 'State',
-                'location.postal' => 'Zip',
-                // 'zoning_types' => 'Zoning',
-                // 'purchase_types' => 'Purchase Type',
-                // 'property_type' => 'Property Type',
-                'cur_data.beds' => 'Beds',
-                'cur_data.baths' => 'Baths',
-                'cur_data.price' => 'Price',
-                'cur_data.sqft' => 'Square Feet',
-                // 'cur_data.avail_on' => 'Date Available'
-            );
-        }
+        $sort_by_options = array(
+            'total_images' => 'Total Images',
+            'location.address' => 'Address',
+            'location.locality' => 'City',
+            'location.region' => 'State',
+            'location.postal' => 'Zip',
+            // 'zoning_types' => 'Zoning',
+            // 'purchase_types' => 'Purchase Type',
+            // 'property_type' => 'Property Type',
+            'cur_data.beds' => 'Beds',
+            'cur_data.baths' => 'Baths',
+            'cur_data.price' => 'Price',
+            'cur_data.sqft' => 'Square Feet',
+            // 'cur_data.avail_on' => 'Date Available'
+        );
         $sort_type_options = array('desc' => 'Descending','asc' => 'Ascending');
 
         // /** Filter the "Sort by"  and sort type options. */
         $sort_by_options = apply_filters("pls_listings_list_ajax_sort_by_options", $sort_by_options);
         $sort_type_options = apply_filters("pls_listings_list_ajax_sort_type_options", $sort_type_options);
 
-        // Ultimately, sort params in the $_POST array take precedence if they exist...
-        $sort_by = isset($_POST['sort_by']) ? $_POST['sort_by'] : $sort_by;
-        $sort_type = isset($_POST['sort_type']) ? $_POST['sort_type'] : $sort_type;
+	    // need to do this assuming sort_by and sort_type might not exist! -pek
+        if (!isset($_POST['sort_by'])) {
+            // sort_by was not specified, set our theme options default
+        	$_POST['sort_by'] = $sort_by;
+        }
+        
+        if (!isset($_POST['sort_type'])) {
+        	// not specified, set our theme options default
+        	$_POST['sort_type'] = $sort_type;
+        }
 
         ob_start();
         ?>
@@ -126,10 +132,10 @@ class PLS_Partials_Get_Listings_Ajax {
                     <label for="sort_by">Sort By</label>
                     <select name="sort_by" id="sort_by">
                         <?php foreach ($sort_by_options as $key => $value): ?>
-                        	<?php if ($sort_by == $key): ?>
-                                <option value="<?php echo $key; ?>" selected="selected"><?php echo $value ?></option>
+                        	<?php if ($_POST['sort_by'] == $key): ?>
+                                <option value="<?php echo $key ?>" selected="selected"><?php echo $value ?></option>
                             <?php else: ?>
-                                <option value="<?php echo $key; ?>"><?php echo $value ?></option>
+                                <option value="<?php echo $key ?>"><?php echo $value ?></option>
                             <?php endif; ?>
                         <?php endforeach; ?>
                     </select>
@@ -138,7 +144,7 @@ class PLS_Partials_Get_Listings_Ajax {
                     <label for="sort_type">Sort Direction</label>
                     <select name="sort_type" id="sort_dir">
                     	<?php foreach ($sort_type_options as $key => $value): ?>
-                        	<?php if ($sort_type == $key): ?>
+                        	<?php if ($_POST['sort_type'] == $key): ?>
                             	<option value="<?php echo $key; ?>" selected="selected"><?php echo $value; ?></option>
                         	<?php else: ?>
                         	   <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
@@ -147,14 +153,15 @@ class PLS_Partials_Get_Listings_Ajax {
                     </select>
                   </div>
               </form>  
-            <?php endif; ?>
+            <?php endif ?>
+            
 
             <!-- Datatable -->
             <div class="clear"></div>
 
             <div id="container" style="width: 99%">
-            <div id="context" class="<?php echo $context; ?>"></div>
-                <table id="<?php echo $table_id; ?>" class="widefat post fixed placester_properties" cellspacing="0">
+            <div id="context" class="<?php echo $context ?>"></div>
+                <table id="<?php echo $table_id ?>" class="widefat post fixed placester_properties" cellspacing="0">
                     <thead>
                         <tr>
                             <th><span></span></th>
@@ -169,104 +176,75 @@ class PLS_Partials_Get_Listings_Ajax {
                 </table>
             </div>
         <?php
-
         echo ob_get_clean();
     }
 
-    private static function order_images ($a, $b) {
-        if ($a['order'] == $b['order']) { return 0; }
-        return ($a['order'] < $b['order']) ? -1 : 1;
-    }
-
   	public static function get ($args = array()) {
-        // Store this for use in the final output/response...
-		$sEcho = isset($_POST['sEcho']) ? $_POST['sEcho'] : 0;
-        unset($_POST['sEcho']);
+		// Saved Search init...
+		$saved_user_search = false;
+		$_POST['sEcho'] = empty($_POST['sEcho']) ? 0 : $_POST['sEcho'];
 
-        $context_orig  = isset($_POST['context']) ? $_POST['context'] : '';
-        unset($_POST['context']);
-
+        if (isset($_POST['saved_search_lookup']) ) {
+            if (strpos($_POST['saved_search_lookup'], 'pl_ss_') !== false) {
+            	$user_lookup = $_POST['saved_search_lookup'];
+            	$user_lookup = trim($user_lookup, '/');
+            	
+                if (is_user_logged_in()) {
+            		// Try to retrieve user's saved searches...
+                    $logged_user_id = get_current_user_id();
+            		$saved_searches = get_user_meta($logged_user_id, 'pls_saved_searches', true);
+            		
+                    // If not empty and a valid array,
+                    if ( !empty($saved_searches) && is_array($saved_searches) && isset($saved_searches[$user_lookup]) ) {
+        				$stored_user_search = $saved_searches[$user_lookup];
+        				$values = json_decode($stored_user_search, true);
+        				if (!empty($values) && is_array($values)) { $_POST = array_merge($values, $_POST); }
+        				$saved_user_search = true;
+            		}
+            	}
+      	    }
+            elseif ($result = PLS_Saved_Search::check($_POST['saved_search_lookup'])) {
+                $sEcho = $_POST['sEcho'];
+                unset($result['sEcho']);
+                $_POST = $result;
+                $_POST['sEcho'] = $sEcho;
+            }
+        }
+              
+        // Pagination
         // If length is not set for number of listings to return, set it to our Theme Options default
-        $_POST['limit'] = isset($_POST['iDisplayLength']) ? $_POST['iDisplayLength'] : pls_get_option('listings_default_list_length');
-        unset($_POST['iDisplayLength']);    
+        if ( !isset( $_POST['iDisplayLength']) ) {
+            $_POST['iDisplayLength'] = pls_get_option( 'listings_default_list_length' );
+        }
+        $_POST['limit'] = @$_POST['iDisplayLength'];
+        $_POST['offset'] = @$_POST['iDisplayStart'];     
 
-        $_POST['offset'] = isset($_POST['iDisplayStart']) ? $_POST['iDisplayStart'] : 0;
-        unset($_POST['iDisplayStart']);   
-
-        $saved_search_lookup = isset($_POST['saved_search_lookup']) ? $_POST['saved_search_lookup'] : null;
-        unset($_POST['saved_search_lookup']);
-
-        // Remove this so it doesn't accidentally end up as a superfluous argument of an API call...
-        unset($_POST['action']);
-
-        // Handle location edge-case...
-		if (!empty($_POST['location']) && !empty($_POST['location']['address']) && empty($_POST['location']['address_match'])) {
-			$_POST['location']['address_match'] = 'like';
-		}
-
-        // Handle saved search...
-        if (!is_null($saved_search_lookup) ) {
-            // Attempt to retrieve search filters associated with the given saved search lookup ID...
-            // NOTE: If no filters exist for the passed ID, 
-            $filters = PLS_Plugin_API::get_saved_search_filters($saved_search_lookup);
-            
-            if (empty($filters) || !is_array($filters)) {
-                PLS_Plugin_API::save_search($saved_search_lookup, $_POST);
-            }
-            else {
-                // For backwards compatibility, handle older fields that are no longer stored as saved search filters...
-                $old_field_map = array(
-                    'sEcho' => false,
-                    'context' => false,
-                    'iDisplayLength' => 'limit', 
-                    'iDisplayStart' => 'offset',
-                    'saved_search_lookup' => false,
-                    'action' => false
-                );
-
-                foreach ($old_field_map as $old => $new) {
-                    if (isset($filters[$old])) {
-                        if ($new !== false) { 
-                            $filters[$new] = $filters[$old];
-                        }
-                        unset($filters[$old]);
-                    }
-                }
-
-                // Swap all existing POST filters for the ones associated with the retrieved saved search...
-                $_POST = $filters;
-            }
-        }  
-        
         // Define the default argument array
         $defaults = array(
             'loading_img' => admin_url('images/wpspin_light.gif'),
             'image_width' => 100,
             'crop_description' => 0,
             'sort_type' => pls_get_option('listings_default_sort_type'),
-            'listings_per_page' => pls_get_option('listings_default_list_length'),
-            'context' => $context_orig,
+            'listings_per_page' => pls_get_option( 'listings_default_list_length' ),
+            'context' => isset($_POST['context']) ? $_POST['context'] : '',
             'context_var' => NULL,
             'append_to_map' => true,
             'search_query' => $_POST,
             'property_ids' => isset($_POST['property_ids']) ? $_POST['property_ids'] : '',
             'allow_id_empty' => false
         );
-
-        // Resolve function args with default ones (which include any existing POST fields)...
-        $merged_args = wp_parse_args($args, $defaults);
+      
+        if (isset($defaults['search_query']['sEcho'])) { unset($defaults['search_query']['sEcho']); }
 
         $cache = new PLS_Cache('list');
-        if ($cached_response = $cache->get($merged_args)) {
-            // This field must match the one passed in with this request...
-            $cached_response['sEcho'] = $sEcho;
-
-            echo json_encode($cached_response);
+        if ($transient = $cache->get($defaults)) {
+            $transient['sEcho'] = $_POST['sEcho'];
+            echo json_encode($transient);
             die();
         }
 
         // Extract the arguments after they merged with the defaults
-        extract($merged_args, EXTR_SKIP);
+        extract( wp_parse_args( $args, $defaults ), EXTR_SKIP );
 
         // Start off with a placeholder in case the plugin is not active or there is no API key...
         $api_response = PLS_Listing_Helper::$default_listing;
@@ -275,6 +253,7 @@ class PLS_Partials_Get_Listings_Ajax {
         if (!pls_has_plugin_error()) {
             // Get the listings list markup and JS
             if (!empty($property_ids) || $allow_id_empty) {
+
                 // Sometimes property_ids are passed in as a flat screen from the JS post object
                 if (is_string($property_ids)) {
                     $property_ids = explode(',', $property_ids);
@@ -286,7 +265,8 @@ class PLS_Partials_Get_Listings_Ajax {
                 $api_response = PLS_Plugin_API::get_polygon_listings($search_query);
             }
             else {
-                $api_response = PLS_Plugin_API::get_listings($search_query);
+                $api_args = ( $saved_user_search ? $_POST : $search_query );
+                $api_response = PLS_Plugin_API::get_listings($api_args, true);
             }
         }
 
@@ -308,67 +288,68 @@ class PLS_Partials_Get_Listings_Ajax {
                 ob_start();
                 ?>
                     <div class="listing-item grid_8 alpha" itemscope itemtype="http://schema.org/Offer" data-listing="<?php echo $listing['id'] ?>">
-                        <div class="listing-thumbnail grid_3 alpha">
-                            <?php 
-                                $property_images = is_array($listing['images']) ? $listing['images'] : array();
-                                usort($property_images, array(__CLASS__, 'order_images'));
-                                $listing['images'] = $property_images;
-                            ?>
-                              
-                             <a href="<?php echo @$listing['cur_data']['url']; ?>" itemprop="url">
-                                <?php echo PLS_Image::load($property_images[0]['url'], array('resize' => array('w' => 210, 'h' => 140), 'fancybox' => true, 'as_html' => true, 'html' => array('alt' => $listing['location']['full_address'], 'itemprop' => 'image', 'placeholder' => PLS_IMG_URL . "/null/listing-300x180.jpg"))); ?>
+
+                      <div class="listing-thumbnail grid_3 alpha">
+                        <?php 
+                          $property_images = ( is_array($listing['images']) ? $listing['images'] : array() );
+                          usort($property_images, array(__CLASS__, 'order_images_ajax'));
+                        ?>
+                          
+                         <a href="<?php echo @$listing['cur_data']['url']; ?>" itemprop="url">
+                          <?php echo PLS_Image::load($property_images[0]['url'], array('resize' => array('w' => 210, 'h' => 140), 'fancybox' => true, 'as_html' => true, 'html' => array('alt' => $listing['location']['full_address'], 'itemprop' => 'image', 'placeholder' => PLS_IMG_URL . "/null/listing-300x180.jpg"))); ?>
+                        </a>
+                      </div>
+
+                      <div class="listing-item-details grid_5 omega">
+                        <header>
+                          <p class="listing-item-address h4" itemprop="name">
+                            <a href="<?php echo PLS_Plugin_API::get_property_url($listing['id']); ?>" rel="bookmark" title="<?php echo $listing['location']['address'] ?>" itemprop="url">
+                              <?php echo $listing['location']['address'] . ', ' . $listing['location']['locality'] . ' ' . $listing['location']['region'] . ' ' . $listing['location']['postal']  ?>
                             </a>
+                          </p>
+                        </header>
+
+                        <div class="basic-details">
+                          <ul>
+                          	<?php if (!empty($listing['cur_data']['beds'])): ?>
+                          		<li class="basic-details-beds p1"><span>Beds:</span> <?php echo @$listing['cur_data']['beds']; ?></li>
+                          	<?php endif; ?>
+
+                          	<?php if (!empty($listing['cur_data']['baths'])): ?>
+                          		<li class="basic-details-baths p1"><span>Baths:</span> <?php echo @$listing['cur_data']['baths']; ?></li>
+                          	<?php endif; ?>
+
+                          	<?php if (!empty($listing['cur_data']['half_baths'])): ?>
+                          		<li class="basic-details-half-baths p1"><span>Half Baths:</span> <?php echo @$listing['cur_data']['half_baths']; ?></li>
+                          	<?php endif; ?>
+
+                          	<?php if (!empty($listing['cur_data']['price'])): ?>
+                          		<li class="basic-details-price p1" itemprop="price"><span>Price:</span> <?php echo PLS_Format::number($listing['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true)); ?></li>
+                          	<?php endif; ?>
+
+                          	<?php if (!empty($listing['cur_data']['avail_on'])): ?>
+                          		<li class="basic-details-sqft p1"><span>Sqft:</span> <?php echo PLS_Format::number($listing['cur_data']['sqft'], array('abbreviate' => false, 'add_currency_sign' => false)); ?></li>
+                          	<?php endif; ?>
+
+                            <?php if (!empty($listing['rets']['mls_id'])): ?>
+                              <li class="basic-details-mls p1"><span>MLS ID:</span> <?php echo @$listing['rets']['mls_id']; ?></li>
+                            <?php endif; ?>
+                          </ul>
                         </div>
 
-                        <div class="listing-item-details grid_5 omega">
-                            <header>
-                                <p class="listing-item-address h4" itemprop="name">
-                                    <a href="<?php echo PLS_Plugin_API::get_property_url($listing['id'], $listing); ?>" rel="bookmark" title="<?php echo $listing['location']['address'] ?>" itemprop="url">
-                                        <?php echo $listing['location']['address'] . ', ' . $listing['location']['locality'] . ' ' . $listing['location']['region'] . ' ' . $listing['location']['postal']  ?>
-                                    </a>
-                                </p>
-                            </header>
+                        <p class="listing-description p4" itemprop="description">
+                          <?php echo substr($listing['cur_data']['desc'], 0, 300); ?>
+                        </p>
 
-                            <div class="basic-details">
-                                <ul>
-                                  	<?php if (!empty($listing['cur_data']['beds'])): ?>
-                                  		<li class="basic-details-beds p1"><span>Beds:</span> <?php echo @$listing['cur_data']['beds']; ?></li>
-                                  	<?php endif; ?>
+                      </div>
 
-                                  	<?php if (!empty($listing['cur_data']['baths'])): ?>
-                                  		<li class="basic-details-baths p1"><span>Baths:</span> <?php echo @$listing['cur_data']['baths']; ?></li>
-                                  	<?php endif; ?>
+                      <div class="actions">
+                        <a class="more-link" href="<?php echo PLS_Plugin_API::get_property_url($listing['id']); ?>" itemprop="url">View Property Details</a>
+                        <?php echo PLS_Plugin_API::placester_favorite_link_toggle(array('property_id' => $listing['id'])); ?>
+                      </div>
+                        
+                      <?php PLS_Listing_Helper::get_compliance(array('context' => 'inline_search', 'agent_name' => @$listing['rets']['aname'] , 'office_name' => @$listing['rets']['oname'])); ?>
 
-                                  	<?php if (!empty($listing['cur_data']['half_baths'])): ?>
-                                  		<li class="basic-details-half-baths p1"><span>Half Baths:</span> <?php echo @$listing['cur_data']['half_baths']; ?></li>
-                                  	<?php endif; ?>
-
-                                  	<?php if (!empty($listing['cur_data']['price'])): ?>
-                                  		<li class="basic-details-price p1" itemprop="price"><span>Price:</span> <?php echo PLS_Format::number($listing['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true)); ?></li>
-                                  	<?php endif; ?>
-
-                                  	<?php if (!empty($listing['cur_data']['sqft'])): ?>
-                                  		<li class="basic-details-sqft p1"><span>Sqft:</span> <?php echo PLS_Format::number($listing['cur_data']['sqft'], array('abbreviate' => false, 'add_currency_sign' => false)); ?></li>
-                                  	<?php endif; ?>
-
-                                    <?php if (!empty($listing['rets']['mls_id'])): ?>
-                                        <li class="basic-details-mls p1"><span>MLS ID:</span> <?php echo @$listing['rets']['mls_id']; ?></li>
-                                    <?php endif; ?>
-                                </ul>
-                            </div>
-
-                            <p class="listing-description p4" itemprop="description">
-                                <?php echo substr($listing['cur_data']['desc'], 0, 300); ?>
-                            </p>
-
-                        </div>
-
-                        <div class="actions">
-                            <a class="more-link" href="<?php echo PLS_Plugin_API::get_property_url($listing['id'], $listing); ?>" itemprop="url">View Property Details</a>
-                            <?php echo PLS_Plugin_API::placester_favorite_link_toggle(array('property_id' => $listing['id'])); ?>
-                        </div>
-
-                        <?php PLS_Listing_Helper::get_compliance(array('context' => 'inline_search', 'agent_name' => @$listing['rets']['aname'] , 'office_name' => @$listing['rets']['oname'])); ?>
                     </div>
                 <?php
           
@@ -381,26 +362,29 @@ class PLS_Partials_Get_Listings_Ajax {
             $listings[$key][] = $listing;
         }
 
-        // Required for datatables.js to function properly...
+        // Required for datatables.js to function properly.
         $response['sFirst'] = 'Previous';
         $response['sPrevious'] = 'Next';
       
-        $response['sEcho'] = $sEcho;
+        $response['sEcho'] = $_POST['sEcho'];
         $response['aaData'] = $listings; 
         $api_total = isset($api_response['total']) ? $api_response['total'] : 0; 
         $response['iTotalRecords'] = $api_total;
         $response['iTotalDisplayRecords'] = $api_total;
-        $response['iDisplayStart'] = isset($_POST['offset']) ? $_POST['offset'] : 0;
-        $response['iDisplayLength'] = isset($_POST['limit']) ? $_POST['limit'] : 0;
 
         $cache->save($response);
 
         ob_start("ob_gzhandler");
         echo json_encode($response);
 
-        // Wordpress echos out a "0" randomly -- die prevents this...
+        // wordpress echos out a 0 randomly. die prevents it.
         die();
   	}
+
+    private static function order_images_ajax ($a, $b) {
+        if ($a['order'] == $b['order']) { return 0; }
+        return ($a['order'] < $b['order']) ? -1 : 1;
+    }
   
 }
 // end of class

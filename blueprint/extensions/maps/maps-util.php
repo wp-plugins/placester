@@ -9,11 +9,11 @@ class PLS_Map {
 
 	static $markers = array();
 
-	public static function init() {
+	function init() {
 		add_action('wp_footer', array(__CLASS__, 'utilities'));
 	}
 
-	public static function get_lifestyle_controls ($map_args) {
+	function get_lifestyle_controls ($map_args) {
 		extract($map_args);
 		ob_start();
 		?>
@@ -49,13 +49,13 @@ class PLS_Map {
 				return $result;
 			}
 
-		$response = array();
-		$form_options = array();
-		$form_options['locality'] = array_merge(array('false' => '---'), PLS_Plugin_API::get_location_list('locality'));
-        $form_options['region'] = array_merge(array('false' => '---'), PLS_Plugin_API::get_location_list('region'));
-        $form_options['postal'] = array_merge(array('false' => '---'),PLS_Plugin_API::get_location_list('postal')); 
-        $form_options['neighborhood'] = array_merge(array('false' => '---'),PLS_Plugin_API::get_location_list('neighborhood')); 
-        
+			$response = array();
+			$form_options = array();
+			$form_options['locality'] = array_merge(array('false' => '---'), PLS_Plugin_API::get_location_list('locality'));
+	        $form_options['region'] = array_merge(array('false' => '---'), PLS_Plugin_API::get_location_list('region'));
+	        $form_options['postal'] = array_merge(array('false' => '---'),PLS_Plugin_API::get_location_list('postal')); 
+	        $form_options['neighborhood'] = array_merge(array('false' => '---'),PLS_Plugin_API::get_location_list('neighborhood')); 
+	        
 	        $response['location'] = '<div class="location_select"><select name="location" class="location" style="width: 140px">
 				<option value="locality">City</option>
 				<option value="region">State</option>
@@ -105,9 +105,9 @@ class PLS_Map {
 		return ob_get_clean();
 	}
 
-	public static function make_markers($listings, $marker_args, $map_args) {
-		 self::$markers = array();
-		 if ( isset($listings[0]) ) {
+	static function make_markers($listings, $marker_args, $map_args) {
+    self::$markers = array();
+		if ( isset($listings[0]) ) {
 			foreach ($listings as $listing) {
 				self::make_marker($listing, $marker_args);
 			}
@@ -126,7 +126,7 @@ class PLS_Map {
 		}
 	}
 
-	public static function make_marker($listing = array(), $args = array()) {
+	static function make_marker($listing = array(), $args = array()) {
 		extract(self::process_marker_defaults($listing, $args), EXTR_SKIP);
 		ob_start();
 			?>
@@ -135,7 +135,7 @@ class PLS_Map {
 		self::$markers[] = trim(ob_get_clean());
 	}
 
-	public static function utilities () {
+	function utilities () {
 
 		// ob_start();
 		wp_enqueue_script('map-object', trailingslashit(PLS_JS_URL) . 'scripts/map.js');
@@ -146,7 +146,7 @@ class PLS_Map {
 		// echo ob_get_clean();
 	}
 
-	public static function process_defaults ($args) {
+	static function process_defaults ($args) {
 		$defaults = array(
         	'lat' => '42.37',
         	'lng' => '-71.03',
@@ -180,7 +180,7 @@ class PLS_Map {
         return $args;
 	}
 
-	public static function process_marker_defaults ($listing, $args) {
+	static function process_marker_defaults ($listing, $args) {
 		if (isset($listing) && is_array($listing) && isset($listing['location']) && isset($listing['location']['coords'])) {
 			if (isset($listing['location']['coords']['latitude'])) {
 				$coords = $listing['location']['coords'];
@@ -201,22 +201,22 @@ class PLS_Map {
 	}
 
 	//for compatibility
-	public static function dynamic($listings = array(), $map_args = array(), $marker_args = array()) {
+	function dynamic($listings = array(), $map_args = array(), $marker_args = array()) {
 		return self::listings($listings, $map_args, $marker_args);
 	}
-	public static function listings($listings = array(), $map_args = array(), $marker_args = array()) {
+	function listings($listings = array(), $map_args = array(), $marker_args = array()) {
 		return PLS_Map_Listings::listings($listings, $map_args, $marker_args);
 	}
-	public static function neighborhood($listings = array(), $map_args = array(), $marker_args = array(), $polygon) {
+	function neighborhood($listings = array(), $map_args = array(), $marker_args = array(), $polygon) {
 		return PLS_Map_Polygon::polygon($listings, $map_args, $marker_args);	
 	}
-	public static function polygon($listings = array(), $map_args = array(), $marker_args = array()) {
+	function polygon($listings = array(), $map_args = array(), $marker_args = array()) {
 		return PLS_Map_Polygon::polygon($listings, $map_args, $marker_args);	
 	}
-	public static function lifestyle($listings = array(), $map_args = array(), $marker_args = array()) {
+	function lifestyle($listings = array(), $map_args = array(), $marker_args = array()) {
 		return PLS_Map_Lifestyle::lifestyle($listings, $map_args, $marker_args);	
 	}
-	public static function lifestyle_polygon($listings = array(), $map_args = array(), $marker_args = array()) {
+	function lifestyle_polygon($listings = array(), $map_args = array(), $marker_args = array()) {
 		return PLS_Map_Lifestyle_Polygon::lifestyle_polygon($listings, $map_args, $marker_args);		
 	}
 }

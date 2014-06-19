@@ -11,12 +11,12 @@ $notice = '';
 $message = '';
 $form_link = '';
 $iframe = $embed_sc_str = $embed_sc_long_str = $embed_sc_js = '';
-$pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs('', true);
+$pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 
 if (empty($action)) {
 	// show a transiton spinner page because while the page is loading
 	// TODO: load the settings options after page load instead.
-	PL_Router::router('shortcodes/loading.php', array('location'=>add_query_arg(array('action'=>'edit'))));
+	PL_Router::router('shortcodes/loading.php', array('location'=>site_url($_SERVER['REQUEST_URI'].'&action=edit')));
 	return;
 }
 
@@ -32,14 +32,14 @@ if ($post_ID) {
 		$post_ID = 0;
 		$post = array();
 		$action = $form_action;
-		$notice = 'Unable to locate that custom shortcode.';
+		$notice = 'Unable to locate that custom shortcode.';					
 	}
 	else {
 		$shortcode = $post['shortcode'];
 		$embed_sc_js = htmlentities('<script id="plwidget-'.$post_ID.'" src="'. PL_PARENT_URL . 'js/fetch-widget.js?id='.$post_ID.'" style="width:'.$post['width'].'px;height:'.$post['height'].'px" ></script>');
 		$embed_sc_str = '['.$post['shortcode']." id='".$post_ID."']";
 		$embed_sc_long_str = PL_Shortcode_CPT::generate_shortcode_str($post['shortcode'], $post);
-		$iframe = '<iframe src="'.admin_url('admin-ajax.php').'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='.rawurlencode($embed_sc_long_str).'" width="'.$post['width'].'px" height="'.$post['height'].'px"></iframe>';
+		$iframe = '<iframe src="'.admin_url('admin-ajax.php').'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='.rawurlencode($embed_sc_str).'" width="'.$post['width'].'px" height="'.$post['height'].'px"></iframe>';
 		$post = array($post['shortcode']=>$post, 'shortcode'=>$post['shortcode'], 'post_title'=>$post['post_title'], 'post_content'=>$post['post_content']);
 	}
 }
@@ -51,29 +51,21 @@ if (!empty($_POST['publish'])) {
 		$_POST[$_POST['shortcode']]['pl_featured_listing_meta'] = $_POST[$_POST['shortcode']][$_POST['shortcode'].'-pl_featured_listing_meta'];
 	}
 	if (empty($_POST['post_title'])) {
-		$notice = 'Please provide a name for this shortcode.';
+		$notice = 'Please provide a name for this shortcode.';	
 	}
 	elseif ($_POST['shortcode']=='undefined' || empty($pl_shortcodes_attr[$_POST['shortcode']]) || empty($_POST[$_POST['shortcode']])) {
-		$notice = 'Please select a shortcode.';
+		$notice = 'Please select a shortcode.';	
 	}
 	else {
 		$data = array();
 		foreach($_POST as $key=>$val) {
 			if (is_array($val)) {
 				if ($key == $_POST['shortcode']) {
-					$data = array_merge($data, $val);
+					$data = array_merge($data, $val);					
 				}
 			}
 			else {
 				$data[$key] = $val;
-			}
-			if (!empty($data['custom'])) {
-				// remove min/max selectors
-				foreach($data['custom'] as $key=>$val) {
-					if (strpos($key, 'limit_')===0 && isset($data['custom'][$val.substr($key,6)])) {
-						unset($data['custom'][$key]);
-					}
-				}
 			}
 		}
 		if (PL_Shortcode_CPT::save_shortcode($post_ID, $_POST['shortcode'], $data)) {
@@ -107,7 +99,7 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 
 
 ?>
-<div class="pl-sc-wrap">
+<div class="wrap pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Create Custom Shortcode'); ?>
 
 	<div id="pl_sc_edit">
@@ -117,9 +109,6 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 		<?php if ( $message ) : ?>
 		<div id="message" class="updated"><p><?php echo $message; ?></p></div>
 		<?php endif; ?>
-		<script type="text/javascript">
-			var form_data = <?php echo json_encode($post) ?>;
-		</script>
 		<form name="sc_edit_form" action="<?php echo $form_link?>" method="post">
 			<?php wp_nonce_field($nonce_action); ?>
 			<input type="hidden" name="user_ID" value="<?php echo $user_ID; ?>" />
@@ -144,15 +133,13 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 							</div>
 						</div><!-- /titlediv -->
 						<div id="pl-sc-meta-box" class="pl-sc-meta-box">
-							<?php PL_Router::load_builder_partial('shortcode-create-box.php',
-								array(	'values' => $post,
-										'pl_shortcodes_attr' => $pl_shortcodes_attr,
-										'pl_featured_meta_value' => $pl_featured_meta_value));?>
+							<?php PL_Router::load_builder_partial('shortcode-create-box.php', 
+								array('values'=>$post,'pl_shortcodes'=>$pl_shortcodes_attr,'pl_featured_meta_value'=>$pl_featured_meta_value));?>
 						</div>
 					</div>
 					<div id="postbox-container-1" class="postbox-container">
-
-						<?php
+					
+						<?php 
 							if ( 0 == $post_ID ) {
 								$save_title = __('Create');
 							}
@@ -164,14 +151,14 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 							<h3 class="hndle"><span><?php echo $save_title;?></span></h3>
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
-
+								
 									<?php // Hidden submit button early on so that the browser chooses the right button when form is submitted with Return key ?>
 									<div style="display:none;">
 									<?php submit_button( __( 'Save' ), 'button', 'save' ); ?>
 									</div>
-
+								
 									<div id="major-publishing-actions">
-
+										
 										<div id="delete-action">
 										<?php if ( $post_ID && current_user_can( "delete_post", $post_ID ) ): ?>
 											<?php if ( !EMPTY_TRASH_DAYS ): ?>
@@ -182,20 +169,20 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 											<a class="submitdelete deletion" href="<?php echo get_delete_post_link($post_ID); ?>"><?php echo $delete_text; ?></a>
 										<?php endif ?>
 										</div>
-
+									
 										<div id="publishing-action">
 											<span class="spinner"></span>
 											<input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Publish') ?>" />
 											<?php submit_button( $save_title, 'button button-primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
 										</div>
-
+										
 										<div class="clear"></div>
 									</div>
-
+								
 								</div>
 							</div>
-						</div>
-
+						</div>					
+					
 						<?php
 						// preview pane
 						PL_Router::load_builder_partial('shortcode-preview.php', array('post'=>$post, 'iframe'=>$iframe, 'title'=>'Custom Shortcode Preview'));
@@ -218,11 +205,11 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 				wp_enqueue_script('jquery-ui-core');
 				wp_enqueue_style('jquery-ui-datepicker');
 				wp_enqueue_script('jquery-ui-datepicker');
-				wp_enqueue_style('jquery-ui-dialog', trailingslashit( PLS_OPTRM_URL ) . 'css/jquery-ui-1.8.22.custom.css');
+				wp_enqueue_style('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
 				wp_enqueue_script('jquery-ui-dialog');
-				wp_enqueue_script('options-custom', trailingslashit( PLS_OPTRM_URL ) . 'js/options-custom.js', array('jquery'));
-				wp_enqueue_style('featured-listings', trailingslashit( PLS_OPTRM_URL ) . 'css/featured-listings.css');
-				wp_enqueue_script('featured-listing', trailingslashit( PLS_OPTRM_URL ) . 'js/featured-listing.js', array('jquery'));
+				wp_enqueue_script('options-custom', OPTIONS_FRAMEWORK_DIRECTORY.'js/options-custom.js', array('jquery'));
+				wp_enqueue_style('featured-listings', OPTIONS_FRAMEWORK_DIRECTORY.'css/featured-listings.css');
+				wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
 			?>
 		</div>
 

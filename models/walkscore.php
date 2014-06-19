@@ -1,10 +1,10 @@
-<?php
+<?php 
 
 class PL_Walkscore {
 
-	public static function get_score ($args = array()) {
+	function get_score ($args = array()) {
 		$score = array();
-
+		
 		// Parse args + merge with defaults...
 		$parsed_args = wp_parse_args($args, array('lat' => false, 'lng' => false, 'address' => false, 'ws_api_key' => false));
 		extract($parsed_args);

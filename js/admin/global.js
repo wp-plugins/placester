@@ -36,7 +36,7 @@ function check_api_key (api_key) {
 				$('#api_key_message').html("You've successfully changed your Placester API Key.").show().removeClass('red').addClass('green');
 				$('#api-key-message-icon').show().addClass('green');
 				$('#api_key_form #existing_placester_modal_api_key').addClass('green');
-				setTimeout(function () { window.location.reload(true); }, 1000);
+				setTimeout(function () { window.location.href = window.location.href; }, 1000);
 			} 
 			else {
 				$('#api_key_message').html(response.message).show().removeClass('green').addClass('red');
@@ -61,7 +61,7 @@ function new_sign_up (success_callback) {
 			console.log(response);
 			if (response.validations) {
 				// Instrument...
-				pls_track_event("SignUp: Validation issue on signup");
+				mixpanel.track("SignUp: Validation issue on signup");
 				
 				// Display validation message
 				var message = parse_validation(response);
@@ -76,7 +76,7 @@ function new_sign_up (success_callback) {
 				$('input#email').removeClass('red').addClass('green');
 
         		// Instrument...
-				pls_track_event("Registration - Account Created");
+        		mixpanel.track("Registration - Account Created");
         		
         		$.post(ajaxurl, {action: 'set_placester_api_key', api_key: response.api_key}, function (response) {
 		          	if (response.result) {
@@ -85,7 +85,7 @@ function new_sign_up (success_callback) {
 			            $('#api_key_success').html(msg).show();
             		
             			// Instrument...
-	            		pls_track_event("SignUp: API key installed");
+	            		mixpanel.track("SignUp: API key installed");
 	            		
 	           			// API key was successfully created AND set, ok to move-on to the integration dialog...
 	           			if (success_callback) { success_callback(); }
@@ -124,12 +124,3 @@ function validate_email_address (email) {
 
     return re.test(email);
 } 
-
-/*
- * Helper for mixpanel events
- */
-function pls_track_event (msg, data) {
-	if (window.mixpanel) {
-		mixpanel.track(msg, data);
-	}
-}

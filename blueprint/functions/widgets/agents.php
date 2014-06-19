@@ -5,7 +5,7 @@ class PLS_Widget_Agents extends WP_Widget {
 	/**
 	 * Widget Constuctor
 	 */
-	public function __construct() {
+	function PLS_Widget_Agents() {
 		$widget_ops = array( 'classname' => 'pls_agents_widget', 'description' => 'Agents List Widget' );
 
 		/* Widget control settings. */
@@ -21,7 +21,7 @@ class PLS_Widget_Agents extends WP_Widget {
 	 * @param $args (array)
 	 * @param $instance (array) Widget values.
 	 */
-   public function widget( $args, $instance ) {
+   function widget( $args, $instance ) {
      // widget output
      extract($args);
 
@@ -71,9 +71,7 @@ class PLS_Widget_Agents extends WP_Widget {
          <?php 
 
          $single_agent = ob_get_clean();
-         
-         if (!isset($widget_id)) { $widget_id = 1; }
-         
+
          /** Wrap the post in an article element and filter its contents. */
          $single_agent = apply_filters( 'pls_widget_agents_post_inner', $single_agent, $post_item, $instance, $widget_id );
          
@@ -103,7 +101,7 @@ class PLS_Widget_Agents extends WP_Widget {
 	 *
 	 * @return (array) New values.
 	 */
-	public function update( $new_instance, $old_instance ) {
+	function update( $new_instance, $old_instance ) {
 		// Save widget options
 		$instance = $old_instance;
 
@@ -120,7 +118,7 @@ class PLS_Widget_Agents extends WP_Widget {
 	 *
 	 * @param $instance (array) Widget values.
 	 */
-	public function form( $instance ) {
+	function form( $instance ) {
 
 		// Defaults
 		$instance = wp_parse_args( (array) $instance, array( 

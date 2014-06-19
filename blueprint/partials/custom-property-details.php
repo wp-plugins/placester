@@ -12,12 +12,6 @@ class PLS_Partials_Property_Details {
 
           	$listing_data = PLS_Plugin_API::get_listing_in_loop();
           
-			// re-order images by assigned order
-   			$property_images = ( is_array($listing_data['images']) ? $listing_data['images'] : array() );
-			usort($property_images, array('PLS_Partials_Property_Details','sort_images_by_order'));
-			// reset the images
-			$listing_data['images'] = $property_images;
-
           	// Problems with API key or inconsistent data lead to notices due to null listings
           	if (!is_null( $listing_data)) {
 		    	$listing_data['location']['full_address'] = $listing_data['location']['address'] . ' ' . $listing_data['location']['locality'] . ' ' . $listing_data['location']['region'];
@@ -189,11 +183,4 @@ class PLS_Partials_Property_Details {
       	// Post is not of type property, so just return what was initially passed in...
     	return $content;
 	}
-
-	private static function sort_images_by_order($a, $b) {
- 		if ($a['order'] == $b['order']) {
- 			return 0;
- 		}
-  		return ($a['order'] < $b['order']) ? -1 : 1;
-  	}
 }
