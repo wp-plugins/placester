@@ -278,7 +278,7 @@ class Placester_Blueprint {
                 'floating' => array('script' => true, 'style' => true), 
                 'datatable' => array('script' => true, 'style' => true), 
                 'jquery-ui' => array('script' => true, 'style' => true), 
-                'spinner' => array( 'script' => true, 'style' => true ), 
+                'spinner' => array( 'script' => true ), 
                 'masonry' => array('script' => true, 'style' => false),
                 'jquery-tools' => array('script' => true, 'style' => false),
                 'form' => array('script' => true, 'style' => true),

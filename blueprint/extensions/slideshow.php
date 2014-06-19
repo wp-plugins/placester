@@ -87,7 +87,8 @@ class PLS_Slideshow {
             'data' => false,
             'post_id' => false,
             'post_meta_key' => false,
-            'fluid' => false
+            'fluid' => false,
+            'span_not_img' => false
         );
         $args = wp_parse_args( $args, $defaults );
         
@@ -240,8 +241,13 @@ class PLS_Slideshow {
                     }
 	            }
 	            
-	            /** Create the img element. */
-	            $slide = pls_h_img($slide_src, false, $extra_attr);
+	            /** Create the img or span element. */
+                if ($span_not_img) {
+                    $slide = '<span style="background-image: url(' . $slide_src . ');"></span>';
+                } else {
+                    $slide = pls_h_img($slide_src, false, $extra_attr);
+                }
+	            
 	
 	            /** Wrap it in an achor if the anchor exists. */
 	            if ( isset( $data['links'][$index] ) )

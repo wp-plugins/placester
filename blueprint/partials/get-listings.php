@@ -62,7 +62,7 @@ class PLS_Partial_Get_Listings {
         if ($width) 
           { $width = absint($width); }
             
-        /** Sanitize the height. */
+        // Sanitize the height
         if ($height) 
           { $height = absint($height); }
 
@@ -76,21 +76,31 @@ class PLS_Partial_Get_Listings {
 
         // If plugin is active, grab listings intelligently...
         if (!pls_has_plugin_error()) {
-            $listings_raw = false;
-            
+
             if ($featured_option_id) {
               $listings_raw = PLS_Listing_Helper::get_featured($featured_option_id, $args);
+
+              // If the user hasn't set featured listings, get the ones with the most pictures
+              if (empty($listings_raw['listings'])) {
+                $listings_raw = PLS_Plugin_API::get_listings(array_merge($request_params, array('sort_by' => 'total_images', 'sort_type' => 'desc')));
+                if(is_array($listings_raw['listings'])) { shuffle($listings_raw['listings']); }  // make the choices less obviously sorted
+              }
             }
 
-            if ($neighborhood_polygons) {
+            elseif ($neighborhood_polygons) {
               $listings_raw = PLS_Plugin_API::get_polygon_listings( array('neighborhood_polygons' => $neighborhood_polygons ) );
+
+              // Do we ever fall through to here?  And if so, will this give the result we want?
+              if (empty($listings_raw['listings'])) {
+                $listings_raw = PLS_Plugin_API::get_listings($request_params);
+              }
             }
 
-            if ($listings_raw === false || ( isset($listings_raw['listings']) && empty($listings_raw['listings']) )) {
+            else {
               $listings_raw = PLS_Plugin_API::get_listings($request_params);
             }
         }
-      
+
         /** Define variable which will contain the html string with the listings. */
         $return = '';
 
@@ -107,19 +117,14 @@ class PLS_Partial_Get_Listings {
 
         // filter listings before output
         if (isset($featured_listing_id)) {
-        	$listings_raw = apply_filters( $context . '_partial_get_listings', $listings_raw,  $featured_listing_id );
+          $listings_raw = apply_filters( $context . '_partial_get_listings', $listings_raw,  $featured_listing_id );
         }
-        
+
         // For repeated use in the loop...
         $listing_cache = new PLS_Cache('Listing');
 
         // Curate the listing_data...
         foreach ($listings_raw['listings'] as $listing_data) {
-            // Ignore featured listings without images
-            if ( !empty($args['featured_option_id']) && empty($listing_data['images']) ) {
-               continue;
-            }
-
             $listing_html = '';
 
             $cache_id = array('context' => $context, 'featured_option_id' => $featured_option_id, 'listing_id' => $listing_data['id']);

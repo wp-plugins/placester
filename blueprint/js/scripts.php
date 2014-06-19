@@ -67,8 +67,9 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
         wp_register_script( 'search-bootloader', trailingslashit( PLS_JS_URL ) . 'scripts/search-loader.js' , array( 'jquery' ), NULL, true );
         wp_enqueue_script('search-bootloader');
 
-        wp_register_script( 'underscore', trailingslashit( PLS_JS_URL ) . 'libs/underscore/underscore-min.js');
-        wp_enqueue_script('underscore');
+        // This is needed for templatized mapinfo popups, which are not currently used in any of our themes
+        // wp_register_script( 'underscore', trailingslashit( PLS_JS_URL ) . 'libs/underscore/underscore-min.js');
+        // wp_enqueue_script('underscore');
 
         if ( pls_has_plugin_error() ) {
             /** Localize the script. Send the correct notification. */
@@ -113,12 +114,10 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
         if ( array_key_exists( 'spinner', $js[0] ) ) {
             /** Register the script and style. */
             wp_register_script( 'spinner', trailingslashit( PLS_JS_URL ) . 'libs/spinner/spinner.js' , array( 'jquery'), NULL, true );
-            wp_register_style( 'spinner', trailingslashit( PLS_JS_URL ) . 'libs/spinner/spinner.css' );
             /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['spinner'] ) ) {
                 if ( in_array( 'script', $js[0]['spinner'] ) ) {
                     wp_enqueue_script( 'spinner' );
-                    wp_enqueue_style( 'spinner' );
                 }
             }
         }

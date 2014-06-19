@@ -112,8 +112,8 @@ class PLS_Partials_Get_Listings_Ajax {
         $sort_type_options = apply_filters("pls_listings_list_ajax_sort_type_options", $sort_type_options);
 
         // Ultimately, sort params in the $_POST array take precedence if they exist...
-        $sort_by = isset($_POST['sort_by']) ? $_POST['sort_by'] : $sort_by_dflt;
-        $sort_type = isset($_POST['sort_type']) ? $_POST['sort_type'] : $sort_type_dflt;
+        $sort_by = isset($_POST['sort_by']) ? $_POST['sort_by'] : $sort_by;
+        $sort_type = isset($_POST['sort_type']) ? $_POST['sort_type'] : $sort_type;
 
         ob_start();
         ?>

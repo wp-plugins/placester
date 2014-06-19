@@ -2,7 +2,7 @@
 
 PLS_Listing_Helper::init();
 class PLS_Listing_Helper {
-	
+
 	public static function init() {
 		add_action('wp_ajax_pls_listings_for_options', array(__CLASS__,'listings_for_options'));
 		add_action('wp_ajax_pls_get_search_count', array(__CLASS__,'get_search_count'));
@@ -18,7 +18,7 @@ class PLS_Listing_Helper {
 
 		if ($api_response['listings']) {
 			foreach ($api_response['listings'] as $listing) {
-			    if ( !empty($listing['location']['unit']) ) {
+				if ( !empty($listing['location']['unit']) ) {
 					$formatted_listings .= '<option value="' . $listing['id'] . '" >' . $listing['location']['address'] . ', #' . $listing['location']['unit'] . ', ' . $listing['location']['locality'] . ', ' . $listing['location']['region'] . '</option>';
 				} 
 				else {
@@ -37,27 +37,27 @@ class PLS_Listing_Helper {
 	public static function get_featured ($featured_option_id, $args = array()) {
 		$api_response = array('listings' => array());
 		$option_ids = pls_get_option($featured_option_id); 
-		
+
 		if (!empty($option_ids)) {
 			$property_ids = array_keys($option_ids);
 
 			if (!empty($property_ids)) {
 				$args['property_ids'] = $property_ids;
 			}
-			
+
 			$api_response = PLS_Plugin_API::get_listing_details($args);
-			
-			// Remove listings without images...
-			foreach ($api_response['listings'] as $key => $listing) {
-				if (empty($listing['images'])) {
-					unset($api_response['listings'][$key]);
-				}
-	      	}
+
+//			// Remove listings without images...
+//			foreach ($api_response['listings'] as $key => $listing) {
+//				if (empty($listing['images'])) {
+//					unset($api_response['listings'][$key]);
+//				}
+//			}
 		} 
-		
+
 		return $api_response;
 	}
-	
+
 	// Pass in property IDs array
 	public static function get_featured_from_post ($post_id, $post_meta_key) {
 		$api_response = array('listings' => array());

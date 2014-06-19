@@ -16,6 +16,7 @@ class PLS_Lead_Capture {
 
         $title_text = pls_get_option('pd-lc-form-title');
         $description = pls_get_option('pd-lc-form-description');
+        $success_message = htmlspecialchars(pls_get_option('pd-lc-form-message'));
 
         // Default
         ob_start();
@@ -29,7 +30,7 @@ class PLS_Lead_Capture {
               <!-- Lead Capture Description Text -->
               <?php if ( $description_visible == true && !empty( $description ) ): ?>
                 <div class="lc-description">
-                  <?php echo $description; ?>
+                  <p><?php echo $description; ?></p>
                 </div>
               <?php endif; ?>
               
@@ -40,7 +41,7 @@ class PLS_Lead_Capture {
                     $instance = array(
                         "title" => '',
                         "title_visible" => $title_visible != false ? true : false,
-                        "success_message" => !empty($success_message) ? $success_message : "Thank you for the email, we'll get back to you shortly",
+                        "success_message" => !empty($success_message) ? $success_message : "Thank you for the email!  We'll get back to you shortly.",
                         // Name
                         "name_value" => $name_placeholder != "Full Name" ? $name_placeholder : "Full Name",
                         "name_required" => $name_required != false ? $name_required : true,

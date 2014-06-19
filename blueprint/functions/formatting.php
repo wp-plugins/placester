@@ -594,6 +594,9 @@ class PLS_Format {
         "ngb_pvtsch" => "Private School",
         "ngb_pubsch" => "Public School",
         "school_district" => "School District",
+        "sch_elm" => "Elementary School",
+        "sch_hgh" => "High School",
+        "sch_jnr" => "Junior High School",
         "zone" => "Zone",
         "road_surface" => "Road Surface",
         "utilities" => "Utilities",
@@ -739,15 +742,16 @@ class PLS_Format {
 		$url = str_replace(',', '', $url);
 		$url = str_replace(' ', '+', $url);
 		$result = wp_remote_get($url);
-		if (!is_array($result) || !isset($result['body']) || !$result['body']) {
-			return;
+
+		$body = json_decode($result['body']);
+		if(isset($body->results) && isset($body->results[0]) && isset($body->results[0]->geometry)) {
+			return array(
+				'lat' => $body->results[0]->geometry->location->lat,
+				'lng' => $body->results[0]->geometry->location->lng);
 		}
-		$source = $result['body'];
-		$obj = json_decode($source);
-		$lat_lng_array['lat'] = $obj->results[0]->geometry->location->lat;
-		$lat_lng_array['lng'] = $obj->results[0]->geometry->location->lng;
-		return $lat_lng_array;
-  }
-	
+
+		return null;
+	}
+
 //end of class
 }

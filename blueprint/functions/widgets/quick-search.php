@@ -30,7 +30,7 @@ class PLS_Quick_Search_Widget extends WP_Widget {
         $search_form_filter_string .= '&class=pls_quick_search';
 
         if (get_theme_support('pls-quick-search-neighborhood-polygon')) {
-          $search_form_filter_string .= '&neighborhood_polygons=1';
+          $search_form_filter_string .= '&neighborhood_polygons=1&neighborhood_polygons_type=neighborhood';
         }
 
         echo $before_widget;

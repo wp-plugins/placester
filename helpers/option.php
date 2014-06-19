@@ -138,9 +138,12 @@ class PL_Option_Helper {
 	}
 
 	public static function get_default_location () {
-		$r1 = PL_Options::get('pls_default_latitude');
-		$r2  = PL_Options::get('pls_default_longitude');
-		if ($r1 && $r2) { return array('lat' => $r1, 'lng' => $r2); }
+		if (($r1 = PL_Options::get('pls_default_latitude')) && ($r2 = PL_Options::get('pls_default_longitude'))) {
+			return array('lat' => $r1, 'lng' => $r2);
+		}
+
+		$geo_default = array('lat' => 42.3596681, 'lng' => -71.0599325);
+		$geo_error = array('lat' => 42.3596680, 'lng' => -71.0599326);
 
 		$response = PL_Helper_User::whoami();
 		if ($response) {
@@ -154,15 +157,17 @@ class PL_Option_Helper {
 					return array('lat' => $lat, 'lng' => $lng);
 				}
 
-				$address = $loc['address'] . " " . $loc['locality'] . ", " . $loc['region'];
-				if ($geo = self::geocode_address($address)) {
-					self::set_default_location ($geo);
-					return $geo;
+				if($loc['locality'] && $loc['region']) {
+					$address = $loc['address'] . " " . $loc['locality'] . ", " . $loc['region'];
+
+					if (!($geo = self::geocode_address($address))) {
+						$geo = $geo_default;
+					}
 				}
 			}
 
 			// company info
-			if (isset($response['location'])) {
+			if (!isset($geo) && isset($response['location'])) {
 				$loc = $response['location'];
 				$lat = $loc['latitude'];
 				$lng = $loc['longitude'];
@@ -170,31 +175,38 @@ class PL_Option_Helper {
 					return array('lat' => $lat, 'lng' => $lng);
 				}
 
-				$address = $loc['address'] . " " . $loc['locality'] . ", " . $loc['region'];
-				if ($geo = self::geocode_address($address)) {
-					self::set_default_location ($geo);
-					return $geo;
+				if($loc['locality'] && $loc['region']) {
+					$address = $loc['address'] . " " . $loc['locality'] . ", " . $loc['region'];
+					if (!($geo = self::geocode_address($address))) {
+						$geo = $geo_default;
+					}
 				}
 			}
 		}
 
+		// only try to geocode once, whether successful or not
+		if(isset($geo)) {
+			file_put_contents('/var/tmp/geocode-requests.log', date('Y-m-d H:i:s') . ' placester/option.php' . '         ' . implode(', ', $geo) . "\n", LOCK_EX | FILE_APPEND);
+			self::set_default_location ($geo);
+			return $geo;
+		}
+
 		// default
-		return array('lat' => 42.3596681, 'lng' => -71.0599325);
+		return $geo_default;
 	}
 
 	private static function geocode_address ($address) {
 		$url = 'http://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&sensor=false';
 		$result = wp_remote_get($url);
-		if (!is_array($result) || !isset($result['body']) || !$result['body'])
-			return null;
 
-		$body = json_decode($result['body']);
-		$loc = array(
-			'lat' => $body->results[0]->geometry->location->lat,
-		  'lng' => $body->results[0]->geometry->location->lng);
-
-		if (isset($loc) && isset($loc['lat']) && isset($loc['lng']))
-			return $loc;
+		if (is_array($result) && isset($result['body']) && $result['body']) {
+			$body = json_decode($result['body']);
+			if(isset($body->results) && isset($body->results[0]) && isset($body->results[0]->geometry)) {
+				return array(
+					'lat' => $body->results[0]->geometry->location->lat,
+					'lng' => $body->results[0]->geometry->location->lng);
+			}
+		}
 
 		return null;
 	}

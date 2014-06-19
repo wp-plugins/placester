@@ -70,9 +70,16 @@ jQuery(document).ready(function($) {
                   $('.contact-form-validator-error').remove();
                   $('.placester_contact_form form').slideUp();
                   
-                  // Show success message
                   setTimeout(function() {
+                    // special handling for lead capture form -- render markup only on success
+                    var lc_message_div = $(".lc-contact-form .success");
+                    var lc_message_src = lc_message_div.text();
+                    if(lc_message_src)
+                      lc_message_div.html(lc_message_src);
+
+                    // show success message
                     $(".placester_contact_form .success").show('fast');
+
                     // mark contact form as submitted so lead capture's force-back functionality doesn't fire
                     $(".placester_contact_form input[name='form_submitted']").val(1);
                   },500);

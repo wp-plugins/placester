@@ -62,7 +62,7 @@ class Placester_Contact_Widget extends WP_Widget {
 
         // Labels and Values
         $title = apply_filters('widget_title', empty($instance['title']) ? '&nbsp;' : $instance['title']);
-        $success_message = apply_filters('success_message', empty($instance['success_message']) ? 'Thank you for the email, we\'ll get back to you shortly' : $instance['success_message']);
+        $success_message = apply_filters('success_message', empty($instance['success_message']) ? "Thank you for the email!  We'll get back to you shortly." : $instance['success_message']);
         $submit_value = apply_filters('button', empty($instance['button']) ? 'Send' : $instance['button']);
 
         $email_label = apply_filters('email_label', !isset($instance['email_label']) ? 'Email Address (required)' : $instance['email_label']);
@@ -241,7 +241,7 @@ class Placester_Contact_Widget extends WP_Widget {
                   <input type="submit" value="<?php echo $submit_value; ?>" class="<?php echo $button_class; ?>" />
                   
                   <div class="pls-contact-form-loading" style='display:none;'>
-                    <div id="medium-spinner"><div class="bar1"></div><div class="bar2"></div><div class="bar3"></div><div class="bar4"></div><div class="bar5"></div><div class="bar6"></div><div class="bar7"></div><div class="bar8"></div></div>
+                    <img class="spinner" id="spinner" src="/wp-content/plugins/placester/blueprint/js/libs/spinner/preview_load_spin.gif" width="25" />
                   </div>
                   
                 </form>
