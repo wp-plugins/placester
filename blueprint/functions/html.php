@@ -96,9 +96,9 @@ function pls_h_a( $url, $title = false, $extra_attr = array(), $noesc = false ) 
  */
 function pls_h_img( $src, $alt = false, $extra_attr = array() ) {
 
-    $alt = empty( $alt ) ? $src : $alt;
+    $alt = empty( $alt ) ? '' : $alt;
 
-    return pls_h( 'img', array( 'src' => $src, 'alt' => $alt ) + $extra_attr + array( 'title' => $alt ) );
+    return pls_h( 'img', array( 'src' => $src, 'alt' => $alt, 'title' => $alt ) + $extra_attr );
 }
 
 /**

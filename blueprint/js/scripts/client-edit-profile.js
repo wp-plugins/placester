@@ -5,6 +5,7 @@ jQuery(document).ready(function($) {
 		$('#edit_profile').dialog({		
 			autoOpen: false,
 			draggable: false,
+			resizable: false,
 			dialogClass: 'edit_profile_dialog',
 			modal: true,
 			width: 700,

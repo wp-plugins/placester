@@ -153,39 +153,25 @@ $green-background: #DFF0D8
   .invalid
     box-shadow: 0 0 1px 1px red
 
+.ui-widget-overlay
+  background-image: none !important
+
 .ui-dialog
-  &[aria-labelledby="ui-dialog-title-property-details-lead-capture"]
-    padding: 0 !important
-    @include box-sizing
-    .ui-widget-header
-      background: transparent
-      border: none
-      > a.ui-dialog-titlebar-close
-        margin: 34px 20px 0 0
-        z-index: 99999
-        top: 40% !important
-        background: transparent url(../../js/libs/jquery-ui/css/smoothness/images/ui-icons_222222_256x240.png) no-repeat !important
-        background-position: -96px -128px !important
-        border: none !important
-        padding: 0
-        .ui-icon
-          display: none
-
-        
-    .lead-capture-wrapper
-      float: left
-    .lc-contact-form
-      .placester_contact
-        h3
-          display: block
-        .success
-          text-align: left
-
-#property-details-lead-capture
-  padding: 0 !important
-  overflow: hidden
-.property-details-lead-capture
-  &.ui-widget-content
-    border: none !important
+  background: #fcfcfc
+  padding: 4px !important
+  .ui-dialog-titlebar
     background: none !important
-//
+    border: none !important
+    position: absolute !important
+    z-index: 1 !important
+    top: 4px !important
+    right: 4px !important
+  .ui-dialog-titlebar-close
+    border-color: transparent !important
+    background: none !important
+    .ui-icon
+      background-image: url("../../js/libs/jquery-ui/images/ui-icons_222222_256x240.png")
+  .ui-dialog-title
+    visibility: hidden
+  .ui-dialog-buttonpane
+    display: none

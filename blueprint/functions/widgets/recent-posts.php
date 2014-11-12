@@ -114,7 +114,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 						: pls_h_a( post_permalink($post->ID), esc_attr( $post->post_title ), array('class' => 'title') );
 
 				$post_html['author'] = empty( $instance['author'] ) ? ''
-						: sprintf( ' ' . 'by <span class="author">%1$s</span>', $post->post_author );
+						: sprintf( ' ' . 'by <span class="author">%1$s</span>', get_userdata($post->post_author)->display_name );
 
 				$date = new DateTime($post->post_date);
 				$post_html['date'] = empty( $instance['date'] ) ? ''
@@ -131,7 +131,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 				$post_html['id'] = empty( $post->ID ) ? '' : $post->ID;
 
 				/** Combine the post information. */
-				$post_item = pls_get_if_not_empty( $post_html['title'] ) .
+				$post_item = pls_get_if_not_empty( $post_html['post_title'] ) .
 					( ! empty( $post_html['author'] ) || ! empty( $post_html['date'] ) ?
 					pls_h_p( sprintf( 'Posted%1$s%2$s.', pls_get_if_not_empty( $post_html['author'] ), pls_get_if_not_empty( $post_html['date'] ) ), array( 'class' => 'meta p3' ) ) :
 					'' ) .

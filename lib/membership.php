@@ -10,91 +10,71 @@ class PL_Membership {
 	public static function init () {
 		add_action('wp_ajax_nopriv_pl_register_site_user', array(__CLASS__, 'ajax_register_site_user'));
 		add_action('wp_ajax_nopriv_pl_login_site_user', array(__CLASS__, 'ajax_login_site_user'));
-		// add_action( 'wp_ajax_nopriv_connect_wp_fb', array(__CLASS__, 'connect_fb_with_wp' ));
-		// add_action( 'wp_ajax_nopriv_parse_signed_request', array(__CLASS__, 'fb_parse_signed_request' ));
 
 		add_shortcode('lead_user_navigation', array(__CLASS__, 'placester_lead_control_panel'));
 		add_shortcode('pl_login_block', array(__CLASS__, 'placester_lead_control_panel'));
 		
-		$capabilities = array(
-			'add_roomates' => true,
-			'read_roomates' => true,
-			'delete_roomates' => true,
-			'add_favorites' => true,
-			'delete_roomates' => true,
-			'level_0' => true,
-			'read' => true
-		);
-
 		// Create the "Property lead" role
-		add_role('placester_lead', 'Property Lead', $capabilities);
+		add_role('placester_lead', 'Property Lead', array('read' => true));
 	}
 
 	public static function get_client_area_url () {
 		global $wpdb;
-		$page_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_name = 'client-profile'");
-		
-        return $page_id ? get_permalink($page_id) : '';
+		$page_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_name = 'client-profile' AND post_status = 'publish'");
+		return $page_id ? get_permalink($page_id) : '';
 	}
 
 	// Callback function for when the frontend lead register form is submitted
 	//
-    // NOTE: JavaScript in "js/theme/placester.membership.js"
+	// NOTE: JavaScript in "js/theme/placester.membership.js"
 	public static function ajax_register_site_user () {
 		$errors = array();
-		
-        // Make sure it's from a form we created
+
+		// Make sure it's from a form we created
 		if ( !wp_verify_nonce($_POST['nonce'], 'placester_true_registration') ) {
 			// Malicious...
 			echo "Sorry, your nonce didn't verify -- try using the form on the site";
 			die();
 		}
-		
+
 		// All validation rules in a single place...
 		$lead_object = self::validate_registration($_POST);
-		
+
 		// Check for lead errors
 		if (!empty($lead_object['errors'])) {
 			$errors = self::process_registration_errors($lead_object['errors']);
-		} 
-        else {
+		}
+		else {
 			// Try to create the lead...
 			$errors = self::create_site_user($lead_object);
 		}
-		
-        $result = empty($errors) ? array("success" => true) : array("success" => false, "errors" => $errors);
-        
-        echo json_encode($result);
-        die();
+
+		$result = empty($errors) ? array("success" => true) : array("success" => false, "errors" => $errors);
+		echo json_encode($result);
+		die();
 	}
 
 	public static function create_site_user ($lead_object) {
 		$errors = array();
 
-        // Create Wordpress user entity for lead...
-        $userdata = array(
-            'user_pass' => $lead_object['password'],
-            'user_login' => $lead_object['username'],
-            'user_email' => $lead_object['metadata']['email'],
-            'role' => 'placester_lead'
-        );
+		// Create Wordpress user entity for lead...
+		$userdata = array(
+			'user_pass' => $lead_object['password'],
+			'user_login' => $lead_object['username'],
+			'user_email' => $lead_object['metadata']['email'],
+			'role' => 'placester_lead'
+		);
 
-        $wordpress_user_id = wp_insert_user($userdata);
-
+		$wordpress_user_id = wp_insert_user($userdata);
 		if ( !is_wp_error($wordpress_user_id) ) {
+
 			// Force blog to be set immediately or MU throws errors
 			$blogs = get_blogs_of_user($wordpress_user_id);
 			$first_blog = current($blogs);
 			update_user_meta($wordpress_user_id, 'primary_blog', $first_blog->userblog_id);
 
-            // Push the new WP user as a lead to the API...
-            if (defined('PL_LEADS_ENABLED')) {
-            	$response = PL_Lead_Helper::add_lead($lead_object);
-            }
-            else {
-				$response = PL_People_Helper::add_person($lead_object);
-			}
-            
+			// Create linked Placester.com account...
+			$response = PL_People_Helper::add_person($lead_object);
 			if (isset($response['code'])) {
 				$errors[] = $response['message'];
 				foreach ($response['validations'] as $key => $validation) {
@@ -105,22 +85,15 @@ class PL_Membership {
 
 			// If the API call was successful, inform the user that his/her password and set the password change
 			if (empty($errors)) {
-				if (defined('PL_LEADS_ENABLED')) {
-					$meta_key = PL_Lead_Helper::USER_META_KEY;
-					$id = $response['uuid'];
-				}
-				else {
-					$meta_key = PL_People_Helper::USER_META_KEY;
-					$id = $response['id'];
-				}
+				$meta_key = PL_People_Helper::USER_META_KEY;
+				$id = $response['id'];
 
 				// Add API key to new user's meta...
 				update_user_meta($wordpress_user_id, $meta_key, $id);
-
-				// Notify blog admin(s) of new user...
-				wp_new_user_notification($wordpress_user_id);
 			}
-			
+
+			// Notify blog admin(s) of new user, send welcome email...
+			wp_new_user_notification($wordpress_user_id);
 			if (PL_Options::get('pls_send_client_option')) {
 				wp_mail($lead_object['username'], 'Your new account on ' . site_url(), PL_Membership_Helper::parse_client_message($lead_object) );
 			}
@@ -128,42 +101,42 @@ class PL_Membership {
 			// Login user if successfully signed-up...
 			wp_set_auth_cookie($wordpress_user_id, true, is_ssl());
 		} 
-        else {
+		else {
 			// Failure...
 			$errors[] = 'wp_user_create_failed';
 		}
 
-        return $errors;
+	return $errors;
 	}
 
 	//  AJAX endpoint for authenticating a site user from the frontend
 	public static function ajax_login_site_user () {
-        extract($_POST);
-        
+		extract($_POST);
+
 		$sanitized_username = sanitize_user($username);
-        $errors = array();
+		$errors = array();
 
 		if (empty($sanitized_username)) {
 			$errors['user_login'] = "An email address is required";
-		} 
-        elseif (empty($password)) {
+		}
+		elseif (empty($password)) {
 			$errors['user_pass'] = "A password is required";
-		} 
-        else {
+		}
+		else {
 			$userdata = get_user_by('login', $sanitized_username);
 
 			if (empty($userdata)) {
-                $errors['user_login'] = "The email address is invalid";
-            }
-            else if ($userdata && !wp_check_password($password, $userdata->user_pass, $userdata->ID)) {
-                $errors['user_pass'] = "The password isn't correct";
+				$errors['user_login'] = "The email address is invalid";
+			}
+			else if ($userdata && !wp_check_password($password, $userdata->user_pass, $userdata->ID)) {
+				$errors['user_pass'] = "The password isn't correct";
 			}
 		}
 
 		if (!empty($errors)) {
 			$result = array("success" => false, "errors" => $errors);
-		} 
-        else {
+		}
+		else {
 			$rememberme = ($remember == "forever") ? true : false;
 
 			// Manually login user
@@ -172,25 +145,12 @@ class PL_Membership {
 			$creds['remember'] = $rememberme;
 
 			$user = wp_signon($creds, true);
-
 			wp_set_current_user($user->ID);
 
-            $result = array("success" => true);
-
-            if (defined('PL_LEADS_ENABLED')) {
-				// Make sure this existing user has a Lead entity...
-				$lead_id = PL_Lead_Helper::get_lead_id($user->ID);
-
-				if (empty($lead_id)) {
-					$response = PL_Lead_Helper::create_lead($creds);
-
-					// Store Lead ID in user meta...
-					update_user_meta($user->ID, PL_Lead_Helper::USER_META_KEY, $response['uuid']);
-				}
-			}
+			$result = array("success" => true);
 		}
 
-        echo json_encode($result);
+		echo json_encode($result);
 		die();
 	}
 
@@ -214,8 +174,6 @@ class PL_Membership {
 
 						//handles all random edge cases
 						$username_validation = self::validate_username($username, $lead_object);
-
-						//split verification array
 						$username = $username_validation['username'];
 						$lead_object = $username_validation['lead_object'];
 
@@ -232,8 +190,6 @@ class PL_Membership {
 						$email['validated'] = '';
 
 						$email_validation = self::validate_email($email, $lead_object);
-
-						//split verification array
 						$email = $email_validation['email'];
 						$lead_object = $email_validation['lead_object'];
 
@@ -250,8 +206,6 @@ class PL_Membership {
 						$password['validated'] = '';
 
 						$password_validation = self::validate_password($password, $confirm_password, $lead_object);
-
-						//split verification array
 						$password = $password_validation['password'];
 						$lead_object = $password_validation['lead_object'];
 
@@ -366,7 +320,6 @@ class PL_Membership {
 
 	// Used for processing errors for the various forms.
 	private static function process_registration_errors ($errors) {
-        // Default value...
 		$error_messages = '';
 
 		foreach ($errors as $error => $type) {
@@ -478,8 +431,9 @@ class PL_Membership {
 			</div>
 			<?php
 			$result = ob_get_clean();
-		} 
-        else {
+		}
+
+		else {
 			ob_start();
 			?>
 				<div style="display:none">
@@ -495,230 +449,159 @@ class PL_Membership {
 	}
 
 	/**
+	 * Creates a login form
+	 *
+	 */
+	public static function generate_login_form ()
+	{
+		if ( !is_user_logged_in() ) {
+			ob_start();
+			?>
+			<div style='display:none;'>
+				<form name="pl_login_form" id="pl_login_form" action="<?php echo home_url(); ?>/wp-login.php" method="post" class="pl_login_reg_form">
+
+					<?php pls_do_atomic( 'login_form_before_title' ); ?>
+
+					<div id="pl_login_form_inner_wrapper">
+						<h2>Login</h2>
+						<!-- redirect-uri="<?php //echo $_SERVER["HTTP_REFERER"]; ?>" -->
+						<!-- <fb:registration fields="name,location,email" width="260"></fb:registration> -->
+
+						<?php pls_do_atomic( 'login_form_before_email' ); ?>
+
+						<p class="login-username">
+							<label for="user_login">Email</label>
+							<input type="text" name="user_login" id="user_login" class="input" required="required" value="" tabindex="20" data-message="A valid email is needed" placeholder="Email" />
+						</p>
+
+						<?php pls_do_atomic( 'login_form_before_password' ); ?>
+
+						<p class="login-password">
+							<label for="user_pass">Password</label>
+							<input type="password" name="user_pass" id="user_pass" class="input" required="required" value="" tabindex="21" data-message="A password is needed" placeholder="Password" />
+						</p>
+
+						<?php pls_do_atomic( 'login_form_before_remember' ); ?>
+
+						<p class="login-remember">
+							<label><input name="rememberme" type="checkbox" id="rememberme" value="forever" tabindex="22" /> Remember Me</label>
+						</p>
+
+						<?php pls_do_atomic( 'login_form_before_submit' ); ?>
+
+						<p class="login-submit">
+							<input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="23" />
+							<input type="hidden" name="redirect_to" value="<?php echo $_SERVER['REQUEST_URI']; ?>" />
+						</p>
+
+						<?php pls_do_atomic( 'before_login_title' ); ?>
+
+					</div>
+
+				</form>
+			</div>
+			<?php
+			$result = ob_get_clean();
+		}
+
+		else {
+			ob_start();
+			?>
+				<div style="display:none">
+					<div class="pl_error error" id="pl_lead_register_form">
+						You cannot login if you are already logged in. You shouldn't even see a "Login" link.
+					</div>
+				</div>
+			<?php
+			$result = ob_get_clean();
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Adds "Login | Register" if not logged in
 	 * or "Logout | My account" if logged in
 	 *
-	 * TODO If logged in and not lead display something informing them
-	 * of what they need to do to register a lead account
 	 */
 	public static function placester_lead_control_panel ($args) {
-    	$fb_registered = false;
-    	// Capture users that just logged on w/ FB registration
-    	// if (isset($_POST['signed_request'])) {
-    	//   $fb_registered = true;
-    	//   $signed_request = self::fb_parse_signed_request($_POST['signed_request'], false);
-    	// }
+		$defaults = array(
+			'loginout' => true,
+			'profile' => true,
+			'register' => true,
+			'container_tag' => false,
+			'container_class' => false,
+			'anchor_tag' => false,
+			'anchor_class' => false,
+			'separator' => ' | ',
+			'inside_pre_tag' => false,
+			'inside_post_tag' => false,
+			'no_forms' => false // use this to return just the links. Do this for all calls to this function after the first on a page.
+		);
+		$args = wp_parse_args( $args, $defaults );
+		extract( $args, EXTR_SKIP );
 
-    	$defaults = array(
-    		'loginout' => true,
-    		'profile' => true,
-    		'register' => true,
-    		'container_tag' => false,
-    		'container_class' => false,
-    		'anchor_tag' => false,
-    		'anchor_class' => false,
-    		'separator' => ' | ',
-    		'inside_pre_tag' => false,
-    		'inside_post_tag' => false,
-    		'no_forms' => false // use this to return just the login/logout forms, no links. Do this for all calls to this function after the first on a page.
-    	);
-    	$args = wp_parse_args( $args, $defaults );
-    	extract( $args, EXTR_SKIP );
+		$logged_in = is_user_logged_in();
 
-    	// Register WP user w/ FB creds when FB registration has been triggered
-    	// if ($fb_registered) {
-    	//   self::connect_fb_with_wp($signed_request);
-    	// }
-
-    	$is_lead = current_user_can( 'placester_lead' );
-
-    	/** The login or logout link. */
-
-    	// user isn't logged into WP nor FB
-    	if ( !is_user_logged_in() && !$fb_registered ) {
-    		$loginout_link = '<a class="pl_login_link" href="#pl_login_form">Log in</a>';
-    	} 
-        else {
-    		$loginout_link = '<a href="' . esc_url( wp_logout_url(site_url()) ) . '" id="pl_logout_link">Log out</a>';
-    	}
-    	
-        if ($anchor_tag) {
-    		$loginout_link = "<{$anchor_tag} class={$anchor_class}>" . $inside_pre_tag . $loginout_link . $inside_post_tag . "</{$anchor_tag}>";
-    	}
-
-    	/** The register link. */
-    	$register_link = '<a class="pl_register_lead_link" href="#pl_lead_register_form">Register</a>';
-    	if ($anchor_tag) {
-    		$register_link = "<{$anchor_tag} class={$anchor_class}>" . $inside_pre_tag . $register_link . $inside_post_tag . "</{$anchor_tag}>";
-    	}
-
-    	/** The profile link. */
-    	$profile_url = self::get_client_area_url();
-    	$profile = $profile && $profile_url!=='';
-    	$profile_link = '<a id="pl_lead_profile_link" target="_blank" href="' . $profile_url . '">My Account</a>';
-    	if ($anchor_tag) {
-    		$profile_link = "<{$anchor_tag} class={$anchor_class}>" . $inside_pre_tag . $profile_link . $inside_post_tag . "</{$anchor_tag}>";
-    	}
-    	// var_dump($profile_link);
-
-    	$loginout_link = $loginout ? $loginout_link : '';
-    	$register_link = $register ? ( empty($loginout_link) ? $register_link : $separator . $register_link ) : '';
-    	$profile_link = $profile ? ( empty($loginout_link) ? $profile_link : $separator . $profile_link ) : '';
-
-    	if ( !is_user_logged_in() && $no_forms == false ) {
-            // Set the URL
-            $url = is_home() ? home_url() : get_permalink();
-
-        	ob_start();
-        	?>
-        		<form name="pl_login_form" id="pl_login_form" action="<?php echo home_url(); ?>/wp-login.php" method="post" class="pl_login_reg_form">
-
-        			<?php pls_do_atomic( 'login_form_before_title' ); ?>
-
-        			<div id="pl_login_form_inner_wrapper">
-        				<h2>Login</h2>
-        				<!-- redirect-uri="<?php //echo $_SERVER["HTTP_REFERER"]; ?>" -->
-        				<!-- <fb:registration fields="name,location,email" width="260"></fb:registration> -->
-
-        				<?php pls_do_atomic( 'login_form_before_email' ); ?>
-
-        				<p class="login-username">
-        					<label for="user_login">Email</label>
-        					<input type="text" name="user_login" id="user_login" class="input" required="required" value="" tabindex="20" data-message="A valid email is needed" placeholder="Email" />
-        				</p>
-
-        				<?php pls_do_atomic( 'login_form_before_password' ); ?>
-
-        				<p class="login-password">
-        					<label for="user_pass">Password</label>
-        					<input type="password" name="user_pass" id="user_pass" class="input" required="required" value="" tabindex="21" data-message="A password is needed" placeholder="Password" />
-        				</p>
-
-        				<?php pls_do_atomic( 'login_form_before_remember' ); ?>
-
-        				<p class="login-remember">
-        					<label><input name="rememberme" type="checkbox" id="rememberme" value="forever" tabindex="22" /> Remember Me</label>
-        				</p>
-
-        				<?php pls_do_atomic( 'login_form_before_submit' ); ?>
-
-        				<p class="login-submit">
-        					<input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="23" />
-        					<input type="hidden" name="redirect_to" value="<?php echo $url; ?>" />
-        				</p>
-
-        				<?php pls_do_atomic( 'before_login_title' ); ?>
-
-        			</div>
-
-        		</form>
-    		<?php
-
-            // Store form HTML
-    		$login_form = ob_get_clean();
-
-    		// Base link value...
-            $link = $loginout_link . $register_link;
-
-            // Enclose in container tag if set...
-            if ($container_tag) {
-                $link = "<{$container_tag} class={$container_class}>" . $link . "</{$container_tag}>";
-            }
-
-            // Append the form HTML...
-            $link .= self::generate_lead_reg_form() . "<div style='display:none;'>{$login_form}</div>";
-        } 
-        else {
-            // Remove the link to the profile if the current user is not a lead...
-            $link = $is_lead ? ($loginout_link . $profile_link) : $loginout_link;
-            
-            if ($container_tag) {
-                $link = "<{$container_tag} class={$container_class}>" . $link . "</{$container_tag}>";
-            } 
-        }
-
-        return $link;
-	}
-
-	/*
-	 * Facebook user integration functionality
-	 *
-	 * NOTE: Unfinished/untested/not in use...
-	 */
-/*
-	public static function connect_fb_with_wp ($signed_request) {
-		// json_decode signed_request into array
-		$signed_request = json_decode($signed_request, true);
-
-		$user_id = $signed_request['user_id'];
-		$user_email = $signed_request['registration']['email'];
-		$user_name = $signed_request['registration']['name'];
-		$userdata = get_user_by( 'login', $user_id );
-
-		if ($userdata) {
-			wp_set_current_user($user_id);
-			wp_set_auth_cookie($user_id, true);
-		} 
-        else {
-			// Create random password
-			$random_pass = self::random_password();
-
-			// User doesn't exist, create user
-			$userdata = array(
-				'user_pass' => $random_pass,
-				'user_login' => $user_id,
-				'user_url' => $_SERVER["SERVER_NAME"],
-				'user_email' => $user_email,
-				'user_nicename' => $user_name,
-				'role' => 'placester_lead'
-			);
-
-			// Add user to WP user table
-			wp_insert_user( $userdata );
-
-			$user = get_user_by('login', $user_id);
-
-			// Send user email w/ login and password
-			wp_mail($user_email,
-				'Your password for ' . $_SERVER["SERVER_NAME"],
-				"to log into " . $_SERVER["SERVER_NAME"] . " your username is '" . $user_email . "', and your password is '" . $random_pass . "'. However, as long as you are signed into Facebook, you won't need to manually sign in."
-			);
-
+		/** Login/Logout **/
+		if ($loginout) {
+			if (!$logged_in) {
+				$loginout_link = '<a class="pl_login_link" href="#pl_login_form">Log in</a>';
+			}
+			else {
+				$loginout_link = '<a href="' . esc_url(wp_logout_url(site_url())) . '" id="pl_logout_link">Log out</a>';
+			}
+			if ($anchor_tag) {
+				$loginout_link = "<{$anchor_tag} class={$anchor_class}>" . $inside_pre_tag . $loginout_link . $inside_post_tag . "</{$anchor_tag}>";
+			}
 		}
-	}
+		else
+			$loginout_link = '';
 
-	// Parse Facebook Signed Request
-	public static function fb_parse_signed_request ($signed_request = '', $return = 'ajax') {
-		if (empty($signed_request)) {
-			extract($_POST);
+		/** Register **/
+		if ($register && !$logged_in) {
+			$register_link = '<a class="pl_register_lead_link" href="#pl_lead_register_form">Register</a>';
+			if ($anchor_tag) {
+				$register_link = "<{$anchor_tag} class={$anchor_class}>" . $inside_pre_tag . $register_link . $inside_post_tag . "</{$anchor_tag}>";
+			}
+		}
+		else
+			$register_link = '';
+
+		/** My Account **/
+		if ($profile && $logged_in && current_user_can('placester_lead') && ($profile_url = self::get_client_area_url())) {
+			$profile_link = '<a id="pl_lead_profile_link" target="_blank" href="' . $profile_url . '">My Account</a>';
+			if ($anchor_tag) {
+				$profile_link = "<{$anchor_tag} class={$anchor_class}>" . $inside_pre_tag . $profile_link . $inside_post_tag . "</{$anchor_tag}>";
+			}
+		}
+		else
+			$profile_link = '';
+
+		$link = $loginout_link;
+		if ($link && $register_link) $link .= $separator;
+		$link .= $register_link;
+		if ($link && $profile_link) $link .= $separator;
+		$link .= $profile_link;
+
+		// Enclose in container tag if set...
+		if ($container_tag) {
+			$link = "<{$container_tag} class={$container_class}>" . $link . "</{$container_tag}>";
 		}
 
-		list($encoded_sig, $payload) = explode('.', $signed_request, 2);
-
-		// decode the data
-		$sig = base64_decode(strtr($encoded_sig, '-_', '+/'));
-		$data = base64_decode(strtr($payload, '-_', '+/'));
-
-		if ($return == 'ajax') {
-			echo $data;
-		} 
-        else {
-			return $data;
+		// Append the form HTML...
+		if ( !$logged_in && !$no_forms ) {
+			$link .= self::generate_lead_reg_form() . self::generate_login_form();
 		}
 
+		return $link;
 	}
 
-	private static function random_password () {
-		$alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
-		$pass = array(); //remember to declare $pass as an array
-		$alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-		
-        for ($i = 0; $i < 8; $i++) {
-			$n = rand(0, $alphaLength);
-			$pass[] = $alphabet[$n];
-		}
-
-		return implode($pass); //turn the array into a string
+// PL_COMPATIBILITY_MODE -- preserve the interface expected by certain previous versions of blueprint
+	static function placester_favorite_link_toggle($args) {
+		return PL_Favorite_Listings::placester_favorite_link_toggle($args);
 	}
-*/
+	static function get_favorite_ids() {
+		return PL_Favorite_Listings::get_favorite_properties();
+	}
 }

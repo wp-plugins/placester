@@ -98,8 +98,8 @@ class PL_Listing_Helper {
 	}
 
 	public static function details ($args) {
-		if (empty($args['property_ids'])) { 
-			return array('listings' => array(), 'total' => 0); 
+		if (empty($args['property_ids'])) {
+			return array('listings' => array(), 'total' => 0);
 		}
 
 		// Global filters should be ignored if a specific set of property IDs are requested...
@@ -281,6 +281,8 @@ class PL_Listing_Helper {
 	}
 	
 	private static function prepare_post_array () {
+		$_POST = stripslashes_deep($_POST);
+
 		foreach ($_POST as $key => $value) {
 			if (is_int(strpos($key, 'property_type'))) {
 				unset( $_POST[$key] );
@@ -816,4 +818,9 @@ class PL_Listing_Helper {
 			"ZW" => "Zimbabwe (ZW)"
 		);
 	}
-} // end of class
+
+// PL_COMPATIBILITY_MODE -- preserve the interface expected by certain previous versions of blueprint
+	public static function many_details ($args) {
+		return self::details($args);
+	}
+}

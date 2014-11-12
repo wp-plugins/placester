@@ -182,6 +182,7 @@ class PLS_Taxonomy {
 		$locality_tree = array('city' => array('postal', 'neighborhood'), 'zip' => array('neighborhood'));
 
 		$term['listings_raw'] = $listings_raw['listings'];
+		$term['listings_count'] = $listings_raw['total'];
 
 		//assemble all the photos
 		$api_translations = array('locality' => 'city', 'neighborhood' => 'neighborhood', 'postal' => 'zip');

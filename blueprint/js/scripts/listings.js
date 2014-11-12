@@ -90,13 +90,12 @@ Listings.prototype.get = function (search_criteria_changed) {
 		return false;
 	}
 
-	// or, if we're dealing with a polygon map and there's not a selected polygon
+	// or, if we're dealing with a polygon map and there's not a selected polygon, we have zero results
 	if ( ( this.map.type == 'neighborhood' && !this.map.selected_polygon && !this.map.neighborhood.neighborhood_override ) ) {
-		if (this.list)
-			this.list.update({'aaData': [], 'iDisplayLength': 0, 'iDisplayStart': 0, 'sEcho': this.list.sEcho});
 
-		if (this.map)
-			this.map.update({'aaData': [], 'iDisplayLength': 0, 'iDisplayStart': 0, 'sEcho': this.list.sEcho});
+		this.map.update({'aaData': [], 'iDisplayLength': 0, 'iDisplayStart': 0, 'iTotalDisplayRecords': 0, 'iTotalRecords': 0, 'sEcho': this.list.sEcho});
+		if (this.list)
+			this.list.update({'aaData': [], 'iDisplayLength': 0, 'iDisplayStart': 0, 'iTotalDisplayRecords': 0, 'iTotalRecords': 0, 'sEcho': this.list.sEcho});
 
 		return false;
 	}
@@ -207,7 +206,7 @@ Listings.prototype.get = function (search_criteria_changed) {
 			that.from_back_button = false;
 			that.ajax_response = ajax_response;
 			
-			if (that.map && that.map.map)
+			if (that.map)
 				that.map.update( ajax_response );
 
 			if (that.list)

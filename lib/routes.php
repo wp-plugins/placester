@@ -52,26 +52,11 @@ class PL_Router {
 	public static function add_listings () {
 		if (isset($_GET['id'])) {
 			// Fetch listing and store it in the POST global...
-			$_POST = PL_Listing_Helper::single_listing($_GET['id']);
+			$listings = PL_Listing::get(array('listing_ids' => array($_GET['id']), 'address_mode' => 'exact'));
+			$_POST = empty($listings['listings']) ? null : $listings['listings'][0];
 		}
 
 		self::router('add-listing.php', array());
-	}
-
-	public static function my_leads () {
-		//index page also doubles as the details page since wp doesn't make it easy to have an "admin"
-		//page that doesn't appear in the main navigation.
-		if (isset($_GET['id']) && isset($_GET['edit']) && $_GET['edit'] === '1') {
-			self::router('leads/lead-edit.php', array());	
-		} elseif ( isset($_GET['id']) && isset($_GET['new_search']) && $_GET['new_search'] === '1' ) {
-			self::router('leads/new-search.php', array());	
-		} elseif ( isset($_GET['id']) && isset($_GET['search_id']) && isset($_GET['edit_search']) && $_GET['edit_search'] === '1' ) {
-			self::router('leads/search-edit.php', array());	
-		} elseif (isset($_GET['id'])) {
-			self::router('leads/lead-details.php', array());	
-		} else {
-			self::router('leads/my-leads.php', array());	
-		}
 	}
 
 	public static function theme_gallery () {

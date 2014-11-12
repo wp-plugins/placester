@@ -357,6 +357,9 @@ class PLS_Format {
 		$local_dictionary = array(
 				'half_baths' => 'Half Baths',
 				'price' => 'Price',
+				'min_price' => 'Min Price',
+				'max_price' => 'Max Price',
+				'price_range' => 'Price Range',
 				'sqft' => 'Square Feet',
 				'baths' => 'Baths',
 				'avail_on' => 'Available On',
@@ -594,6 +597,7 @@ class PLS_Format {
         "ngb_pvtsch" => "Private School",
         "ngb_pubsch" => "Public School",
         "school_district" => "School District",
+        "sch_dist" => "School District",
         "sch_elm" => "Elementary School",
         "sch_hgh" => "High School",
         "sch_jnr" => "Junior High School",
@@ -657,15 +661,28 @@ class PLS_Format {
 		}
     
 		foreach ($amenities as $key => $value) {
-      
-      // if exists in local dictionary, translate value first
-      $value = isset($local_values_dictionary[trim($value)]) ? $local_values_dictionary[trim($value)] : $value;
-      
-			if ($value == '1') {
+			// if exists in local dictionary, translate value first
+			if(isset($local_values_dictionary[trim($value)])) {
+				$value = $local_values_dictionary[trim($value)];
+			}
+
+			// translate booleans to Yes/No
+			elseif ($value == '1') {
 				$value = 'Yes';
 			} elseif ($value == '0') {
 				$value = 'No';
-      }
+			}
+
+			// break up comma separated spaceless lists
+			else {
+				$value = preg_replace('/,([^[:space:]])/', ', \\1', $value);
+			}
+
+			if ($key == "lst_dte" || $key == "avail_on") {
+				if($date = strstr($value, "T00:00:00Z", true)) {
+					$value = $date;
+				}
+			}
 
 			if (isset($local_dictionary[$key])) {
 				if ($key == 'style') {
@@ -687,7 +704,7 @@ class PLS_Format {
 						"split_ent"=> "Split Entry",
 						"tudor"=> "Tudor",
 						"victor"=> "Victorian",
-						"antiq"=> "antique");
+						"antiq"=> "Antique");
 					if (isset($style_values[$value])) {
 						$value = $style_values[$value];
 					}
@@ -696,7 +713,7 @@ class PLS_Format {
 				$amenities[$local_dictionary[$key]] = ucwords($value);
 			}
 		}
-		
+
 		return $amenities;
 	}
 

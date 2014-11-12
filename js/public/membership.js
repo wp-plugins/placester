@@ -109,6 +109,9 @@ jQuery(document).ready(function($) {
 				// Show success message
 				$("#pl_lead_register_form .success").show('fast');
 
+				// Write lead capture cookie
+				jQuery.cookies.set('lead_capture_visitor', 1); // no expiration set
+
 				// Reload window so it shows new login status
 				setTimeout(function () { window.location.reload(true); }, 1000);
 			}
@@ -157,6 +160,9 @@ jQuery(document).ready(function($) {
 
 				// Show success message
 				// setTimeout(function() { $('#pl_login_form .success').show('fast'); }, 500);
+
+				// Write lead capture cookie
+				jQuery.cookies.set('lead_capture_visitor', 1); // no expiration set
 
 				// Reload window so it shows new login status
 				window.location.reload(true);
@@ -238,19 +244,15 @@ jQuery(document).ready(function($) {
 		property_id = $(this).attr('href');
 
 		data = {
-				action: 'add_favorite_property',
-				property_id: property_id.substr(1)
+			action: 'add_favorite_property',
+			property_id: property_id.substr(1)
 		};
 
 		var that = this;
 		$.post(info.ajaxurl, data, function (response) {
 			spinner.hide();
 
-			// This property will only be set if WP determines user is of admin status...
-			if (response && response.is_admin) {
-				alert('Sorry, admins currently aren\'t able to maintain a list of "favorite" listings');
-			}
-			else if (response && response.id) {
+			if (response && response.id) {
 				$(that).parent().find('#pl_add_favorite').hide();
 				$(that).parent().find('#pl_remove_favorite').show();
 			}
@@ -269,124 +271,19 @@ jQuery(document).ready(function($) {
 		property_id = $(this).attr('href');
 
 		data = {
-				action: 'remove_favorite_property',
-				property_id: property_id.substr(1)
+			action: 'remove_favorite_property',
+			property_id: property_id.substr(1)
 		};
 
 		var that = this;
 		$.post(info.ajaxurl, data, function (response) {
 			spinner.hide();
-			// If request successfull
+
 			if (response != 'errors') {
 				$(that).parent().find('#pl_remove_favorite').hide();
 				$(that).parent().find('#pl_add_favorite').show();
 			}
 		}, 'json');
-	}); 
-
-/* TODO: Get FB login working...
-
-    //
-    // Facebook Login
-    //
-
-    // Additional JS functions here
-    window.fbAsyncInit = function() {
-        fb_init();
-
-        // check FB login status
-        FB.getLoginStatus(function(response) {
-
-        // Is user logged into FB?
-        if (response.status === 'connected') {
-            // var accessToken = response.authResponse.accessToken;
-            console.log(response);
-            var user_id = response.authResponse.userID;
-
-
-            // get user info
-            var u_info = '';
-
-            FB.api('/me', function(user) {
-                console.log(user);
-                u_info = user;
-            });
-
-            // console.log(u_info);
-
-            // verified_response = parse_signed_request(signed_request);
-            // if (verified_response) {
-            //   connect_wp_fb(user_id);
-            // } else {
-            //   console.log('sorry, something went wrong');
-            // }
-
-            // log in user if user_id exists in our user list via ajax
-
-            // else prompt them to register
-            } 
-            else if (response.status === 'not_authorized') {
-                // not_authorized
-                console.log("not authorized");
-                // login();
-            } 
-            else {
-                // not_logged_in
-                console.log("not logged in");
-                // add login button
-                // login_to_fb();
-            }
-        });
-    };
-
-    function fb_init () {
-        FB.init({
-            appId: "263914027073402", // App ID
-            channelUrl: "<?php echo get_template_directory_uri(); ?>/fb_channel.html", // Channel File
-            status: true, // check login status
-            cookie: true, // enable cookies to allow the server to access the session
-            xfbml: true  // parse XFBML
-        });
-    }
-
-    function connect_wp_fb (user_id) {
-        data = {
-            action: 'connect_wp_fb',
-            user_id: user_id//,
-            // user_nickname: user_nickname
-        };
-
-        $.ajax({
-            url: info.ajaxurl,
-            data: data, 
-            async: false,
-            type: "POST",
-            success: function (response) { 
-                // console.log(response); 
-            }
-        });
-    }
-
-    function parse_signed_request (signed_request) {
-        data = {
-            action: 'parse_signed_request',
-            signed_request: signed_request
-        };
-
-        success = false;
-
-        $.ajax({
-            url: info.ajaxurl,
-            data: data, 
-            async: false,
-            type: "POST",
-            success: function (response) {
-                success = true;
-            }
-        });
-
-        return success;
-    }
-	 */
+	});
 
 });

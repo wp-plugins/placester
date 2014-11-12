@@ -154,35 +154,25 @@
 .placester_contact_form .invalid {
   box-shadow: 0 0 1px 1px red; }
 
-.ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] {
-  padding: 0 !important;
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box; }
-  .ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] .ui-widget-header {
-    background: transparent;
-    border: none; }
-    .ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] .ui-widget-header > a.ui-dialog-titlebar-close {
-      margin: 34px 20px 0 0;
-      z-index: 99999;
-      top: 40% !important;
-      background: transparent url(../../js/libs/jquery-ui/css/smoothness/images/ui-icons_222222_256x240.png) no-repeat !important;
-      background-position: -96px -128px !important;
-      border: none !important;
-      padding: 0; }
-      .ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] .ui-widget-header > a.ui-dialog-titlebar-close .ui-icon {
-        display: none; }
-  .ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] .lead-capture-wrapper {
-    float: left; }
-  .ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] .lc-contact-form .placester_contact h3 {
-    display: block; }
-  .ui-dialog[aria-labelledby="ui-dialog-title-property-details-lead-capture"] .lc-contact-form .placester_contact .success {
-    text-align: left; }
+.ui-widget-overlay {
+  background-image: none !important; }
 
-#property-details-lead-capture {
-  padding: 0 !important;
-  overflow: hidden; }
-
-.property-details-lead-capture.ui-widget-content {
-  border: none !important;
-  background: none !important; }
+.ui-dialog {
+  background: #fcfcfc;
+  padding: 4px !important; }
+  .ui-dialog .ui-dialog-titlebar {
+    background: none !important;
+    border: none !important;
+    position: absolute !important;
+    z-index: 1 !important;
+    top: 4px !important;
+    right: 4px !important; }
+  .ui-dialog .ui-dialog-titlebar-close {
+    border-color: transparent !important;
+    background: none !important; }
+    .ui-dialog .ui-dialog-titlebar-close .ui-icon {
+      background-image: url("../../js/libs/jquery-ui/images/ui-icons_222222_256x240.png"); }
+  .ui-dialog .ui-dialog-title {
+    visibility: hidden; }
+  .ui-dialog .ui-dialog-buttonpane {
+    display: none; }

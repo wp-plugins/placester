@@ -94,7 +94,6 @@ class PLS_Meta_Tags {
 <meta itemprop="url" content="<?php echo $tags['url']; ?>">
 <meta itemprop="name" content="<?php echo $tags['title']; ?>">
 <meta itemprop="email" content="<?php echo $tags['email']; ?>">
-<meta itemprop="address" content="<?php echo $tags['address']; ?>">
 <meta itemprop="description" content="<?php echo $tags['description']; ?>">
 
 <!-- Meta Tags -->
@@ -242,6 +241,7 @@ class PLS_Meta_Tags {
 					$tags['address'] = @$listing['location']['address'] . ', ' . @$listing['location']['locality'] . ', ' . @$listing['location']['region'];
 				}
 
+				$tags['url'] = @$listing['cur_data']['url'];	// the_permalink() is not always available
 				$tags['image'] = @$listing['images']['0']['url'];
 				$tags['description'] = esc_html(strip_tags($listing['cur_data']['desc']));
 
@@ -272,7 +272,6 @@ class PLS_Meta_Tags {
 				}
 
 				$tags['description'] = PLS_Format::shorten_excerpt($post, 155);
-				$tags['address'] = @pls_get_option('pls-company-street') . ", " . @pls_get_option('pls-company-locality') . ", " . @pls_get_option('pls-company-region');
 				$tags['author'] = get_the_author();
 
 				break;
@@ -346,9 +345,15 @@ class PLS_Meta_Tags {
 		global $post;
 
 		if (is_home() || !isset($post)) {
-			$url = esc_html(home_url());
-			$title = "";
-			$description = "";
+			$url = home_url();
+
+			$title = pls_get_option('pls-company-name');
+			$title = $title ? $title : pls_get_option('pls-site-title');
+			$title = $title ? $title : get_bloginfo('name');
+
+			$description = pls_get_option('pls-company-description');
+			$description = $description ? $description : pls_get_option('pls-site-subtitle');
+			$description = $description ? $description : get_bloginfo('description');
 		}
 		else {
 			$url = get_permalink();
@@ -356,20 +361,11 @@ class PLS_Meta_Tags {
 			$description = PLS_Format::shorten_excerpt($post, 155);
 		}
 
-		$title = $title ? $title : pls_get_option('pls-company-name');
-		$title = $title ? $title : pls_get_option('pls-site-title');
-		$title = $title ? $title : get_bloginfo('name');
-
-		$description = $description ? $description : pls_get_option('pls-company-description');
-		$description = $description ? $description : pls_get_option('pls-site-subtitle');
-		$description = $description ? $description : get_bloginfo('description');
-
 		$defaults = array(
 			'itemtype' => 'http://schema.org/LocalBusiness',
 			'url' => $url,
 			'title' => $title,
 			'description' => $description,
-			'address' => pls_get_option('pls-company-street') . ", " . pls_get_option('pls-company-locality') . ", " . pls_get_option('pls-company-region'),
 			'author' => pls_get_option('pls-user-name'),
 			'email' => pls_get_option('pls-user-email'),
 			'image' => pls_get_option('pls-site-logo')

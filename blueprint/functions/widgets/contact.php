@@ -100,8 +100,8 @@ class Placester_Contact_Widget extends WP_Widget {
         $name_error = isset($instance['name_error']) && $instance['name_error'] != "" ? $instance['name_error'] : "Your name is required.";
         $email_error = isset($instance['email_error']) && $instance['email_error'] != "" ? $instance['email_error'] : "A valid email is required.";
         $phone_error = isset($instance['phone_error']) && $instance['phone_error'] != "" ? $instance['phone_error'] : "A valid phone is required.";
-        $question_error = isset($instance['question_error']) && $instance['question_error'] != "" ? $instance['question_error'] : "Don't forget to leave a question or comment.";
         $subject_error = isset($instance['subject_error']) && $instance['subject_error'] != "" ? $instance['subject_error'] : "What subject would you like to speak about?";
+        $question_error = isset($instance['question_error']) && $instance['question_error'] != "" ? $instance['question_error'] : "Don't forget to leave a question or comment.";
 
         // Classes
         $container_class = apply_filters('container_class', empty($instance['container_class']) ? '' : $instance['container_class']);
@@ -118,22 +118,8 @@ class Placester_Contact_Widget extends WP_Widget {
 
         // Lead Capture Cookie
         $lead_capture_cookie = apply_filters('lead_capture_cookie', !isset($instance['lead_capture_cookie']) ? '' : $instance['lead_capture_cookie']);
-        
-        // Form Options
-        // Get lead capture's force-back theme option from admin
-        $back_on_lc_cancel_option = pls_get_option('pd-lc-force-back');
-        
-        if (!empty($instance['back_on_lc_cancel'])) {
-          // if option has been set in the contact form call
-          $back_on_lc_cancel = apply_filters('back_on_lc_cancel', !isset($instance['back_on_lc_cancel']) ? '' : $instance['back_on_lc_cancel']);
-        } elseif (isset($back_on_lc_cancel_option)) {
-          // Elseif the theme option is set, let the theme option set the force-back for canceling the lead capture form
-          $back_on_lc_cancel = $back_on_lc_cancel_option;
-        } else {
-          // else, don't force users back
-          $back_on_lc_cancel = 0;
-        }
-        
+        $back_on_lc_cancel = apply_filters('back_on_lc_cancel', !isset($instance['back_on_lc_cancel']) ? false : $instance['back_on_lc_cancel']);
+
         $show_property = ( isset($instance['show_property']) && !empty($instance['show_property']) ) ? 1 : 0;
         $template_url = get_template_directory_uri();
 
@@ -241,7 +227,7 @@ class Placester_Contact_Widget extends WP_Widget {
                   <input type="submit" value="<?php echo $submit_value; ?>" class="<?php echo $button_class; ?>" />
                   
                   <div class="pls-contact-form-loading" style='display:none;'>
-                    <img class="spinner" id="spinner" src="/wp-content/plugins/placester/blueprint/js/libs/spinner/preview_load_spin.gif" width="25" />
+                    <img class="spinner" id="spinner" src="<?php echo trailingslashit( PLS_IMG_URL ); ?>preview_load_spin.gif" width="25" />
                   </div>
                   
                 </form>

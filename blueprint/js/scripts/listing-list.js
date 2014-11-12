@@ -32,11 +32,12 @@ List.prototype.init = function (params) {
 			if ((iDisplayIndex + 1) % 3 == 0) {
 				jQuery(nRow).addClass('third');
 			};
-    	}
+		}
 	};
-  	this.results_as_total = 0;
-  	this.fnCallback = params.fnCallback || false;
-  	this.manual_callback = params.manual_callback || false;
+
+	this.results_as_total = 0;
+	this.fnCallback = params.fnCallback || false;
+	this.manual_callback = params.manual_callback || false;
 
 	//objects
 	this.listings = params.listings || alert('List: You need to include a listings object');
@@ -64,27 +65,38 @@ List.prototype.get_listings = function (self, sSource, aoData, fnCallback) {
 
 List.prototype.update = function (ajax_response) {
 	this.total_results(ajax_response);
-	if (this.fnCallback) {
-		this.fnCallback(ajax_response);	
-    	// If reg form available or logged in then show add to favorites 
-    	if (jQuery('.pl_lead_register_form').length || jQuery('.pl_add_remove_lead_favorites #pl_add_favorite').length) {
-    		jQuery('div#pl_add_remove_lead_favorites,.pl_add_remove_lead_favorites').show();    	
-    	}
-	}
-	this.update_favorites_through_cache();
-  
-  if (ajax_response.iDisplayStart && ajax_response.iDisplayLength) {
-    var curOffset = this.datatable.fnSettings()._iDisplayStart;
-    var offset = Number(ajax_response.iDisplayStart);
-    if (offset !== curOffset) {
-      var limit = Number(ajax_response.iDisplayLength);
-      var page = Math.round(offset/limit);
-      this.datatable.fnPageChange(page, false);
-      jQuery.fn.dataTableExt.oPagination.full_numbers.fnUpdate(this.datatable.fnSettings());
-    }
-  }
 
+	if (this.fnCallback) {
+		this.fnCallback(ajax_response);
+		// If reg form available or logged in then show add to favorites
+		if (jQuery('.pl_lead_register_form').length || jQuery('.pl_add_remove_lead_favorites #pl_add_favorite').length) {
+			jQuery('div#pl_add_remove_lead_favorites,.pl_add_remove_lead_favorites').show();
+		}
+	}
+
+	if (ajax_response.iDisplayStart && ajax_response.iDisplayLength) {
+		var dataTable = this.datatable;
+		var tSettings = dataTable.fnSettings();
+		var curOffset = tSettings._iDisplayStart;
+		var curLimit = tSettings._iDisplayLength;
+		var newOffset = Number(ajax_response.iDisplayStart);
+		var newLimit = Number(ajax_response.iDisplayLength);
+
+		if (newOffset !== curOffset || newLimit !== curLimit) {
+			tSettings._iDisplayStart = newOffset;
+			tSettings._iDisplayLength = newLimit;
+			dataTable._fnCalculateEnd(tSettings);
+			dataTable._fnUpdateInfo(tSettings);
+			jQuery.fn.dataTableExt.oPagination.full_numbers.fnUpdate(tSettings, function (oSettings) {
+				dataTable._fnCalculateEnd(oSettings);
+				dataTable._fnDraw(oSettings);
+			});
+		}
+	}
+
+	this.update_favorites_through_cache();
 	this.hide_loading();
+
 	if (ajax_response.aaData.length > 0) {
 		this.hide_empty();
 	} else {
@@ -98,32 +110,32 @@ List.prototype.total_results = function (ajax_response) {
 }
 
 List.prototype.update_favorites_through_cache = function () {
-	jQuery.post(info.ajaxurl, {action: 'get_favorites'}, function(data, textStatus, xhr) {
-        if (data) {
-            jQuery('#pl_add_remove_lead_favorites .pl_prop_fav_link').each(function(index) {
-                var flag = false;
-                for (var i = data.length - 1; i >= 0; i--) {
-                    //this listing should be a favorite
-                    if (jQuery(this).attr('href') == ('#' + data[i].id) ) {
-                        if (jQuery(this).attr('id') == 'pl_add_favorite') {
-                            jQuery(this).hide();
-                        } else {
-                            jQuery(this).show();
-                        }
-                        flag = true;
-                    } 
-                };
-                // this listing shouldn't be a favorite...
-                if (!flag) {
-                    if (jQuery(this).attr('id') == 'pl_add_favorite') {
-                        jQuery(this).show();
-                    } else {
-                        jQuery(this).hide();
-                    }
-                }
-            });     
-        }
-    }, 'json');
+	jQuery.post(info.ajaxurl, {action: 'get_favorite_properties'}, function(data, textStatus, xhr) {
+		if (data) {
+			jQuery('#pl_add_remove_lead_favorites .pl_prop_fav_link').each(function(index) {
+				var flag = false;
+				for (var i = data.length - 1; i >= 0; i--) {
+					//this listing should be a favorite
+					if (jQuery(this).attr('href') == ('#' + data[i]) ) {
+						if (jQuery(this).attr('id') == 'pl_add_favorite') {
+							jQuery(this).hide();
+						} else {
+							jQuery(this).show();
+						}
+						flag = true;
+					}
+				};
+				// this listing shouldn't be a favorite...
+				if (!flag) {
+					if (jQuery(this).attr('id') == 'pl_add_favorite') {
+						jQuery(this).show();
+					} else {
+						jQuery(this).hide();
+					}
+				}
+			});
+		}
+	}, 'json');
 }
 
 List.prototype.row_mouseover = function (listing_id) {

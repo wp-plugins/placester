@@ -59,7 +59,7 @@ Map.prototype.init = function ( params ) {
 
 	//marker settings
 	this.marker = {};
-	this.marker.icon = params.marker || false;
+	this.marker.icon = params.marker || null;
 	this.marker.icon_hover = params.marker_hover || 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|FF0000|000000'
 
 	this.map_options = params.map_options || { zoom: this.zoom, mapTypeId: google.maps.MapTypeId.ROADMAP, mapTypeControl: false, streetViewControl: false, zoomControl: true, zoomControlOptions: { style: google.maps.ZoomControlStyle.SMALL, position: google.maps.ControlPosition.TOP_LEFT } };
@@ -92,7 +92,7 @@ Map.prototype.init = function ( params ) {
 	Map.prototype.marker_mouseout = params.marker_mouseout || function ( listing_id ) {
 		if (listing_id) {
 			var marker = this.markers_hash[listing_id];
-			marker.setIcon(null);
+			marker.setIcon(this.marker.icon);
 		}
 	}
 
@@ -189,24 +189,30 @@ Map.prototype.create_polygon = function ( polygon_options ) {
 }
 
 Map.prototype.update = function ( ajax_response ) {
+	if (!this.map) {
+		var that = this;
+		setTimeout(function () {
+			that.update(ajax_response);	// try again a bit later
+		}, 200);
+		return;
+	}
 
-	if (ajax_response && ajax_response.aaData.length > 0) {
-		if ( this.status_window)
+	// always clear previous markers -- to reflect an error condition or zero results
+	if (this.markers.length > 0 )
+		this.clear();
+
+	if (ajax_response && ajax_response.aaData && ajax_response.aaData.length > 0) {
+		if (this.status_window)
 			this.status_window.some_results();
 
-		if (this.markers.length > 0 )
-			this.clear();
-
-		if (ajax_response.aaData.length > 0 ) {
-			for (var i = ajax_response.aaData.length - 1; i >= 0; i--) {
-				this.create_listing_marker( ajax_response.aaData[i][1] );
-			}
+		for (var i = ajax_response.aaData.length - 1; i >= 0; i--) {
+			this.create_listing_marker(ajax_response.aaData[i][1]);
 		}
 
 		// if filter by bounds, don't move the map, it's confusing
-		if ( this.always_center && this.type == 'neighborhood' && this.selected_polygon ) {
+		if (this.always_center && this.type == 'neighborhood' && this.selected_polygon) {
 			this.center_on_selected_polygon();
-		} else if ( this.always_center && this.markers.length > 0 ) {
+		} else if (this.always_center && this.markers.length > 0) {
 			this.center();
 		}
 
@@ -224,10 +230,10 @@ Map.prototype.update = function ( ajax_response ) {
 			this.status_window.update();
 		}
 
-
 	} else {
 		this.show_empty();
 	}
+
 	this.hide_loading();
 }
 
@@ -272,34 +278,33 @@ Map.prototype.create_listing_marker = function ( listing ) {
 			var image_url = listing['images'][0]['url'];
 		};
 
-		// display attribution, if we have the info
-		if (listing['rets'] && (listing['rets']['oname'] || listing['rets']['aname'])) {
-			var attribution_message = listing['rets']['mls_id'] + "&nbsp;" + listing['cur_data']['status'] + "<BR>Courtesy of ";
-			if (listing['rets']['aname']) {
-				attribution_message += listing['rets']['aname'];
-			}
-			if(listing['rets']['oname'] && listing['rets']['aname']) {
-				attribution_message += " of ";
+		// display mls id, status, and attribution, if we have the info
+		if (listing['rets']) {
+			if (listing['rets']['mls_id']) {
+				var status_message = listing['rets']['mls_id'] + "&nbsp;" + listing['cur_data']['status'];
 			}
 			if (listing['rets']['oname']) {
-				attribution_message += listing['rets']['oname'];
+				var attribution_message = "Courtesy of " +
+					(listing['rets']['aname'] ? '<span class="map-info-agent">' + listing['rets']['aname'] + ' of </span>' : '') +
+					listing['rets']['oname'];
 			}
 		}
 
 		// Default infowindow markup
 		marker_options.content =
-			'<div class="map-info-content" style="margin: 5px 10px;">'+
-				'<h4 class="map-info-heading"><a href="'+ listing['cur_data']['url'] + '">' + listing['location']['full_address'] +'</a></h4>'+
-				'<div class="map-info-body">'+
-					'<img style="width: 80px !important; height: auto; max-height: 80px; float: left;" src="'+image_url+'" />' +
-					'<ul style="margin-left: 90px !important; list-style-type: none !important;">' +
-						'<li> Beds: '+ listing['cur_data']['beds'] +'</li>' +
-						'<li> Baths: '+ listing['cur_data']['baths'] +'</li>' +
+			'<div class="map-info-content" style="margin: 5px 10px;">' +
+				'<h4 class="map-info-heading"><a href="'+ listing['cur_data']['url'] + '">' + listing['location']['full_address'] +'</a></h4>' +
+				'<div class="map-info-body" style="height: 70px !important; margin-top: 1em !important;">' +
+				(image_url ? '<img style="width: 80px !important; height: auto; max-height: 70px; float: left;" src="'+image_url+'" />' : '') +
+					'<ul style="margin-left: 90px !important; padding-left: 0px !important; list-style-type: none !important;">' +
+						(listing['cur_data']['beds'] ? '<li> Beds: '+ listing['cur_data']['beds'] +'</li>' : '') +
+						(listing['cur_data']['baths'] ? '<li> Baths: '+ listing['cur_data']['baths'] +'</li>' : '') +
 						'<li> Price: '+ price +'</li>' +
 					'</ul>' +
-				'</div>' + (attribution_message ?
-					'<div class="map-info-attribution" style="clear: left;"><br>'+attribution_message+'</div>' :
-					'<div class="map-info-link" style="clear: left; float: right;"><a href="'+listing['cur_data']['url']+'">View Details...</a></div>') +
+				'</div>' +
+				(status_message ? '<div class="map-info-status" style="clear: left;">'+status_message+'</div>' : '') +
+				(attribution_message ? '<div class="map-info-attribution" style="clear: left;">'+attribution_message+'</div>' :
+				'<div class="map-info-link" style="clear: left; float: right;"><a href="'+listing['cur_data']['url']+'">View Details...</a></div>') +
 			'</div>';
 	}
 

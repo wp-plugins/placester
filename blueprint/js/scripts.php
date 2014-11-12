@@ -111,17 +111,6 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
             }
         }
 
-        if ( array_key_exists( 'spinner', $js[0] ) ) {
-            /** Register the script and style. */
-            wp_register_script( 'spinner', trailingslashit( PLS_JS_URL ) . 'libs/spinner/spinner.js' , array( 'jquery'), NULL, true );
-            /** Enqueue script and styles only if supported. */
-            if ( is_array( $js[0]['spinner'] ) ) {
-                if ( in_array( 'script', $js[0]['spinner'] ) ) {
-                    wp_enqueue_script( 'spinner' );
-                }
-            }
-        }
-        
         if ( array_key_exists( 'picturefill', $js[0] ) ) {
         	/** Register the script and style. */
         	wp_register_script( 'picturefill', trailingslashit( PLS_JS_URL ) . 'libs/picturefill/picturefill.js' , array( 'jquery'), NULL, true );
@@ -133,15 +122,15 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
         		}
         	}
         }
-        
+
         if ( array_key_exists( 'masonry', $js[0] ) ) {
             /** Register the script and style. */
-            wp_register_script( 'masonry', trailingslashit( PLS_JS_URL ) . 'scripts/masonry.js' , array( 'jquery'), NULL, true );
+            wp_register_script( 'jquery-masonry', trailingslashit( PLS_JS_URL ) . 'scripts/masonry.js' , array( 'jquery'), NULL, true );
 
             /** Enqueue script and styles only if supported. */
             if ( is_array( $js[0]['masonry'] ) ) {
                 if ( in_array( 'script', $js[0]['masonry'] ) ) {
-                    wp_enqueue_script( 'masonry' );
+                    wp_enqueue_script( 'jquery-masonry' );
                 }
             }
         }
@@ -157,27 +146,24 @@ if ( !defined( 'PLS_LOAD_SCRIPTS' ) || ( defined( 'PLS_LOAD_SCRIPTS' ) && ( PLS_
             }
         }
 
-        if ( array_key_exists( 'jquery-ui', $js[0] ) ) {            
-            wp_register_style( 'jquery-ui', trailingslashit( PLS_JS_URL ) . 'libs/jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css' );
+        if ( array_key_exists( 'jquery-ui', $js[0] ) ) {
+            if(($blatz = get_bloginfo('version')) >= '4.0') {
+                wp_register_style( 'pl-jquery-ui', trailingslashit( PLS_JS_URL ) . 'libs/jquery-ui/css/jquery-ui-1.10.4.css' );
+            }
+            else {
+                //wp_register_style( 'pl-jquery-ui', trailingslashit( PLS_JS_URL ) . 'libs/jquery-ui/css/jquery-ui-1.8.20.css' );
+                wp_register_style( 'pl-jquery-ui', trailingslashit( PLS_JS_URL ) . 'libs/jquery-ui/css/jquery-ui-1.8.17.custom.css' );
+            }
+
             if ( is_array( $js[0]['jquery-ui'] ) ) {
                 if ( in_array( 'script', $js[0]['jquery-ui'] ) ) {
                     wp_enqueue_script( 'jquery-ui-core' );
-                    if (isset( $GLOBALS['wp_scripts']->registered['jquery-ui-datepicker']) )  {
-                      wp_enqueue_script( 'jquery-ui-datepicker' );
-                    } else {
-                      wp_register_script( 'jquery-ui-datepicker', trailingslashit( PLS_JS_URL ) . 'libs/jquery-ui/js/jquery.ui.datepicker.js' , array( 'jquery'), NULL, true );
-                      wp_enqueue_script( 'jquery-ui-datepicker' );
-                    }
-                    if (isset( $GLOBALS['wp_scripts']->registered['jquery-ui-dialog']) )  {
-                      wp_enqueue_script( 'jquery-ui-dialog' );
-                    } else {
-                      // wp_register_script( 'jquery-ui-dialog', trailingslashit( PLS_JS_URL ) . 'libs/jquery-ui/js/jquery.ui.dialog.js' , array( 'jquery'), NULL, true );
-                      // wp_enqueue_script( 'jquery-ui-dialog' );
-                    }
+                    wp_enqueue_script( 'jquery-ui-datepicker' );
+                    wp_enqueue_script( 'jquery-ui-dialog' );
                 }
 
                 if ( in_array( 'style', $js[0]['jquery-ui'] ) ) {
-                    wp_enqueue_style( 'jquery-ui' );
+                    wp_enqueue_style( 'pl-jquery-ui' );
                 }
             }
         }

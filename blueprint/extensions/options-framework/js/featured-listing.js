@@ -162,7 +162,7 @@ jQuery(document).ready(function($) {
               
               if (address && address != 'Sorry, no listings match your search. Please try another.') {
                   featured_listings += '<li>';
-                  featured_listings += '<div id="pls-featured-text">' + address + '</div>';
+                  featured_listings += '<div id="pls-featured-text" ref="' + id + '">' + address + '</div>';
                   featured_listings += '<input type="hidden" name="' + option_name + '[' + option_id + '][' + id + ']=" value="' + address + '">';
                   featured_listings += '</li>';
               }

@@ -104,7 +104,7 @@ class PLS_Slideshow {
         /** If the slideshow data is null or not an array AND the plugin is working, try to fetch the proper data... **/
         if ( (!$data || !is_array($data)) && !pls_has_plugin_error() ) {
             /** Data assumed to take this form. */
-            $data = array('images' => array(),'links' => array(),'captions' => array());
+            $data = array('images' => array(),'links' => array(),'captions' => array(),'titles' => array());
 
             // If the calling theme allows user input, get slideshow config option...
             if ($allow_user_slides && $user_slides_header_id) {
@@ -164,6 +164,7 @@ class PLS_Slideshow {
                                 
                                 /** Get the listing caption **/
                                 $data['captions'][] = trim( self::render_listing_caption($listing, $index) );
+                                $data['titles'][] = $listing['location']['address'];
                             }
                             break;
 
@@ -176,6 +177,7 @@ class PLS_Slideshow {
                                 $data['links'][] = $slide['link'];
                                 $data['type'][] = 'custom';
                                 $data['captions'][] = trim( self::render_custom_caption($slide['html'], $index) );
+                                $data['titles'][] = strip_tags($slide['html']);
                             }
                             break;
                     }
@@ -204,7 +206,8 @@ class PLS_Slideshow {
 
                     // Get the listing caption
                     $listing_caption = trim( self::render_listing_caption($listing, $index) );
-                    
+                    $data['titles'][] = $listing['location']['address'];
+
                     // Add a filter for a single caption, to be edited via a template
                     $single_caption = apply_filters( pls_get_merged_strings( array( 'pls_slideshow_single_caption', $context ), '_', 'pre', false ), $listing_caption, $listing, $context, $context_var, $index );
                     $data['captions'][] = $single_caption;
@@ -221,12 +224,11 @@ class PLS_Slideshow {
         if (is_array($data['images'])) {
 	        foreach ($data['images'] as $index => $slide_src) {
 	            $extra_attr = array();
-	            $extra_attr['title'] = '';
-	
+
 	            /** Save the caption and the title attribute for the img. */
 	            if ( isset($data['captions'][$index]) ) {
 	                $html['captions'] .= $data['captions'][$index];
-	                $extra_attr['title'] = "#caption-{$index}";
+	                $extra_attr['data-caption'] = "#caption-{$index}";
 	            }
 	            
 	            if (isset($data['type'][$index])) {
@@ -245,13 +247,13 @@ class PLS_Slideshow {
                 if ($span_not_img) {
                     $slide = '<span style="background-image: url(' . $slide_src . ');"></span>';
                 } else {
-                    $slide = pls_h_img($slide_src, false, $extra_attr);
+                    $slide = pls_h_img($slide_src, $data['titles'][$index], $extra_attr);
                 }
 	            
 	
 	            /** Wrap it in an achor if the anchor exists. */
 	            if ( isset( $data['links'][$index] ) )
-	                $slide = pls_h_a( $data['links'][$index], $slide, array('data-caption' => "#caption-{$index}") );
+	                $slide = pls_h_a( $data['links'][$index], $slide, $extra_attr );
 	
 	            $html['slides'] .= $slide;
 			}

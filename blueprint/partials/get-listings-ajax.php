@@ -1,22 +1,23 @@
 <?php
 PLS_Partials_Get_Listings_Ajax::init();
 class PLS_Partials_Get_Listings_Ajax {
-	/**
+    /**
      * Returns the list of listings managed by ajax. It includes pagination and 
      * 'sort by' controls.
      * 
      * The defaults are as follows:
      *     'placeholder_img' - Defaults to placeholder image. The path to the 
      *          listing image that should be use if the listing has no images.
-     *     'loading_img' - Defaults to the Wordpress spinner. Path to the 
+     *     'loading_img' - Defaults to the Blueprint spinner. Path to the
      *          loader image.
-     *     'image_width' - Defaults to 100. The with of the listing image.
+     *     'image_width' - Defaults to 100. The width of the listing image.
      *     'crop_description' - Defaults to false. Wether the description 
-     *     should be cropped or not.
+     *          should be cropped or not.
      *     'context' - An execution context for the function. Used when the 
      *          filters are created.
      *     'context_var' - Any variable that needs to be passed to the filters 
      *          when function is executed.
+     *
      * Defines the following hooks:
      *      pls_listings_list_ajax_item_html[_context] - Filters html for each 
      *          item in the list
@@ -43,7 +44,7 @@ class PLS_Partials_Get_Listings_Ajax {
     }
 
     public static function get_favorite_listings () {
-        $favorite_ids = PLS_Plugin_API::get_listings_fav_ids();
+        $favorite_ids = PLS_Plugin_API::get_favorite_properties();
         
         // Will echo listings as a JSON-encoded output...
         self::get(array('property_ids' => $favorite_ids, 'allow_id_empty' => true));
@@ -60,7 +61,7 @@ class PLS_Partials_Get_Listings_Ajax {
 
         // Set default options...
         $defaults = array(
-            'loading_img' => admin_url('images/wpspin_light.gif'),
+            'loading_img' => trailingslashit( PLS_IMG_URL ) . 'preview_load_spin.gif',
             'image_width' => 100,
             'sort_type' => $sort_type_dflt,
             'sort_by' => $sort_by_dflt,
@@ -87,8 +88,8 @@ class PLS_Partials_Get_Listings_Ajax {
         // If limit is invalid or greater than API's upper limit, adjust accordingly... 
         // TODO: this seems to break the prop# form option
         $search_query['limit'] = ( (is_int($query_limit) && $query_limit <= 50) ? $query_limit : 50 );
-        
-		if (empty($sort_by_options) || !is_array($sort_by_options)) {
+
+        if (empty($sort_by_options) || !is_array($sort_by_options)) {
             $sort_by_options = array(
                 'total_images' => 'Total Images',
                 'location.address' => 'Address',
@@ -146,14 +147,22 @@ class PLS_Partials_Get_Listings_Ajax {
                         <?php endforeach; ?>
                     </select>
                   </div>
-              </form>  
+              </form>
             <?php endif; ?>
 
             <!-- Datatable -->
             <div class="clear"></div>
-
             <div id="container" style="width: 99%">
-            <div id="context" class="<?php echo $context; ?>"></div>
+
+                <!-- Load the spinner after dataTables has set itself up -->
+                <script type="text/javascript">
+                    jQuery(document).ready(function($) {
+                        var spinner = '<img id="spinner" src="<?php echo $loading_img; ?>" width="50" />';
+                        $('.dataTables_processing').html(spinner);
+                    });
+                </script>
+
+                <div id="context" class="<?php echo $context; ?>"></div>
                 <table id="<?php echo $table_id; ?>" class="widefat post fixed placester_properties" cellspacing="0">
                     <thead>
                         <tr>
@@ -178,9 +187,9 @@ class PLS_Partials_Get_Listings_Ajax {
         return ($a['order'] < $b['order']) ? -1 : 1;
     }
 
-  	public static function get ($args = array()) {
+    public static function get ($args = array()) {
         // Store this for use in the final output/response...
-		$sEcho = isset($_POST['sEcho']) ? $_POST['sEcho'] : 0;
+        $sEcho = isset($_POST['sEcho']) ? $_POST['sEcho'] : 0;
         unset($_POST['sEcho']);
 
         $context_orig  = isset($_POST['context']) ? $_POST['context'] : '';
@@ -200,9 +209,9 @@ class PLS_Partials_Get_Listings_Ajax {
         unset($_POST['action']);
 
         // Handle location edge-case...
-		if (!empty($_POST['location']) && !empty($_POST['location']['address']) && empty($_POST['location']['address_match'])) {
-			$_POST['location']['address_match'] = 'like';
-		}
+        if (!empty($_POST['location']) && !empty($_POST['location']['address']) && empty($_POST['location']['address_match'])) {
+            $_POST['location']['address_match'] = 'like';
+        }
 
         // Handle saved search...
         if (!is_null($saved_search_lookup) ) {
@@ -240,7 +249,6 @@ class PLS_Partials_Get_Listings_Ajax {
         
         // Define the default argument array
         $defaults = array(
-            'loading_img' => admin_url('images/wpspin_light.gif'),
             'image_width' => 100,
             'crop_description' => 0,
             'sort_type' => pls_get_option('listings_default_sort_type'),
@@ -400,8 +408,8 @@ class PLS_Partials_Get_Listings_Ajax {
 
         // Wordpress echos out a "0" randomly -- die prevents this...
         die();
-  	}
-  
+    }
+
 }
 // end of class
 ?>

@@ -28,27 +28,18 @@ function display_email_overlay(element_id){
         jQuery(".contact-form-validator-error").remove();
         
         var this_form = jQuery(element_id);
-        
-        // If form has invalide fields...
         if (jQuery(this_form).find("input[name='form_submitted']").val() == 0) {
-          // If form value for forcing user back when they cancel the lead capture form
           if (jQuery(this_form).find("input[name='back_on_lc_cancel']").val() == 1) {
-            var oldHash = window.location.hash;
 
             // send them back to whatever page they came from
+            var oldHash = window.location.hash;
             window.history.back();
-
             var newHash = window.location.hash;
 
             // If the hash hasn't changed and the page doesn't have a referrer, 
             // assume that there is no previous history entry and send them home
-            if (
-              oldHash === newHash && 
-              (typeof(document.referrer) !== "string" || document.referrer  === "") 
-            ) {
-              setTimeout(function(){
-                window.location = '/';
-              }, 100);
+            if (oldHash === newHash && (typeof(document.referrer) !== "string" || document.referrer  === "")) {
+              setTimeout(function() { window.location = '/'; }, 100);
             }
           };
         }

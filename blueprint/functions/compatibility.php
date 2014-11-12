@@ -127,38 +127,20 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_People_Helper", "add_person"), false, $person_details );
     }
 
-    /* 
-     * Lead Funcs 
-     * 
-     * NOTE: Will eventually REPLACE 'People' funcs above -- for now, they co-exist... 
-     */
-
-    public static function get_lead_details ($args = array(), $wp_user_id = null) {
-        return self::try_call_func( array("PL_Lead_Helper", "lead_details"), array(), $args, $wp_user_id );
-    }
-
-    public static function create_lead ($args) {
-        return self::try_call_func( array("PL_Lead_Helper", "create_lead"), array(), $args );
-    }
-
-    public static function update_lead ($args) {
-        return self::try_call_func( array("PL_Lead_Helper", "update_lead"), array(), $args );
+    public static function merge_bcc_forwarding_addresses_for_sending ($headers) {
+        return self::try_call_func( array("PL_Lead_Capture_Helper", "merge_bcc_forwarding_addresses_for_sending"), false, $headers);
     }
 
     /*
-     * Favorite Listing(s) Funcs
+     * Favorite Listings
      */
 
-    public static function get_listings_fav_ids () {
-        return self::try_call_func( array("PL_Favorite_Listings", "get_favorite_ids"), false, array() );
+    public static function get_favorite_properties () {
+        return self::try_call_func( array("PL_Favorite_Listings", "get_favorite_ids" /* renamed to "get_favorite_properties" in next release */), false, array() );
     }
 
     public static function placester_favorite_link_toggle ($args) {
         return self::try_call_func( array("PL_Favorite_Listings", "placester_favorite_link_toggle"), false, $args );
-    }
-    
-    public static function merge_bcc_forwarding_addresses_for_sending ($headers) {
-        return self::try_call_func( array("PL_Lead_Capture_Helper", "merge_bcc_forwarding_addresses_for_sending"), false, $headers);   
     }
 
     /*
@@ -173,26 +155,6 @@ class PLS_Plugin_API {
         return self::try_call_func( array("PL_Permalink_Search", "get_saved_search_filters"), false, $search_id );
     }
 
-    /*
-     * Saved Search Funcs
-     */
-
-    public static function get_user_saved_searches () {
-        return self::try_call_func( array("PL_Saved_Search", "get_saved_searches"), array() );
-    }
-
-    public static function get_saved_search_registration_form () {
-        return self::try_call_func( array("PL_Saved_Search", "get_saved_search_registration_form") );   
-    }
-
-    public static function get_saved_search_button () {
-        return self::try_call_func( array("PL_Saved_Search", "get_saved_search_button") ); 
-    }
-
-    public static function translate_key ($key) {
-        return self::try_call_func( array("PL_Saved_Search", "translate_key"), $key, $key );
-    }
-    
     /*
      * Miscellaneous
      */
