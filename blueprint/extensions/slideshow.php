@@ -384,11 +384,15 @@ class PLS_Slideshow {
                     height:<?php echo $container_height; ?>px !important;
                     overflow: hidden;
                 }
-                #slider, #slider img {
+                #slider, #slider a {
                     width:<?php echo $width; ?>px !important;
                     height:<?php echo $height; ?>px !important;
-                    background: #000 url('<?php echo PLS_EXT_URL; ?>/slideshow/orbit/orbit/loading.gif') no-repeat center center; 
                     overflow: hidden;
+                }
+                #slider img {
+                    width:<?php echo $width; ?>px !important;
+                    height:<?php echo $height; ?>px !important;
+                    background: #000 url('<?php echo PLS_EXT_URL; ?>/slideshow/orbit/orbit/loading.gif') no-repeat center center;
                 }
             </style>
         <?php 
