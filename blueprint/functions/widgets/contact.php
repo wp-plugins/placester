@@ -393,22 +393,18 @@ function ajax_placester_contact() {
         $message .= "The visitor was sent to: \n" . $_POST['custom_link'];
       }
 
-      if (trim($_POST['email_confirmation']) == true) {
-        wp_mail($email, 'Email confirmation was sent to ' . $_POST['email'] . ' from ' . home_url(), $message, $headers);
-      } elseif ($email) {
-        $placester_Mail = wp_mail($email, 'Prospective client from ' . home_url(), $message, PLS_Plugin_API::merge_bcc_forwarding_addresses_for_sending($headers) );
-      }
-      
-      $name = $_POST['name'];
-      PLS_Plugin_API::create_person(array('metadata' => array('name' => $name, 'email' => $_POST['email'])));
+      wp_mail($email, 'Prospective client from ' . home_url(), $message, PLS_Plugin_API::merge_bcc_forwarding_addresses_for_sending($headers) );
+
+      $name = trim($_POST['name']);
+      $email = trim($_POST['email']);
+      $phone = trim($_POST['phone']);
+      PLS_Plugin_API::create_person(array('metadata' => array('name' => $name, 'email' => $email, 'phone' => $phone)));
 
       // Send a email confirmation
       if (trim($_POST['email_confirmation']) == true) {
-
         ob_start();
           include(get_template_directory() . '/custom/contact-form-email.php');
           $message_to_submitter = ob_get_clean();
-
         wp_mail( $_POST['email'], 'Form Submitted' . $subject, $message_to_submitter );
       }
 

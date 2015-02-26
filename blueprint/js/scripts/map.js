@@ -254,6 +254,9 @@ Map.prototype.clear = function () {
 }
 
 Map.prototype.create_listing_marker = function ( listing ) {
+	if (listing['location']['coords'] == null)
+		return;
+
 	var marker_options = {};
 	marker_options.listing = listing;		// bind the listing data to the marker so it can be used later
 	marker_options.animation = google.maps.Animation.DROP

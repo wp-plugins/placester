@@ -150,18 +150,21 @@ class PLS_Taxonomy {
 		} elseif ($state) {
 			$subject += array('taxonomy' => 'state', 'value' => $state);
 		}
+
 		$subject['field'] = 'slug';
 		$term = PLS_Plugin_API::get_term($subject);
 		if (empty($term)) {
 			return false;
 		}
-		$term = (array)$term;
-		if ($term['term_id']>0) {
+
+		$term = (array) $term;
+		if ($term['term_id'] > 0) {
 			$meta = get_option('tax_meta_'.$term['term_id']);
 			if (is_array($meta)) {
 				$term += $meta;
 			}
 		}
+
 		foreach(self::$custom_meta as $meta) {
 			if (!isset($term[$meta['id']])) {
 				$term[$meta['id']] = false;
@@ -171,36 +174,37 @@ class PLS_Taxonomy {
 		if (!empty($term['polygon'])) {
 			$polygon = $term['polygon'];
 			$polygon['neighborhood_polygons'] = $polygon['name'];
-			$listings_raw = PLS_Plugin_API::get_polygon_listings($polygon);
+			$listings_raw = PLS_Plugin_API::get_polygon_listings(array_merge($polygon, array('sort_by' => 'total_images', 'sort_type' => 'desc')));
 			$term['listings'] = PLS_Partials::get_listings( "limit=5&context=home&neighborhood_polygons=" . $polygon['name'] );
 		} else {
-			$listings_raw = PLS_Plugin_API::get_listings("location[" . $term['api_field'] . "]=" . $term['api_term']);
+			$listings_raw = PLS_Plugin_API::get_listings("location[" . $term['api_field'] . "]=" . $term['api_term'] . "&sort_by=total_images&sort_type=desc");
 			$term['listings'] = PLS_Partials::get_listings( "limit=5&context=home&request_params=location[" . $term['api_field'] . "]=" . $term['api_term'] );
 		}
 
 		$term['areas'] = array('locality' => array(), 'postal' => array(), 'neighborhood' => array(), 'address' => array());
-		$locality_tree = array('city' => array('postal', 'neighborhood'), 'zip' => array('neighborhood'));
-
 		$term['listings_raw'] = $listings_raw['listings'];
 		$term['listings_count'] = $listings_raw['total'];
 
 		//assemble all the photos
-		$api_translations = array('locality' => 'city', 'neighborhood' => 'neighborhood', 'postal' => 'zip');
 		$term['listing_photos'] = array();
-		$count = 0;
 		if (isset($listings_raw['listings'])) {
-			foreach ($listings_raw['listings'] as $key => $listing) {
-				if (!empty($listing['images'])) {
-					foreach ($listing['images'] as $image) {
-						if ($count > $image_limit) {
-							break;
+			for($i = $count = 0; $i <= 1 && $count <= $image_limit; ++$i) {
+				foreach ($listings_raw['listings'] as $key => $listing) {
+					if (!empty($listing['images'])) {
+						if($image = $listing['images'][$i]) {
+							$term['listing_photos'][] = array('full_address' => $listing['location']['full_address'],
+								'image_url' => $image['url'], 'listing_url' => $listing['cur_data']['url']);
+							if(++$count > $image_limit) break;
 						}
-						$term['listing_photos'][] = array('full_address' => $listing['location']['full_address'], 'image_url' => $image['url'], 'listing_url' => $listing['cur_data']['url']);
-						$count++;
 					}
 				}
-				// TODO: Unused?
-				$link_templates = PLS_Plugin_API::get_permalink_templates();
+			}
+
+			// TODO: Unused?
+			$locality_tree = array('city' => array('postal', 'neighborhood'), 'zip' => array('neighborhood'));
+			$api_translations = array('locality' => 'city', 'neighborhood' => 'neighborhood', 'postal' => 'zip');
+			$link_templates = PLS_Plugin_API::get_permalink_templates();
+			foreach ($listings_raw['listings'] as $key => $listing) {
 				if (isset($locality_tree[$subject['taxonomy']])) {
 					foreach ($locality_tree[$subject['taxonomy']] as $locality) {
 						$tax = $api_translations[$locality];
@@ -213,6 +217,7 @@ class PLS_Taxonomy {
 				}
 			}
 		}
+
 		$cache->save($term);
 		return $term;
 	}
