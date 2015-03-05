@@ -103,36 +103,29 @@ class PLS_Meta_Tags {
 		<?php
 
 		$tags_html = ob_get_clean();
-
 		echo $tags_html;
 	}
 
 	public static function hook_title_tag ($original_title) {
-		// Special handling if Yoast SEO plugin is enabled and has returned non-empty title tag content...
-		if (self::is_yoast_enabled() & !empty($original_title)) {
-			// By default, if Yoast produced a title, return that value unaltered...
-			$return_orig = true;
-
-			// Special handling for the home page...
-			if (is_home()) {
-				global $wpseo_front;
-				global $sep;
-
-				$seplocation = is_rtl() ? 'left' : 'right';
-				$default_title = $wpseo_front->get_default_title($sep, $seplocation);
-
-				// If the default title is what Yoast produced, use ours instead (i.e., do NOT return original)
-				$return_orig = !($default_title == $original_title);
-			}
-
-			if ($return_orig) {
+		if (self::is_yoast_enabled() && !empty($original_title)) {
+			if (!defined('HOSTED_PLUGIN_KEY') || !is_home() || strpos($original_title, 'Just another') === false)
 				return $original_title;
-			}
+
+			// Special handling for the home page on our hosted platform (avoid obnoxious default blog description)
+			$separator = wpseo_replace_vars( '%%sep%%', array() );
+			$separator = ' ' . trim( $separator ) . ' ';
+			$location = is_rtl() ? 'left' : 'right';
+
+			global $wpseo_front;
+			$default_title = $wpseo_front->get_default_title($separator, $location);
+
+			// Unless the site owner has specifically asked for it
+			if ($default_title != $original_title)
+				return $original_title;
 		}
 
 		// take meta tag designations, and apply them to the HTML elements
 		$tags = self::determine_appropriate_tags();
-
 		return $tags['title'];
 	}
 

@@ -4,11 +4,11 @@ Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
 Author: Placester.com
-Version: 1.3
+Version: 1.3.0
 Author URI: https://www.placester.com/
 */
 
-/*  Copyright (c) 2013, 2014  Placester, Inc. <matt@placester.com>
+/*  Copyright (c) 2013 - 2015  Placester, Inc. <matt@placester.com>
 	All rights reserved.
 
 	Placester Promoter is distributed under the GNU General Public License, Version 2,
@@ -27,10 +27,11 @@ Author URI: https://www.placester.com/
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define('PL_PLUGIN_VERSION','1.3');
+define('PL_PLUGIN_VERSION','1.3.0');
 
 define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
-define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
+// define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
+define( 'PL_PARENT_URL', trailingslashit(plugins_url()) . 'placester/' );
 
 define( 'PL_LIB_DIR', trailingslashit(PL_PARENT_DIR) . 'lib/' );
 define( 'PL_LIB_URL', trailingslashit(PL_PARENT_URL) . 'lib/' );
@@ -218,7 +219,7 @@ function plugin_blueprint_settings () {
 add_action('admin_menu', 'placester_admin_menu');
 function placester_admin_menu () {
     // Add Placester Menu
-    add_menu_page('Placester', 'Placester', 'edit_pages', 'placester', array('PL_Router','my_listings'), plugins_url('images/icons/logo_16.png', __FILE__ ), '3.5' /* position between 3 and 4 */ );
+    add_menu_page('Placester', 'Placester', 'edit_pages', 'placester', array('PL_Router','my_listings'), PL_IMG_URL . 'icons/logo_16.png', '3.5' /* position between 3 and 4 */ );
 
     // Avoid submenu to start with menu function
     global $submenu;
