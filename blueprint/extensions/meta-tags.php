@@ -116,7 +116,7 @@ class PLS_Meta_Tags {
 			$separator = ' ' . trim( $separator ) . ' ';
 			$location = is_rtl() ? 'left' : 'right';
 
-			global $wpseo_front;
+			$wpseo_front = WPSEO_Frontend::get_instance();
 			$default_title = $wpseo_front->get_default_title($separator, $location);
 
 			// Unless the site owner has specifically asked for it

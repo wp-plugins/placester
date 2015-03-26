@@ -126,7 +126,7 @@ class PLS_Widget_Recent_Posts extends WP_Widget {
 				$post_html['url'] = post_permalink($post->ID);
 
 				$post_html['read_more'] = empty( $instance['read_more'] ) ? ''
-						: pls_h_a( $post->guid, 'Read more', array( 'class' => 'read-more' ) );
+						: pls_h_a( get_permalink($post), 'Read more', array( 'class' => 'read-more' ) );
 
 				$post_html['id'] = empty( $post->ID ) ? '' : $post->ID;
 
