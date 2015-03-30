@@ -9,8 +9,7 @@ jQuery(document).ready(function($) {
     $('#featured-listing-wrapper').dialog({
       autoOpen: false,
       width: dialogWidth,
-      title: "Featured Listings Picker",
-      position: [($(window).width() / 2) - (dialogWidth / 2), 50]
+      title: "Featured Listings Picker"
     });
 	
     $('.featured-listings').live('click', function(event) {
