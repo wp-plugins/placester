@@ -207,7 +207,7 @@ To add some text to your listings:<br />
 		ob_start();
 		self::hide_unnecessary_controls($atts);
 		self::add_to_group('static_listings', $atts, $filters.$filters_string);
-		echo "<a id={$atts['table_id']}_anchor name={$atts['table_id']}_anchor>";
+		echo "<a id={$atts['table_id']}_anchor name={$atts['table_id']}_anchor></a>";
 		PLS_Partials_Get_Listings_Ajax::load($atts);
 		// support shortcodes in the header or footer
 		$return = ob_get_clean();
@@ -290,7 +290,7 @@ To add some text to your listings:<br />
 		// TODO: move applyfilter to blueprint 
 		ob_start();
 		self::add_to_group('search_listings', $atts, $filters.$filters_string);
-		echo "<a id={$atts['table_id']}_anchor name={$atts['table_id']}_anchor>";
+		echo "<a id={$atts['table_id']}_anchor name={$atts['table_id']}_anchor></a>";
 		PLS_Partials_Get_Listings_Ajax::load($atts);
 		$return = ob_get_clean();
 		return apply_filters('pls_listings_' . $atts['context'], $return, array(), '', $atts, null);
@@ -1473,7 +1473,7 @@ To add some text to your listings:<br />
 				<?php endif ?>
 
 				// if we paginate we want to be able to scroll results to the top
-				$('body').on('click', '#<?php echo $group['listings']['atts']['table_id'] ?>_anchor .paginate_button', function(){
+				$('body').on('click', '#placester_listings_list_wrapper .paginate_button', function(){
 					$('html,body').animate({scrollTop: $('#<?php echo $group['listings']['atts']['table_id'] ?>_anchor').offset().top}, 1000);
 				});
 

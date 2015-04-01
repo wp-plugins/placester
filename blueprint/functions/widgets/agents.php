@@ -41,7 +41,7 @@ class PLS_Widget_Agents extends WP_Widget {
        foreach( $agents as $agent ) : setup_postdata($agent);
 
          $post_item = array(
-           'url' => $agent->guid,
+           'url' => post_permalink($agent->ID),
            'content' => $agent->post_content,
            'title' => $agent->post_title,
            'image' => '',

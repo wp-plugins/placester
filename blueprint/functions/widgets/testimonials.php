@@ -56,7 +56,7 @@ class PLS_Widget_Testimonials extends WP_Widget {
       foreach( $testimonials as $testimonial ) : setup_postdata($testimonial);
       
         $post_item = array(
-          'url' => $testimonial->guid,
+          'url' => post_permalink($testimonial->ID),
           'content' => $testimonial->post_content,
           'title' => $testimonial->post_title,
           'image' => '',

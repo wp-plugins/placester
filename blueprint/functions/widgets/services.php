@@ -41,7 +41,7 @@ class PLS_Widget_Services extends WP_Widget {
     foreach( $services as $service ) : setup_postdata($service);
 
          $post_item = array(
-           'url' => $service->guid,
+           'url' => post_permalink($service->ID),
            'content' => $service->post_content,
            'title' => $service->post_title,
            'image' => '',

@@ -35,6 +35,7 @@ class PLS_Widget_Facebook extends WP_Widget {
 
 	$widget_body = '';
 	
+	if(isset($feed['posts']['data']))
 	foreach ($feed['posts']['data'] as $post) {
 		$fb_post = build_fb_post_html($post);
 		
@@ -183,12 +184,15 @@ function get_facebook_feed ( $page_id, $limit, $post_types = array() ) {
 	// echo 'https://graph.facebook.com/68088808263?access_token='.$params['access_token'].'&fields=posts.limit(2)';
 	$limit = $limit + 5;
 	$query = 'https://graph.facebook.com/' . $page_id . '?access_token='.$params['access_token'].'&fields=posts.limit(' . $limit . ').fields(message,caption,timeline_visibility,source,picture,description,name,type,link)';
-	
+
   $content = wp_remote_get($query);
   if (!is_array($content) || !isset($content['body']) || !$content['body']) {
     return;
   }
 	$feed = json_decode($content['body'], true);
+
+	if(!isset($feed['posts']['data']))
+		return null;
 
 	// remove posts that don't have a message, picture, caption, name, or source
 	foreach ($feed['posts']['data'] as $key => $value) {
