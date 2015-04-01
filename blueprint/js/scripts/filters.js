@@ -65,6 +65,12 @@ Filters.prototype.set_values = function (search_id) {
 			}
 		});
 
+		// update "Show n" menu -- page number is handled elsewhere
+		if(data['limit']) {
+			jQuery('select[name=placester_listings_list_length]').val(data['limit']);
+			jQuery('select[name=placester_listings_list_length]').trigger("liszt:updated");
+		}
+
 		if (typeof that.custom_update_callback == 'function') {
 			that.custom_update_callback(data);
 		}
