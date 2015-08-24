@@ -294,9 +294,10 @@ function optionsframework_validate( $input ) {
 	 * API introduced in WordPress 3.4
 	 */
 
+	$theme_options_update = ( isset( $_POST['action'] ) && ( $_POST['action'] == 'update' ) );
 	$customizer_update = ( isset( $_POST['action'] ) && ( $_POST['action'] == 'customize_save' ) );
 
-	if ( isset( $_POST['update'] ) || $customizer_update ) {
+	if ( isset( $_POST['update'] ) || $theme_options_update || $customizer_update ) {
 		$clean = array();
 		$options = optionsframework_options();
 		
@@ -339,7 +340,7 @@ function optionsframework_validate( $input ) {
 	/*
 	 * Request Not Recognized.
 	 */
-	
+
 	return of_get_default_values();
 }
 

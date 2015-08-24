@@ -1,7 +1,7 @@
 <?php //pls_dump($params) ?>
 <div class="featured-listings-wrapper">
 	<div class="head">
-		<button class="featured-listings button" id="<?php echo $params['value']['id'] ?>" <?php echo isset($params['iterator']) ? 'rel="' . $params["iterator"] . '"' : ''; ?>>Pick featured listings</button>
+		<button type="button" class="featured-listings button" id="<?php echo $params['value']['id'] ?>" <?php echo isset($params['iterator']) ? 'rel="' . $params["iterator"] . '"' : ''; ?>>Pick featured listings</button>
 	</div>
 	
 	<div class="featured-listings" id="<?php echo $params['option_name'] ?>" ref="<?php echo $params['value']['id'] ?>" <?php echo isset($params['iterator']) ? 'rel="' . $params["iterator"] . '"' : ''; ?> <?php echo ($params['for_slideshow'] == 1) ? 'data-max="1"' : ''; ?> >

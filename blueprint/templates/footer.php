@@ -25,11 +25,7 @@
 
       </div><!-- .wrapper -->
 
-      <?php if ( is_home() ) { ?>
-        <?php PLS_Listing_Helper::get_compliance(array('context' => 'listings', 'agent_name' => false, 'office_name' => false)); ?>
-      <?php } ?>
-
-      <?php if ( is_page( 'Listings' ) || is_page( 'listings' ) || is_page( 'Open Houses' ) ) { ?>
+      <?php if ( is_home() || PLS_Plugin_API::$listing_data_requested ) { ?>
         <?php PLS_Listing_Helper::get_compliance(array('context' => 'search', 'agent_name' => false, 'office_name' => false)); ?>
       <?php } ?>
 

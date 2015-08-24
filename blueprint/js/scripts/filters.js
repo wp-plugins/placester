@@ -26,9 +26,8 @@ Filters.prototype.listeners = function (callback) {
 	jQuery(this.listener.elements).on(this.listener.events, function (event) {
 		event.preventDefault();
 
-		// Checks to see if a meaningful change to search criteria (i.e., not sort or pagination) triggered this call...
-		var search_criteria_changed = (this.className === that.className.replace('.', ''));
-
+		// Check to see if a meaningful change to search criteria (i.e., not sort or pagination) triggered this call...
+		var search_criteria_changed = (this.className.split(" ").indexOf(that.className.replace('.', '')) >= 0);
 		that.listings.get(search_criteria_changed);
 	});
 }
@@ -36,7 +35,7 @@ Filters.prototype.listeners = function (callback) {
 Filters.prototype.get_values = function () {
 	var result = [];
 	jQuery.each(jQuery(this.listener.elements).serializeArray(), function (i, field) {
-		result.push({'name': field.name, 'value': field.value});
+		if(field.value != '') result.push({'name': field.name, 'value': field.value});
 	});
 
 	return result;
@@ -46,22 +45,40 @@ Filters.prototype.set_values = function (search_id) {
 	var that = this;
 	jQuery.post(info.ajaxurl, {action: 'get_saved_search_filters', search_id: search_id}, function (data, textStatus, xhr) {
 		jQuery(that.listener.elements).find('input, select').add(that.listener.elements).each(function (i) {
-			if (this.name == 'purchase_types[]') {
-				// Special case for purchase types
-				if (data['purchase_types[0]']) {
-					jQuery(this).val(data['purchase_types[0]']);
-					jQuery(this).trigger("liszt:updated");
-				}
-				;
-			} else if (this.name == 'zoning_types[]') {
-				// Special case for zoning types
-				if (data['zoning_types[0]']) {
-					jQuery(this).val(data['zoning_types[0]']);
-					jQuery(this).trigger("liszt:updated");
-				}
-			} else if (data[this.name]) {
-				jQuery(this).val(data[this.name]);
+			var data_name = this.name;
+			var data_value = '';
+
+			if (data_name == 'purchase_types[]')
+				data_name = 'purchase_types[0]';
+			else if (data_name == 'zoning_types[]')
+				data_name = 'zoning_types[0]';
+			else if (data_name.indexOf('[]', data_name.length - 2) != -1)
+				data_name = data_name.substring(0, data_name.length - 2);
+
+			if (data[data_name] != null)
+				data_value = data[data_name];
+
+			if(jQuery(this).is('select')) {
+				jQuery(this).val(data_value);
 				jQuery(this).trigger("liszt:updated");
+			}
+
+			else if(jQuery(this).is('input')) {
+				switch(jQuery(this).attr('type')) {
+					case 'text':
+					case 'password':
+						jQuery(this).val(data_value);
+						break;
+
+					case 'radio':
+					case 'checkbox':
+						var this_value = jQuery(this).attr('value');
+						if(this_value == data_value || Array.isArray(data_value) && data_value.indexOf(this_value) != -1)
+							jQuery(this).attr('checked', true);
+						else
+							jQuery(this).attr('checked', false);
+						break;
+				}
 			}
 		});
 

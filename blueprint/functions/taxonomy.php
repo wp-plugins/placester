@@ -174,10 +174,10 @@ class PLS_Taxonomy {
 		if (!empty($term['polygon'])) {
 			$polygon = $term['polygon'];
 			$polygon['neighborhood_polygons'] = $polygon['name'];
-			$listings_raw = PLS_Plugin_API::get_polygon_listings(array_merge($polygon, array('sort_by' => 'total_images', 'sort_type' => 'desc')));
+			$listings_raw = PLS_Plugin_API::get_polygon_listings(array_merge($polygon, array('sort_by' => 'created_at', 'sort_type' => 'desc')));
 			$term['listings'] = PLS_Partials::get_listings( "limit=5&context=home&neighborhood_polygons=" . $polygon['name'] );
 		} else {
-			$listings_raw = PLS_Plugin_API::get_listings("location[" . $term['api_field'] . "]=" . $term['api_term'] . "&sort_by=total_images&sort_type=desc");
+			$listings_raw = PLS_Plugin_API::get_listings("location[" . $term['api_field'] . "]=" . $term['api_term'] . "&sort_by=created_at&sort_type=desc");
 			$term['listings'] = PLS_Partials::get_listings( "limit=5&context=home&request_params=location[" . $term['api_field'] . "]=" . $term['api_term'] );
 		}
 

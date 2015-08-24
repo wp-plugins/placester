@@ -47,7 +47,8 @@ class PLS_Partial_Get_Listings {
             'featured_option_id' => false,
             /** Placester API arguments. */
             'limit' => 5,
-            'sort_type' => 'asc',
+            'sort_by' => 'total_images',
+            'sort_type' => 'desc',
             'request_params' => '',
             'neighborhood_polygons' => false
         );
@@ -66,10 +67,8 @@ class PLS_Partial_Get_Listings {
         if ($height) 
           { $height = absint($height); }
 
-        $request_params = wp_parse_args($args, array('limit' => $limit, 'sort_type' => $sort_type));
-
         // Filter the request parameters
-        $request_params = apply_filters( pls_get_merged_strings( array( 'pls_listings_request', $context ), '_', 'pre', false ), $request_params, $context_var );
+        $request_params = apply_filters( pls_get_merged_strings( array( 'pls_listings_request', $context ), '_', 'pre', false ), $args, $context_var );
         
         // Start off with a placeholder in case the plugin is not active or there is no API key...
         $listings_raw = PLS_Listing_Helper::$default_listing;
@@ -80,10 +79,10 @@ class PLS_Partial_Get_Listings {
             if ($featured_option_id) {
               $listings_raw = PLS_Listing_Helper::get_featured($featured_option_id, $args);
 
-              // If the user hasn't set featured listings, get the ones with the most pictures
               if (empty($listings_raw['listings'])) {
-                $listings_raw = PLS_Plugin_API::get_listings(array_merge($request_params, array('sort_by' => 'total_images', 'sort_type' => 'desc')));
-                if(is_array($listings_raw['listings'])) { shuffle($listings_raw['listings']); }  // make the choices less obviously sorted
+                $listings_raw = PLS_Plugin_API::get_listings($request_params);
+                if($request_params['sort_by'] == 'total_images' && is_array($listings_raw['listings']))
+                  shuffle($listings_raw['listings']);  // when sorting by pretty (the default) make them less obviously sorted
               }
             }
 

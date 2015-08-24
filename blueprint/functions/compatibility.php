@@ -282,11 +282,15 @@ class PLS_Plugin_API {
      * @return list of property details
      * @since 0.0.1
      */
+    public static $listing_data_requested; // flag used to trigger compliance disclaimer
+
     public static function get_listings ($args, $global_filters = true, $caching_on = false) {
+        self::$listing_data_requested = true;
         return self::try_call_func(array("PL_Listing_Helper", "results"), array(), $args, $global_filters);
     }
 
     public static function get_listing_details ($args) {
+        self::$listing_data_requested = true;
         return self::try_call_func(array("PL_Listing_Helper", "details"), array(), $args);
     }
 

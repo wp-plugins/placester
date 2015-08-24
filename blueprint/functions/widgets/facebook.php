@@ -159,8 +159,8 @@ function get_facebook_feed ( $page_id, $limit, $post_types = array() ) {
 	}
 
 	// Obtain App Access Token
-	$app_id = "263914027073402";
-	$app_secret = "3f864423935f5531bb3119ea8ed59147";
+	$app_id = "440638186000329";
+	$app_secret = "4ee7a7894c8aaf811acd3a46f23fe4ac";
 	$app_token_url = "https://graph.facebook.com/oauth/access_token?"
 		. "client_id=" . $app_id
 		. "&client_secret=" . $app_secret 

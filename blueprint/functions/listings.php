@@ -88,6 +88,10 @@ class PLS_Listing_Helper {
 		$message = PLS_Plugin_API::mls_message($args);
 		if ($message && !empty($message) && isset($args['context'])) {
 			$_POST['compliance_message'] = $message;
+
+			// clear compliance disclaimer flag, since we're displaying it
+			if($args['context'] == 'search') PLS_Plugin_API::$listing_data_requested = false;
+
 			PLS_Route::router(array($args['context'] . '-compliance.php'), true, false);
 		}
 		return false;

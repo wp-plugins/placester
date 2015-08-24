@@ -116,6 +116,9 @@ class PLS_Partials_Get_Listings_Ajax {
         $sort_by = isset($_POST['sort_by']) ? $_POST['sort_by'] : $sort_by;
         $sort_type = isset($_POST['sort_type']) ? $_POST['sort_type'] : $sort_type;
 
+        // This page should trigger a compliance message since it's set up to display listings
+        PLS_Plugin_API::$listing_data_requested = true;
+
         ob_start();
         ?>
             <script type="text/javascript" src="<?php echo trailingslashit(PLS_JS_URL) ?>scripts/listing-list.js"></script>

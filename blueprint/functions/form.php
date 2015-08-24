@@ -199,7 +199,6 @@ class PLS_Form {
 		ob_start();
 		?>
                 <form name="pl_login_form" id="pl_login_form" action="<?php echo home_url(); ?>/wp-login.php" method="post" class="pl_login_reg_form">
-
                     <?php pls_do_atomic( 'login_form_before_title' ); ?>
 
                     <div id="pl_login_form_inner_wrapper">

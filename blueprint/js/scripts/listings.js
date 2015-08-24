@@ -284,7 +284,7 @@ Listings.prototype.check_search_form_count = function () {
 
 	form_data = this.check_multiple_search_filters(form_data);
 
-	var multi_value_form_keys = new Array("location[locality][]", "location[neighborhood][]", "location[region][]");
+	var multi_value_form_keys = new Array("location[locality][]", "location[neighborhood][]", "location[region][]", "location[postal][]", "metadata[prop_type]");
 
 	for (var i = form_data.length - 1; i >= 0; i--) {
   		if (data[form_data[i].name] && multi_value_form_keys.indexOf(form_data[i].name) != -1) {
@@ -329,7 +329,7 @@ Listings.prototype.check_search_form_count = function () {
 
 Listings.prototype.check_multiple_search_filters = function (filters) {
 	// Search for multiple cities / neighborhoods / states / property types
-	var checkMultiples = new Array("location[locality]", "location[neighborhood]", "location[region]", "property_type", "metadata[condo_name]");
+	var checkMultiples = new Array("location[locality]", "location[neighborhood]", "location[region]", "location[postal]", "metadata[prop_type]");
 
 	// console.log(checkMultiples);
 	for (var i = checkMultiples.length - 1; i >= 0; i--){

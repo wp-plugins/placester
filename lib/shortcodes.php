@@ -142,9 +142,11 @@ class PL_Shortcodes
 	 * [compliance] handler
 	 */
 	public static function compliance_shortcode_handler( $atts ) {
+		$context = PL_Listing_Helper::get_listing_in_loop() ? 'listings' : 'search';
+
 		ob_start();
 		PLS_Listing_Helper::get_compliance(array(
-			'context' => 'listings'
+			'context' => $context
 		));
 		$content = ob_get_clean();
 
@@ -373,11 +375,14 @@ class PL_Shortcodes
 			$filterlogic = $group . '[' . $filterlogic . ']';
 			$av_filter = $group . '.' . $av_filter;
 		}
+		elseif( $filterstr == 'zoning_types' || $filterstr == 'purchase_types') {
+			$filterstr .= '[]';
+		}
 		$jsfilter = '';
 		if (strpos($value, '||') !==false ) {//print_r($atts);die;
 			$values = explode('||', $value);
 			if (count($values) > 1) {
-				$filterstr .= '[]';
+				if (substr($filterstr, -2) != '[]') $filterstr .= '[]';
 				$jsfilter .= apply_filters('pl_filter_wrap_filter', "{ 'name': '" . $filterlogic . "', 'value' : 'in'} ");
 			}
 			foreach ($values as $value) {
