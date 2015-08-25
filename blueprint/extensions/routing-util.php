@@ -8,6 +8,7 @@ class PLS_Route {
 	const CACHE_PER_PAGE = 1;
 
 	public static $request = array();
+	public static $located = null;
 	public static $wrap_requests = true;
 
 	// Hooks take care of everything, developer has full control over file system
@@ -206,7 +207,7 @@ class PLS_Route {
 	 */
 
 	public static function handle_dynamic () {
-		return self::router(self::$request, true, null, null, self::CACHE_NONE);
+		return self::$located = self::router(self::$request, true, null, null, self::CACHE_NONE);
 	}
 
 	public static function handle_header () {
