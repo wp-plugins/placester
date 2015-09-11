@@ -132,7 +132,7 @@ class PLS_Plugin_API {
     }
 
     /*
-     * Favorite Listings
+     * Favorite Listing and My Search Funcs
      */
 
     public static function get_favorite_properties () {
@@ -141,6 +141,22 @@ class PLS_Plugin_API {
 
     public static function placester_favorite_link_toggle ($args) {
         return self::try_call_func( array("PL_Favorite_Listings", "placester_favorite_link_toggle"), false, $args );
+    }
+
+    public static function get_favorite_search ($hash_id) {
+        return self::try_call_func( array("PL_User_Saved_Search", "get_favorite_search"), false, $hash_id );
+    }
+
+    public static function get_favorite_searches () {
+        return self::try_call_func( array("PL_User_Saved_Search", "get_favorite_searches"), false, array() );
+    }
+
+    public static function placester_search_link_toggle ($args) {
+        return self::try_call_func( array("PL_User_Saved_Search", "placester_search_link_toggle"), false, $args );
+    }
+
+    public static function placester_favorite_search_list ($args) {
+        return self::try_call_func( array("PL_User_Saved_Search", "placester_favorite_search_list"), false, $args );
     }
 
     /*
@@ -341,5 +357,3 @@ class PLS_Plugin_API {
     	return self::try_call_func(array("PL_Dragonfly", "resize"), $image_args['old_image'], $image_args);
     }
 }
-// end of class
-?>

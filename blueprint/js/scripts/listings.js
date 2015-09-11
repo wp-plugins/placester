@@ -11,7 +11,7 @@ function Listings (params) {
 	this.property_ids = params.property_ids || false;
 	this.default_filters = params.default_filters || [];
 	this.filter_override = params.filter_override || false;
-	this.is_new_serch = false;
+	this.is_new_search = false;
 	this.from_back_button = false;
 	this.search_hash = false;
 	this.sort_by = params.list ? params.list.sort_by : false;
@@ -38,9 +38,15 @@ Listings.prototype.init = function () {
 		this.list.listeners();
 
 		jQuery.address.change(function(event) {
-			if (!that.is_new_serch) {
-				that.from_back_button = true;
-				that.get();
+			if (!that.is_new_search) {
+				var hash = jQuery.address.value();
+				if(hash.charAt(0) == '/') {
+					hash = hash.slice(1);
+					if (hash == '' || jQuery.isNumeric(hash)) {
+						that.from_back_button = true;
+						that.get();
+					}
+				}
 			}
 		});
 
@@ -63,7 +69,7 @@ Listings.prototype.init = function () {
 }
 
 Listings.prototype.get = function (search_criteria_changed) {
-	this.is_new_serch = true;
+	this.is_new_search = true;
 	var that = this;
 
 	// if there's a pending request, do nothing.
@@ -118,35 +124,34 @@ Listings.prototype.get = function (search_criteria_changed) {
 		var fnSettings = this.list.datatable.fnSettings();
 		that.active_filters.push({"name": "iDisplayLength", "value": fnSettings._iDisplayLength});
 		that.active_filters.push({"name": "iDisplayStart", "value": fnSettings._iDisplayStart});
-		this.list.sEcho++;
-		that.active_filters.push({"name": "sEcho", "value":  this.list.sEcho});			
+		that.active_filters.push({"name": "sEcho", "value":  ++this.list.sEcho});
 		// aoData;
 	} else if (this.list) {
 		this.list.show_loading();
 		that.active_filters.push({"name": "iDisplayLength", "value": this.list.limit_default});
 		that.active_filters.push({"name": "iDisplayStart", "value": 0});
-		that.active_filters.push({"name": "sEcho", "value": 1});	
+		that.active_filters.push({"name": "sEcho", "value": 1});
 	}
 
 	if (this.list && this.list.context) {
 		that.active_filters.push({"name": "context", "value": this.list.context});
 	}
-  
+
 	// Get current state of search filter...
 	if (this.filter) {
 		that.active_filters = that.active_filters.concat(this.filter.get_values());
 	}
 
-  	// Sort By if set by list
-  	if (this.list.sort_by) {
+	// Sort By if set by list
+	if (this.list.sort_by) {
 		that.active_filters.push({"name": "sort_by", "value": this.list.sort_by});
 	}
 
-  	// Sort Type if set by list
-  	if (this.list.sort_type) {
+	// Sort Type if set by list
+	if (this.list.sort_type) {
 		that.active_filters.push({"name": "sort_type", "value": this.list.sort_type});
 	}
-	
+
 	// Get bounding box or polygon information
 	// There should be a map + we either need a type of neighborhood, or filter bounds to be enabled
 	if (this.map && (this.map.type == 'neighborhood' || this.map.filter_by_bounds ) ) {
@@ -154,7 +159,7 @@ Listings.prototype.get = function (search_criteria_changed) {
 		// concat bounds only if bounds exist
 		if (this.map.filter_by_bounds) {
 			that.active_filters = that.active_filters.concat(this.map.get_bounds());
-		}		
+		}
 	}
 
 	if (that.filter_override) {
@@ -170,42 +175,68 @@ Listings.prototype.get = function (search_criteria_changed) {
 	if (that.disable_saved_search === false) {
 
 		// Saved search functionality
-		var hash = that.generate_search_hash();
+		var filters_hash = '/' + that.generate_search_hash();
 		var current_hash = jQuery.address.value();
 
 		// Don't display in preview screens, nor in widget pages
 		if( window.location.href.indexOf('post_type=pl_general_widget') == -1 
 			&& window.location.href.indexOf('post.php?post=') == -1
 			&& window.location.href.indexOf('/pl_general_widget/') == -1) {
-			// The hash has never been set, and it's not empty, or its different from the previous hash. Go look it up.
-			if (current_hash !== '/' && ( that.search_hash === hash || that.search_hash === false || that.from_back_button) ) {
-				that.active_filters.push( { "name": "saved_search_lookup", "value" : current_hash } );	
-				that.search_hash = current_hash;
-		
-				//if there are filters active, set them too
+
+			// Visiting a permalink, or reloading a previous page
+			if ((that.search_hash === false && current_hash != '/') || that.from_back_button) {
+				that.active_filters.push( { "name": "saved_search_lookup", "value" : that.search_hash = current_hash } );
 				if (that.filter) {
 					that.filter.set_values(current_hash);
 				}
-			} 
-			else {
-				that.active_filters.push( { "name": "saved_search_lookup", "value" : '/' + hash } );	
-				jQuery.address.value(hash);
-				that.search_hash = '/' + hash;
+			}
+
+			// Using POST data (if available) or responding to changes coming from the form
+			else if ((that.search_hash === false && current_hash == '/') || search_changed) {
+				that.active_filters.push( { "name": "saved_search_hash", "value" : that.search_hash = filters_hash } );
+				if(search_changed || filters_hash != '/') {
+					jQuery.address.value(that.search_hash);
+				}
 			}
 		}
 	}
-  	// console.log(that.active_filters);
+
 	jQuery.ajax({
-	    "dataType": 'json',
-	    "type": "POST",
-	    "url": this.sSource,
-	    "data": that.active_filters,
-	    "success": function (ajax_response) {
+		"dataType": 'json',
+		"type": "POST",
+		"url": this.sSource,
+		"data": that.active_filters,
+		"success": function (ajax_response) {
 			that.pending = false;
-			that.is_new_serch = false;
+			that.is_new_search = false;
 			that.from_back_button = false;
 			that.ajax_response = ajax_response;
-			
+
+			// Update the favorite search options if they exist
+			if (that.disable_saved_search === false && jQuery.address.value() != '/') {
+				jQuery('#pl_favorite_search_links').show();
+				if (typeof ajax_response.favorite_search != "undefined")
+					if (ajax_response.favorite_search) {
+						jQuery('#pl_save_favorite_search').hide();
+						jQuery('#pl_clear_favorite_search').show();
+						if (ajax_response.favorite_search_email) {
+							jQuery('#pl_enable_favorite_search').hide();
+							jQuery('#pl_disable_favorite_search').show();
+						}
+						else {
+							jQuery('#pl_enable_favorite_search').show();
+							jQuery('#pl_disable_favorite_search').hide();
+						}
+					}
+					else {
+						jQuery('#pl_save_favorite_search').show();
+						jQuery('#pl_clear_favorite_search').hide();
+					}
+			}
+			else {
+				jQuery('#pl_favorite_search_links').hide();
+			}
+
 			if (that.map)
 				that.map.update( ajax_response );
 
@@ -214,41 +245,34 @@ Listings.prototype.get = function (search_criteria_changed) {
 
 			if (that.poi)
 				that.poi.update();
-			
-      		// execute manual_callback function
-      		if (that.list.manual_callback)
-        		that.list.manual_callback();
-			
-			that.active_filters = [];
-    	}
-	});
-	
-	// if (search_changed && typeof PlacesterAnalytics !== 'undefined') {
-	// 	var search_data = {action: "analytics_data", event: "listing_search"};
-	// 	search_data.filters = this.filter.get_values();
 
-	// 	console.log(search_data);
-	// 	jQuery.post(info.ajaxurl, search_data, function (response) {
-	// 		if (response && response.hash) { 
-	// 			PlacesterAnalytics.log(response.hash);
-	// 			// console.log("Sent this hash: ", response.hash);
-	// 		}	
-	// 	}, 'json');
-	// }
+			// execute manual_callback function
+			if (that.list.manual_callback)
+				that.list.manual_callback();
+
+			that.active_filters = [];
+		}
+	});
 }
 
 Listings.prototype.generate_search_hash = function () {
-	var joined = '';
+	var joined = ''; var something = false;
 	for (var i = this.active_filters.length - 1; i >= 0; i--) {
 		if (this.active_filters[i]) {
-			if (this.active_filters[i]['name'] == "saved_search_lookup" || this.active_filters[i]['name'] == "sEcho")
-				continue;
 
+			if (["action", "context", "saved_search_hash", "saved_search_lookup", "sEcho", "sort_by", "sort_type",
+				"iDisplayLength", "iDisplayStart"].indexOf(this.active_filters[i]['name']) >= 0)
+				continue;
 			joined += this.active_filters[i]['name'];
 			joined += this.active_filters[i]['value'];
+
+			if (!this.active_filters[i]['value'] || this.active_filters[i]['name'].search('_match') >= 0)
+				continue;
+			something = true;
 		}
-	}	
-	return this.fast_hasher(joined);
+	}
+
+	return something ? this.fast_hasher(joined) : '';
 }
 
 Listings.prototype.fast_hasher = function (str) {

@@ -32,7 +32,7 @@ class PLS_Partials_Get_Listings_Ajax {
      * @param array $args Optional. Overrides defaults.
      * @return string The html and js.
      * @since 0.0.1
-     */
+     **/
     public static function init () {
         // Hook the callback for ajax requests
         add_action('wp_ajax_pls_listings_ajax', array(__CLASS__, 'get' ) );
@@ -203,7 +203,10 @@ class PLS_Partials_Get_Listings_Ajax {
         unset($_POST['iDisplayLength']);    
 
         $_POST['offset'] = isset($_POST['iDisplayStart']) ? $_POST['iDisplayStart'] : 0;
-        unset($_POST['iDisplayStart']);   
+        unset($_POST['iDisplayStart']);
+
+        $saved_search_hash = isset($_POST['saved_search_hash']) ? $_POST['saved_search_hash'] : null;
+        unset($_POST['saved_search_hash']);
 
         $saved_search_lookup = isset($_POST['saved_search_lookup']) ? $_POST['saved_search_lookup'] : null;
         unset($_POST['saved_search_lookup']);
@@ -217,15 +220,10 @@ class PLS_Partials_Get_Listings_Ajax {
         }
 
         // Handle saved search...
-        if (!is_null($saved_search_lookup) ) {
+        if ($saved_search_lookup) {
             // Attempt to retrieve search filters associated with the given saved search lookup ID...
-            // NOTE: If no filters exist for the passed ID, 
             $filters = PLS_Plugin_API::get_saved_search_filters($saved_search_lookup);
-            
-            if (empty($filters) || !is_array($filters)) {
-                PLS_Plugin_API::save_search($saved_search_lookup, $_POST);
-            }
-            else {
+            if ($filters && is_array($filters)) {
                 // For backwards compatibility, handle older fields that are no longer stored as saved search filters...
                 $old_field_map = array(
                     'sEcho' => false,
@@ -246,10 +244,18 @@ class PLS_Partials_Get_Listings_Ajax {
                 }
 
                 // Swap all existing POST filters for the ones associated with the retrieved saved search...
+                $saved_search_hash = $saved_search_lookup;
                 $_POST = $filters;
             }
-        }  
-        
+        }
+        else if ($saved_search_hash) {
+            PLS_Plugin_API::save_search($saved_search_hash, $_POST);
+        }
+
+        // Is this one of the user's favorite searches?
+        if(is_user_logged_in() && $saved_search_hash)
+            $favorite_search = PLS_Plugin_API::get_favorite_search($saved_search_hash);
+
         // Define the default argument array
         $defaults = array(
             'image_width' => 100,
@@ -266,18 +272,23 @@ class PLS_Partials_Get_Listings_Ajax {
 
         // Resolve function args with default ones (which include any existing POST fields)...
         $merged_args = wp_parse_args($args, $defaults);
+        extract($merged_args, EXTR_SKIP);
 
         $cache = new PLS_Cache('list');
         if ($cached_response = $cache->get($merged_args)) {
-            // This field must match the one passed in with this request...
+            // These fields are not cached
             $cached_response['sEcho'] = $sEcho;
+            if ($favorite_search) {
+                $cached_response['favorite_search'] = 1;
+                $cached_response['favorite_search_email'] = ($favorite_search['timestamp'] ? 1 : 0);
+            }
+            else if ($saved_search_hash) {
+                $cached_response['favorite_search'] = 0;
+            }
 
             echo json_encode($cached_response);
             die();
         }
-
-        // Extract the arguments after they merged with the defaults
-        extract($merged_args, EXTR_SKIP);
 
         // Start off with a placeholder in case the plugin is not active or there is no API key...
         $api_response = PLS_Listing_Helper::$default_listing;
@@ -395,16 +406,23 @@ class PLS_Partials_Get_Listings_Ajax {
         // Required for datatables.js to function properly...
         $response['sFirst'] = 'Previous';
         $response['sPrevious'] = 'Next';
-      
-        $response['sEcho'] = $sEcho;
-        $response['aaData'] = $listings; 
-        $api_total = isset($api_response['total']) ? $api_response['total'] : 0; 
-        $response['iTotalRecords'] = $api_total;
-        $response['iTotalDisplayRecords'] = $api_total;
+        $response['aaData'] = $listings;
+        $response['iTotalRecords'] = isset($api_response['total']) ? $api_response['total'] : 0;
+        $response['iTotalDisplayRecords'] = $response['iTotalRecords'];
         $response['iDisplayStart'] = isset($_POST['offset']) ? $_POST['offset'] : 0;
         $response['iDisplayLength'] = isset($_POST['limit']) ? $_POST['limit'] : 0;
 
         $cache->save($response);
+
+        // these can't be cached
+        $response['sEcho'] = $sEcho;
+        if($favorite_search) {
+            $response['favorite_search'] = 1;
+            $response['favorite_search_email'] = ($favorite_search['timestamp'] ? 1 : 0);
+        }
+        else if ($saved_search_hash) {
+            $response['favorite_search'] = 0;
+        }
 
         ob_start("ob_gzhandler");
         echo json_encode($response);
@@ -412,7 +430,4 @@ class PLS_Partials_Get_Listings_Ajax {
         // Wordpress echos out a "0" randomly -- die prevents this...
         die();
     }
-
 }
-// end of class
-?>

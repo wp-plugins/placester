@@ -216,7 +216,7 @@ function optionsframework_page() {
 		<div class="blueprint-logo"></div>
 		<div class="builder-options">Theme Options</div>
 		<div class="version">
-			<p>Builder Version: 1.0.0</p>
+			<p>Builder Version: 1.3.3</p>
 		</div>
 	</div>
     <div class="side-nav nav-tab-wrapper">
