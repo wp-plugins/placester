@@ -1,0 +1,152 @@
+.rets_form {
+	float: left;
+}
+.rets_form form.wizard-mls {
+	width: 750px !important;
+}
+.rets_form form #message.error ul li {
+	margin-left: 15px;
+	list-style-type: disc;
+}
+
+div.integration-wrapper {
+	width: 700px;
+	float: left;
+}
+div.help_prompt.integration {
+	float: left;
+	width: 280px;
+	margin-left: 15px;
+}
+div.integration h3 {
+	font-size: 17px;
+}
+div.integration ul {
+	float: left;
+	margin-bottom: 10px;
+}
+div.integration ul li {
+	width: 600px;
+	height: 25px;
+	float: left;
+	clear: both;
+}
+div.integration ul li div {
+	float: left;
+	margin-left: 15px;
+}
+div.integration ul li div:first-child {
+	text-align: right;
+	width: 150px;
+	margin-left: 0px;
+}
+
+div.c4 {
+	float: left;
+	width: 220px;
+	margin: 0px 10px 15px 0;
+	border-right: 1px solid #DFDFDF;
+}
+div.c4.omega {
+	margin-right: 0px !important;
+	border-right: none;
+}
+div.c4 .large-number {
+	font-size: 40px;
+	font-weight: bold;
+	text-align: center;
+}
+div.c4 .label {
+	width: 100%;
+	text-align: center;
+	font-size: 16px;
+}
+
+h3.get_started {
+	margin-top: 39px;
+	font-size: 18px;
+	font-weight: lighter;
+	font-family: "Helvetica Neue", "sans-serif";
+}
+p.import-message {
+	vertical-align: middle;
+	line-height: 20px;
+}
+#rets_form_message {
+	margin: 10px inherit;
+}
+p.large_green_button {
+	width: 300px;
+	margin: 15px auto !important;
+}
+
+
+.help_prompt {
+	padding: 10px;
+	float: left;
+	border: 1px solid #E6DB55;
+	background-color: lightYellow;
+}
+.help_prompt ul li {
+	margin-left: 15px;
+	list-style-type: disc;
+}
+.help_prompt .real_person h3 {
+	margin: 25px inherit 5px inherit;
+}
+.help_prompt .real_person h4 {
+	margin: 5px inherit;
+	font-weight: normal;
+}
+
+/* Added for Integrations Re-vamp... */
+.row {
+	zoom: 1;
+	margin: 15px 0;
+}
+
+.row .info {
+	float: left;
+	width: 170px;
+	padding: 20px 40px 0 16px;
+}
+
+.row .info h3 {
+	margin: 0 0 5px;
+	font-weight: bold;
+	font-size: 125%;
+	color: #303030;
+}
+
+.row .info p {
+	margin: 0 0 10px;
+	color: #575757;
+}
+
+.row .elements {
+	padding: 15px 0;
+	overflow: hidden;
+	zoom: 1;
+}
+
+.row .elements p {
+	margin-top: 0px;
+}
+
+.row::after {
+	content: "";
+	display: block;
+	clear: both;
+}
+
+.row input[type="submit"] {
+	float: right;
+}
+
+h3.invalid {
+	color: red !important;
+}
+
+input.invalid {
+	border: 1px solid red !important;
+}
