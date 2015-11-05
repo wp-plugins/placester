@@ -295,6 +295,16 @@ class PLS_Partials_Get_Listings_Ajax {
 
         // If plugin is active, grab listings intelligently...
         if (!pls_has_plugin_error()) {
+
+            // Set a hard limit on the number of listings retrievable in search results -- an MLS requirement
+            if($mls_limit = pls_get_option('pls-mls-listing-limit')) {
+                if($search_query['limit'] == 0 || $search_query['offset'] + $search_query['limit'] >= $mls_limit)
+                    $search_query['limit'] = $mls_limit - $search_query['offset'];
+            }
+            if($search_query['limit'] <= 0)
+                $api_response = array('total' => $mls_limit . '+', 'offset' => $_POST['offset'], 'limit' => $_POST['limit'] ?: 150, 'count' => 0, 'listings' => array());
+            else
+
             // Get the listings list markup and JS
             if (!empty($property_ids) || $allow_id_empty) {
                 // Sometimes property_ids are passed in as a flat screen from the JS post object
@@ -310,6 +320,10 @@ class PLS_Partials_Get_Listings_Ajax {
             else {
                 $api_response = PLS_Plugin_API::get_listings($search_query);
             }
+
+            // When using an MLS limit use that as a maximum for search result total
+            if($mls_limit && $api_response['total'] > $mls_limit) $api_response['total'] = $mls_limit . '+';
+
         }
 
         $response = array();        

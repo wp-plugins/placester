@@ -13,22 +13,30 @@ Filters.prototype.init = function (params) {
 	if (params.listener) {
 		this.listener = {};
 		this.listener.elements = params.listener.elements || this.className + ', #sort_by, #sort_dir';
-		this.listener.events = params.listener.events || 'change submit';
+		this.listener.events = params.listener.events || 'change submit reset';
 	} else {
 		this.listener = {};
 		this.listener.elements = this.className + ', #sort_by, #sort_dir';
-		this.listener.events = 'change submit';
+		this.listener.events = 'change submit reset';
 	}
 }
 
 Filters.prototype.listeners = function (callback) {
 	var that = this;
 	jQuery(this.listener.elements).on(this.listener.events, function (event) {
-		event.preventDefault();
-
-		// Check to see if a meaningful change to search criteria (i.e., not sort or pagination) triggered this call...
-		var search_criteria_changed = (this.className.split(" ").indexOf(that.className.replace('.', '')) >= 0);
-		that.listings.get(search_criteria_changed);
+		if(event.type == 'submit') {
+			event.preventDefault();
+			that.listings.get(true);
+		}
+		else if(event.type == 'reset') {
+			// the reset event comes before the form values are actually reset, so fire the listings call after returning
+			setTimeout(function () { that.listings.get(true); }, 0)
+		}
+		else {
+			// Check to see if a meaningful change to search criteria (i.e., not sort or pagination) triggered this call...
+			var search_criteria_changed = (this.className.split(" ").indexOf(that.className.replace('.', '')) >= 0);
+			that.listings.get(search_criteria_changed);
+		}
 	});
 }
 
